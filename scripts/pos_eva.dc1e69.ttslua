@@ -41,6 +41,6 @@ function spawn_token()
 		token.setDescription('temp, tall grass')
 
 	else
-		token.setDescription('token, minus1eva')
+		token.setDescription('token, plus1eva')
 	end
 end
