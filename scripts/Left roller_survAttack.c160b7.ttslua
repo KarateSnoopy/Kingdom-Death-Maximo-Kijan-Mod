@@ -957,7 +957,9 @@ function ClickedRoll(color)
 			params = {number = tonumber(gridButn['attack'].label) + 1, playerColor = color}
 			local str_token = bag_str.takeObject({position = {sword_gear_pos.x, sword_gear_pos.y + 0.2, sword_gear_pos.z}, rotation = {0, 180, 0}})
 			local acc_token = bag_accuracy.takeObject({position = {sword_gear_pos.x, sword_gear_pos.y + 0.4, sword_gear_pos.z}, rotation = {0, 180, 0}})
+			local speed_token = bag_speed.takeObject({position = {sword_gear_pos.x, sword_gear_pos.y + 0.6, sword_gear_pos.z}, rotation = {0, 180, 0}})
 			str_token.setDescription("token, endOfAttack")
+			speed_token.setDescription("token, endOfAttack")
 			acc_token.setDescription("token, endOfAttack")
 			broadcastToAll("Sword Mastery ~ You gained (+1) Speed ~ (+1) Strength ~ (+1) Accuracy", msg_color)
 		end
