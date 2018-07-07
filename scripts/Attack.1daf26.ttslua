@@ -554,17 +554,21 @@ end
 
 
 
-
-
 -- Dice Roller Functions -------------------------------------------------------
 function spawnDice(params)
 	local playerColor = params.playerColor
+	local isRedYellow = params.isRedYellow
 	--local color = params.color
 	local number = attackValues.speed
 	if tonumber(attackValues.speed) < 1 then
 		number = 1
 	end
-	local pointerPosition = Player[playerColor].getPointerPosition()
+	local pointerPosition = {x = 0, y=0, z=0}
+	if isRedYellow then
+		pointerPosition = {x = -23.4, y=4.4, z=-26.35}
+	else
+		pointerPosition = {x = 23.4, y=4.4, z=-26.35}
+	end
 
 	for i = 1, number do
 
@@ -680,9 +684,11 @@ function buttonClicked(name, playerColorClicked)
 	else
 
 		local grid = ""
+		local isRedYellow = false
 
 		if name == sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1 then
 			grid = getObjectFromGUID(Global.getTable("grids").red.guid)
+			isRedYellow = true
 			if hasWireFighting then
 				grid.call("return_role")
 				role = grid.getVar("role")
@@ -690,6 +696,7 @@ function buttonClicked(name, playerColorClicked)
 
 		elseif name == sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2 then
 			grid = getObjectFromGUID(Global.getTable("grids").yellow.guid)
+			isRedYellow = true
 			if hasWireFighting then
 				grid.call("return_role")
 				role = grid.getVar("role")
@@ -697,6 +704,7 @@ function buttonClicked(name, playerColorClicked)
 
 		elseif name == sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3 then
 			grid = getObjectFromGUID(Global.getTable("grids").green.guid)
+			isRedYellow = false
 			if hasWireFighting then
 				grid.call("return_role")
 				role = grid.getVar("role")
@@ -704,6 +712,7 @@ function buttonClicked(name, playerColorClicked)
 
 		elseif name == sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4 then
 			grid = getObjectFromGUID(Global.getTable("grids").blue.guid)
+			isRedYellow = false
 			if hasWireFighting then
 				grid.call("return_role")
 				role = grid.getVar("role")
@@ -794,7 +803,7 @@ function buttonClicked(name, playerColorClicked)
 			identifier = "roller"..self.guid,
 			delay = 1.2,
 			function_name = "spawnDice",
-			parameters = {playerColor = playerColorClicked}
+			parameters = {playerColor = playerColorClicked, isRedYellow=isRedYellow}
 		})
 		Timer.destroy("cleaner"..self.guid)
 		--[[Timer.create({
