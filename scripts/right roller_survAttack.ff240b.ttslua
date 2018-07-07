@@ -1342,6 +1342,10 @@ function CheckResults()
 			if object.getName() == "Unrelenting" then
 				hasUnrelenting = true
 			end
+			if hasClubMastery then
+				Global.call('addBroadcast', {"wound", {gear = "◈ " .. object.getName() .. " Mastery ◈", effect = "You will earn an additional wound if your wound attempt is double the monster toughness"}})
+				hasAddtionalWoundIfDouble = true
+			end
 		end -- end for loop for Special Gear , Fighting Arts, Disorders
 
 		count = 0
@@ -1512,6 +1516,15 @@ function CheckResults()
 					end
 					if hasWhip and hasWhip_bonus then
 						value = value + 3
+					end
+
+					if hasAddtionalWoundIfDouble then
+						local monstr = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
+						local butn = monstr.getTable("buttons")
+						local toughness = tonumber(butn['toughness'].label);
+						if value >= toughness * 2 then
+							Global.call('addBroadcast', {"wound", {gear = "Club Master ~ Monster suffers an Additional Wound", effect = ""}})
+						end
 					end
 
 					-- Critical Hit Results
@@ -2261,7 +2274,7 @@ function critEffects()
 		if obj.getName() == "Spear of Fear" and obj.getGUID() == weaponGUID then
 			local clone = obj.clone({position = obj_pos})
 			clone.setLock(true) ; clone.setPosition(clone_pos) ; clone.setRotation(clone_rot) ; clone.setScale(clone_scale_gear)
-			Global.call("addBroadcast", {"crit", {gear = sigil .. "  " .. obj.getName() .. "  " .. sigil, effect = "Suffer ★ +1 Brain Damage" }})
+			Global.call("addBroadcast", {"crit", {gear = sigil .. "  " .. obj.getName() .. "  " .. sigil, effect = "Suffer â˜… +1 Brain Damage" }})
 		end
 
 			-- Grand Weapon Proficiency
@@ -2538,8 +2551,8 @@ function perfectHit()
 			end
 
 		elseif string.find(obj.getDescription(), "club") and obj.getGUID() == weaponGUID then
-			if hasClubProf then
-				Global.call('addBroadcast', {"perfecthit", {gear = sigil .. "  " .. obj.getName() .. " Proficiency  " .. sigil, effect = "Your wound attempt will be doubled on first selected Hit Location"}})
+			if hasClubProf or hasClubMastery then
+				Global.call('addBroadcast', {"perfecthit", {gear = "◈ " .. obj.getName() .. " Proficiency ◈", effect = "Your wound attempt will be doubled on first selected Hit Location"}})
 				hasDoubleWoundAttempt = true
 			end
 		end

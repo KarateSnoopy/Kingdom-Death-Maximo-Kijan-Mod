@@ -1337,6 +1337,13 @@ function CheckResults()
 			if object.getName() == "Unrelenting" then
 				hasUnrelenting = true
 			end
+
+	            	if string.find(desc, "club") and object.getGUID() == weaponGUID then
+				if hasClubMastery then
+					Global.call('addBroadcast', {"wound", {gear = "◈ " .. object.getName() .. " Mastery ◈", effect = "You will earn an additional wound if your wound attempt is double the monster toughness"}})
+					hasAddtionalWoundIfDouble = true
+				end
+			end
 		end
 
 		count = 0
@@ -1507,6 +1514,15 @@ function CheckResults()
 					end
 					if hasWhip and hasWhip_bonus then
 						value = value + 3
+					end
+
+					if hasAddtionalWoundIfDouble then
+						local monstr = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
+						local butn = monstr.getTable("buttons")
+						local toughness = tonumber(butn['toughness'].label);
+						if value >= toughness * 2 then
+							Global.call('addBroadcast', {"wound", {gear = "Club Master ~ Monster suffers an Additional Wound", effect = ""}})
+						end
 					end
 
 					-- Critical Hit Results
@@ -2511,7 +2527,7 @@ function perfectHit()
 			end
 
 		elseif string.find(obj.getDescription(), "club") and obj.getGUID() == weaponGUID then
-			if hasClubProf then
+			if hasClubProf or hasClubMastery then
 				Global.call('addBroadcast', {"perfecthit", {gear = "◈ " .. obj.getName() .. " Proficiency ◈", effect = "Your wound attempt will be doubled on first selected Hit Location"}})
 				hasDoubleWoundAttempt = true
 			end
