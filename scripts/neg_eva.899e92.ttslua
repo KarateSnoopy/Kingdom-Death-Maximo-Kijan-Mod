@@ -1,0 +1,41 @@
+
+function onLoad()
+  createButtons()
+end
+
+function createButtons()
+self.createButton({click_function = "spawn_token", function_owner = self, label = "", position = {0, 0.18, 0.07}, width = 800, height = 800, font_size = 650,
+color = {1, 1, 1, 0}, font_color = {0, 0, 0, 100}})
+end
+
+
+function spawn_token()
+
+	local bag = getObjectFromGUID('f0ee1d')
+	local pos = self.getPosition()
+	local token_pos = {pos.x + 0.45, pos.y + 2, pos.z}
+	local rot = {0,180,180}
+
+	token = bag.takeObject({position=token_pos, rotation = rot, smooth=false})
+
+	phase = Global.getTable('stats_blue').phase
+	if phase == nil then
+		phase = Global.getTable('temp').phase
+	end
+
+	if phase == "endOfround" then
+		token.setDescription('temp, end of round')
+
+	elseif phase == "endOfattack" then
+		token.setDescription('temp, end of attack')
+
+	elseif phase == "endOfwoundattempt" then
+		token.setDescription('temp, end of wound attempt')
+
+	elseif phase == "endOfwound" then
+		token.setDescription('temp, end of wound')
+
+	else
+		token.setDescription('token, minus1eva')
+	end
+end

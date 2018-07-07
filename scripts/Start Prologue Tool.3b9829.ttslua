@@ -1,0 +1,593 @@
+tableNumbers = {
+	one = 1,
+	two = 2,
+	three = 3,
+	four = 4,
+	five = 5,
+	six = 6,
+	seven = 7,
+	eight = 8,
+	nine = 9,
+	ten = 10,
+	eleven = 11,
+	twelve = 12,
+	thirteen = 13,
+	fourteen = 14,
+	fifteen = 15,
+	sixteen = 16,
+	seventeen = 17,
+	eighteen = 18,
+	nineteen = 19,
+	twenty = 20
+}
+
+function onLoad()
+	init_Buttons_Table()
+	createButton_rules()
+	deck_toSearch = getObjectFromGUID('966835')
+end
+
+
+-- Set Core Deck Functions  ----------------------------------------------------
+function set_deck_introduction()
+	deck_toGet = "Rules: Introduction"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_the_first_story()
+	deck_toGet = "The First Story"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_survival_guide()
+	deck_toGet = "Rules: Survival Guide"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_survivors()
+	deck_toGet = "Rules: Survivors"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_monsters()
+	deck_toGet = "Rules: Monsters"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_resources()
+	deck_toGet = "Rules: Resources"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_terrain()
+	deck_toGet = "Rules: Terrain"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_hunt_phase()
+	deck_toGet = "Rules: Hunt Phase"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_showdown_phase()
+	deck_toGet = "Rules: Showdown Phase"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_settlement_phase()
+	deck_toGet = "Rules: Settlement Phase"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_game_variants()
+	deck_toGet = "Rules: Game Variants"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_glossary()
+	deck_toGet = "Rules: Glossary"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+-- Set Xpak Deck Functions  ----------------------------------------------------
+function set_deck_DK()
+	deck_toGet = "Dragon King: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_DBK()
+	deck_toGet = "Dung Beetle Knight: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_FK()
+	deck_toGet = "Flower Knight: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_GRM()
+	deck_toGet = "Gorm: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_LG()
+	deck_toGet = "Lion God: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_LK()
+	deck_toGet = "Lion Knight: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_LT()
+	deck_toGet = "Lonely Tree: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_MH()
+	deck_toGet = "Manhunter: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_SM()
+	deck_toGet = "Slenderman: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_SPID()
+	deck_toGet = "Spidicules: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_deck_SS()
+	deck_toGet = "Sunstalker: Rules"
+	reset_page_display()
+	isViewing = false
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function isPageExist(searchForPage)
+    if deck_toSearch == nil then
+        return false
+    end
+
+	for _, story in ipairs(deck_toSearch.getObjects()) do
+		local desc = story.description
+        local name = story.nickname
+		if name == deck_toGet then
+			local actualPage = desc:match("%a+, %a+, (%a+)")
+			if tableNumbers[actualPage] == searchForPage then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+-- Load Page Functions  --------------------------------------------------------
+function get_storyEvent()
+    --print("next_page_left: " .. next_page_left)
+    --print("next_page_right: " .. next_page_right)
+	isViewing = true
+	local pos = self.getPosition()
+	for _, story in ipairs(deck_toSearch.getObjects()) do
+		local desc = story.description
+		local name = story.nickname
+		local scale = {1.56, 1.00, 1.56}
+		if name == deck_toGet then
+			local actualPage = desc:match("%a+, %a+, (%a+)")
+			if tableNumbers[actualPage] == next_page_left then
+                --print(name .. " - left ")
+				local page = deck_toSearch.takeObject({
+					position = {pos.x - 3.19, 6, pos.z + 3},
+					rotation = {18.00, 180.00, 0.00},
+					guid = story.guid,
+					smooth = false
+				})
+                -- print(name .. " - left " .. page.name)
+				page.setLock(true)
+				page.setScale(scale)
+			elseif tableNumbers[actualPage] == next_page_right then
+                --print(name .. " - right ")
+				local page = deck_toSearch.takeObject({
+					position = {pos.x + 3.19, 6, pos.z + 3},
+					rotation = {18.00, 180.00, 0.00},
+					guid = story.guid,
+					smooth = false
+				})
+                --print(name .. " - right " .. page.name)
+				page.setLock(true)
+				page.setScale(scale)
+			end
+		end
+	end
+end
+
+function destroy_currentLoaded()
+    --print("was: next_page_left: " .. next_page_left)
+    --print("was: next_page_right: " .. next_page_right)
+
+    if page_turn == "right" then
+        if isPageExist(next_page_left + 2)==true then
+            next_page_left = next_page_left + 2
+            next_page_right = next_page_right + 2
+            --print("going right: next_page_left: " .. next_page_left)
+            --print("going right: next_page_right: " .. next_page_right)
+        else
+            --print("isPageExist not found: " .. next_page_left + 2)
+        end
+    elseif page_turn == "left" and next_page_left > 1 then
+        next_page_left = next_page_left - 2
+        next_page_right = next_page_right - 2
+        --print("going right: next_page_left: " .. next_page_left)
+        --print("going right: next_page_right: " .. next_page_right)
+    end
+
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin={pos.x - 3.19, 5.06, pos.z + 2.98},
+		direction={0, 1, 0},
+		type=2,
+		size={2, 2, 2},
+		max_distance = 0,
+	})
+	for _, entry in ipairs(hitList) do
+        --[[
+		if isViewing then
+			local actualPage = entry.hit_object.getDescription():match("%a+, %a+, (%a+)")
+			if page_turn == "right" and actualPage ~= nil then
+				next_page_left = tableNumbers[actualPage] + 2
+                print("new 1 next_page_left: " .. next_page_left)
+			elseif page_turn == "left" and actualPage ~= nil then
+				next_page_left = tableNumbers[actualPage] - 2
+                print("new 2 next_page_left: " .. next_page_left)
+			end
+		end
+        --]]
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+
+	local hitList = Physics.cast({
+		origin={pos.x + 3.19, 5.06, pos.z + 2.98},
+		direction={0, 1, 0},
+		type=2,
+		size={2, 2, 2},
+		max_distance = 0,
+	})
+	for _, entry in ipairs(hitList) do
+        --[[
+		if isViewing then
+			local actualPage = entry.hit_object.getDescription():match("%a+, %a+, (%a+)")
+			if page_turn == "right" and actualPage ~= nil then
+				next_page_right = tableNumbers[actualPage] + 2
+                print("new 1 next_page_right: " .. next_page_right)
+			elseif page_turn == "left" and actualPage ~= nil then
+				next_page_right = tableNumbers[actualPage] - 2
+                print("new 2 next_page_right: " .. next_page_right)
+			end
+		end
+        --]]
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+end
+
+
+-- Buttons ---------------------------------------------------------------------
+function init_Buttons_Table()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= {-8, 0, 0},
+		scale 			= {2, 1, 2},
+		width 			= 2000,
+		height 			= 250,
+		font_size 		= 550,
+		color 			= {0, 0, 0},
+		font_color 		= {1, 1, 1},
+	}
+end
+
+function createButton_rules()
+	btn_params.font_size = 450
+	btn_params.click_function = "createButtons_core_expansions"
+	btn_params.position = {0, 1, 0}
+	btn_params.label = "Rules"
+	self.createButton(btn_params)
+end
+
+function createButtons_core_expansions()
+	isViewing = true
+	removeButtons_All()
+
+	btn_params.font_size = 300
+	btn_params.click_function = "createButtons_core"
+	btn_params.position = {0, 1, 1.9}
+	btn_params.label = "Core Game"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "createButtons_xpaks"
+	btn_params.position = {0, 1, 3.7}
+	btn_params.label = "Expansions"
+	self.createButton(btn_params)
+
+	createButton_close_menu()
+end
+
+function createButtons_core()
+	removeButtons_All()
+	createButtons_navigation()
+	createButton_close_menu()
+	init_Buttons_Table()
+	btn_params.font_size = 250
+
+	btn_params.click_function = "set_deck_introduction"
+	btn_params.position = {0, 1, 0.4}
+	btn_params.label = "Introduction"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_the_first_story"
+	btn_params.position = {0, 1, 1.9}
+	btn_params.label = "The First Story"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_survival_guide"
+	btn_params.position = {0, 1, 3.4}
+	btn_params.label = "Survival Guide"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_survivors"
+	btn_params.position = {0, 1, 4.9}
+	btn_params.label = "Survivors"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_monsters"
+	btn_params.position = {0, 1, 6.4}
+	btn_params.label = "Monsters"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_resources"
+	btn_params.position = {0, 1, 7.9}
+	btn_params.label = "Resources"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_terrain"
+	btn_params.position = {0, 1, 9.4}
+	btn_params.label = "Terrain"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_hunt_phase"
+	btn_params.position = {0, 1, 10.9}
+	btn_params.label = "Hunt Phase"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_showdown_phase"
+	btn_params.position = {0, 1, 12.4}
+	btn_params.label = "Showdown Phase"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_settlement_phase"
+	btn_params.position = {0, 1, 13.9}
+	btn_params.label = "Settlement Phase"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_game_variants"
+	btn_params.position = {0, 1, 15.4}
+	btn_params.label = "Game Variants"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_glossary"
+	btn_params.position = {0, 1, 16.9}
+	btn_params.label = "Glossary"
+	self.createButton(btn_params)
+end
+
+function createButtons_xpaks()
+	removeButtons_All()
+	createButtons_navigation()
+	createButton_close_menu()
+	init_Buttons_Table()
+	btn_params.font_size = 250
+
+	btn_params.click_function = "set_deck_DK"
+	btn_params.position = {0, 1, 0.4}
+	btn_params.label = "Dragon King"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_DBK"
+	btn_params.position = {0, 1, 1.9}
+	btn_params.label = "Dung Beetle Knight"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_FK"
+	btn_params.position = {0, 1, 3.4}
+	btn_params.label = "Flower"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_GRM"
+	btn_params.position = {0, 1, 4.9}
+	btn_params.label = "Gorm"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_LG"
+	btn_params.position = {0, 1, 6.4}
+	btn_params.label = "Lion God"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_LK"
+	btn_params.position = {0, 1, 7.9}
+	btn_params.label = "Lion Knight"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_LT"
+	btn_params.position = {0, 1, 9.4}
+	btn_params.label = "Lonely Tree"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_MH"
+	btn_params.position = {0, 1, 10.9}
+	btn_params.label = "Manhunter"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_SM"
+	btn_params.position = {0, 1, 12.4}
+	btn_params.label = "Slenderman"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_SPID"
+	btn_params.position = {0, 1, 13.9}
+	btn_params.label = "Spidicules"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_deck_SS"
+	btn_params.position = {0, 1, 15.4}
+	btn_params.label = "Sunstalker"
+	self.createButton(btn_params)
+end
+
+function createButtons_navigation()
+	btn_params.font_size = 250
+	btn_params.width = 500
+	btn_params.height = 400
+
+	btn_params.label = "Prev"
+	btn_params.position = {-5.7, 1, -1.6}
+	btn_params.click_function = "storyEvent_previous_page"
+	self.createButton(btn_params)
+
+	btn_params.label = "Next"
+	btn_params.position = {5.6, 1, -1.6}
+	btn_params.click_function = "storyEvent_next_page"
+	self.createButton(btn_params)
+end
+
+function createButton_close_menu()
+	btn_params.font_size = 200
+	btn_params.width = 1000
+	btn_params.height = 300
+
+	btn_params.click_function = "close_menu"
+	btn_params.position = {0, 1, -1.4}
+	btn_params.label = "______________ Close Menu ______________"
+	self.createButton(btn_params)
+end
+
+
+
+-- Utility Functions ----------------------------------------------------------
+function removeButtons_All()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+			self.removeButton(v.index)
+	end
+end
+
+function reset_page_display()
+    --print("reset_page_display")
+	next_page_left = 1
+	next_page_right = 2
+    page_turn = ""
+end
+
+function storyEvent_next_page()
+	page_turn = "right"
+    if isPageExist(next_page_left + 2)==true then
+        --print("turn page right")
+    	destroy_currentLoaded()
+        --print("get_storyEvent")
+    	get_storyEvent()
+        --print("get_storyEvent done")
+    end
+end
+
+function storyEvent_previous_page()
+	page_turn = "left"
+    if next_page_left > 1 then
+        --print("turn page left")
+    	destroy_currentLoaded()
+        --print("get_storyEvent")
+    	get_storyEvent()
+        --print("get_storyEvent done")
+    end
+end
+
+function close_menu()
+	removeButtons_All()
+	init_Buttons_Table()
+	createButton_rules()
+	isViewing = false
+	destroy_currentLoaded()
+end

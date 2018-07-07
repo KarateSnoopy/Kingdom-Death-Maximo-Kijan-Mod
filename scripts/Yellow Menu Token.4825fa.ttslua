@@ -1,0 +1,3718 @@
+--------------------------------------------------------------------------------
+--                           TABLE OF CONTENTS                                --
+--                   Scripts created by Maximo and Kijan                      --
+--------------------------------------------------------------------------------
+
+-- Variables -------------------------------------------------------------------
+
+---------------------- Unique to this Player Functions -------------------------
+
+
+	-- function callGlobal_spawn_tok_color
+	-- function tokSpawn_coR
+	-- function redVial
+	-- function sub_spd1
+	-- function add_acc1
+	-- function add_acc2
+	-- function add_str1
+	-- function createButtons
+
+
+--------------------- Identical to each Player Functions -----------------------
+
+
+	-- Survival Action Functions ------------------------------------------------
+		-- Encourage
+		-- Dash
+		-- Surge
+		-- Embolden
+		-- Overcharge
+
+
+	-- Weapon Functions ---------------------------------------------------------
+		-- function createMenuWeapons
+		-- function weaponEquiped
+		-- function set_portrait_buttons
+		-- function fistTooth
+		-- function get_paired_weapon
+		-- function paired
+
+
+	-- Specials Functions -------------------------------------------------------
+		-- function specials_Buttons
+		-- function createButton_Use_Yes_No
+		-- function use_special
+			-- Berserker
+			-- Bird Bread
+			-- Champion's Rite
+			-- Cycloid Shoes
+			-- Fated Blow
+			-- Gorn
+			-- Heroic
+			-- Lure Epilepsy
+			-- Mad Grade
+			-- Mad Oracle
+			-- Orator of Death
+			-- Pulse Lantern
+			-- Rubber Bone Harness
+			-- Silk Bomb
+			-- Silk Boots
+			-- Silk Robes
+			-- Silk Sash
+			-- Silk Turban
+			-- Sky Harpoon
+			-- Speed Powder
+			-- Whisker Harp
+			-- White Lion Helm
+			-- White Lion Mask
+		-- function do_not_use_special
+
+
+	-- Offensive Functions ------------------------------------------------------
+		-- Ancient Lion Claws
+		-- Blood Paint
+		-- Cat Gut Bow
+		-- Cycloid Shoes
+		-- Dragon Armor
+		-- Mammoth Hunting
+		-- Nuclear Knife
+		-- Nuclear Scythe
+		-- Phoenix Armor
+		-- Screaming Coat
+		-- Synchronized Strike
+		-- White Lion Helm
+		-- White Lion Mask
+		-- White Lion Coat
+		-- White Lion Gauntlet
+		-- Vespertine Bow
+
+
+	-- Defensive Functions ------------------------------------------------------
+		-- Acanthus Doctor
+		-- Bandages
+		-- Block and Deflect
+		-- Cat Eye Circlet
+		-- Crest Crown
+		-- Fecal Salve
+		-- Necromancer's Eye
+		-- Rawhide Headband
+		-- Silk Boots
+		-- Silk Surgeon
+		-- Trash Crown
+		-- Whisker Harp
+
+
+	-- Consumables Functions ----------------------------------------------------
+		-- Active Thyroid
+		-- Bird Bread
+		-- Blistering Plasma Fruit
+		-- Bugfish
+		-- Crab Spider
+		-- Crimson Vial
+		-- Cyclops Fly
+		-- Dark Water
+		-- Fresh Acanthus
+		-- Hissing Cockroach
+		-- Jagged Marrow Fruit
+		-- Lonely Ant
+		-- Lantern Bloom
+		-- Osseous Bloom
+		-- Nightmare Blood
+		-- Nightmare Membrane
+		-- Nightmare Tick
+		-- Nightmare Spurs
+		-- Pituitary Gland
+		-- Porous Flesh Fruit
+		-- Power Potion
+		-- Seasoned Monster Meat
+		-- Stomach
+		-- Stout Kidney
+		-- Sword Beetle
+		-- Venom Sac
+
+
+	-- Once Per Showdown Functions ----------------------------------------------
+		-- Beetle Strength
+		-- Berserker
+		-- Brain Mint
+		-- Champion's Rite
+		-- Fated Blow
+		-- Gorn
+		-- Heroic
+		-- Lure Epilepsy
+		-- Mad Grade
+		-- Mad Oracle
+		-- Orator of Death
+		-- Pulse Lantern
+		-- Rubber Bone Harness
+		-- Silk Bomb
+		-- Silk Robes
+		-- Silk Sash
+		-- Silk Turban
+		-- Sky Harpoon
+		-- Speed Powder
+
+
+	-- Utility Functions --------------------------------------------------------
+		-- function get_vars_survivors
+		-- function broadcast_message_coR
+		-- function wait
+		-- function removeButtons_all
+		-- function changeSurvivors
+		-- function clearMenuButtons
+		-- function returnIsDeaf
+		-- function clear_spawned_gear_cards
+
+
+-------------------------- End Table of Contents -------------------------------
+
+-- Variables -------------------------------------------------------------------
+menuTable = {}
+grid = ""
+zone = ""
+PlayerName = "Player Two"
+PlayerColor = "yellow"
+color = "yellow"
+
+-- Token Rotations
+rot_pos = {0, 180, 0}
+rot_neg = {0, 180, 180}
+
+  -- Gear Positions
+gear_clone_pos = {-2.82, 4.19, -7.22}
+selector_pos = {-20.77, 4.27, -31.43}
+
+-- Camera Positions
+grid_camera = {-14.16, 4.28, -19.78}
+hitlocation_camera = {-19.96, 4.28, -19.78}
+hitlocation_roller_camera = {-23.35, 4.29, -20.30}
+
+btn_rotation = { - 5, 0, 0}
+
+-- Unique to this Player Functions ---------------------------------------------
+function onLoad(save_state)
+	grid = getObjectFromGUID(Global.getTable("grids").yellow.guid)
+
+	-- Zones
+	zone = getObjectFromGUID(Global.getTable("zones").zoneP2.guid)
+	survCard = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+	survCard_P1 = getObjectFromGUID(Global.getTable('survCards').red.guid)
+	survCard_P2 = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+	survCard_P3 = getObjectFromGUID(Global.getTable('survCards').green.guid)
+	survCard_P4 = getObjectFromGUID(Global.getTable('survCards').blue.guid)
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	zoneHitLocations = getObjectFromGUID(Global.getTable('zones').deckHitLocations.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+
+	bag_spd = getObjectFromGUID(Global.getTable('bags_stats').bag_spd.guid)
+	bag_acc = getObjectFromGUID(Global.getTable('bags_stats').bag_acc.guid)
+	bag_str = getObjectFromGUID(Global.getTable('bags_stats').bag_str.guid)
+
+	-- Survivor Status
+	isDeaf_red = getObjectFromGUID('f847a4')
+	isDeaf_yellow = getObjectFromGUID('60e832')
+	isDeaf_green = getObjectFromGUID('e5c453')
+	isDeaf_blue = getObjectFromGUID('cdbacb')
+
+	-- Dice Rollers
+	diceRoller = getObjectFromGUID('abb586')
+
+	-- Weapon selector
+	selector = getObjectFromGUID("1e2c86")
+
+	-- Survival Actions
+	knockdown = getObjectFromGUID('c03207')
+	encourage = getObjectFromGUID('64f543')
+	dash = getObjectFromGUID('6c533b')
+	surge = getObjectFromGUID('c0c91a')
+	embolden = getObjectFromGUID('91717c')
+	overcharge = getObjectFromGUID('6dec68')
+
+	affinity_red = getObjectFromGUID('632579')
+	affinity_green = getObjectFromGUID('4c43f5')
+	affinity_blue = getObjectFromGUID('b8e0a6')
+
+	settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	sigil = settings_token.getName()
+
+	settings_P1_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	sigil_P1 = settings_P1_token.getName()
+
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	sigil_P2 = settings_P2_token.getName()
+
+	settings_P3_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	sigil_P3 = settings_P3_token.getName()
+
+	settings_P4_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+	sigil_P4 = settings_P4_token.getName()
+
+	color_red = settings_P1_token.getColorTint()
+	color_yellow= settings_P2_token.getColorTint()
+	color_green = settings_P3_token.getColorTint()
+	color_blue = settings_P4_token.getColorTint()
+
+	msg_color = settings_P2_token.getColorTint()
+	font_color = settings_P2_token.getColorTint()
+
+	createButtons()
+end
+
+function callGlobal_spawn_tok_color()
+	startLuaCoroutine(Global, "spawn_tok_yellow")
+end
+
+function clearButtons()
+	self.clearButtons()
+end
+
+function tokSpawn_coR()
+	wait(0.1)
+	-- Rear Up
+	if cardName == "Rubber Bone Harness" then
+		print(count_neg_str)
+		if count_neg_spd >= 1 then
+			local stats = {color = color, stat = "spd", modifier = "pos", num = count_neg_spd, phase = nil}
+			Global.setTable('stats_yellow', stats)
+			callGlobal_spawn_tok_color()
+		end
+		wait(count_neg_spd)
+		if count_neg_str >= 1 then
+			local stats = {color = color, stat = "str", modifier = "pos", num = count_neg_str, phase = nil}
+			Global.setTable('stats_yellow', stats)
+			callGlobal_spawn_tok_color()
+		end
+		wait(count_neg_str)
+		if count_neg_acc >= 1 then
+			local stats = {color = color, stat = "acc", modifier = "pos", num = count_neg_acc, phase = nil}
+			Global.setTable('stats_yellow', stats)
+			callGlobal_spawn_tok_color()
+		end
+		wait(count_neg_acc)
+		if count_neg_lck >= 1 then
+			local stats = {color = color, stat = "lck", modifier = "pos", num = count_neg_lck, phase = nil}
+			Global.setTable('stats_yellow', stats)
+			callGlobal_spawn_tok_color()
+		end
+		wait(count_neg_lck)
+		if count_neg_mov >= 1 then
+			local stats = {color = color, stat = "mov", modifier = "pos", num = count_neg_mov, phase = nil}
+			Global.setTable('stats_yellow', stats)
+			callGlobal_spawn_tok_color()
+		end
+		wait(count_neg_mov)
+		if count_neg_eva >= 1 then
+			local stats = {color = color, stat = "eva", modifier = "pos", num = count_neg_eva, phase = nil}
+			Global.setTable('stats_yellow', stats)
+			callGlobal_spawn_tok_color()
+		end
+	end
+	return 1
+end
+
+function redVial(object, player_color)
+	broadcastToColor("You gained (+1) Survival ~ Archive Red Vial", player_color, msg_color)
+	changeSurvivors("survival", 1, grid)
+	set_bandages_green()
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+function sub_spd1()
+	wait(0.25)
+	local stats = {color = color, stat = "spd", modifier = "neg", num = 1, phase = 'endOfattack'}
+	Global.setTable('stats_yellow', stats)
+	startLuaCoroutine(Global, "spawn_tok_yellow")
+	return 1
+end
+
+function add_acc1()
+	wait(0.5)
+	local stats = {color = color, stat = "acc", modifier = "pos", num = 1, phase = 'endOfattack'}
+	Global.setTable('stats_yellow', stats)
+	startLuaCoroutine(Global, "spawn_tok_yellow")
+	return 1
+end
+
+function add_acc2()
+	wait(0.5)
+	local stats = {color = color, stat = "acc", modifier = "pos", num = 2, phase = 'endOfattack'}
+	Global.setTable('stats_yellow', stats)
+	startLuaCoroutine(Global, "spawn_tok_yellow")
+	return 1
+end
+
+function add_str1()
+	wait(0.75)
+	local stats = {color = color, stat = "str", modifier = "pos", num = 1, phase = 'endOfattack'}
+	Global.setTable('stats_yellow', stats)
+	startLuaCoroutine(Global, "spawn_tok_yellow")
+	return 1
+end
+
+-- Main Menu Buttons
+function createButtons()
+
+	msg_color = settings_P2_token.getColorTint()
+   font_color = settings_P2_token.getColorTint()
+
+	btns_main_menu = {
+		rotation 		= btn_rotation,
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 7300,
+		height 			= 1100,
+		color 			= {0, 0, 0},
+		font_color		= font_color,
+		font_size 		= 750
+	}
+
+	btns_main_menu.position = { - 0.3, 0.2, - 9.5} ; btns_main_menu.label = "Once ~ Showdown" ; btns_main_menu.click_function = "oncePerShowdown"
+	self.createButton(btns_main_menu)
+
+	btns_main_menu.position = { - 0.3, 0.2, - 8.3} ; btns_main_menu.label = "Consumables" ; btns_main_menu.click_function = "consumables"
+	self.createButton(btns_main_menu)
+
+	btns_main_menu.position = { - 0.3, 0.2, - 7.0} ; btns_main_menu.label = "Defensive" ; btns_main_menu.click_function = "defensiveButtons"
+	self.createButton(btns_main_menu)
+
+	btns_main_menu.position = { - 0.3, 0.2, - 5.8} ; btns_main_menu.label = "Specials" ; btns_main_menu.click_function = "specials_Buttons"
+	self.createButton(btns_main_menu)
+
+	btns_main_menu.position = { - 0.2, 0.2, - 4.6} ; btns_main_menu.label = "Survival Actions" ; btns_main_menu.click_function = "survival_buttons"
+	self.createButton(btns_main_menu)
+
+	btns_main_menu.position = { - 0.3, 0.2, - 2.8} ; btns_main_menu.label = "Equip Weapon" ; btns_main_menu.click_function = "createMenuWeapons"
+	btns_main_menu.scale = {0.7, 0.7, 0.7} ; btns_main_menu.width = 5000
+	self.createButton(btns_main_menu)
+end
+
+
+
+
+
+
+
+
+
+
+-- EVERYTHING BELOW THIS LINE IS IDENTICAL ON ALL MENU TOKENS ------------------
+
+-- Buttons ---------------------------------------------------------------------
+function createButton_MainMenu()
+	self.createButton({rotation = btn_rotation, click_function = "mainMenu", function_owner = self, label = "[u]Main Menu[/u]",
+	position = { - 0.3, 0.2, - 10.7}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1100, color = {0, 0, 0}, font_color = font_color, font_size = 850})
+
+	menuTable = {}
+end
+
+function mainMenu()
+	clearMenuButtons()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Main Menu" then
+			self.removeButton(v.index)
+		end
+	end
+	createButtons()
+	menuTable = {}
+end
+
+function survival_buttons(object, player_color)
+
+	local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	broadcastToColor("You have " .. survival .. " Survival", player_color, msg_color)
+	if survival >= 1 then
+		clearMenuButtons()
+		clear_spawned_gear_cards()
+		self.createButton({click_function = "mainMenu", function_owner = self, label = "[u]Main Menu[/u]",
+		position = { - 0.3, 0.2, - 10.7}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1100, color = {0, 0, 0}, font_color = font_color, font_size = 850})
+
+		for _, object in ipairs(zone.getObjects()) do
+			if object.getName() == "Encourage" and object.getRotation().z < 165 then
+				table.insert(menuTable, self.createButton({click_function = "encourage_select", function_owner = self, label = object.getName(),
+					position = { - 0.3, 0.2, - 7.7 + #menuTable * 1.5}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Dash" and object.getRotation().z < 165 then
+				table.insert(menuTable, self.createButton({click_function = "Dash", function_owner = self, label = object.getName(),
+					position = { - 0.3, 0.2, - 7.7 + #menuTable * 1.5}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Surge" and object.getRotation().z < 165 then
+				table.insert(menuTable, self.createButton({click_function = "Surge", function_owner = self, label = object.getName(),
+					position = { - 0.3, 0.2, - 7.7 + #menuTable * 1.5}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Embolden" and object.getRotation().z < 165 then
+				table.insert(menuTable, self.createButton({click_function = "Embolden", function_owner = self, label = object.getName(),
+					position = { - 0.3, 0.2, - 7.7 + #menuTable * 1.5}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Overcharge" and object.getRotation().z < 165 then
+				table.insert(menuTable, self.createButton({click_function = "Overcharge", function_owner = self, label = object.getName(),
+					position = { - 0.3, 0.2, - 7.7 + #menuTable * 1.5}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			end
+		end
+	end
+
+	if survival < 1 then
+		broadcastToColor("You do not have any Survival", player_color, msg_color)
+		-- Resets the Main Menu
+		clearMenuButtons()
+		menuTable = {}
+		createButtons()
+	end
+
+	-- Gorm's Den
+	-- Gormyard
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	hasGormsDen = false
+	hasGormYard = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Gorm's Den" then
+			hasGormsDen = true
+		end
+		if card.getName() == "Gormyard" then
+			hasGormYard = true
+		end
+	end
+	if hasGormsDen then
+		broadcastToColor("2 Survival will be used when you Surge", player_color, msg_color )
+		broadcastToColor(sigil .. "  Gorm's Den  " .. sigil, player_color, msg_color)
+	end
+	if hasGormYard then
+		broadcastToColor("2 Survival will be used when you Dash", player_color, msg_color )
+		broadcastToColor(sigil .. "  Gormyard  " .. sigil, player_color, msg_color)
+	end
+end
+
+
+
+-- Survival Action Functions ---------------------------------------------------
+
+-- Encourage ------------------------------------
+function encourage_select(object, player_color)
+	broadcastToColor("Select a Player to Encourage", player_color, msg_color)
+	clearMenuButtons()
+	create_encourage_buttons()
+end
+
+function create_encourage_buttons()
+	createButton_MainMenu()
+	btns_encourage 	= {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= btn_rotation,
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 6000,
+		height 			= 1100,
+		font_size 		= 750,
+		color 			= {0, 0, 0, 1},
+		font_color 		= {}
+	}
+
+	get_vars_survivors()
+
+	if found_P1 then
+		btns_encourage.label = tostring(sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1)
+		btns_encourage.font_color = font_color_P1
+	end
+	btns_encourage.click_function = "red_encourage"
+	btns_encourage.position = { - 0.3, 0.2, - 7.8}
+	self.createButton(btns_encourage)
+
+	if found_P2 then
+		btns_encourage.label = tostring(sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2)
+		btns_encourage.font_color = font_color_P2
+	end
+	btns_encourage.click_function = "yellow_encourage"
+	btns_encourage.position = { - 0.3, 0.2, - 6.8}
+	self.createButton(btns_encourage)
+
+	if found_P3 then
+		btns_encourage.label = tostring(sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3)
+		btns_encourage.font_color = font_color_P3
+	end
+	btns_encourage.click_function = "green_encourage"
+	btns_encourage.position = { - 0.3, 0.2, - 5.8}
+	self.createButton(btns_encourage)
+
+	if found_P4 then
+		btns_encourage.label = tostring(sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4)
+		btns_encourage.font_color = font_color_P4
+	end
+	btns_encourage.click_function = "blue_encourage"
+	btns_encourage.position = { - 0.3, 0.2, - 4.8}
+	self.createButton(btns_encourage)
+end
+
+function red_encourage()
+	encourage_red = true
+	encourage_yellow = false
+	encourage_green = false
+	encourage_blue = false
+	survivalAction_encourage()
+
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+function yellow_encourage()
+	encourage_red = false
+	encourage_yellow = true
+	encourage_green = false
+	encourage_blue = false
+	survivalAction_encourage()
+
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+function green_encourage()
+	encourage_red = false
+	encourage_yellow = false
+	encourage_green = true
+	encourage_blue = false
+	survivalAction_encourage()
+
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+function blue_encourage()
+	encourage_red = false
+	encourage_yellow = false
+	encourage_green = false
+	encourage_blue = true
+	survivalAction_encourage()
+
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+function survivalAction_encourage()
+	broadcastTable = {}
+
+	-- True / False Settings
+	cannotEncourage = false
+	hasLeader = false
+	hasRaptorCollar = false
+	for _, object in ipairs(zone.getObjects()) do
+
+		-- Endless Babble
+		if object.getName() == "Endless Babble" then
+			cannotEncourage = true
+			broadcastToAll("You cannot Encourage", msg_color)
+			broadcastToColor(sigil .. "  Endless Babble  " .. sigil, player_color, msg_color)
+		end
+
+			-- Shattered Jaw
+		if object.getName() == "Shattered Jaw" then
+			cannotEncourage = true
+			broadcastToAll("You cannot Encourage", msg_color)
+			broadcastToColor(sigil .. "  Shattered Jaw  " .. sigil, player_color, msg_color)
+		end
+
+			-- Glyphs of Solitude
+		if object.getName() == "Glyph of Solitude" then
+			cannotEncourage = true
+			broadcastToAll("You cannot Encourage", msg_color)
+			broadcastToColor(sigil .. "  Glyph of Solitude  " .. sigil, player_color, msg_color)
+		end
+
+			-- Leader
+		if object.getName() == "Leader" and object.getRotation().z < 165 then
+			hasLeader = true
+		end
+
+			-- Raptor Worm Collar
+		if object.getName() == "Raptor-Worm Collar" then
+			hasRaptorCollar = true
+		end
+	end -- end
+
+	if cannotEncourage then return end
+
+	-- Checks card zone for Effects that trigger after Encourage
+	if not cannotEncourage then
+		table.insert(broadcastTable, "_____________________  When you Encourage  _____________________")
+		encourage.setRotation({encourage.getRotation().x, encourage.getRotation().y, encourage.getRotation().z + 180})
+
+		if hasRaptorCollar then
+			table.insert(broadcastTable, sigil .. "  Raptor Collar ~ Survival Not Used  " .. sigil)
+		else
+			changeSurvivors("survival", - 1, grid)
+			broadcastToAll("Survival Used", msg_color)
+		end
+
+		hasDrums = false
+		for _, object in ipairs(zone.getObjects()) do
+			if object.getName() == "Shallow Lungs" then
+				table.insert(broadcastTable, sigil .. "  Shallow Lungs ~ You are Knocked Down  " .. sigil)
+				survCard.call("knockdown_survivor")
+			end
+			if object.getName() == "Rawhide Drum" then
+				hasDrums = true
+			end
+		end
+
+		if hasDrums then
+			table.insert(broadcastTable, "Rawhide Drums ~ All Survivors Effected")
+			encourage_red = true
+			encourage_yellow = true
+			encourage_green = true
+			encourage_blue = true
+		end
+
+		local a, b, c, d = returnIsDeaf(isDeafRed, isDeafYellow, isDeafGreen, isDeafBlue)
+
+		if encourage_red then
+			if a then
+				table.insert(broadcastTable, "Player One is Deaf ~ Cannot be Encouraged")
+			end
+			if not a then
+				local btns = survCard_P1.getButtons()
+				if btns ~= nil then
+					for i, v in pairs(btns) do
+						if v.label == "Stand Up" then
+							survCard_P1.call("stand_survivor")
+						end
+						if v.label == "Knockdown" then
+							broadcastToAll("Player One does not need to be Encouraged", msg_color)
+						end
+					end
+				end
+				if hasLeader then
+					local stats = {color = "red", stat = "spd", modifier = "pos", num = 1, phase = "endOfround"}
+					Global.setTable('stats_red', stats)
+					startLuaCoroutine(Global, "spawn_tok_red")
+				end
+			end
+		end
+		if encourage_yellow then
+			if b then
+				table.insert(broadcastTable, "Player Two is Deaf ~ Cannot be Encouraged")
+			end
+			if not b then
+				local btns = survCard_P2.getButtons()
+				if btns ~= nil then
+					for i, v in pairs(btns) do
+						if v.label == "Stand Up" then
+							survCard_P2.call("stand_survivor")
+						end
+						if v.label == "Knockdown" then
+							broadcastToAll("Player Two does not need to be Encouraged", msg_color)
+						end
+					end
+				end
+				if hasLeader then
+					local stats = {color = "yellow", stat = "spd", modifier = "pos", num = 1, phase = "endOfround"}
+					Global.setTable('stats_yellow', stats)
+					startLuaCoroutine(Global, "spawn_tok_yellow")
+				end
+			end
+		end
+		if encourage_green then
+			if c then
+				table.insert(broadcastTable, "Player Three is Deaf ~ Cannot be Encouraged")
+			end
+			if not c then
+				local btns = survCard_P3.getButtons()
+				if btns ~= nil then
+					for i, v in pairs(btns) do
+						if v.label == "Stand Up" then
+							survCard_P3.call("stand_survivor")
+						end
+						if v.label == "Knockdown" then
+							broadcastToAll("Player Three does not need to be Encouraged", msg_color)
+						end
+					end
+				end
+				if hasLeader then
+					local stats = {color = "green", stat = "spd", modifier = "pos", num = 1, phase = "endOfround"}
+					Global.setTable('stats_green', stats)
+					startLuaCoroutine(Global, "spawn_tok_green")
+				end
+			end
+		end
+		if encourage_blue then
+			if d then
+				table.insert(broadcastTable, "Player Four is Deaf ~ Cannot be Encouraged")
+			end
+			if not d then
+				local btns = survCard_P4.getButtons()
+				if btns ~= nil then
+					for i, v in pairs(btns) do
+						if v.label == "Stand Up" then
+							survCard_P4.call("stand_survivor")
+						end
+						if v.label == "Knockdown" then
+							broadcastToAll("Player Four does not need to be Encouraged", msg_color)
+						end
+					end
+				end
+				if hasLeader then
+					local stats = {color = "blue", stat = "spd", modifier = "pos", num = 1, phase = "endOfround"}
+					Global.setTable('stats_blue', stats)
+					startLuaCoroutine(Global, "spawn_tok_blue")
+				end
+			end
+		end
+
+		if hasLeader then
+			table.insert(broadcastTable, "Leader ~ Encouraged Survivors gained a (+1) Speed Token")
+		end
+
+		if hasRaptorCollar then
+			table.insert(broadcastTable, "Raptor Collar ~ Encouraged Survivors suffer 2 Brain Damage")
+		end
+
+		startLuaCoroutine(self, "broadcast_message_coR")
+	end
+end
+
+-- Dash -----------------------------------------
+function Dash(player_color, object)
+	cannotDash = false
+	has_torn_muscle = false
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Torn Muscle" then
+			cannotDash = true
+			has_torn_muscle = true
+		end
+	end
+	has_moving_ground = false
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+		if card.getName() == "Moving Ground" then
+			cannotDash = true
+			has_moving_ground = true
+		end
+	end
+
+	if cannotDash then
+		if has_torn_muscle then
+			broadcastToColor("You cannot Dash", player_color, msg_color)
+			broadcastToColor(sigil .. "  Torn Muscle  " .. sigil, player_color, msg_color)
+		end
+		if has_moving_ground then
+			broadcastToColor("Survivors cannot Dash", player_color, msg_color)
+			broadcastToColor(sigil .. " Moving Ground   " .. sigil, player_color, msg_color)
+		end
+		return
+	end
+
+	if cannotDash == false then
+		-- Gorm's Den
+		if hasGormYard then
+			changeSurvivors("survival", - 2, grid)
+		else
+			changeSurvivors("survival", - 1, grid)
+		end
+
+		dash.setRotation({dash.getRotation().x, dash.getRotation().y, dash.getRotation().z + 180})
+		-- Move Camera
+		local rotZ = settings_token.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+			has_move_camera = true
+		else
+			has_move_camera = false
+		end
+		if has_move_camera then
+			for _, object in ipairs(zoneShowdown.getObjects()) do
+				if object.getName() == PlayerName then
+					playerPos = object.getPosition()
+				end
+			end
+			camera_pitch = tonumber(settings_token.getDescription())
+			local parameters = {}
+			parameters.position = playerPos
+			parameters.pitch = camera_pitch
+			parameters.yaw = 0
+			Player[player_color].lookAt(parameters)
+		end
+	end
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Surge ----------------------------------------
+function Surge(object, player_color)
+
+	cannotSurge = false
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Slashed Back" then
+			cannotSurge = true
+		end
+	end
+	if cannotSurge then
+		broadcastToColor("You cannot Surge", player_color, msg_color)
+		broadcastToColor(sigil .. "  Slashed Back  " .. sigil, player_color, msg_color)
+		clearMenuButtons()
+		menuTable = {}
+		createButtons()
+		return
+	end
+
+	if cannotSurge == false then
+
+		survCard.getVar("isSurging_survCard")
+		survCard.setVar("isSurging_survCard", true)
+
+		local persistentCard = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+		persistentCard.getVar("isSurging_persistentCard")
+		persistentCard.setVar("isSurging_persistentCard", true)
+
+		local btns = survCard.getButtons()
+		for i, v in pairs(btns) do
+			if v.label == "Start Act" then
+				survCard.removeButton(v.index)
+			end
+			if v.label == "End Attack" then
+				survCard.removeButton(v.index)
+				survCard.call("endAttack")
+			end
+		end
+
+		survCard.call("set_roller_survAttack")
+		survCard.call("createButtons_attack_attackBlind")
+
+		-- Gorm's Den
+		if hasGormsDen then
+			changeSurvivors("survival", - 2, grid)
+		else
+			changeSurvivors("survival", - 1, grid)
+		end
+
+		broadcastToColor("Survival Used", player_color, msg_color)
+		surge.setRotation({surge.getRotation().x, surge.getRotation().y, surge.getRotation().z + 180})
+
+		clearMenuButtons()
+		menuTable = {}
+		createButtons()
+
+	end
+end -- end surge
+
+-- Embolden [NOT DONE] --------------------------
+function Embolden(object, player_color)
+	has_not_StrTokens = false
+	for _, object in ipairs(zone.getObjects()) do
+		if not string.find(object.getDescription(), 'plus1str') then
+			has_not_StrTokens = true
+		end
+	end
+	if has_not_StrTokens then
+		changeSurvivors("survival", - 1, grid)
+		broadcastToColor("Survival Used ~ You gained a (+1) Strength Token", player_color, msg_color)
+		embolden.setRotation({embolden.getRotation().x, embolden.getRotation().y, embolden.getRotation().z + 180})
+		local stats = {color = color, stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('temp', stats)
+		startLuaCoroutine(Global, "spwn_tok")
+	end
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Overcharge -----------------------------------
+function Overcharge(object, player_color)
+	has_StrTokens = false
+	for _, object in ipairs(zone.getObjects()) do
+		if string.find(object.getDescription(), 'plus1str') then
+			has_StrTokens = true
+			object.destroy()
+		end
+	end
+	if has_StrTokens then
+		broadcastToColor("Survival Used ~ Your strength tokens were removed ~ Your next attack gains 'Devastating 1'", player_color, msg_color)
+		changeSurvivors("survival", - 1, grid)
+		overcharge.setRotation({overcharge.getRotation().x, overcharge.getRotation().y, overcharge.getRotation().z + 180})
+	else
+		broadcastToColor("You do not have any (+1) Strength Tokens", player_color, msg_color)
+	end
+	-- Resets the Main Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+
+
+
+
+
+
+
+
+-- Weapon Functions ------------------------------------------------------------
+function createMenuWeapons(object, player_color)
+	clearMenuButtons()
+	clear_spawned_gear_cards()
+	createButton_MainMenu()
+
+	table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "fistTooth", function_owner = self, label = "Fist & Tooth",
+		position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+	color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+	for _, object in ipairs(zone.getObjects()) do
+		local desc = object.getDescription()
+
+		-- Ammunition Equip
+		if string.find(desc, 'ammunition') then
+			local buttons = object.getButtons()
+			for i, v in ipairs(buttons) do
+				if tonumber(v.label) >= 1 then
+					self.setVar("equipWeapon_" .. object.getName(), function () weaponEquiped(object.getGUID(), object, player_color) end)
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "equipWeapon_" .. object.getName(), function_owner = self, label = object.getName(),
+						position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+				end
+			end
+		end -- end ammunition
+
+		-- Weapon Equip
+		if string.find(desc, 'weapon') and not string.find(desc, 'ammunition') then
+			self.setVar("equipWeapon_" .. object.getName(), function () weaponEquiped(object.getGUID(), object, player_color) end)
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "equipWeapon_" .. object.getName(), function_owner = self, label = object.getName(),
+				position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+		end -- end weapon equip
+	end -- end for loop
+end
+
+function weaponEquiped(weaponGUID, object, player_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+
+	local weapon = getObjectFromGUID(weaponGUID)
+
+	broadcastToColor(weapon.getName() .. " equipped", player_color, msg_color)
+
+	grid.call('SetWeapon', {weapon.getName(), weapon.getDescription()})
+	selector.setPosition({weapon.getPosition().x, weapon.getPosition().y + 1, weapon.getPosition().z})
+	selector.setRotation({3, 0, 0})
+
+	startLuaCoroutine(self, "set_portrait_buttons")
+
+	-- God's String
+	hasSharp = false
+	local desc = weapon.getDescription()
+	if string.find(desc, "sharp") then
+		hasSharp = true
+	end
+
+	if desc:find("bow") then
+		local found_GodsString = false
+		for _, object in ipairs(zone.getObjects()) do
+			if object.getName() == "God's String" then
+				local weapon_posZ = weapon.getPosition().z
+				local godsString_posZ = object.getPosition().z
+				local weapon_posX = weapon.getPosition().x
+				local godsString_posX = object.getPosition().x
+				if godsString_posZ - weapon_posZ <= 2.5 and godsString_posX - weapon_posX <= 1 then
+					found_GodsString = true
+				end
+			end
+		end
+	end -- end if desc:find('bow')
+
+	if hasSharp then
+		return
+	end
+
+	if found_GodsString then
+		weapon.setDescription(desc .. ", sharp")
+		broadcastToColor("'Sharp' Bonus added to Weapon", player_color, msg_color)
+		broadcastToColor(sigil .. "  God's String  " .. sigil, player_color, msg_color)
+	else
+		local desc = string.gsub(weapon.getDescription(), ", sharp", "")
+		weapon.setDescription(desc)
+	end -- end God's String
+end
+
+function set_portrait_buttons()
+	wait(0.25)
+	local pos = survCard.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {2, 2, 2},
+		max_distance 	= 0,
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Portrait" then
+			entry.hit_object.call("createButtons")
+		end
+	end
+	return 1
+end
+
+function fistTooth(object, player_color)
+	clearMenuButtons()
+	broadcastToColor("You are fighting Fist & Tooth", player_color, msg_color)
+	grid.call('CleanWeapon')
+	selector.setPosition(selector_pos)
+	startLuaCoroutine(self, "set_portrait_buttons")
+	menuTable = {}
+	createButtons()
+end
+
+function get_paired_weapon(weapon_name, weapon_pos, weapon_spd)
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	for _, weapon in ipairs(zone.getObjects()) do
+		local desc = weapon.getDescription()
+		if string.find(desc, "paired") and weapon.getGUID() == weaponGUID then
+			weapon_name = weapon.getName()
+			weapon_pos = weapon.getPosition()
+		end
+		if string.find(desc, "1spd") and weapon.getGUID() == weaponGUID then
+			weapon_spd = tonumber(1)
+		elseif string.find(desc, "2spd") then
+			weapon_spd = 2
+		elseif string.find(desc, "3spd") then
+			weapon_spd = 3
+		elseif string.find(desc, "4spd") then
+			weapon_spd = 4
+		elseif string.find(desc, "5spd") then
+			weapon_spd = 5
+		elseif string.find(desc, "6spd") then
+			weapon_spd = 6
+		end
+	end
+	return weapon_name, weapon_pos, weapon_spd
+end
+
+function paired(object, player_color)
+	count = 0
+	for _, duplicate in ipairs(zone.getObjects()) do
+		if duplicate.getName() == get_paired_weapon(weapon_name) then
+			count = count + 1
+		end
+	end
+	a, b, c = get_paired_weapon(weapon_name, weapon_pos, weapon_spd)
+	if count == 1 then
+		broadcastToColor("You do not have a 2nd " .. a, player_color, msg_color)
+	end
+	if count >= 2 then
+		for i = 1, c do
+			local token = bag_spd.takeObject({position = {b.x, b.y + i * 0.5, b.z}, rotation = {0, 180, 0}})
+			token.setDescription("temp, end of attack")
+		end
+	end
+	broadcastToColor("You next Attack gained (+" .. c .. ") Speed from your paired Weapon", player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+
+
+
+
+
+
+
+
+-- Specials Functions ----------------------------------------------------------
+function specials_Buttons(object, player_color)
+	clearMenuButtons()
+	clear_spawned_gear_cards()
+	menuTable = {}
+	createButton_MainMenu()
+
+	local insanity = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+
+	isAlwaysAThreat = false
+	hasTunnelVision = false
+	isInsane = false
+	for _, object in ipairs(zone.getObjects()) do
+		rotZ = object.getRotation().z
+		if object.getName() == "Coprolalia" then
+			isAlwaysAThreat = true
+		end
+		if object.getName() == "Tunnel Vision" then
+			hasTunnelVision = true
+		end
+		if object.getName() == "isInsane" and (rotZ > 165 and rotZ < 195) then
+			isInsane = true
+		end
+	end -- end for loop
+
+	if hasTunnelVision then
+		broadcastToColor("You may only spend actions to activate weapons", player_color, msg_color)
+		broadcastToColor(sigil .. "  Tunnel Vision  " .. sigil, player_color, msg_color)
+	end
+
+	-- Specials Buttons
+	for _, object in ipairs(zone.getObjects()) do
+		local desc = object.getDescription()
+		if object.getName() == "Synchronized Strike" and object.getRotation().z < 165 then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "sync_strike", function_owner = self, label = "Synchronized Strike",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Beast of Caratosis" and object.getRotation().z < 165 then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "red_SaviourAbility", function_owner = self, label = "Beast of Caratosis",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Cat Gut Bow" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "catGutBow_Aim", function_owner = self, label = "Cat Gut Bow (Aim)",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Vespertine Bow" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "vespertineBow_Aim", function_owner = self, label = "Vespertine Bow (Aim)",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif (object.getName() == "Cycloid Scale Shoes" and object.getRotation().z > 165) then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "cycloidShoes", function_owner = self, label = "����� Cycloid Scale Shoes",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Cycloid Scale Sleeves" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "cycloidSleeves", function_owner = self, label = "Shadow Walk Attack",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Mammoth Hunting" and object.getRotation().z < 165 then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "mammothHunting", function_owner = self, label = "Mammoth Hunting",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+		end
+
+		if not hasTunnelVision then
+			if object.getName() == "Blood Paint" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "bloodPaint", function_owner = self, label = object.getName(),
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif (object.getName() == "Nuclear Knife" and not string.find(desc, "once per round used")) and insanity >= 3 then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "nuclearKnife", function_owner = self, label = "Nuclear Knife",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif (object.getName() == "Nuclear Scythe" and not string.find(desc, "once per round used")) and insanity >= 3 then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "nuclearScythe", function_owner = self, label = "Nuclear Scythe",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif not hasTunnelVision and (object.getName() == "White Lion Helm" and object.getRotation().z > 165) then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "whiteLionHelm", function_owner = self, label = "White Lion Helm",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif not hasTunnelVision and (object.getName() == "White Lion Mask" and object.getRotation().z > 165) and (insanity >= 3 or isInsane) then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "whiteLionMask", function_owner = self, label = "White Lion Mask",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Phoenix Armor" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "chargeEffect", function_owner = self, label = "Charge",
+					position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Dragon Armor" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "leapEffect", function_owner = self, label = "Leap",
+					position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "White Lion Coat" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "pounceEffect", function_owner = self, label = "Pounce",
+					position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Screaming Coat" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "slamEffect", function_owner = self, label = "Slam",
+					position = { - 0.3, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+			end
+		end
+
+		if string.find(object.getDescription(), "paired") then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "paired", function_owner = self, label = object.getName() .. " (Paired)",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+		end
+	end -- end for loop
+end
+
+function createButton_Use_Yes_No()
+	createButton_MainMenu()
+
+	btns_use_special = {
+		rotation = btn_rotation, click_function = "", function_owner = self, label = "", position = {},
+		width = 6000, height = 1100, font_size = 750, color = {0, 0, 0}, font_color = font_color, scale = {0.5, 0.5, 0.5}
+	}
+
+	btns_use_special.position = { - 0.2, 0.2, - 7.8}
+	btns_use_special.label = "Use it Now"
+	btns_use_special.click_function = "use_special"
+	self.createButton(btns_use_special)
+
+	btns_use_special.position = { - 0.2, 0.2, - 4.9}
+	btns_use_special.label = "Use it Later"
+	btns_use_special.click_function = "do_not_use_special"
+	self.createButton(btns_use_special)
+end
+
+function use_special(object, player_color)
+	cardName = ""
+	local pos = survCard.getPosition()
+	local hitList = Physics.cast({origin = {pos.x, pos.y, pos.z}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.tag == "Card"
+		and not string.find(entry.hit_object.getName(), "Surv Card")
+		and not string.find(entry.hit_object.getDescription(), "resource") then
+			entry.hit_object.destroy()
+		end
+	end
+
+	for _, object in ipairs(zone.getObjects()) do
+		------------------------------- start for loop body ---------------------------
+		local desc = object.getDescription()
+		local name = object.getName()
+		local scale = object.getScale()
+
+		-- Brain Mint
+		if object.getName() == "Brain Mint" and isUsing_BrainMint then
+			object.setDescription(desc .. ", once per showdown used")
+			for _, object in ipairs(zone.getObjects()) do
+				local desc = object.getDescription()
+				if string.find(desc, "token") then
+					object.destroy()
+				end
+			end -- end
+			broadcastToColor("All of your Tokens were removed", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+
+			-- Stands Player Up
+			for _, object in ipairs(zoneShowdown.getObjects()) do
+				if object.getName() == PlayerName then
+					rotZ = object.getRotation().z
+					if rotZ > 165 and rotZ < 195 then
+						object.setRotation({object.getRotation().x, object.getRotation().y, 0})
+						object.setPosition({object.getPosition().x, object.getPosition().y + 2, object.getPosition().z})
+						broadcastToColor("You Stood Up", player_color, msg_color)
+					end
+				end
+			end
+			isUsing_BrainMint = false
+		end
+
+		-- Berserker [DONE]
+		if object.getName() == "Berserker" and isUsing_Berserker then
+			object.setDescription(desc .. ", once per showdown used")
+			broadcastToColor("Suffer the Frenzy Brain Trauma", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			--Knockdown Player
+			survCard.call('knockdown_survivor')
+			-- Move Camera to Hit Location Roller
+			local parameters = {}
+			parameters.position = hitlocation_roller_camera
+			Player[player_color].lookAt(parameters)
+			isUsing_Berserker = false
+		end
+
+		-- Bird Bread
+		if object.getName() == "Bird Bread" and isUsing_BirdBread then
+			object.setDescription(desc .. ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs")
+			object.translate({0,6,0})
+			broadcastToColor("You gained 1 to each Hit Location", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			-- Get Priority Target
+			hasPriority = false
+			cannot_be_removed = false
+			for _, tok in ipairs(zoneShowdown.getObjects()) do
+				if tok.getName() == "Priority Target" then
+					hasPriority = true
+					priority_target = tok
+				end
+			end
+			for _, tok in ipairs(zoneShowdown.getObjects()) do
+				if string.find(tok.getDescription(), "permanent") then
+					cannot_be_removed = true
+				end
+			end
+			if cannot_be_removed then
+				broadcastToAll("A Survivor already has the Priority Target Permanently ~ From a Game Effect", {1,1,1})
+				return
+			end
+			for _, surv in ipairs(zoneShowdown.getObjects()) do
+				if surv.getName() == PlayerName then
+					local pos = surv.getPosition()
+					if hasPriority then
+						surv.translate({0,2,0})
+						priority_target.setPosition(pos)
+					else
+						local obj = getObjectFromGUID('3bc58d')
+						local objPos = obj.getPosition()
+						local priority_target = obj.clone({position = objPos})
+						surv.translate({0,2,0})
+						priority_target.setPosition(pos)
+					end
+				end
+			end
+			broadcastToColor("You gained the Priority Target", player_color, msg_color)
+			broadcastToColor("Rolling 1d10", player_color, msg_color)
+			diceRoller.call("click_roll")
+		end
+
+		-- Champion's Rite [DONE]
+		if object.getName() == "Champion's Rite" and isUsing_ChampionsRite then
+			local pos = object.getPosition()
+			object.setDescription(desc .. ", once per showdown used")
+			-- Get Understanding Value
+			local objbtns = getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons")
+			accuracy = 0
+			for i, v in pairs(objbtns) do
+				prefix = string.sub(i, 1, 14)
+				if prefix == "understanding_" then
+					if v.label ~= '' then
+						accuracy = accuracy + 1
+					end
+				end
+			end -- end
+			-- Add +1 Accuracy token for each understanding
+			for i = 1, accuracy do
+				local tok = bag_acc.takeObject({position = {pos.x, pos.y + i * 0.2, pos.z}, rotation = rot_pos, smooth = false})
+				tok.setDescription("token")
+			end
+			broadcastToColor("You gained (+" .. accuracy .. ") Accuracy for this Attack", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			isUsing_ChampionsRite = false
+		end -- end champion's rite
+
+		-- Cycloid Shoes [DONE]
+		if object.getName() == "Cycloid Shoes" and isUsing_CycloidShoes then
+			hasPriority = false
+			for _, obj in ipairs(zoneShowdown.getObjects()) do
+				if obj.getName() == PlayerName then
+					local pos = obj.getPosition()
+					local hitList = Physics.cast({
+						origin			= {pos.x, pos.y, pos.z},
+						direction		= {0,1,0},
+						type				= 2,
+						size				= {2,2,2},
+						max_distance 	= 0,
+						debug				= true
+					})
+					for _, entry in ipairs(hitList) do
+						if entry.hit_object.getName() == "Priority Target" then
+							entry.hit_object.destroy()
+							hasPriority = true
+						end
+					end
+				end
+			end
+
+			if isAlwaysAThreat then
+				broadcastToColor(sigil .. "  Coprolalia  " .. sigil, player_color, msg_color)
+				broadcastToColor("You are always a threat", player_color, msg_color)
+			else
+				broadcastToColor("You are not a threat until you attack", player_color, msg_color)
+				survCard.call('fecalSalveButton')
+			end
+
+			if hasPriority then
+				broadcastToColor("The Priority Target was removed ~ You gained (+2) Survival", player_color, msg_color)
+			else
+				broadcastToColor("You do not have the Priority Target", player_color, msg_color)
+			end
+			broadcastToColor(sigil .. "  Cycloid Shoes  " .. sigil, player_color, msg_color)
+			isUsing_CycloidShoes = false
+		end -- end
+
+		-- Fated Blow [DONE]
+		if object.getName() == "Fated Blow" and isUsing_FatedBlow then
+			local pos = object.getPosition()
+			object.setDescription(desc .. ", once per showdown used")
+			broadcastToColor("You gained (+2) Strength and Devastating 1 for this Attack", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			for i = 1, 2 do
+				local tok = bag_str.takeObject({position = {pos.x, pos.y + i * 0.2, pos.z}, rotation = rot_pos, smooth = false})
+				tok.setDescription("token, end of wound attempt")
+			end
+			isUsing_FatedBlow = false
+		end
+
+		-- Gorn
+		if object.getName() == "Gorn" and isUsing_Gorn then
+			object.setDescription(desc .. ", once per showdown used")
+			broadcastToAll(sigil .. "  " .. name .. "  " .. sigil, {1, 1, 1})
+			broadcastToAll("Non-deaf Survivors may stand and add 1 to all Hit Locations", {1, 1, 1})
+			isUsing_Gorn = false
+		end -- end Gorn
+
+		-- Heroic [DONE]
+		if object.getName() == "Heroic" and isUsing_Heroic then
+			object.setDescription(desc .. ", once per showdown used")
+			changeSurvivors("survival", - 3, grid)
+			broadcastToColor("Survival Used ~ Place the Hit Location on Position One then Auto Crit Pos 1", player_color, msg_color)
+				broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			isUsing_Heroic = false
+		end
+
+		-- Lure Epilepsy [DONE]
+		if object.getName() == "Lure Epilepsy" and isUsing_LureEpilepsy then
+			object.setDescription(desc .. ", once per showdown used")
+			local parameters = {}
+			parameters.position = { - 8.21, 4.42, - 34.71}
+			Player[player_color].lookAt(parameters)
+			survCard.call("knockdown_survivor")
+			broadcastToColor("Suffer a Random Brain Trauma", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			isUsing_LureEpilepsy = false
+		end
+
+		-- Mad Grade [DONE]
+		if object.getName() == "Mad Grade" and isUsing_MadGrade then
+			object.setDescription(desc .. ", once per showdown used")
+			isUsing_MadGrade = false
+		end
+
+		-- Mad Oracle [DONE]
+		if object.getName() == "Mad Oracle" and isUsing_MadOracle then
+			object.setDescription(desc .. ", once per showdown used")
+			isUsing_MadOracle = false
+		end
+
+		-- Orator of Death [DONE]
+		if object.getName() == "Orator of Death" and isUsing_Orator then
+			object.setDescription(desc .. ", once per showdown used")
+			broadcastToAll(sigil .. "  " .. name .. "  " .. sigil, {1,1,1})
+			local a, b, c, d = returnIsDeaf(isDeafRed, isDeafYellow, isDeafGreen, isDeafBlue)
+			--Red
+			if not isDeafRed then
+				Global.call('addBroadcast', {"effect", {effect = "Red gained (+2) Insanity", effect2 = "", color = color_red}})
+				local redGrid = getObjectFromGUID(Global.getTable('grids').red.guid)
+				obj = getObjectFromGUID(redGrid.getVar("FullCharSheetGUID"))
+				obj.call("add", {"insanity", 2})
+			else
+				Global.call('addBroadcast', {"effect", {effect = "Red is Deaf ~ No Effect", effect2 = ""}})
+			end
+			--Yellow
+			if not isDeafYellow then
+				Global.call('addBroadcast', {"effect", {effect = "Yellow gained (+2) Insanity", effect2 = "", color = color_yellow}})
+				local yellowGrid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+				obj = getObjectFromGUID(yellowGrid.getVar("FullCharSheetGUID"))
+				obj.call("add", {"insanity", 2})
+			else
+				Global.call('addBroadcast', {"effect", {effect = "Yellow is Deaf ~ No Effect", effect2 = ""}})
+			end
+			--Green
+			if not isDeafGreen then
+				Global.call('addBroadcast', {"effect", {effect = "Green gained (+2) Insanity", effect2 = "", color = color_green}})
+				local greenGrid = getObjectFromGUID(Global.getTable('grids').green.guid)
+				obj = getObjectFromGUID(greenGrid.getVar("FullCharSheetGUID"))
+				obj.call("add", {"insanity", 2})
+			else
+				Global.call('addBroadcast', {"effect", {effect = "Green is Deaf ~ No Effect", effect2 = ""}})
+			end
+			--Blue
+			if not isDeafBlue then
+				Global.call('addBroadcast', {"effect", {effect = "Blue gained (+2) Insanity", effect2 = "", color = color_blue}})
+				local blueGrid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+				obj = getObjectFromGUID(blueGrid.getVar("FullCharSheetGUID"))
+				obj.call("add", {"insanity", 2})
+			else
+				Global.call('addBroadcast', {"effect", {effect = "Blue is Deaf ~ No Effect", effect2 = ""}})
+			end
+			startLuaCoroutine(Global, "printEffect")
+			Global.call("clearBroadcast")
+			isUsing_Orator = false
+		end
+
+		-- Pulse Lantern [DONE]
+		if object.getName() == "Pulse Lantern" and isUsing_PulseLantern then
+			object.setDescription(desc .. ", once per showdown used")
+			diceRoller.getVar("usedPulseLantern")
+			diceRoller.setVar("usedPulseLantern", true)
+			diceRoller.call("click_roll")
+			isUsing_PulseLantern = false
+		end
+
+		-- Rubber Bone Harness [DONE]
+		if object.getName() == "Rubber Bone Harness" and isUsing_RubberBoneHarness then
+			cardName = "Rubber Bone Harness"
+			object.setDescription(desc .. ", once per showdown used")
+			count_neg_spd = 0
+			count_neg_str = 0
+			count_neg_acc = 0
+			count_neg_lck = 0
+			count_neg_mov = 0
+			count_neg_eva = 0
+			for _, token in ipairs(zone.getObjects()) do
+				local desc = token.getDescription()
+				if string.find(desc, "token, minus1str") then
+					count_neg_str = count_neg_str + 1
+					token.destroy()
+				end
+				if string.find(desc, "token, minus1spd") then
+					count_neg_spd = count_neg_spd + 1
+					token.destroy()
+				end
+				if string.find(desc, "token, minus1acc") then
+					count_neg_acc = count_neg_acc + 1
+					token.destroy()
+				end
+				if string.find(desc, "token, minus1lck") then
+					count_neg_lck = count_neg_lck + 1
+					token.destroy()
+				end
+				if string.find(desc, "token, minus1mov") then
+					count_neg_mov = count_neg_mov + 1
+					token.destroy()
+				end
+				if string.find(desc, "token, minus1eva") then
+					count_neg_eva = count_neg_eva + 1
+					token.destroy()
+				end
+			end
+			startLuaCoroutine(self, "tokSpawn_coR")
+
+			isUsing_RubberBoneHarness = false
+			broadcastToColor("Your Negative Tokens were converted to Positive Tokens", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+		end -- end rubber bone harness
+
+		-- Silk Bomb [DONE]
+		if object.getName() == "Silk Bomb" and isUsing_SilkBomb then
+			object.destroy()
+			broadcastToColor("Until the End of the Round ~ All Survivors Ignore Knockback and Bash", player_color, msg_color)
+			broadcastToColor(sigil .. "  Silk Bomb  " .. sigil, player_color, msg_color)
+			isUsing_SilkBomb = false
+			--Create Ignore Knockdown Buttons
+			local redSurvCard = getObjectFromGUID(Global.getTable('survCards').red.guid)
+			redSurvCard.call('createKnockbackButton')
+			redSurvCard.call('createBashButton')
+			local yellowSurvCard = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+			yellowSurvCard.call('createKnockbackButton')
+			yellowSurvCard.call('createBashButton')
+			local greenSurvCard = getObjectFromGUID(Global.getTable('survCards').green.guid)
+			greenSurvCard.call('createKnockbackButton')
+			greenSurvCard.call('createBashButton')
+			local blueSurvCard = getObjectFromGUID(Global.getTable('survCards').blue.guid)
+			blueSurvCard.call('createKnockbackButton')
+			blueSurvCard.call('createBashButton')
+			isUsing_SilkBomb = false
+		end
+
+		-- Silk Boots
+		if object.getName() == "Silk Boots" and isUsing_SilkBoots then
+			object.setDescription(desc .. ", once per round used")
+			isUsing_SilkBoots = false
+		end
+
+		-- Silk Robes
+		if object.getName() == "Silk Robes" and isUsing_SilkRobes then
+			object.setDescription(desc .. ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs")
+			object.translate({0,6,0})
+			broadcastToColor("You gained 1 to each Hit Location", player_color, msg_color)
+			broadcastToColor(sigil .. "  Silk Robes  " .. sigil, player_color, msg_color)
+			isUsing_SilkRobes = false
+		end
+
+		-- Silk Sash
+		if object.getName() == "Silk Sash" and isUsing_SilkSash then
+			object.setDescription(desc .. ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs")
+			object.translate({0,6,0})
+			broadcastToColor("You gained 1 to each Hit Location", player_color, msg_color)
+			broadcastToColor(sigil .. "  Silk Sash  " .. sigil, player_color, msg_color)
+			isUsing_SilkSash = false
+		end
+
+		-- Silk Turban
+		if object.getName() == "Silk Turban" and isUsing_SilkTurban then
+			broadcastToColor("Turn the Monster to face away from you", player_color, msg_color)
+			broadcastToColor(sigil .. "  Silk Turban  " .. sigil, player_color, msg_color)
+			object.setDescription(desc .. ", once per showdown used")
+			isUsing_SilkTurban = false
+		end
+
+		-- Sky Harpoon [DONE]
+		if object.getName() == "Sky Harpoon" and isUsing_SkyHarpoon then
+			object.setDescription(desc .. ", once per showdown used")
+			diceRoller.call("click_roll")
+			isUsing_SkyHarpoon = false
+		end
+
+		-- Speed Powder [DONE]
+		if object.getName() == "Speed Powder" and isUsing_SpeedPowder then
+			object.setDescription(desc .. ", once per showdown used")
+			-- Add +1 Speed
+			local stats = {color = color, stat = 'spd', modifier = "pos", num = 1, phase = nil}
+			Global.setTable('temp', stats)
+			startLuaCoroutine(Global, "spwn_tok")
+			broadcastToColor("Suffer 2 Brain Damage ~ You gained a (+1) Speed Token", player_color, msg_color)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			-- Go to Grid
+			local parameters = {}
+			parameters.position = hitlocation_camera
+			Player[player_color].lookAt(parameters)
+			isUsing_SpeedPowder = false
+		end
+
+		-- Whisker Harp
+		if object.getName() == "Whisker Harp" and isUsing_WhiskerHarp then
+			diceRoller.getVar("usedWhiskerHarp")
+			diceRoller.setVar("usedWhiskerHarp", true)
+			diceRoller.call("click_roll")
+			isUsing_WhiskerHarp = false
+		end
+
+		-- White Lion Helm [DONE]
+		if object.getName() == "White Lion Helm" and isUsing_WhiteLionHelm then
+			local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+			if survival >= 1 then
+				broadcastToAll(sigil .. "  " .. name .. "  " .. sigil, {1,1,1})
+				changeSurvivors("survival", - 1, grid)
+				startLuaCoroutine(self, "wLionHelm")
+			else
+				broadcastToColor("You do not have Survival", player_color, msg_color)
+				end
+			isUsing_WhiteLionHelm = false
+		end -- end white lion helm
+
+		-- White Lion Mask [DONE]
+		if object.getName() == "White Lion Mask" and isUsing_WhiteLionMask then
+			local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+			broadcastToColor("You lost ( " .. survival .. " ) Survival ~ You gained ( " .. survival .. " ) Strength Tokens", player_color, msg_color)
+			changeSurvivors("survival", 0 - survival, grid)
+			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
+			for _, gear in ipairs(zone.getObjects()) do
+				if gear.getName() == "White Lion Mask" then
+					stats = {color = color, stat = 'str', modifier = "pos", num = survival, phase = nil}
+					Global.setTable('temp', stats)
+					startLuaCoroutine(Global, "spwn_tok")
+				end
+			end
+			isUsing_WhiteLionMask = false
+		end -- end white lion mask
+
+	end -- end for loop body
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end -- end function
+
+function do_not_use_special()
+	local pos = survCard.getPosition()
+	local hitList = Physics.cast({origin = {pos.x, pos.y, pos.z}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.tag == "Card"
+		and not string.find(entry.hit_object.getName(), "Surv Card")
+		or not string.find(entry.hit_object.getName(), "resource") then
+			entry.hit_object.destroy()
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+	isUsing_Berserker = false
+	isUsing_BrainMint = false
+	isUsing_ChampionsRite = false
+	isUsing_CycloidShoes = false
+	isUsing_FatedBlow = false
+	isUsing_Gorn = false
+	isUsing_Heroic = false
+	isUsing_Orator = false
+	isUsing_LureEpilepsy = false
+	isUsing_MadOracle = false
+	isUsing_MadGrade = false
+	isUsing_PulseLantern = false
+	isUsing_RubberBoneHarness = false
+	isUsing_SilkBoots = false
+	isUsing_SilkBomb = false
+	isUsing_SilkRobes = false
+	isUsing_SilkSash = false
+	isUsing_SilkTurban = false
+	isUsing_SkyHarpoon = false
+	isUsing_SpeedPowder = false
+	isUsing_WhiteLionHelm = false
+	isUsing_WhiteLionMask = false
+	isUsing_WhiskerHarp = false
+end
+
+
+
+
+
+
+
+
+
+
+-- Offensive Functions ---------------------------------------------------------
+
+-- Blood Paint
+function bloodPaint(object, player)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Cat Gut Bow
+function catGutBow_Aim(object, player_color)
+	startLuaCoroutine(self, "sub_spd1")
+	startLuaCoroutine(self, "add_acc2")
+	broadcastToColor("This Attack gained (-1) Speed ~ (+2) Accuracy", player_color, msg_color)
+	broadcastToColor(sigil .. "  Cat Gut Bow  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Cycloid Shoes
+function cycloidShoes(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Cycloid Shoes" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_CycloidShoes = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Dragon Armor
+function leapEffect(object, player_color)
+	clearMenuButtons()
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Dragon Armor" then
+			pos = card.getPosition()
+		end
+	end
+	for i = 1, 5 do
+		local tok = bag_str.takeObject({position = {pos.x, pos.y + i * 0.2, pos.z}, rotation = rot_pos, smooth = false})
+		tok.setDescription("temp, end of attack")
+	end
+	for i = 1, 2 do
+		local tok = bag_acc.takeObject({pos = {pos.x, pos.y + i * 0.6, pos.z}, rotation = rot_pos, smooth = false})
+		tok.setDescription("temp, end of attack")
+	end
+	-- Resets the Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Mammoth Hunting
+function mammothHunting(object, player_color)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Mammoth Hunting" then
+			stats = {color = color, stat = 'str', modifier = "pos", num = 1, phase = 'endOfattack'}
+			Global.setTable('temp', stats)
+			startLuaCoroutine(Global, "spwn_tok")
+		end
+	end
+	broadcastToColor("You gained (+1) Strength for this Attack", player_color, msg_color)
+	broadcastToColor(sigil .. "  Mammoth Hunting  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Nuclear Knife
+function nuclearKnife(object, player_color)
+	for _, gear in ipairs(zone.getObjects()) do
+		if gear.getName() == "Nuclear Knife" then
+			gear.setDescription(gear.getDescription() .. ", devastating1, once per round used")
+		end
+	end
+	broadcastToColor("Suffer 3 Brain Damage ~ This Attack gains Devastating 1", player_color, msg_color)
+	broadcastToColor(sigil .. "  Nuclear Knife  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Nuclear Scythe
+function nuclearScythe(object, player_color)
+	for _, gear in ipairs(zone.getObjects()) do
+		if gear.getName() == "Nuclear Scythe" then
+			gear.setDescription(gear.getDescription() .. ", devastating1, once per round used")
+		end
+	end
+	broadcastToColor("Suffer 3 Brain Damage ~ This Attack gains Devastating 1", player_color, msg_color)
+	broadcastToColor(sigil .. "  Nuclear Scythe  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Phoenix Armor
+function chargeEffect()
+	clearMenuButtons()
+	createButton_Charge()
+end
+
+function createButton_Charge()
+	createButton_MainMenu()
+	self.createButton({rotation = btn_rotation, click_function = "dud", function_owner = self, label = "Click for # Spaces Moved", position = { - 0.2, 0.2, - 7.8},
+	scale = {0.5, 0.5, 0.5}, width = 6000, height = 1100, font_size = 600, color = {0, 0, 0}, font_color = font_color})
+	self.createButton({rotation = btn_rotation, click_function = "spawn_charge_tokens", function_owner = self, label = "+ Charge +", position = { - 0.2, 0.2, - 4.9},
+	scale = {0.5, 0.5, 0.5}, width = 6000, height = 1100, font_size = 750, color = {0, 0, 0}, font_color = font_color})
+end
+
+function spawn_charge_tokens()
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Phoenix Armor" then
+			pos = card.getPosition()
+		end
+	end
+	local tok = bag_str.takeObject({position = {pos.x, pos.y + 0.75, pos.z}, rotation = rot_pos, smooth = false})
+	tok.setDescription("temp, end of attack")
+end
+
+-- Screaming Coat
+function slamEffect(object, player_color)
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfround"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	broadcastToAll(sigil .. "  Screaming Coat  " .. sigil, {1,1,1})
+	broadcastToAll("The Monster gained a (-1) Toughness Token until the end of the round", {1,1,1})
+
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Screaming Bracers" then
+			broadcastToColor("Screaming Bracers: You may move through spaces occupied by other Survivors", player_color, msg_color)
+			broadcastToColor(sigil .. "  Screaming Bracers  " .. sigil, player_color, msg_color)
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Synchronized Strike
+function sync_strike(object, player_color)
+	startLuaCoroutine(self, "add_acc1")
+	startLuaCoroutine(self, "add_str1")
+	broadcastToColor(" This attack gained (+1) Accuracy ~ (+1) Strength", player_color, msg_color )
+	broadcastToColor(sigil .. "  Syncronized Strike  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- White Lion Helm
+function whiteLionHelm(object, player)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "White Lion Helm" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_WhiteLionHelm = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+function wLionHelm()
+	wait(0.5)
+	local a, b, c, d = returnIsDeaf(isDeafRed, isDeafYellow, isDeafGreen, isDeafBlue)
+	--Red
+	if not a then
+		local stats = {color = "red", stat = "str", modifier = "pos", num = 2, phase = 'endOfround'}
+		Global.setTable('stats_red', stats)
+		startLuaCoroutine(Global, "spawn_tok_red")
+		Global.call('addBroadcast', {"effect", {effect = "Red (+2) Strength ~ End of the Round", effect2 = ""}})
+	else
+		Global.call('addBroadcast', {"effect", {effect = "Red is Deaf ~ No Effect", effect2 = ""}})
+	end
+	--Yellow
+	if not b then
+		local stats = {color = "yellow", stat = "str", modifier = "pos", num = 1, phase = 'endOfround'}
+		Global.setTable('stats_yellow', stats)
+		startLuaCoroutine(Global, "spawn_tok_yellow")
+		Global.call('addBroadcast', {"effect", {effect = "Yellow (+2) Strength ~ End of the Round", effect2 = ""}})
+	else
+		Global.call('addBroadcast', {"effect", {effect = "Yellow is Deaf ~ No Effect", effect2 = ""}})
+	end
+	--Green
+	if not c then
+		local stats = {color = "green", stat = "str", modifier = "pos", num = 1, phase = 'endOfround'}
+		Global.setTable('stats_green', stats)
+		startLuaCoroutine(Global, "spawn_tok_green")
+		Global.call('addBroadcast', {"effect", {effect = "Green (+2) Strength ~ End of the Round", effect2 = ""}})
+	else
+		Global.call('addBroadcast', {"effect", {effect = "Green is Deaf ~ No Effect", effect2 = ""}})
+	end
+	--Blue
+	if not d then
+		local stats = {color = "blue", stat = "str", modifier = "pos", num = 1, phase = 'endOfround'}
+		Global.setTable('stats_blue', stats)
+		startLuaCoroutine(Global, "spawn_tok_blue")
+		Global.call('addBroadcast', {"effect", {effect = "Blue (+2) Strength ~ End of the Round", effect2 = ""}})
+	else
+		Global.call('addBroadcast', {"effect", {effect = "Blue is Deaf ~ No Effect", effect2 = ""}})
+	end
+		wait(1)
+		startLuaCoroutine(Global, "printEffect")
+		Global.call("clearBroadcast")
+	return 1
+end
+
+-- White Lion Mask
+function whiteLionMask(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "White Lion Mask" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_WhiteLionMask = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Ancient Lion Claws
+-- White Lion Coat
+-- White Lion Gauntlet
+function pounceEffect(object, player_color)
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	hasMelee = false
+	hasKatar = false
+	hasDagger = false
+	for _, obj in ipairs(zone.getObjects()) do
+		local desc = obj.getDescription()
+		if string.find(desc, "melee") and obj.getGUID() == weaponGUID then
+			hasMelee = true
+		end
+		if string.find(desc, "katar") and obj.getGUID() == weaponGUID then
+			hasKatar = true
+		end
+		if string.find(desc, "dagger") and obj.getGUID() == weaponGUID then
+			hasDagger = true
+		end
+	end
+	if hasMelee then
+		for _, obj in ipairs(zone.getObjects()) do
+			if obj.getName() == "White Lion Gauntlet" then
+				startLuaCoroutine(self, 'add_acc1')
+				broadcastToColor("(+1) Accuracy", player_color, msg_color )
+				broadcastToColor(sigil .. "  White Lion Gauntlet  " .. sigil, player_color, msg_color)
+			end
+			if obj.getName() == "White Lion Coat" then
+				startLuaCoroutine(self, 'add_str1')
+				broadcastToColor("(+1) Strength with a Melee Weapon", player_color, msg_color)
+				broadcastToColor(sigil .. "  White Lion Coat  " .. sigil, player_color, msg_color)
+			end
+			if obj.getName() == "Ancient Lion Claws" then
+				print(obj.getName())
+			end
+		end
+	else
+		broadcastToColor("You do not have a Melee Weapon Equipped", player_color, msg_color)
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Vespertine Bow
+
+function vespertineBow_Aim(object, player_color)
+	clearMenuButtons()
+	for _, gear in ipairs(zone.getObjects()) do
+		if gear.getName() == "Vespertine Bow" then
+			local pos = gear.getPosition()
+			gear.setDescription(gear.getDescription() .. ", slow")
+			for i = 1, 4 do
+				local tok_str = bag_acc.takeObject({position = {pos.x, pos.y + i * 0.2, pos.z}, rotation = pos_rot, smooth = false})
+				tok_str.setDescription('temp, end of attack')
+			end
+			broadcastToColor("This Attack gained (+4) Accuracy ~ Slow", player_color, msg_color)
+			broadcastToColor(sigil .. "  Vespertine Bow  " .. sigil, player_color, msg_color)
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+
+
+
+
+
+
+
+
+-- Defensive Functions ---------------------------------------------------------
+function defensiveButtons(object, player_color)
+
+	clearMenuButtons()
+	clear_spawned_gear_cards()
+	menuTable = {}
+	createButton_MainMenu()
+
+	local insanity = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+
+	isAlwaysAThreat = false
+	hasTunnelVision = false
+	isInsane = false
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Coprolalia" then
+			isAlwaysAThreat = true
+		end
+		if object.getName() == "Tunnel Vision" then
+			hasTunnelVision = true
+		end
+		if object.getName() == "Husk of Destiny" or object.getName() == "Stark Raving" then
+			isInsane = true
+		end
+	end
+
+	for _, object in ipairs(zone.getObjects()) do
+		desc = object.getDescription()
+		--Support Items
+		if isAlwaysAThreat and object.getName() == "Fecal Salve" then
+			broadcastToColor("You cannot use Fecal Salve ~ You are always a Threat" , player_color, msg_color)
+			broadcastToColor(sigil .. "  Fecal Salve  " .. sigil, player_color, msg_color)
+		end
+
+		if not isAlwaysAThreat and object.getName() == "Fecal Salve" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "fecalSalve", function_owner = self, label = "Fecal Salve",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+		end
+
+		if object.getName() == "Silk Boots" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "silkBoots", function_owner = self, label = "Silk Boots",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		--Shields for blocking
+		elseif object.getName() == "Oxidized Beacon Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "deflect2", function_owner = self, label = "Oxidized: Shield",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Oxidized Lantern Sword" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "deflect1", function_owner = self, label = "Oxidized: Sword",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Hazmat Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block2", function_owner = self, label = "Hazmat Shield: Block 2",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Steel Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Steel Shield: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Fetorsaurus" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block2", function_owner = self, label = "Fetosaurus: Block 2",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Beacon Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block2", function_owner = self, label = "Beacon Shield: Block 2",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Scrap Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Scrap Shield: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Round Leather Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Leather Shield: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Blast Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Blast Shield: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Knuckle Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Knuckle Shield: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Feather Shield" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Feather Shield: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		--Weapons for Blocking
+		elseif object.getName() == "Gloom Sheath" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Gloom Sheath: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Calcified Juggernaut Blade" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Calcified Juggernaut Blade: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = {font_color = font_color}, font_size = 750}))
+
+		elseif object.getName() == "Prism Mace" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Prism Mace: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Blast Sword" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "block1", function_owner = self, label = "Blast Sword: Block 1",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		else
+			if object.getName() == "Tunnel Vision" then
+				broadcastToColor("You may only spend actions to activate weapons", player_color, msg_color)
+				broadcastToColor(sigil .. "  Tunnel Vision  " .. sigil, player_color, msg_color)
+			end
+		end
+
+		if not hasTunnelVision then
+			if  object.getName() == "Trash Crown" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "trashCrown", function_owner = self, label = "Trash Crown",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif (object.getName() == "Necromancer's Eye" and object.getRotation().z > 165) then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "necromancerEye", function_owner = self, label = "Necromancer's Eye",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Cat Eye Circlet" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "catEyeCirclet", function_owner = self, label = "Cat Eye Circlet",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Rawhide Headband" then
+				if object.getRotation().z > 165 then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "rawHide", function_owner = self, label = "Rawhide Headband",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+				end
+
+			elseif object.getName() == "Acanthus Doctor" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "acanthusDoctor", function_owner = self, label = "Acanthus Doctor",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Silk Surgeon" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "silkSurgeon", function_owner = self, label = "Silk Surgeon",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Crest Crown" and (insanity >= 3 or isInsane) then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "crestCrown", function_owner = self, label = "Crest Crown",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Whisker Harp" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "whiskerHarp", function_owner = self, label = "Whisker Harp",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Bandages" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "bandages", function_owner = self, label = "Bandages",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+			end
+		end
+	end
+end
+
+-- Acanthus Doctor --------------------------------
+function acanthusDoctor(object, player_color)
+	broadcastToColor("You may spend a Fresh Acanthus or a Flower Resource to heal a Severe Injury on yourself or an adjacent Survivor", player_color, msg_color)
+	broadcastToColor(sigil .. "  Acanthus Doctor  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Bandages ---------------------------------------
+function bandages(object, player_color)
+	broadcastToColor("Select a Player to remove Bleeding Tokens", player_color, msg_color)
+	broadcastToColor(sigil .. "  Bandages  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	createBandagesButtons()
+end
+
+function createBandagesButtons()
+	get_vars_survivors()
+	createButton_MainMenu()
+
+	local btn_params = {
+		rotation 			= btn_rotation,
+		click_function 	= "",
+		function_owner 	= self,
+		label 				= "",
+		position 			= {},
+		scale 				= {0.5, 0.5, 0.5},
+		width 				= 6000,
+		height 				= 1100,
+		font_size 			= 750,
+		color 				= {0, 0, 0, 1},
+		font_color 			= {}
+	}
+
+	for _, obj in ipairs(zoneP1.getObjects()) do
+		if obj.getName() == "Bleeding" then
+			btn_params.label = sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1
+			btn_params.position = { - 0.3, 0.2, - 7.8}
+			btn_params.font_color = font_color_P1
+			btn_params.click_function = "set_bandages_red"
+			self.createButton(btn_params)
+		end
+	end
+
+	for _, obj in ipairs(zoneP2.getObjects()) do
+		if obj.getName() == "Bleeding" then
+			btn_params.label = sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2
+			btn_params.position = { - 0.3, 0.2, - 6.8}
+			btn_params.font_color = font_color_P2
+			btn_params.click_function = "set_bandages_yellow"
+			self.createButton(btn_params)
+		end
+	end
+
+	for _, obj in ipairs(zoneP3.getObjects()) do
+		if obj.getName() == "Bleeding" then
+			btn_params.label = sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3
+			btn_params.position = { - 0.3, 0.2, - 5.8}
+			btn_params.font_color = font_color_P3
+			btn_params.click_function = "set_bandages_green"
+			self.createButton(btn_params)
+		end
+	end
+
+	for _, obj in ipairs(zoneP4.getObjects()) do
+		if obj.getName() == "Bleeding" then
+			btn_params.label = sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4
+			btn_params.position = { - 0.3, 0.2, - 4.8}
+			btn_params.font_color = font_color_P4
+			btn_params.click_function = "set_bandages_blue"
+			self.createButton(btn_params)
+		end
+	end
+end
+
+function set_bandages_red()
+	zone_Player_to_heal = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	remove_Bleeding()
+end
+
+function set_bandages_yellow()
+	zone_Player_to_heal = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	remove_Bleeding()
+end
+
+function set_bandages_green()
+	zone_Player_to_heal = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	remove_Bleeding()
+end
+
+function set_bandages_blue()
+	zone_Player_to_heal = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	remove_Bleeding()
+end
+
+function remove_Bleeding()
+	local i = 0
+	broadcastToAll("Bleeding Tokens Removed", {1,1,1})
+	for _, object in pairs(zone_Player_to_heal.getObjects()) do
+		if object.getName() == "Bleeding" then
+			i = i + 1
+			object.destroy()
+			clearMenuButtons()
+			menuTable = {}
+			createButtons()
+			if i == 2 then
+				return
+			end
+		end
+	end -- end
+end
+
+
+-- Block and Deflect -------------------------------
+function block1(object, player_color)
+	survCard.call("blockButton1")
+	clearMenuButtons()
+	broadcastToColor("You are Blocking for 1 Hit", player_color, msg_color)
+	menuTable = {}
+	createButtons()
+end
+
+function block2(object, player_color)
+	survCard.call("blockButton1")
+	survCard.call("blockButton2")
+	clearMenuButtons()
+	broadcastToColor("You are Blocking for 2 Hits", player_color, msg_color)
+	menuTable = {}
+	createButtons()
+end
+
+function deflect2(object, player_color)
+	survCard.call("deflectButton1")
+	survCard.call("deflectButton2")
+	clearMenuButtons()
+	broadcastToColor("You gained 2 Deflect Tokens", player_color, msg_color)
+	menuTable = {}
+	createButtons()
+end
+
+function deflect1(object, player_color)
+	survCard.call("deflectButton3")
+	clearMenuButtons()
+	broadcastToColor("You gained 1 Deflect Token", player_color, msg_color)
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Cat Eye Circlet ---------------------------------
+function catEyeCirclet(object, player)
+	for _, obj in ipairs(zoneHitLocations.getObjects()) do
+		obj.takeObject({position = {8.64, 4.31, - 2.45}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {11.07, 4.31, - 2.44}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {13.53, 4.31, - 2.46}, top = true, callback = "flipCard", callback_owner = Global, })
+	end
+	local parameters = {}
+	parameters.position = {8.66, 4.44, - 3.65}
+	Player[player].lookAt(parameters) -- end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Crest Crown -------------------------------------
+function crestCrown(object, player_color)
+	broadcastToColor("You may shuffle the Hit Location Deck", player_color, msg_color)
+	broadcastToColor(sigil .. "  Crest Crown  " .. sigil, player_color, msg_color)
+	local hitTool = getObjectFromGUID('10e61e')
+	hitTool.call("createButton_reshuffleHitLocations")
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Fecal Salve -------------------------------------
+function fecalSalve(object, player)
+	survCard.call("fecalSalveButton")
+	broadcastToColor("You will not be a threat until you attack", player_color, msg_color)
+	broadcastToColor(sigil .. "  Fecal Salve  " .. sigil, player_color, msg_color)
+	-- Resets the Menu
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Necromancer's Eye -------------------------------
+function necromancerEye(object, player)
+	for _, obj in ipairs(zoneHitLocations.getObjects()) do
+		obj.takeObject({position = {8.64, 4.31, - 2.45}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {11.07, 4.31, - 2.44}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {13.53, 4.31, - 2.46}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {16.07, 4.31, - 2.45}, top = true, callback = "flipCard", callback_owner = Global, })
+	end
+	local parameters = {}
+	parameters.position = {8.66, 4.44, - 3.65}
+	Player[player].lookAt(parameters) -- end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Rawhide Headband --------------------------------
+function rawHide(object, player)
+	local zoneAIDeck = getObjectFromGUID(Global.getTable('zones').deckMonsterAI.guid)
+	for _, obj in ipairs(zoneAIDeck.getObjects()) do
+		obj.takeObject({position = { - 8.93, 4.31, - 2.37}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = { - 11.43, 4.31, - 2.37}, top = true, callback = "flipCard", callback_owner = Global, })
+	end
+	broadcastToColor(sigil .. "  Rawhide Headband  " .. sigil, player, msg_color)
+	local parameters = {}
+	parameters.position = { - 3.74, 7.02, - 2.49}
+	Player[player].lookAt(parameters) -- end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Silk Boots --------------------------------------
+function silkBoots(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Silk Boots" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_SilkBoots = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+
+-- Silk Surgeon ------------------------------------
+function silkSurgeon(object, player_color)
+	broadcastToColor("If a Survivor is adjacent to you, they may add 2 to any Hit Location", player_color, msg_color)
+	broadcastToColor(sigil .. "  Silk Surgeon  " .. sigil, player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Trash Crown -------------------------------------
+function trashCrown(object, player)
+	for _, obj in ipairs(zoneHitLocations.getObjects()) do
+		obj.takeObject({position = {8.64, 4.31, - 2.45}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {11.07, 4.31, - 2.44}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {13.53, 4.31, - 2.46}, top = true, callback = "flipCard", callback_owner = Global, })
+		obj.takeObject({position = {16.07, 4.31, - 2.45}, top = true, callback = "flipCard", callback_owner = Global, })
+	end
+	broadcastToColor("Discard 3 Hit Locations that are not Traps", player, msg_color)
+	broadcastToColor(sigil .. "  Trash Crown  " .. sigil, player, msg_color)
+	local parameters = {}
+	parameters.position = {8.66, 4.44, - 3.65}
+	Player[player].lookAt(parameters) -- end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+-- Whisker Harp ------------------------------------
+function whiskerHarp(object, player_color)
+	-- Clone to Player Card
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Whisker Harp" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_WhiskerHarp = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+
+
+
+
+
+
+
+
+
+-- Consumables Functions -------------------------------------------------------
+function consumables(object, player_color)
+	clearMenuButtons()
+	clear_spawned_gear_cards()
+	menuTable = {}
+	createButton_MainMenu()
+
+	isInsane = false
+	hasTunnelVision = false
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Tunnel Vision" then
+			hasTunnelVision = true
+		end
+		if object.getName() == "Shattered Jaw" then
+			broadcastToColor("Shattered Jaw ~ You cannot Consume", player_color, msg_color)
+			broadcastToColor(sigil .. "  Shattered Jaw  " .. sigil, player_color, msg_color)
+		end
+		if object.getName() == "Husk of Destiny" or object.getName() == "Stark Raving" then
+			isInsane = true
+		end
+	end
+
+	for _, object in ipairs(zone.getObjects()) do
+		local desc = object.getDescription()
+		local rotZ = object.getRotation().z
+		--Consumable Gear and Resources
+		if object.getName() == "Fresh Acanthus" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "freshAcanthus", function_owner = self, label = "Fresh Acanthus",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Crab Spider" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "crabSpider", function_owner = self, label = "Crab Spider",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Lonely Ant" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "lonelyAnt", function_owner = self, label = "Lonely Ant",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Hissing Cockroach" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "hissingCockroach", function_owner = self, label = "Hissing Cockroach",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Osseous Bloom" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "osseousBloom", function_owner = self, label = "Osseous Bloom",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Lantern Bloom" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "lanternBloom", function_owner = self, label = "Lantern Bloom",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Blistering Plasma Fruit" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "blisteringPlasmaFruit", function_owner = self, label = "Blistering Plasma Fruit",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Jagged Maw Fruit" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "jaggedMarrowFruit", function_owner = self, label = "Jagged Marrow Fruit",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Porous Flesh Fruit" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "porousFleshFruit", function_owner = self, label = "Porous Flesh Fruit",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Pituitary Gland" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "pituitaryGland", function_owner = self, label = "[ Pituitary Gland ]",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Stomach" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "stomach", function_owner = self, label = "Stomach",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Venom Sac" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "venomSac", function_owner = self, label = "[ Venom Sac ]",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Bugfish" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "bugFish", function_owner = self, label = "Bugfish",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Stout Kidney" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "stoutKidney", function_owner = self, label = "[ Stout Kidney ]",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Active Thyroid" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "activeThyroid", function_owner = self, label = "[ Active Thyroid ]",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Red Vial" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "redVial", function_owner = self, label = "Red Vial",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Crimson Vial" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "crimsonVial", function_owner = self, label = "Crimson Vial",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Sword Beetle" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "swordBeetle", function_owner = self, label = "Sword Beetle",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Cyclops Fly" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "cyclopsFly", function_owner = self, label = "Cyclops Fly",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+		elseif object.getName() == "Nightmare Tick" then
+			table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "nightmareTick", function_owner = self, label = "Nightmare Tick",
+			position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+			color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+		end
+
+		if not hasTunnelVision and not string.find(desc, "once per showdown used") then
+			if object.getName() == "Frenzy Drink" then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "frenzyPotion", function_owner = self, label = "Frenzy Drink",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Seasoned Monster Meat" and (rotZ > 165 and rotZ < 195) then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "monsterMeat", function_owner = self, label = "Seasoned Monster Meat",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Power Potion" then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "powerPotion", function_owner = self, label = "Power Potion",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Dark Water Vial" then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "darkWater", function_owner = self, label = "Dark Water Vial",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Bird Bread" then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "birdBread", function_owner = self, label = "Bird Bread",
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+			end
+
+		else
+			if object.getName() == "Tunnel Vision" then
+				broadcastToColor("You may only spend actions to activate weapons", player_color, msg_color)
+				broadcastToColor(sigil .. "  Tunnel Vision  " .. sigil, player_color, msg_color)
+			end
+		end
+	end
+end
+
+-- Active Thyroid -------------------------------------
+function activeThyroid(object, player_color)
+	broadcastToAll(sigil .. "  Active Thyroid Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Active Thyroid", player_color, msg_color)
+
+	diceRoller.call("click_roll")
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Active Thyroid" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Bird Bread -----------------------------------------
+function birdBread(object, player_color)
+	-- Clone to Player Card
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Bird Bread" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_BirdBread = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Blistering Plasma Fruit ----------------------------
+function blisteringPlasmaFruit(object, player_color)
+	broadcastToAll(sigil .. "  Blistering Plasma Fruit Consumed  " .. sigil, msg_color)
+	getNightmareBlood()
+	--Go to Grid
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player_color].lookAt(parameters)
+	broadcastToColor("You gained the Nightmare Blood Ability ~ Archive Blistering Plasma Fruit", player_color, msg_color)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Bugfish --------------------------------------------
+function bugFish(object, player_color)
+
+	local zone = getObjectFromGUID(Global.getTable('zones').deckVermin.guid)
+	for _, object in pairs(zone.getObjects()) do
+		if object.getName() == "Vermin Deck" then
+			deck = object
+			deck.shuffle()
+			randomVermin = deck.takeObject({top = true, position = gained_resource_pos, callback_owner = Global, callback = "flipCard"})
+			randomVermin.setScale({0.70, 1.00, 0.70})
+		end
+	end
+
+	-- Add Survival
+	changeSurvivors("survival", 2, grid)
+	broadcastToAll(sigil .. "  Bugfish Consumed  " .. sigil, msg_color)
+	broadcastToColor("You gained (+2) Survival ~ Archive Bugfish", player_color, msg_color)
+	broadcastToColor("You gained a random Vermin Resource ~ Consume it Immediately", player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Crab Spider ----------------------------------------
+function crabSpider(object, player_color)
+	broadcastToAll(sigil .. "  Crab Spider Consumed  " .. sigil, msg_color)
+	broadcastToColor("You gained (+3) Survival ~ Archive Crab Spider", player_color, msg_color)
+	changeSurvivors("survival", 3, grid)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Crimson Vial ---------------------------------------
+function crimsonVial(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Bleeding" then
+			object.destroy()
+		end
+	end
+	broadcastToAll(sigil .. "  Crimson Vial Consumed  " .. sigil, msg_color)
+	broadcastToColor("Your Bleeding Tokens were removed ~ Remove a Severe Injury of your Choice ~ Archive Crimson Vial", player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Cyclops Fly ----------------------------------------
+function cyclopsFly(object, player_color)
+	broadcastToAll(sigil .. "  Cyclops Fly Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Cyclops Fly", player_color, msg_color)
+	diceRoller.call("click_roll")
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Cyclops Fly" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Dark Water -----------------------------------------
+function darkWater(object, player_color)
+	survCard.call("knockdown_survivor")
+	broadcastToAll(sigil .. "  Dark Water Consumed  " .. sigil, msg_color)
+	broadcastToColor("You are knocked down ~ Gain a Random Disorder ~ Archive Dark Water", player_color, msg_color)
+	--Go to Disorders
+	local parameters = {}
+	parameters.position = {0.01, 4.43, - 25.57}
+	Player[player_color].lookAt(parameters)
+
+	--Destroy Current Disorders and flip Dark Water Vial
+	for _, object in ipairs(zone.getObjects()) do
+		local desc = object.getDescription()
+		if string.find(desc, 'disorder') then
+			broadcastToColor(object.getName() .. " removed", player_color, msg_color)
+			object.destroy()
+		end
+	end --end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Fresh Acanthus ------------------------------------
+function freshAcanthus(object, player_color)
+	broadcastToAll(sigil .. "  Fresh Acanthus Consumed  " .. sigil, msg_color)
+	broadcastToColor("Heal 1 Hit location of your choice ~ Including Armor Levels ~ Archive Fresh Acanthus", player_color, msg_color)
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player].lookAt(parameters)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Frenzy Potion --------------------------------------
+function frenzyPotion(object, player_color)
+	-- Exhaust once per showdown use
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Frenzy Drink" then
+			object.setDescription(object.getDescription() .. ", once per showdown used")
+		end
+	end -- end
+
+	local parameters = {}
+	parameters.position = hitlocation_roller_camera
+	Player[player_color].lookAt(parameters)
+
+	broadcastToAll(sigil .. "  Frenzy Drink Consumed  " .. sigil, msg_color)
+	broadcastToColor("Suffer the Frenzy Brain Trauma", player_color, msg_color)
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Hissing Cockroach ---------------------------------
+function hissingCockroach(object, player_color)
+	broadcastToAll(sigil .. "  Hissing Cockroach Consumed  " .. sigil, msg_color)
+	broadcastToColor("Lose all your Survival and gain 2d10 Insanity ~ Archive Hissing Cockroach", player_color, msg_color)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Jagged Marrow Fruit -------------------------------
+function jaggedMarrowFruit(object, player_color)
+	broadcastToAll(sigil .. "  Jagged Marrow Fruit Consumed  " .. sigil, msg_color)
+	getNightmareSpurs()
+	--Go to Grid
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player_color].lookAt(parameters)
+	broadcastToColor("You gained the Nightmare Spurs Ability ~ Archive Jagged Marrow Fruit", player_color, msg_color)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Lonely Ant ----------------------------------------
+function lonelyAnt(object, player_color)
+	broadcastToAll(sigil .. "  Lonely Ant Consumed  " .. sigil, msg_color)
+	broadcastToColor("Swap your Insanity and Survival Values ~ Archive Lonely Ant", player_color, msg_color)
+
+	--Go to Blue Grid
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player].lookAt(parameters)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Lantern Bloom -------------------------------------
+function lanternBloom(object, player_color)
+	broadcastToAll(sigil .. "  Lantern Bloom Consumed  " .. sigil, msg_color)
+	broadcastToColor("You gained (+3) Luck Tokens ~ Gain (-1) Permanent Luck ~ Archive Lantern Bloom", player_color, msg_color)
+	getFlowerAddiction()
+	--Go to Grid
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player_color].lookAt(parameters)
+
+	-- Add +3 Luck Tokens
+	local stats = {color = color, stat = "lck", modifier = "pos", num = 3, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Osseous Bloom -------------------------------------
+function osseousBloom(object, player_color)
+	broadcastToAll(sigil .. "  Osseous Bloom Consumed  " .. sigil, msg_color)
+	broadcastToColor("Your Bleeding and Negative Stat Tokens were removed ~ Archive Osseous Bloom", player_color, msg_color)
+	getFlowerAddiction()
+
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player_color].lookAt(parameters)
+	broadcastToColor("You gained the Flower Addiction Disorder", player_color, msg_color)
+
+	for _, obj in ipairs(zone.getObjects()) do
+		local desc = obj.getDescription()
+		if obj.getName() == "Bleeding" then
+			obj.destroy()
+		elseif string.find(desc, "minus1mov") then
+			obj.destroy()
+		elseif string.find(desc, "minus1eva") then
+			obj.destroy()
+		elseif string.find(desc, "minus1spd") then
+			obj.destroy()
+		elseif string.find(desc, "minus1str") then
+			obj.destroy()
+		elseif string.find(desc, "minus1acc") then
+			obj.destroy()
+		elseif string.find(desc, "minus1lck") then
+			obj.destroy()
+		end
+		clearMenuButtons()
+		menuTable = {}
+		createButtons()
+	end
+end
+
+function getFlowerAddiction()
+	local card_toGet = {cardName = "Flower Addiction", zone = "", deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckDIS.guid)}
+	Global.setTable("card", card_toGet)
+	local pos_toSpawn = gained_resource_pos
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+end
+
+-- Nightmare Blood -----------------------------------
+function getNightmareBlood(object, player_color)
+	local card_toGet = {cardName = "Nightmare Blood", zone = "", deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckABIL.guid)}
+	Global.setTable("card", card_toGet)
+	local pos_toSpawn = gained_resource_pos
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+end
+
+-- Nightmare Spurs -----------------------------------
+function getNightmareSpurs()
+	local card_toGet = {cardName = "Nightmare Spurs", zone = "", deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckABIL.guid)}
+	Global.setTable("card", card_toGet)
+	local pos_toSpawn = gained_resource_pos
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+end
+
+-- Nightmare Membrane ---------------------------------
+function getNightmareMembrane()
+	local card_toGet = {cardName = "Nightmare Membrane", zone = "", deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckABIL.guid)}
+	Global.setTable("card", card_toGet)
+	local pos_toSpawn = gained_resource_pos
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+end
+
+-- Nightmare Tick -------------------------------------
+function nightmareTick(object, player_color)
+	broadcastToAll(sigil .. "  Nightmare Tick Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Nightmare Tick", player_color, msg_color)
+	diceRoller.call("click_roll")
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Cyclops Fly" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Pituitary Gland ------------------------------------
+function pituitaryGland(object, player_color)
+	diceRoller.call("click_roll")
+
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Pituitary Gland" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+	broadcastToAll(sigil .. "  Pituitary Gland Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Pituitary Gland", player_color, msg_color)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Porous Flesh Fruit --------------------------------
+function porousFleshFruit(object, player_color)
+	broadcastToAll(sigil .. "  Porous Flesh Fruit Consumed  " .. sigil, msg_color)
+	getNightmareMembrane()
+	--Go to Grid
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player_color].lookAt(parameters)
+	broadcastToColor("You gained the Nightmare Membrane Ability ~ Archive Porous Flesh Fruit", player_color, msg_color)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Power Potion ---------------------------------------
+function powerPotion(object, player_color)
+	local numGreenAffinity = tonumber(aff_green.call("getCount"))
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "green_perm") then
+			numGreenAffinity = numGreenAffinity + 1
+		end
+	end
+	for _, gear in ipairs(zone.getObjects()) do
+		if gear.getName() == "Power Potion" then
+			if numGreenAffinity < 1 then
+				broadcastToColor("You do not have any Green Affinities ~ Or the Counter is not Set Correctly", player_color, msg_color)
+			else
+				gear.setDescription(gear.getDescription() .. ", once per showdown used")
+				local stats = {color = color, stat = "str", modifier = "pos", num = numGreenAffinity, phase = nil}
+				Global.setTable('temp', stats)
+				startLuaCoroutine(Global, "spwn_tok")
+			end
+		end
+	end
+	if numGreenAffinity >= 1 then
+		broadcastToAll(sigil .. "  Power Potion Consumed  " .. sigil, msg_color)
+		broadcastToColor("You have " .. numGreenAffinity .. " Green Affinities and gained " .. numGreenAffinity .. " (+1) Strength Tokens", player_color, msg_color)
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Seasoned Monster Meat -------------------------------
+function monsterMeat(object, player_color)
+	broadcastToAll(sigil .. "  Seasoned Monster Meat Consumed  " .. sigil, msg_color)
+	broadcastToColor("You gained (+3) Survival ~ You gained a (+1) Strength Token", player_color, msg_color)
+	changeSurvivors("survival", 3, grid)
+	bag_str.takeObject({position = strToken_pos, rotation = {0, 180, 0}})
+
+	-- Exhaust Card after once per showdown use
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Seasoned Monster Meat" then
+			object.setDescription(object.getDescription() .. ", once per showdown used")
+		end
+	end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Stomach --------------------------------------------
+function stomach(object, player_color)
+	broadcastToAll(sigil .. "  Stomach Consumed  " .. sigil, msg_color)
+	broadcastToColor("Gain 1 Hunt XP ~ Archive Stomach", player_color, msg_color)
+	--Go to Blue Grid
+	local parameters = {}
+	parameters.position = grid_camera
+	Player[player].lookAt(parameters)
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Stout Kidney ---------------------------------------
+function stoutKidney(object, player_color)
+	broadcastToAll(sigil .. "  Stout Kidney Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Stout Kidney", player_color, msg_color)
+
+	diceRoller.call("click_roll")
+
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Stout Kidney" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Sword Beetle ---------------------------------------
+function swordBeetle(object, player_color)
+	broadcastToAll(sigil .. "  Sword Beetle Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Sword Beetle", player_color, msg_color)
+	diceRoller.call("click_roll")
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Sword Beetle" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Venom Sac ------------------------------------------
+function venomSac(object, player_color)
+	broadcastToAll(sigil .. "  Venom Sac Consumed  " .. sigil, msg_color)
+	broadcastToColor("Rolling 1d10 ~ Archive Venom Sac", player_color, msg_color)
+
+	diceRoller.call("click_roll")
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Venom Sac" then
+			object.setScale({0.49, 1.00, 0.49})
+			object.setPosition(gained_resource_pos)
+		end
+	end
+
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+
+
+
+
+
+
+
+
+
+-- Once Per Showdown Functions -------------------------------------------------
+function oncePerShowdown(object, player_color)
+	clearMenuButtons()
+	clear_spawned_gear_cards()
+	menuTable = {}
+	createButton_MainMenu()
+
+	local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+
+	hasTunnelVision = false
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Tunnel Vision" then
+			hasTunnelVision = true
+		end
+	end
+
+	if hasTunnelVision then
+		broadcastToColor("You may only spend actions to activate weapons", player_color, msg_color)
+		broadcastToColor(sigil .. "  Tunnel Vision  " .. sigil, player_color, msg_color)
+		clearMenuButtons()
+		menuTable = {}
+		createButtons()
+		return
+	end
+
+	for _, object in ipairs(zone.getObjects()) do
+		local desc = object.getDescription()
+		local rotZ = object.getRotation().z
+		if not string.find(desc, "once per showdown used") then
+			--Once Per Showdown Effects
+			if object.getName() == "Gorn" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "gorn", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Pulse Lantern" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "pulseLantern", function_owner = self, label = 'Pulse Lantern',
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Rubber Bone Harness" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "boneHarness", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Silk Robes" and (rotZ > 165 and rotZ < 195) then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "silkRobes", function_owner = self, label = object.getName(),
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Silk Sash" and (rotZ > 165 and rotZ < 195) then
+					table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "silkSash", function_owner = self, label = object.getName(),
+					position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+					color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Sky Harpoon" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "skyHarpoon", function_owner = self, label = 'Sky Harpoon',
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Silk Bomb" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "silkBomb", function_owner = self, label = "Silk Bomb",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Brain Mint" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "brainMint", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Orator of Death" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "oratorDeath_msg", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Berserker" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "berserker", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Lure Epilepsy" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "lureEpilepsy", function_owner = self, label = "Lure Epilepsy",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Silk Turban" and object.getRotation().z > 165 then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "silkTurban", function_owner = self, label = "Silk Turban",
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Speed Powder" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "speedPowder", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Heroic" and survival >= 3 then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "heroic", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Champion's Rite" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "championsRite", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Fated Blow" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "fatedBlow", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Mad Oracle" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "madOracle", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			elseif object.getName() == "Mad Grade" then
+				table.insert(menuTable, self.createButton({rotation = btn_rotation, click_function = "madGrade", function_owner = self, label = object.getName(),
+				position = {0, 0.2, - 9.5 + #menuTable * 1.2}, scale = {0.5, 0.5, 0.5}, width = 7500, height = 1000,
+				color = {0, 0, 0}, font_color = font_color, font_size = 750}))
+
+			end
+		end
+	end
+end
+
+-- Beetle Strength -----------------------------------------
+function beetleStr(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Beetle Strength" then
+			object.setDescription(object.getDescription() .. ", once per showdown used")
+			broadcastToColor("You push an adjacent obstacle terrain forward in a straight line then...resolve the effects on this card", player_color, msg_color)
+				broadcastToColor(sigil .. "  Beetle Strength  " .. sigil, player_color, msg_color)
+		end
+	end
+	clearMenuButtons()
+	menuTable = {}
+	createButtons()
+end
+
+-- Berserker -----------------------------------------------
+function berserker(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Berserker" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_Berserker = true
+end
+
+-- Brain Mint ----------------------------------------------
+function brainMint(object, player_color)
+	-- Clone to Player Card
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Brain Mint" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_BrainMint = true
+end
+
+-- Champion's Rite -----------------------------------------
+function championsRite(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Champion's Rite" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_ChampionsRite = true
+end
+
+-- Fated Blow ----------------------------------------------
+function fatedBlow(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Fated Blow" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_FatedBlow = true
+end
+
+-- Gorn ----------------------------------------------------
+function gorn(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Gorn" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	isUsing_Gorn = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Heroic --------------------------------------------------
+function heroic(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Heroic" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	broadcastToColor("You have " .. survival .. " Survival", player_color, msg_color)
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_Heroic = true
+end
+
+-- Lure Epilepsy --------------------------------------------
+function lureEpilepsy(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Lure Epilepsy" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_LureEpilepsy = true
+end
+
+-- Mad Grade -----------------------------------------------
+function madGrade(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Mad Grade" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_MadGrade = true
+end
+
+-- Mad Oracle ----------------------------------------------
+function madOracle(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Mad Oracle" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_MadOracle = true
+end
+
+-- Orator of Death -----------------------------------------
+function oratorDeath_msg(object, player)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Orator of Death" then
+			local scale = object.getScale()
+			object.setScale({0.49, 1.00, 0.49})
+			object.clone({position = gear_clone_pos})
+			object.setScale(scale)
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_Orator = true
+end
+
+-- Pulse Lantern -------------------------------------------
+function pulseLantern(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Pulse Lantern" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_PulseLantern = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Rubber Bone Harness -------------------------------------
+function boneHarness(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Rubber Bone Harness" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	isUsing_RubberBoneHarness = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Silk Bomb -----------------------------------------------
+function silkBomb(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Silk Bomb" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_SilkBomb = true
+end
+
+-- Silk Robes ----------------------------------------------
+function silkRobes(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Silk Robes" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_SilkRobes = true
+end
+
+-- Silk Sash -----------------------------------------------
+function silkSash(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Silk Sash" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_SilkSash = true
+end
+
+-- Silk Turban ---------------------------------------------
+function silkTurban(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Silk Turban" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_SilkTurban = true
+end
+
+-- Sky Harpoon ---------------------------------------------
+function skyHarpoon(object, player_color)
+	-- Clone to Player Card
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Sky Harpoon" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_SkyHarpoon = true
+end
+
+-- Speed Powder --------------------------------------------
+function speedPowder(object, player_color)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Speed Powder" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end
+
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+	isUsing_SpeedPowder = true
+end
+
+
+
+
+
+
+
+
+
+
+-- Utility Functions -----------------------------------------------------------
+function get_vars_survivors()
+	zoneP1 = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	survCard_red = getObjectFromGUID(Global.getTable('survCards').red.guid)
+	settings_P1_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	sigil_P1 = settings_P1_token.getName()
+	font_color_P1 = settings_P1_token.getColorTint()
+	found_P1 = false
+	for _, obj in ipairs(zoneP1.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P1 = obj.getName()
+			found_P1 = true
+		end
+	end
+	zoneP2 = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	survCard_yellow = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	sigil_P2 = settings_P2_token.getName()
+	font_color_P2 = settings_P2_token.getColorTint()
+	found_P2 = false
+	for _, obj in ipairs(zoneP2.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P2 = obj.getName()
+			found_P2 = true
+		end
+	end
+	zoneP3 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	survCard_green= getObjectFromGUID(Global.getTable('survCards').green.guid)
+	settings_P3_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	sigil_P3 = settings_P3_token.getName()
+	font_color_P3 = settings_P3_token.getColorTint()
+	found_P3 = false
+	for _, obj in ipairs(zoneP3.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P3 = obj.getName()
+			found_P3 = true
+		end
+	end
+	zoneP4 = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	survCard_blue = getObjectFromGUID(Global.getTable('survCards').blue.guid)
+	settings_P4_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+	sigil_P4 = settings_P4_token.getName()
+	font_color_P4 = settings_P4_token.getColorTint()
+	found_P4 = false
+	for _, obj in ipairs(zoneP4.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P4 = obj.getName()
+			found_P4 = true
+		end
+	end
+end
+
+function broadcast_message_coR()
+	if #broadcastTable > 0 then
+		for _, b in pairs(broadcastTable) do
+			broadcastToAll(b, msg_color)
+			wait(3)
+		end
+	end
+	return 1
+end
+
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function removeButtons_all()
+	self.clearButtons()
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function clearMenuButtons()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.index >= 0 then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function returnIsDeaf(isDeafRed, isDeafYellow, isDeafGreen, isDeafBlue)
+	isDeafRed = false
+	isDeafYellow = false
+	isDeafGreen = false
+	isDeafBlue = false
+	if isDeaf_red.getRotation().z > 165 and isDeaf_red.getRotation().z < 195 then
+		isDeafRed = true
+	elseif isDeaf_yellow.getRotation().z > 165 and isDeaf_yellow.getRotation().z < 195 then
+		isDeafYellow = true
+	elseif isDeaf_green.getRotation().z > 165 and isDeaf_green.getRotation().z < 195 then
+		isDeafGreen = true
+	elseif isDeaf_blue.getRotation().z > 165 and isDeaf_blue.getRotation().z < 195 then
+		isDeafBlue = true
+	end
+	return isDeafRed, isDeafYellow, isDeafGreen, isDeafBlue
+end
+
+function clear_spawned_gear_cards()
+	local pos = survCard.getPosition()
+	local hitList = Physics.cast({origin = {pos.x, pos.y, pos.z}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getDescription(), "gear") and not string.find(entry.hit_object.getDescription(), "resource") then
+			if entry.hit_object ~= nil then
+				entry.hit_object.destroy()
+			end
+		end
+	end
+end
+
+
+-- end yellow menu token

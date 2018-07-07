@@ -1,0 +1,329 @@
+
+function onLoad()
+	createButtons()
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+end
+
+function start_prologue()
+	set_deck_prologue()
+end
+
+-- Set Deck Functions  --------------------------------------------------------
+function set_deck_prologue()
+	deck_toGet = "Prologue Deck"
+	pos_toSpawn = {-1.59, 1.52, -104.87}
+	load_deck()
+	createButtons_navigation()
+end
+
+-- Load Deck Functions  --------------------------------------------------------
+function load_deck()
+	local pos = gameBox.getPosition()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == deck_toGet then
+			deck_toSearch = gameBox.takeObject({position = pos_toSpawn, rotation = {0, 180, 0}, smooth = false, guid = obj.guid})
+		end
+	end
+end
+
+-- Set First Page --------------------------------------------------------
+function prologue_first_page()
+	reset_page_display()
+	self.setDescription("Prologue")
+	get_storyEvent()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Open Prologue Story" then
+			self.removeButton(v.index)
+		end
+	end
+	start_showdown = false
+end
+
+
+-- Load Page Functions  --------------------------------------------------------
+function get_storyEvent()
+	local pos = self.getPosition()
+	for _, story in ipairs(deck_toSearch.getObjects()) do
+		local desc = story.description
+		local name = story.nickname
+		local scale = {1.56, 1.00, 1.56}
+		if name == self.getDescription() and string.find(desc, next_page_left) then
+			local page = deck_toSearch.takeObject({
+				position = {pos.x - 3.19, 5.06, pos.z + 2.98},
+				rotation = {20.00, 180.00, 0.01},
+				guid = story.guid,
+				smooth = false
+			})
+			page.setLock(true)
+			page.setScale(scale)
+		elseif name == self.getDescription() and string.find(desc, next_page_right) then
+			local page = deck_toSearch.takeObject({
+				position = {pos.x + 3.19, 5.06, pos.z + 2.98},
+				rotation = {20.00, 180.00, 0.01},
+				guid = story.guid,
+				smooth = false
+			})
+			page.setLock(true)
+			page.setScale(scale)
+		end
+	end
+end
+
+function destroy_currentLoaded()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin={pos.x - 3.19, 5.06, pos.z + 2.98},
+		direction={0, 1, 0},
+		type=2,
+		size={2, 2, 2},
+		max_distance = 0,
+	})
+	for _, entry in ipairs(hitList) do
+		if not start_showdown then
+			if page_turn == "right" then
+				if string.find(entry.hit_object.getDescription(), "one") then
+					next_page_left = "three"
+				elseif string.find(entry.hit_object.getDescription(), "three") then
+					next_page_left = "five"
+				elseif string.find(entry.hit_object.getDescription(), "five") then
+					next_page_left = "seven"
+				elseif string.find(entry.hit_object.getDescription(), "seven") then
+					next_page_left = "nine"
+				elseif string.find(entry.hit_object.getDescription(), "nine") then
+					next_page_left = "eleven"
+				elseif string.find(entry.hit_object.getDescription(), "eleven") then
+					next_page_left = "thirteen"
+				elseif string.find(entry.hit_object.getDescription(), "thirteen") then
+					next_page_left = "fifteen"
+				elseif string.find(entry.hit_object.getDescription(), "fifteen") then
+					next_page_left = "seventeen"
+				elseif string.find(entry.hit_object.getDescription(), "seventeen") then
+					next_page_left = "nineteen"
+				end
+			elseif page_turn == "left" then
+				if string.find(entry.hit_object.getDescription(), "nineteen") then
+					next_page_left = "seventeen"
+				elseif string.find(entry.hit_object.getDescription(), "seventeen") then
+					next_page_left = "fifteen"
+				elseif string.find(entry.hit_object.getDescription(), "fifteen") then
+					next_page_left = "thirteen"
+				elseif string.find(entry.hit_object.getDescription(), "thirteen") then
+					next_page_left = "eleven"
+				elseif string.find(entry.hit_object.getDescription(), "eleven") then
+					next_page_left = "nine"
+				elseif string.find(entry.hit_object.getDescription(), "nine") then
+					next_page_left = "seven"
+				elseif string.find(entry.hit_object.getDescription(), "seven") then
+					next_page_left = "five"
+				elseif string.find(entry.hit_object.getDescription(), "five") then
+					next_page_left = "three"
+				elseif string.find(entry.hit_object.getDescription(), "three") then
+					next_page_left = "one"
+				end
+			end
+		end
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+
+	local hitList = Physics.cast({
+		origin={pos.x + 3.19, 5.06, pos.z + 2.98},
+		direction={0, 1, 0},
+		type=2,
+		size={2, 2, 2},
+		max_distance = 0,
+	})
+	for _, entry in ipairs(hitList) do
+		if not start_showdown then
+			if page_turn == "right" then
+				if string.find(entry.hit_object.getDescription(), "two") then
+					next_page_right = "four"
+				elseif string.find(entry.hit_object.getDescription(), "four") then
+					next_page_right = "six"
+				elseif string.find(entry.hit_object.getDescription(), "six") then
+					next_page_right = "eight"
+				elseif string.find(entry.hit_object.getDescription(), "eight") then
+					next_page_right = "ten"
+				elseif string.find(entry.hit_object.getDescription(), "ten") then
+					next_page_right = "twelve"
+				elseif string.find(entry.hit_object.getDescription(), "twelve") then
+					next_page_right = "fourteen"
+				elseif string.find(entry.hit_object.getDescription(), "fourteen") then
+					next_page_right = "sixteen"
+				elseif string.find(entry.hit_object.getDescription(), "sixteen") then
+					next_page_right = "eighteen"
+				elseif string.find(entry.hit_object.getDescription(), "eighteen") then
+					next_page_right = "twenty"
+				end
+			elseif page_turn == "left" then
+				if string.find(entry.hit_object.getDescription(), "twenty") then
+					next_page_right = "eighteen"
+				elseif string.find(entry.hit_object.getDescription(), "eighteen") then
+					next_page_right = "sixteen"
+				elseif string.find(entry.hit_object.getDescription(), "sixteen") then
+					next_page_right = "fourteen"
+				elseif string.find(entry.hit_object.getDescription(), "fourteen") then
+					next_page_right = "twelve"
+				elseif string.find(entry.hit_object.getDescription(), "twelve") then
+					next_page_right = "ten"
+				elseif string.find(entry.hit_object.getDescription(), "ten") then
+					next_page_right = "eight"
+				elseif string.find(entry.hit_object.getDescription(), "eight") then
+					next_page_right = "six"
+				elseif string.find(entry.hit_object.getDescription(), "six") then
+					next_page_right = "four"
+				elseif string.find(entry.hit_object.getDescription(), "four") then
+					next_page_right = "two"
+				end
+			end
+		end
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+end
+
+function load_prologue_showdown_bag()
+	play_music_track()
+	broadcastToAll("Showdown Setting Up", {1,1,1})
+	start_showdown = true
+	destroy_currentLoaded()
+	position = {24.79, 4.12, 5.24}
+	local bag_quarry = getObjectFromGUID('f18343')
+	for _, obj in ipairs(bag_quarry.getObjects()) do
+		if obj.name == "Prologue" then
+			bag_quarry.takeObject({position = position, rotation = {0, 0, 0}, smooth = false, guid = obj.guid})
+		end
+	end
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "board") then
+			board = obj
+			break
+		end
+	end
+	local btns = board.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Main Menu" then
+				board.call("main_menu")
+			end
+		end
+	end
+	board.setState(10)
+	self.destruct()
+end
+
+function play_music_track()
+	local set_Sound = getObjectFromGUID(Global.getTable('user_settings').set_Sound.guid)
+	local rotZ = set_Sound.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local music_player = getObjectFromGUID(Global.getTable('user_settings').music_player.guid)
+		local showdown_phase_soundtrack = getObjectFromGUID(Global.getTable('user_settings').showdown_phase_soundtrack.guid)
+		local track = tonumber(showdown_phase_soundtrack.getDescription())
+		if music_player ~= nil then
+			music_player.AssetBundle.playLoopingEffect(track)
+		end
+	end
+end
+
+-- Buttons ---------------------------------------------------------------------
+function createButtons()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= {-8, 0, 0},
+		scale 			= {2, 1, 2},
+		width 			= 4000,
+		height 			= 600,
+		font_size 		= 550,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+
+	btn_params.click_function = "start_prologue"
+	btn_params.position = {0, 0.25, 0}
+	btn_params.label = "Start Prologue"
+	self.createButton(btn_params)
+end
+
+function createButtons_navigation()
+	local btn_params 	= {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= {-5, 0, 0},
+		scale 			= {1, 0.5, 1},
+		width 			= 4300,
+		height 			= 800,
+		font_size 		= 600,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100},
+	}
+
+	btn_params.label = "Open Prologue Story"
+	btn_params.position = {0, 0.5, -0.3}
+	btn_params.click_function = "prologue_first_page"
+	self.createButton(btn_params)
+
+	btn_params.label = "Start Prologue Showdow"
+	btn_params.position = {0, 0.5, 1.1}
+	btn_params.click_function = "load_prologue_showdown_bag"
+	self.createButton(btn_params)
+
+	btn_params.label = "< Previous Page"
+	btn_params.position = {-15, 0.5, 0}
+	btn_params.click_function = "storyEvent_previous_page"
+	self.createButton(btn_params)
+
+	btn_params.label = "Next Page >"
+	btn_params.position = {14.4, 0.5, 0}
+	btn_params.click_function = "storyEvent_next_page"
+	self.createButton(btn_params)
+
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Start Prologue" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+-- Utility Functions ----------------------------------------------------------
+function removeButtons_All()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+			self.removeButton(v.index)
+	end
+end
+
+function reset_page_display()
+	next_page_left = "one"
+	next_page_right = "two"
+end
+
+function storyEvent_next_page()
+	page_turn = "right"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function storyEvent_previous_page()
+	page_turn = "left"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function close_menu()
+	gameBox.putObject(deck_toSearch)
+end
+
+
+-- prologue tool

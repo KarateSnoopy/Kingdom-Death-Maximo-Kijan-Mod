@@ -1,0 +1,167 @@
+
+
+function onLoad()
+	self.createButton{index = 0, click_function = 'callClickFunctions', function_owner = self,
+		label = 'Add New Survivor', position = {x = 0, y = 0.1, z = 0}, rotation = {x = 0, y = 0, z = 0},
+		scale = {x = 0.5, y = 1, z = 0.5}, width = 6800, height = 1000, font_size = 1200,
+	color = {0, 0, 0}, font_color = {1, 1, 1}}
+
+	self.createButton{click_function = 'startSurvivorDied', function_owner = self,
+		label = 'Survivor Died in Settlement', position = {x = 0, y = 0.1, z = 4}, rotation = {x = 0, y = 0, z = 0},
+		scale = {x = 0.5, y = 1, z = 0.5}, width = 9400, height = 950, font_size = 1200,
+	color = {0, 0, 0}, font_color = {1, 1, 1}}
+end
+
+function callClickFunctions()
+	addSurv()
+	checkInnovations()
+end
+
+function startSurvivorDied()
+	startLuaCoroutine(self, 'survDiedinSettlement')
+end
+
+function survDiedinSettlement()
+	pos = self.getPosition()
+	--Gets Gravestone Marker
+	local object = getObjectFromGUID("416864")
+	local scale = object.getScale()
+	graveObj = object.clone({position = {pos.x, pos.y, pos.z - 3}, rotation = {0, 0, 0}})
+	graveObj.setScale({1.35, 1.35, 1.35})
+	wait(0.75)
+	graveObj.setLock(true)
+	graveObj.createButton({index = 0, click_function = 'burySurvivor', function_owner = self,
+		label = 'Add to Gravestone then ~ Bury this Survivor', position = {x = 0, y = 0, z = -0.6}, rotation = {x = 0, y = 180, z = 0},
+		scale = {x = 0.5, y = 1, z = 0.5}, width = 3000, height = 250, font_size = 150,
+	color = {0, 0, 0}, font_color = {1, 1, 1}})
+
+	return 1
+end
+
+function burySurvivor()
+	updatePopulationDeath()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneGraveyard.guid)
+	local objectsInZone = zone.getObjects()
+	graveObj.setPosition({12.84 + #objectsInZone * 1.64, 4.12, - 58.74})
+	graveObj.removeButton(0)
+	broadcastToAll("Population Updated", {1, 1, 1})
+
+	-- Check Death Principle
+	zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+	for _, object in ipairs(zoneInnovations.getObjects()) do
+		if object.getName() == "Cannibalize" then
+			Timer.create({identifier = "cannibalize",
+				function_name = "get_basic_for_cannibalize",
+				function_owner = self,
+			delay = 1})
+		elseif object.getName() == "Graves" then
+			broadcastToAll("Graves Death Principle Triggered", {1, 1, 1})
+		end -- end Death Principle
+	end
+end
+
+function get_basic_for_cannibalize()
+	deckBasicResourcesZone = getObjectFromGUID(Global.getTable('zones').deckBasicResources.guid)
+	for _, obj in ipairs(deckBasicResourcesZone.getObjects()) do
+		if obj.getName() == "Basic Resources Deck" then
+			obj.shuffle()
+			obj.takeObject({top = true, position = {pos.x, pos.y, pos.z - 4}, callback_owner = Global, callback = "flipCard"})
+			broadcastToAll("Cannibalize Death Principle Triggered", {1, 1, 1})
+			break
+		end
+	end
+	Timer.destroy("cannibalize")
+end
+
+function updatePopulationDeath()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneSettlement.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local desc = object.getDescription()
+		if string.find(desc, "SettlementSheet") then
+			object.call("add", {"population", - 1})
+		end
+	end
+end
+
+function addSurv()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneNewSurvivors.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		if object.getName() == "New Survivors" then
+			newSurv = object.takeObject({position = {0.50, 5, - 63.03}})
+			newPos = getNextPlacementPos()
+			if newPos ~= nil then
+				newSurv.setPosition(newPos)
+			end
+		end
+	end
+	if newPos == nil then return end
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneSettlement.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local desc = object.getDescription()
+		if string.find(desc, "SettlementSheet") then
+			object.call("add", {"population", 1})
+			broadcastToAll("Population Updated", {1, 1, 1})
+		end
+	end
+end
+
+function checkInnovations()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneInnovations.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local name = object.getName()
+		if object.getName() == "Barbaric" then
+			print("Barbaric -----> (+1) Strength")
+		elseif object.getName() == "Graves" then
+			print("Graves -----> (+1) Understanding")
+		elseif object.getName() == "Romantic" then
+			print("Romantic ----->(+1) Understanding")
+		elseif object.getName() == "Clan of Death" then
+			print("Clan of Death -----> (+1) Strength ~ (+1) Accuracy ~ (+1) Evasion")
+		elseif object.getName() == "Saga" then
+			print("Saga -----> (+2) Hunt Experience ~ (+2) Survival")
+		elseif object.getName() == "Survival of the Fittest" then
+			print("Survival of the Fittest -----> (+1) Strength ~ (+1) Evasion")
+		elseif object.getName() == "Empire" then
+			print("Empire -----> (+1) Strength ~ Pristine Ability")
+		end
+	end
+end
+
+function getNextPlacementPos()
+	for j = 0, 1 do
+		for i = 0, 5 do
+			if checkPositionByName({ - 18.30 + i * - 4.72, 4.17, - 40.53 - j * 10.12}) == false then
+				return { - 18.30 + i * - 4.72, 4.17, - 40.53 - j * 10.12}
+			end
+		end
+	end
+	broadcastToAll("All spots are filled.", {1, 1, 1})
+	return nil
+end
+
+
+function checkPositionByName(pos)
+	local hitList = Physics.cast({origin = pos, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getDescription() == "SurvivorSheet" then
+			return true
+		end
+	end
+	return false
+end
+
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+	end

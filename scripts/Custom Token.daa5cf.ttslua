@@ -1,0 +1,317 @@
+--Script created by Kijan
+
+addedInnovations = {}
+
+
+function checkSurvivalLimit(name, posneg)
+  toCheck = {}
+  toCheck["Sun Language"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Dragon Speech"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Language"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Aquarobics"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Silk Refining"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Citrinitas"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Symposium"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Survival of the Fittest"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Cooking"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Storytelling"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Sculpture"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Romantic"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Pottery"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Final Fighting Art"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Hovel"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Cannibalize"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Barbaric"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Ultimate Weapon"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Bed"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Citrinitas"] = {toChange = "survival_limit", amount = 1}
+  toCheck["Nigredo"] = {toChange = "survival_limit", amount = 1}
+  toCheck["War Room"] = {toChange = "survival_limit", amount = 1}
+
+  for i, v in pairs(toCheck) do
+    if i == name then
+      changeSettlement(v.toChange, v.amount * posneg)
+      return true
+    end
+  end
+  return false
+end
+
+function checkDeparting(name, posneg)
+  toCheck = {}
+  --possible for toChange:
+  -- survival_perm
+  -- survivalN_perm
+  -- insanity_perm
+  -- survival_temp
+  -- survivalN_temp
+  -- insanity_temp
+  toCheck["Hovel"] = {toChange = "survival_perm", amount = 1}
+  toCheck["Ammonia"] = {toChange = "survival_perm", amount = 1}
+  toCheck["Lantern Oven"] = {toChange = "survival_perm", amount = 1}
+  toCheck["Family"] = {toChange = "survival_perm", amount = 1}
+  toCheck["Radiating Orb"] = {toChange = "survival_perm", amount = 1}
+  toCheck["Sculpture"] = {toChange = "survivalN_perm", amount = 2}
+  toCheck["The Knowledge Worm"] = {toChange = "insanity_perm", amount = 3}
+  toCheck["The Knowledge Worm"] = {toChange = "survival_perm", amount = 3}
+  toCheck["Settlement Watch"] = {toChange = "survivalN_perm", amount = 2}
+  toCheck["Dark Water Research"] = {toChange = "insanity_perm", amount = 2}
+  toCheck["Legless Ball"] = {toChange = "insanity_perm", amount = 2}
+  toCheck["Sauna Shrine"] = {toChange = "survivalN_perm", amount = 10}
+
+  for i, v in pairs(toCheck) do
+    if i == name then
+      changeDepartingTool(v.toChange, v.amount * posneg)
+      return
+    end
+  end
+end
+
+--posneg should be +1 or -1
+function checkCards(name, posneg)
+  checkSurvivalLimit(name, posneg)
+  checkDeparting(name, posneg)
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+  enter_zone = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+  if enter_object == nil or not (zone == enter_zone) then
+    return
+  end
+  checkCards(enter_object.getName(), 1)
+  --Spawns Encourage Survival Button [DONE]
+  if enter_object.getName() == "Language" or enter_object.getName() == "Dragon Speech" then
+    redEncourage = getObjectFromGUID('6a9974')
+    redEncourage.setPosition({-30.66, 4.12, -19.07})
+    redEncourage.setScale({0.28, 1.00, 0.28})
+    redEncourage.setRotation({redEncourage.getRotation().x, redEncourage.getRotation().y, redEncourage.getRotation().z+180})
+    yellowEncourage = getObjectFromGUID('64f543')
+    yellowEncourage.setPosition({-14.12, 4.12, -19.07})
+    yellowEncourage.setScale({0.28, 1.00, 0.28})
+    yellowEncourage.setRotation({yellowEncourage.getRotation().x, yellowEncourage.getRotation().y, yellowEncourage.getRotation().z+180})
+    greenEncourage = getObjectFromGUID('310af6')
+    greenEncourage.setPosition({16.06, 4.12, -19.07})
+    greenEncourage.setScale({0.28, 1.00, 0.28})
+    greenEncourage.setRotation({greenEncourage.getRotation().x, greenEncourage.getRotation().y, greenEncourage.getRotation().z+180})
+    blueEncourage = getObjectFromGUID('25a2a1')
+    blueEncourage.setPosition({32.77, 4.12, -19.07})
+    blueEncourage.setScale({0.28, 1.00, 0.28})
+    blueEncourage.setRotation({blueEncourage.getRotation().x, blueEncourage.getRotation().y, blueEncourage.getRotation().z+180})
+
+  --Spawns Dash Survival Button
+  elseif enter_object.getName() == "Paint" then
+    redPaint = getObjectFromGUID('e85587')
+    redPaint.setPosition({-28.73, 4.12, -19.07})
+    redPaint.setScale({0.28, 1.00, 0.28})
+    redPaint.setRotation({redPaint.getRotation().x, redPaint.getRotation().y, redPaint.getRotation().z+180})
+    yellowPaint = getObjectFromGUID('6c533b')
+    yellowPaint.setPosition({-12.19, 4.12, -19.07})
+    yellowPaint.setScale({0.28, 1.00, 0.28})
+    yellowPaint.setRotation({yellowPaint.getRotation().x, yellowPaint.getRotation().y, yellowPaint.getRotation().z+180})
+    greenPaint = getObjectFromGUID('e357b6')
+    greenPaint.setPosition({17.98, 4.12, -19.07})
+    greenPaint.setScale({0.28, 1.00, 0.28})
+    greenPaint.setRotation({greenPaint.getRotation().x, greenPaint.getRotation().y, greenPaint.getRotation().z+180})
+    bluePaint = getObjectFromGUID('01e8e2')
+    bluePaint.setPosition({34.71, 4.12, -19.07})
+    bluePaint.setScale({0.28, 1.00, 0.28})
+    bluePaint.setRotation({bluePaint.getRotation().x, bluePaint.getRotation().y, bluePaint.getRotation().z+180})
+
+  --Spawns Surge Survival Button [DONE]
+  elseif enter_object.getName() == "Inner Lantern" then
+    redInnerLantern = getObjectFromGUID('92bf04')
+    redInnerLantern.setPosition({-26.74, 4.12, -19.07})
+    redInnerLantern.setScale({0.28, 1.00, 0.28})
+    redInnerLantern.setRotation({redInnerLantern.getRotation().x, redInnerLantern.getRotation().y, redInnerLantern.getRotation().z+180})
+    yellowInnerLantern = getObjectFromGUID('c0c91a')
+    yellowInnerLantern.setPosition({-10.20, 4.12, -19.07})
+    yellowInnerLantern.setScale({0.28, 1.00, 0.28})
+    yellowInnerLantern.setRotation({yellowInnerLantern.getRotation().x, yellowInnerLantern.getRotation().y, yellowInnerLantern.getRotation().z+180})
+    greenInnerLantern = getObjectFromGUID('ab6362')
+    greenInnerLantern.setPosition({19.98, 4.12, -19.07})
+    greenInnerLantern.setScale({0.28, 1.00, 0.28})
+    greenInnerLantern.setRotation({greenInnerLantern.getRotation().x, greenInnerLantern.getRotation().y, greenInnerLantern.getRotation().z+180})
+    blueInnerLantern = getObjectFromGUID('829340')
+    blueInnerLantern.setPosition({36.70, 4.12, -19.07})
+    blueInnerLantern.setScale({0.28, 1.00, 0.28})
+    blueInnerLantern.setRotation({blueInnerLantern.getRotation().x, blueInnerLantern.getRotation().y, blueInnerLantern.getRotation().z+180})
+
+    --Spawns Overcharge Survival Action [DONE]
+  elseif enter_object.getName() == "Hands of the Sun" then
+      redHands = getObjectFromGUID('965d22')
+      redHands.setPosition({-26.74, 4.12, -19.07})
+      redHands.setScale({0.28, 1.00, 0.28})
+      redHands.setRotation({redHands.getRotation().x, redHands.getRotation().y, redHands.getRotation().z+180})
+      yellowHands = getObjectFromGUID('6dec68')
+      yellowHands.setPosition({-10.20, 4.12, -19.07})
+      yellowHands.setScale({0.28, 1.00, 0.28})
+      yellowHands.setRotation({yellowHands.getRotation().x, yellowHands.getRotation().y, yellowHands.getRotation().z+180})
+      greenHands = getObjectFromGUID('fb8947')
+      greenHands.setPosition({19.98, 4.12, -19.07})
+      greenHands.setScale({0.28, 1.00, 0.28})
+      greenHands.setRotation({greenHands.getRotation().x, greenHands.getRotation().y, greenHands.getRotation().z+180})
+      blueHands = getObjectFromGUID('59439e')
+      blueHands.setPosition({36.70, 4.12, -19.07})
+      blueHands.setScale({0.28, 1.00, 0.28})
+      blueHands.setRotation({blueHands.getRotation().x, blueHands.getRotation().y, blueHands.getRotation().z+180})
+
+    --Spawns Embolden Survival Action [DONE]
+  elseif enter_object.getName() == "Sun Language" then
+      redEmbolden = getObjectFromGUID('a886d9')
+      redEmbolden.setPosition({-30.66, 4.12, -19.07})
+      redEmbolden.setScale({0.28, 1.00, 0.28})
+      redEmbolden.setRotation({redEmbolden.getRotation().x, redEmbolden.getRotation().y, redEmbolden.getRotation().z+180})
+      yellowEmbolden = getObjectFromGUID('91717c')
+      yellowEmbolden.setPosition({-14.12, 4.12, -19.07})
+      yellowEmbolden.setScale({0.28, 1.00, 0.28})
+      yellowEmbolden.setRotation({yellowEmbolden.getRotation().x, yellowEmbolden.getRotation().y, yellowEmbolden.getRotation().z+180})
+      greenEmbolden = getObjectFromGUID('778347')
+      greenEmbolden.setPosition({16.06, 4.12, -19.07})
+      greenEmbolden.setScale({0.28, 1.00, 0.28})
+      greenEmbolden.setRotation({greenEmbolden.getRotation().x, greenEmbolden.getRotation().y, greenEmbolden.getRotation().z+180})
+      blueEmbolden = getObjectFromGUID('4e6f3a')
+      blueEmbolden.setPosition({32.77, 4.12, -19.07})
+      blueEmbolden.setScale({0.28, 1.00, 0.28})
+      blueEmbolden.setRotation({blueEmbolden.getRotation().x, blueEmbolden.getRotation().y, blueEmbolden.getRotation().z+180})
+
+      --Flips Accept the Darkness near Brain Trauma rolls so it will cacluate the +2 on rolls
+    elseif enter_object.getName() == "Accept the Darkness" then
+      local acceptDarkness = getObjectFromGUID('3dfb59')
+      acceptDarkness.setRotation({0, 180, 0})
+    end
+  end
+
+function onObjectLeaveScriptingZone(zone, leave_object)
+  exit_zone = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+  if leave_object == nil or not (zone == exit_zone) then return end
+  checkCards(leave_object.getName(), -1)
+  --if zone == getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid) then
+
+  --Removes Encourage Survival Button [DONE]
+  if leave_object.getName() == "Language" or leave_object.getName() == "Dragon Speech" then
+    redEncourage = getObjectFromGUID('6a9974')
+    redEncourage.setPosition({-44.87, 0, 19.18})
+    redEncourage.setScale({0.23, 1.00, 0.23})
+    redEncourage.setRotation({redEncourage.getRotation().x, redEncourage.getRotation().y, redEncourage.getRotation().z+180})
+    yellowEncourage = getObjectFromGUID('64f543')
+    yellowEncourage.setPosition({-44.87, 0, 18.24})
+    yellowEncourage.setScale({0.23, 1.00, 0.23})
+    yellowEncourage.setRotation({yellowEncourage.getRotation().x, yellowEncourage.getRotation().y, yellowEncourage.getRotation().z+180})
+    greenEncourage = getObjectFromGUID('310af6')
+    greenEncourage.setPosition({-44.87, 0, 17.34})
+    greenEncourage.setScale({0.23, 1.00, 0.23})
+    greenEncourage.setRotation({greenEncourage.getRotation().x, greenEncourage.getRotation().y, greenEncourage.getRotation().z+180})
+    blueEncourage = getObjectFromGUID('25a2a1')
+    blueEncourage.setPosition({-44.87, 0, 16.37})
+    blueEncourage.setScale({0.23, 1.00, 0.23})
+    blueEncourage.setRotation({blueEncourage.getRotation().x, blueEncourage.getRotation().y, blueEncourage.getRotation().z+180})
+
+  --Removes Dash Survival Button
+  elseif leave_object.getName() == "Paint" then
+    redPaint = getObjectFromGUID('e85587')
+    redPaint.setPosition({-43.29, 0, 19.18})
+    redPaint.setScale({0.23, 1.00, 0.23})
+    redPaint.setRotation({redPaint.getRotation().x, redPaint.getRotation().y, redPaint.getRotation().z+180})
+    yellowPaint = getObjectFromGUID('6c533b')
+    yellowPaint.setPosition({-43.29, 0, 18.24})
+    yellowPaint.setScale({0.23, 1.00, 0.23})
+    yellowPaint.setRotation({yellowPaint.getRotation().x, yellowPaint.getRotation().y, yellowPaint.getRotation().z+180})
+    greenPaint = getObjectFromGUID('e357b6')
+    greenPaint.setPosition({-43.29, 0, 17.34})
+    greenPaint.setScale({0.23, 1.00, 0.23})
+    greenPaint.setRotation({greenPaint.getRotation().x, greenPaint.getRotation().y, greenPaint.getRotation().z+180})
+    bluePaint = getObjectFromGUID('01e8e2')
+    bluePaint.setPosition({-43.29, 0, 16.37})
+    bluePaint.setScale({0.23, 1.00, 0.23})
+    bluePaint.setRotation({bluePaint.getRotation().x, bluePaint.getRotation().y, bluePaint.getRotation().z+180})
+
+  --Removes Surge Survival Button [DONE]
+  elseif leave_object.getName() == "Inner Lantern" then
+    redInnerLantern = getObjectFromGUID('92bf04')
+    redInnerLantern.setPosition({-41.70, 0, 19.20})
+    redInnerLantern.setScale({0.23, 1.00, 0.23})
+    redInnerLantern.setRotation({redInnerLantern.getRotation().x, redInnerLantern.getRotation().y, redInnerLantern.getRotation().z+180})
+    yellowInnerLantern = getObjectFromGUID('c0c91a')
+    yellowInnerLantern.setPosition({-41.70, 0, 18.24})
+    yellowInnerLantern.setScale({0.23, 1.00, 0.23})
+    yellowInnerLantern.setRotation({yellowInnerLantern.getRotation().x, yellowInnerLantern.getRotation().y, yellowInnerLantern.getRotation().z+180})
+    greenInnerLantern = getObjectFromGUID('ab6362')
+    greenInnerLantern.setPosition({-41.70, 0, 17.34})
+    greenInnerLantern.setScale({0.23, 1.00, 0.23})
+    greenInnerLantern.setRotation({greenInnerLantern.getRotation().x, greenInnerLantern.getRotation().y, greenInnerLantern.getRotation().z+180})
+    blueInnerLantern = getObjectFromGUID('829340')
+    blueInnerLantern.setPosition({-41.70, 0, 16.37})
+    blueInnerLantern.setScale({0.23, 1.00, 0.23})
+    blueInnerLantern.setRotation({blueInnerLantern.getRotation().x, blueInnerLantern.getRotation().y, blueInnerLantern.getRotation().z+180})
+
+  --Removes Overcharge Survival Action [DONE]
+  elseif leave_object.getName() == "Hands of the Sun" then
+    redHands = getObjectFromGUID('965d22')
+    redHands.setPosition({-38.53, 0, 19.20})
+    redHands.setScale({0.23, 1.00, 0.23})
+    redHands.setRotation({redHands.getRotation().x, redHands.getRotation().y, redHands.getRotation().z+180})
+    yellowHands = getObjectFromGUID('6dec68')
+    yellowHands.setPosition({-38.53, 0, 18.24})
+    yellowHands.setScale({0.23, 1.00, 0.23})
+    yellowHands.setRotation({yellowHands.getRotation().x, yellowHands.getRotation().y, yellowHands.getRotation().z+180})
+    greenHands = getObjectFromGUID('fb8947')
+    greenHands.setPosition({-38.53, 0, 17.34})
+    greenHands.setScale({0.23, 1.00, 0.23})
+    greenHands.setRotation({greenHands.getRotation().x, greenHands.getRotation().y, greenHands.getRotation().z+180})
+    blueHands = getObjectFromGUID('59439e')
+    blueHands.setPosition({-38.53, 0, 16.37})
+    blueHands.setScale({0.23, 1.00, 0.23})
+    blueHands.setRotation({blueHands.getRotation().x, blueHands.getRotation().y, blueHands.getRotation().z+180})
+
+  --Removes Embolden Survival Action [DONE]
+  elseif leave_object.getName() == "Sun Language" then
+        redEmbolden = getObjectFromGUID('a886d9')
+        redEmbolden.setPosition({-40.11, 0, 19.20})
+        redEmbolden.setScale({0.23, 1.00, 0.23})
+        redEmbolden.setRotation({redEmbolden.getRotation().x, redEmbolden.getRotation().y, redEmbolden.getRotation().z+180})
+        yellowEmbolden = getObjectFromGUID('91717c')
+        yellowEmbolden.setPosition({-40.11, 0, 18.24})
+        yellowEmbolden.setScale({0.23, 1.00, 0.23})
+        yellowEmbolden.setRotation({yellowEmbolden.getRotation().x, yellowEmbolden.getRotation().y, yellowEmbolden.getRotation().z+180})
+        greenEmbolden = getObjectFromGUID('778347')
+        greenEmbolden.setPosition({-40.11, 0, 17.34})
+        greenEmbolden.setScale({0.23, 1.00, 0.23})
+        greenEmbolden.setRotation({greenEmbolden.getRotation().x, greenEmbolden.getRotation().y, greenEmbolden.getRotation().z+180})
+        blueEmbolden = getObjectFromGUID('4e6f3a')
+        blueEmbolden.setPosition({-40.11, 0, 16.37})
+        blueEmbolden.setScale({0.23, 1.00, 0.23})
+        blueEmbolden.setRotation({blueEmbolden.getRotation().x, blueEmbolden.getRotation().y, blueEmbolden.getRotation().z+180})
+
+      --Removes Accept the Darkness so rolls are no longer calculated
+    elseif leave_object.getName() == "Accept the Darkness" then
+      local acceptDarkness = getObjectFromGUID('3dfb59')
+      acceptDarkness.setRotation({0, 180, 180})
+  end
+end
+
+function changeSettlement(change, amount)
+  zoneSettlement = getObjectFromGUID(Global.getTable("zones").zoneSettlement.guid)
+  SettlementBoard = ""
+  for i, v in pairs(zoneSettlement.getObjects()) do
+    if v.getDescription() == "SettlementSheet" then
+      SettlementBoard = v
+      v.call("add", {"survival_limit", amount})
+    end
+  end
+  if SettlementBoard == "" then
+    broadcastToAll("No Settlement!", {1, 1, 1})
+  end
+end
+
+
+function changeDepartingTool(change, amount)
+  --DepartingTool = getObjectFromGUID("65fc2a")
+	DepartingTool = getObjectFromGUID("9eaa8a")
+  departButtons = DepartingTool.getTable("buttons")
+  if departButtons ~= nil then
+    departButtons.counts[change] = departButtons.counts[change] + amount
+
+    DepartingTool.setTable("buttons", departButtons)
+    DepartingTool.call("updateDisplay")
+  end
+end

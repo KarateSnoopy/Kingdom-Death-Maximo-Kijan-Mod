@@ -1,0 +1,90 @@
+function onLoad()
+
+	self.createButton{index = 0, click_function = 'reset_menus', function_owner = self,
+		label = 'Reset Menus', position = {x = 0, y = 0.1, z = 0}, rotation = {x = 0, y = 0, z = 0},
+		scale = {x = 0.5, y = 1, z = 0.5}, width = 6800, height = 1000, font_size = 1200,
+	color = {0, 0, 0}, font_color = {1, 1, 1}}
+end
+
+function isActDone(survCard)
+    local buttons = survCard.getButtons()
+    for i, v in pairs(buttons) do
+        if v.label == "Start Act"
+        or v.label == "End Your Act" then
+            return false
+        end
+    end
+    return true
+end
+
+function removeButtonsFromSurvCard(survCard)
+    local buttons = survCard.getButtons()
+    for i, v in pairs(buttons) do
+       if v.label == "End Your Act"
+         or v.label == "[ Move ]"
+         or v.label == "[ Shadow Walk ]"
+         or v.label == "Attack"
+         or v.label == "Attack Blind"
+         or v.label == "Honorable"
+         then
+          self.removeButton(v.index)
+       end
+         if v.label == "End Attack" then
+             endAttack()
+         end
+    end
+end
+
+
+
+function reset_menus()
+	red = getObjectFromGUID('a66bc1')
+	yellow = getObjectFromGUID('4825fa')
+	green = getObjectFromGUID('148863')
+	blue = getObjectFromGUID('5e9f5a')
+
+	red.call("clearButtons")
+	yellow.call("clearButtons")
+	green.call("clearButtons")
+	blue.call("clearButtons")
+
+	red.call("createButtons")
+	yellow.call("createButtons")
+	green.call("createButtons")
+	blue.call("createButtons")
+
+	monster_roller = getObjectFromGUID('1daf26')
+	monster_roller.call("resetButtons")
+
+	gear_builder = getObjectFromGUID('a00bce')
+	gear_builder.call("resetButtons")
+
+	survCard_red = getObjectFromGUID('777299')
+	survCard_yellow = getObjectFromGUID('cf0eb8')
+	survCard_green = getObjectFromGUID('11ad61')
+	survCard_blue = getObjectFromGUID('093319')
+
+    isDoneR = isActDone(survCard_red)
+    isDoneY = isActDone(survCard_yellow)
+    isDoneG = isActDone(survCard_green)
+    isDoneB = isActDone(survCard_blue)
+
+    if isDoneR==false then
+	       survCard_red.call("resetButtons")
+    end
+    if isDoneY==false then
+	       survCard_yellow.call("resetButtons")
+    end
+
+    if isDoneG==false then
+	       survCard_green.call("resetButtons")
+    end
+
+    if isDoneB==false then
+	       survCard_blue.call("resetButtons")
+   end
+
+
+end
+
+-- end reset menus

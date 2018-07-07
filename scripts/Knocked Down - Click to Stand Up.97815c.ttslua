@@ -1,0 +1,21 @@
+function onLoad()
+   createButton()
+end
+
+function createButton()
+   self.createButton({click_function = "standUp", function_owner = self, label = "", position = {0, - 0.05, 0},
+   width = 1000, height = 1000, font_size = 450})
+end
+
+msg_color = {0.118, 0.53, 1}
+
+function standUp(object, player_color)
+   local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+   local objectsInZone = zone.getObjects()
+   for _, object in ipairs(objectsInZone) do
+      if object.getName() == "Player Four" then
+         object.setRotation({object.getRotation().x, object.getRotation().y, 0})
+         self.setPosition({self.getPosition().x, self.getPosition().y - 4, self.getPosition().z})
+      end
+   end
+end

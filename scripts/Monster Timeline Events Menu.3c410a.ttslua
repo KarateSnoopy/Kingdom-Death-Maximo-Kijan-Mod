@@ -1,0 +1,455 @@
+function onLoad()
+	createButton_openMenu()
+	-- bag_storage = getObjectFromGUID('0ad7f0')
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+end
+
+pageToLoad = ""
+
+function createButton_openMenu()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		scale					 = {1,1,1},
+		width          = 5000,
+		height         = 1000,
+		font_size      = 600,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	self.createButton({
+		click_function = "createButtons",
+		function_owner = self,
+		width = 5000,
+		height = 700,
+		rotation = {-8, 0, 0},
+		color = {0,0,0},
+		font_color = {1,1,1},
+		font_size = 750,
+		label = "___________________________  Monster Timeline Events  ___________________________",
+		position = {0, 0.25, 0}
+	})
+end
+
+-- Utility Functions ----------------------------------------------------------
+function removeButtons_All()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+			self.removeButton(v.index)
+	end
+end
+
+function reset_page_display()
+	next_page_left = "one"
+	next_page_right = "two"
+end
+
+function storyEvent_next_page()
+	page_turn = "right"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function storyEvent_previous_page()
+	page_turn = "left"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function createButtons_navigation()
+	local btn_params 	= {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= {-5, 0, 0},
+		scale 			= {1, 0.5, 1},
+		width 			= 4300,
+		height 			= 800,
+		font_size 		= 600,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100},
+	}
+
+	btn_params.label = "< Previous Page"
+	btn_params.position = {-23, 0.5, -4.8}
+	btn_params.click_function = "storyEvent_previous_page"
+	self.createButton(btn_params)
+
+	btn_params.label = "Next Page >"
+	btn_params.position = {23.4, 0.5, -4.8}
+	btn_params.click_function = "storyEvent_next_page"
+	self.createButton(btn_params)
+end
+
+
+-- Set Pages to Load  ---------------------------------------------------------
+function createButtons()
+	get_storyBoard()
+	removeButtons_All()
+	createButtons_navigation()
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		width          = 3000,
+		height         = 700,
+		font_size      = 500,
+		color          = {0,0,0,0},
+		font_color     = {1,1,1,100},
+	}
+
+	btn_params.click_function = "get_story_promise_under_the_sun"
+	btn_params.position = {-5.3, 0.25, -0.5}
+	btn_params.label = "Promise Under the Sun"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_the_silver_city"
+	btn_params.position = {-25.3, 0.25, 1}
+	btn_params.label = "The Silver City"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_the_hanged_man"
+	btn_params.position = {5, 0.25, -2}
+	btn_params.label = "The Hanged Man"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_a_secret_meeting"
+	btn_params.position = {25.7, 0.25, -0.5}
+	btn_params.label = "Secret Meeting"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_rumbling_in_the_dark"
+	btn_params.position = {14.7, 0.25, -0.5}
+	btn_params.label = "Rumbling in the Dark"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_forgotten_fear"
+	btn_params.position = {-15.3, 0.25, -0.5}
+	btn_params.label = "Forgotten Fear"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_places_everyone"
+	btn_params.position = {25.7, 0.25, -2}
+	btn_params.label = "Places Everyone"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_an_uninvited_guest"
+	btn_params.position = {14.8, 0.25, -2}
+	btn_params.label = "An Uninvited Guest"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_its_already_here"
+	btn_params.position = {-25.3, 0.25, -0.5}
+	btn_params.label = "It's Already Here"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_a_crones_tale"
+	btn_params.position = {-5, 0.25, -2}
+	btn_params.label = "A Crone's Tale"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_young_rivals"
+	btn_params.position = {-15.3, 0.25, -2}
+	btn_params.label = "Young Rivals"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_the_approaching_storm"
+	btn_params.position = {-25.3, 0.25, -2}
+	btn_params.label = "The Approaching Storm"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get_story_glowing_crater"
+	btn_params.position = {5, 0.25, -0.5}
+	btn_params.label = "Glowing Crater"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "close_menu"
+	btn_params.position = {0, 0.25, 0.8}
+	btn_params.label = "____ Close menu ____"
+	btn_params.font_size = 400
+	self.createButton(btn_params)
+end
+
+function get_story_promise_under_the_sun()
+	pageToLoad = self.setDescription("Promise Under the Sun")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_the_silver_city()
+	pageToLoad = self.setDescription("the silver city")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_the_hanged_man()
+	pageToLoad = self.setDescription("the hanged man")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get_story_a_secret_meeting()
+	pageToLoad = self.setDescription("secret meeting")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_rumbling_in_the_dark()
+	pageToLoad = self.setDescription("rumbling in the dark")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_forgotten_fear()
+	pageToLoad = self.setDescription("forgotten fear")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_places_everyone()
+	pageToLoad = self.setDescription("places everyone")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_an_uninvited_guest()
+	pageToLoad = self.setDescription("an uninvited guest")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_its_already_here()
+	pageToLoad = self.setDescription("it's already here")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_a_crones_tale()
+	pageToLoad = self.setDescription("a crone's tale")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_young_rivals()
+	pageToLoad = self.setDescription("young rivals")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_the_approaching_storm()
+	pageToLoad = self.setDescription("the approaching storm")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+function get_story_glowing_crater()
+	pageToLoad = self.setDescription("glowing crater")
+	destroy_currentLoaded()
+	reset_page_display()
+	get_storyEvent()
+end
+
+
+-- Load Page Functions  --------------------------------------------------------
+function get_storyBoard()
+	isLoaded = return_boardLoaded(boardLoaded)
+	if not isLoaded then
+		local board = gameBox.takeObject({position = {-34.75, 4.82, 38.47}, rotation = {12,180,0}, smooth = false, guid = '36b956'})
+		board.setLock(true)
+
+		pole_Left = gameBox.takeObject({position = {-43.27, 4.80, 41.42}, rotation = {357.11, 254.98, 0.00}, smooth = false, guid = '5334a1'})
+		pole_Left.setLock(true)
+
+		lamp_Left = gameBox.takeObject({position = {-42.23, 10.08, 41.46}, rotation = {0.00, 0.00, 180.00}, smooth = false, guid = '063e3d'})
+		lamp_Left.setLock(true)
+
+		pole_Right = gameBox.takeObject({position = {-26.23, 5.04, 41.34}, rotation = {2.75, 75.06, 1.68}, smooth = false, guid = 'c3461f'})
+		pole_Right.setLock(true)
+
+		lamp_Right = gameBox.takeObject({position = {-26.87, 10.39, 41.56}, rotation = {0.00, 0.00, 180.00}, smooth = false, guid = 'f89b6c'})
+		lamp_Right.setLock(true)
+
+		dice_Roller = gameBox.takeObject({position = {-35.12, 6.31, 43.46}, rotation = {22, 180, 0}, smooth = false, guid = 'e52bab'})
+		dice_Roller.setLock(true)
+	end
+end
+
+function get_storyEvent()
+
+	--[[for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.guid == '27e3f2' then
+			local board = gameBox.takeObject({position = {-65.20, 4.52, 38.50}, rotation = {6,180,0}, smooth = false})
+			board.setLock(true)
+		end
+	end--]]
+
+	local pos = self.getPosition()
+	local deck = getObjectFromGUID("21fb65")
+	for _, story in ipairs(deck.getObjects()) do
+		local desc = story.description
+		local name = story.nickname
+		local scale = {2.03, 1.00, 2.03}
+		if string.find(string.lower(story.nickname), self.getDescription()) and string.find(desc, next_page_left) then
+			local page = deck.takeObject({position = {-38.96, 5.11, 38.33}, guid = story.guid, smooth = false})
+			page.setLock(true)
+			page.setScale(scale)
+			page.setRotation({12,180,0})
+		elseif string.find(string.lower(story.nickname), self.getDescription()) and string.find(desc, next_page_right) then
+			local page = deck.takeObject({position = {-30.69, 5.11, 38.35}, guid = story.guid, smooth = false})
+			page.setLock(true)
+			page.setScale(scale)
+			page.setRotation({12,180,0})
+		end
+	end
+end
+
+-- altered function
+function destroy_currentLoaded()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x - 5.03, pos.y, pos.z + 4.26}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+
+		if page_turn == "right" then
+			if string.find(entry.hit_object.getDescription(), "one") then
+				next_page_left = "three"
+			elseif string.find(entry.hit_object.getDescription(), "three") then
+				next_page_left = "five"
+			elseif string.find(entry.hit_object.getDescription(), "five") then
+				next_page_left = "seven"
+			end
+		elseif page_turn == "left" then
+			if string.find(entry.hit_object.getDescription(), "seven") then
+				next_page_left = "five"
+			elseif string.find(entry.hit_object.getDescription(), "five") then
+				next_page_left = "three"
+			elseif string.find(entry.hit_object.getDescription(), "three") then
+				next_page_left = "one"
+			end
+		end
+
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+	local hitList = Physics.cast({origin={pos.x + 2.73, pos.y, pos.z + 4.26}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+
+		if page_turn == "right" then
+			if string.find(entry.hit_object.getDescription(), "two") then
+				next_page_right = "four"
+			elseif string.find(entry.hit_object.getDescription(), "four") then
+				next_page_right = "six"
+			elseif string.find(entry.hit_object.getDescription(), "six") then
+				next_page_right = "eight"
+			end
+		elseif page_turn == "left" then
+			if string.find(entry.hit_object.getDescription(), "eight") then
+				next_page_right = "six"
+			elseif string.find(entry.hit_object.getDescription(), "six") then
+				next_page_right = "four"
+			elseif string.find(entry.hit_object.getDescription(), "four") then
+				next_page_right = "two"
+			end
+		end
+
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+		if entry.hit_object.tag == "Board" then
+			storyBoard = entry.hit_object.guid
+		end
+	end
+end
+
+-- original function
+--[[function destroy_currentLoaded()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x - 5.03, pos.y, pos.z + 4.26}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+	local hitList = Physics.cast({origin={pos.x + 2.73, pos.y, pos.z + 4.26}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+end--]]
+
+-- Store Tool Functions  -------------------------------------------------------
+function return_boardLoaded(boardLoaded)
+	boardLoaded = false
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x + 5.4, pos.y, pos.z + 4.84}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getName(), "Board") then
+			boardLoaded = true
+			break
+		end
+	end
+	return boardLoaded
+end
+
+function put_storyBoard()
+	dice_Roller = getObjectFromGUID('e52bab')
+	lamp_Left = getObjectFromGUID('063e3d')
+	lamp_Right = getObjectFromGUID('f89b6c')
+	pole_Left = getObjectFromGUID('5334a1')
+	pole_Right = getObjectFromGUID('c3461f')
+
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x + 5.4, pos.y, pos.z + 4.84}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getName(), "Board") then
+			storyBoard = entry.hit_object
+			storyBoardFound = true
+			break
+		end
+	end
+	if storyBoardFound then
+		storyBoard.setLock(false)
+		pole_Left.setLock(false)
+		pole_Right.setLock(false)
+		lamp_Left.setLock(false)
+		lamp_Right.setLock(false)
+		dice_Roller.setLock(false)
+		gameBox.putObject(storyBoard)
+		gameBox.putObject(pole_Left)
+		gameBox.putObject(pole_Right)
+		gameBox.putObject(lamp_Left)
+		gameBox.putObject(lamp_Right)
+		gameBox.putObject(dice_Roller)
+		boardLoaded = false
+	end
+	storyBoardFound = false
+end
+
+function close_menu()
+	destroy_currentLoaded()
+	removeButtons_All()
+	createButton_openMenu()
+	put_storyBoard()
+end
+
+-- end monster timeline events ------------------------------------------------

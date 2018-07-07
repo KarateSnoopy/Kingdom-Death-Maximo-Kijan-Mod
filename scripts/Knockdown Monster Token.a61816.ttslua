@@ -1,0 +1,83 @@
+
+monster_knocked_down = false
+reactionsCancelled_EndOfRound = false
+isDazed = false
+
+function onLoad()
+  create_knockdown_monster_button()
+  create_stand_monster_button()
+   -- evaToken_Bag = getObjectFromGUID("94badb") > unused?
+  -- strToken_Bag = getObjectFromGUID('0bf641') > unused?
+  zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+  zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+  hitTool_Right = getObjectFromGUID('10e61e')
+  hitTool_Left = getObjectFromGUID('309402')
+  -- tool_NextRound = getObjectFromGUID('b94669') > unused?
+  --roller_SurvAttack = getObjectFromGUID('ff240b')
+end
+
+function knockdown_Monster(object, player_color)
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, monster in ipairs(zoneShowdown.getObjects()) do
+		if string.find(monster.getDescription(), "monster") and string.find(monster.getDescription(), "figurine") then
+			local pos = monster.getPosition()
+			local rotX = monster.getRotation().x
+			local rotY = monster.getRotation().y
+			local rotZ = monster.getRotation().z
+
+			if rotZ > 165 and rotZ < 195 then
+				broadcastToColor("The Monster is already knocked down", player_color, {1,1,1})
+			end
+
+			if rotZ < 65  or rotZ > 350 then
+				monster.setLock(true)
+				monster.setRotationSmooth({rotX, rotY, 180})
+				monster.setPositionSmooth({pos.x, 5, pos.z})
+				broadcastToColor("The Monster is knocked down", player_color, {1,1,1})
+				monster_knocked_down = true
+				check_when_the_monster_is_knocked_down()
+
+				hitTool_Left.call("reactionsCancelled")
+				hitTool_Right.call("reactionsCancelled")
+				hitTool_Right.call("removeButton_ReactionTriggered")
+				hitTool_Right.call("removeButton_survival_opportunity")
+				hitTool_Right.call("removeButton_FinishReaction")
+
+				self.setRotationSmooth({0, 180, 180}, false, true)
+			end
+		end
+	end
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+		if card.getName() == "Wire-Fighting" then
+			card.setPositionSmooth({-1.24, 4.31, -2.48})
+			broadcastToAll("Wire-Fighting was discarded", {1,1,1})
+		end
+	end
+end
+
+function check_when_the_monster_is_knocked_down()
+  for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+    if string.find(card.getDescription(), "discard when monster knocked down") then
+      card.setPosition({-1.24, 4.31, -2.48})
+      broadcastToAll(card.getName() .. " was Discarded", {1,1,1})
+    end
+  end
+end
+
+function create_knockdown_monster_button()
+  self.createButton({click_function = "knockdown_Monster", function_owner = self, label = "Knockdown Monster", position = {0, 0.2, 0},
+  scale = {0.5, 0.5, 0.5}, width = 6000, height = 1200, font_size = 800, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function create_stand_monster_button()
+	self.createButton({click_function = "stand_monster", function_owner = self, label = "Stand Monster", position = {0, -0.2, 0}, rotation = {0, 0, 180}, scale = {0.5, 0.5, 0.5},
+	width = 6000, height = 1200, font_size = 800, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function stand_monster()
+	nextRound_tool = getObjectFromGUID('b94669')
+	nextRound_tool.call("stand_monster")
+	nextRound_tool.call("enable_Reactions")
+end
+
+-- end Knockdown Monster Token

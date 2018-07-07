@@ -1,0 +1,390 @@
+
+----------------------------------------------------------------------
+-- Table of Contents
+-- Create Initial buttons onLoad
+-- Create labels to Define Search All or Current Loaded
+-- Set Decks to Search by All or Current Loaded
+-- Set Decks to Search by Type
+
+-- Create Input Field
+-- Create Search Button
+-- Get the Card from the Deck
+-- Return / Set functions
+
+-- Remove Button / Input functions
+-- String Format Functions
+-- Set Decks to Search by Type
+----------------------------------------------------------------------
+
+function onLoad()
+	createButtons()
+end
+
+function set_deck_FA()
+	buttonClicked = 1
+	move_inputField_buttonDraw()
+	local deck_toSearch = return_searchDeck_Params(search)
+	if deck_toSearch == "All" then
+		deck = getObjectFromGUID(Global.getTable('decks_toSearch').masterFA.guid)
+	elseif deck_toSearch == "Loaded" then
+		local zone = getObjectFromGUID(Global.getTable('zones').zone_deckFA.guid)
+		for _, obj in ipairs(zone.getObjects()) do
+			if obj.tag == "Deck" then
+				deck = obj
+				break
+			end
+		end
+		--deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckFA.guid)
+	end
+end
+
+function set_deck_SFA()
+	buttonClicked = 2
+	move_inputField_buttonDraw()
+	local deck_toSearch = return_searchDeck_Params(search)
+	if deck_toSearch == "All" then
+		deck = getObjectFromGUID(Global.getTable('decks_toSearch').masterSFA.guid)
+	elseif deck_toSearch == "Loaded" then
+		local zone = getObjectFromGUID(Global.getTable('zones').zone_deckSFA.guid)
+		for _, obj in ipairs(zone.getObjects()) do
+			if obj.tag == "Deck" then
+				deck = obj
+				break
+			end
+		end
+		--deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckSFA.guid)
+	end
+end
+
+function set_deck_GEAR()
+	buttonClicked = 3
+	move_inputField_buttonDraw()
+	local zone = getObjectFromGUID('b1ed8f')
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.tag == "Deck" then
+			deck = obj
+			break
+		end
+	end
+end
+
+function set_deck_DIS()
+	buttonClicked = 4
+	move_inputField_buttonDraw()
+	local deck_toSearch = return_searchDeck_Params(search)
+	if deck_toSearch == "All" then
+		deck = getObjectFromGUID(Global.getTable('decks_toSearch').masterDIS.guid)
+	elseif deck_toSearch == "Loaded" then
+		local zone = getObjectFromGUID(Global.getTable('zones').zone_deckDIS.guid)
+		for _, obj in ipairs(zone.getObjects()) do
+			if obj.tag == "Deck" then
+				deck = obj
+				break
+			end
+		end
+		--deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckDIS.guid)
+	end
+end
+
+function set_deck_ABIL()
+	buttonClicked = 5
+	move_inputField_buttonDraw()
+	deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckABIL.guid)
+end
+
+function set_deck_BASIC()
+	buttonClicked = 6
+	move_inputField_buttonDraw()
+	deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckBASIC.guid)
+end
+
+function set_deck_INJ()
+	buttonClicked = 7
+	move_inputField_buttonDraw()
+	deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckINJ.guid)
+end
+
+function set_deck_STRANGE()
+	buttonClicked = 8
+	move_inputField_buttonDraw()
+	deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckSTRANGE.guid)
+end
+
+function move_inputField_buttonDraw()
+	removeButton_draw_removeInput_field()
+	createButton_draw()
+	createInput_field()
+end
+
+-- Create Input Field ---------------------------------------------------------
+function createInput_field()
+
+	input_params = {
+		input_function = "dud",
+		function_owner = self,
+		alignment      = 3,
+		position       = {},
+		rotation       = {-5,0,0},
+		width          = 5500,
+		height         = 600,
+		font_size      = 400,
+		color          = {0.3832, 0.3832, 0.3832, 1},
+		font_color     = {0,0,0},
+		value          = "Random",
+	}
+
+
+	if buttonClicked == 1 then
+		input_params.position = {-20, 0.3, 0.2}
+		self.createInput(input_params)
+	elseif buttonClicked == 2 then
+		input_params.position = {-10, 0.2, 0.2}
+		self.createInput(input_params)
+	elseif buttonClicked == 3 then
+		input_params.position = {0, 0.2, -3.6}
+		self.createInput(input_params)
+	elseif buttonClicked == 4 then
+		input_params.position = {10, 0.2, 0.2}
+		self.createInput(input_params)
+	elseif buttonClicked == 5 then
+		input_params.position = {20, 0.2, 0.2}
+		self.createInput(input_params)
+	elseif buttonClicked == 6 then
+		input_params.position = {-15, 0.2, 1.2}
+		self.createInput(input_params)
+	elseif buttonClicked == 7 then
+		input_params.position = {0, 0.2, 1.2}
+		self.createInput(input_params)
+	elseif buttonClicked == 8 then
+		input_params.position = {15, 0.2, 1.2}
+		self.createInput(input_params)
+	end
+end
+
+function removeInput_field()
+	local inputs = self.getInputs()
+	if inputs ~= nil then
+		for i, v in pairs(inputs) do
+			self.removeInput(v.index)
+		end
+	end
+end
+
+-- Create Search Button
+function createButton_draw()
+
+	btn_params = {
+		click_function = "get_namedCard_or_Random",
+		function_owner = self,
+		label          = "Draw",
+		position       = {},
+		rotation       = {-5,0,0},
+		width          = 3000,
+		height         = 500,
+		font_size      = 400,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	if buttonClicked == 1 then
+		btn_params.position = {-20, 0.3, -1.1}
+		self.createButton(btn_params)
+	elseif buttonClicked == 2 then
+		btn_params.position = {-10, 0.2, -1.1}
+		self.createButton(btn_params)
+	elseif buttonClicked == 3 then
+		btn_params.position = {0, 0.2, -4.7}
+		self.createButton(btn_params)
+	elseif buttonClicked == 4 then
+		btn_params.position = {10, 0.2, -1.1}
+		self.createButton(btn_params)
+	elseif buttonClicked == 5 then
+		btn_params.position = {20, 0.2, -1.1}
+		self.createButton(btn_params)
+	elseif buttonClicked == 6 then
+		btn_params.position = {-15, 0.2, 2.6}
+		self.createButton(btn_params)
+	elseif buttonClicked == 7 then
+		btn_params.position = {0, 0.2, 2.6}
+		self.createButton(btn_params)
+	elseif buttonClicked == 8 then
+		btn_params.position = {15, 0.2, 2.6}
+		self.createButton(btn_params)
+	end
+end
+
+function removeButton_draw()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Draw" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+--Get the Card from the Deck you set --------------------------------
+function get_namedCard_or_Random()
+	-- Sets Card Draw positions
+	pos = self.getPosition()
+
+	if buttonClicked == 1 then
+		pos_toDraw = {pos.x - 6.22, pos.y + 2, pos.z + 2.37}
+	elseif buttonClicked == 2 then
+		pos_toDraw = {pos.x - 3.18, pos.y + 2, pos.z + 2.37}
+	elseif buttonClicked == 3 then
+		pos_toDraw = {pos.x, pos.y + 2, pos.z + 2.81}
+	elseif buttonClicked == 4 then
+		pos_toDraw = {pos.x + 3.18, pos.y + 2, pos.z + 2.37}
+	elseif buttonClicked == 5 then
+		pos_toDraw = {pos.x + 6.22, pos.y + 2, pos.z + 2.37}
+	elseif buttonClicked == 6 then
+		pos_toDraw = {pos.x -4.69, pos.y + 2, pos.z -3.1}
+	elseif buttonClicked == 7 then
+		pos_toDraw = {pos.x, pos.y + 2, pos.z -3.1}
+	elseif buttonClicked == 8 then
+		pos_toDraw = {pos.x + 4.69, pos.y + 2, pos.z -3.1}
+	end
+
+	local card_ToGet = tostring(return_inputValue(value))
+	if card_ToGet == "Random" then
+		deck.shuffle()
+		deck.takeObject({top = true, position = pos_toDraw, smooth= false})
+	end
+	if card_ToGet ~= "Random" then
+		for i, card in ipairs(deck.getObjects()) do
+			local desc = card.description
+			if card.nickname == card_ToGet and string.find(desc, "gear") then
+				deck.takeObject({guid = card.guid, position = pos_toDraw, smooth = false})
+				break
+			end
+			if card.nickname == card_ToGet then
+				deck.takeObject({guid = card.guid, position = pos_toDraw, smooth = false})
+				break
+			end
+		end
+	end
+	-- Resets initial search back to random
+	set_inputValue_Random()
+end
+
+--[[function get_gearCard_Left()
+
+end
+
+function get_gearCard_Right()
+
+end]]--
+
+-- Return / Set functions ----------------------------------------------------
+function return_inputValue(value)
+	local inputs = self.getInputs()
+	if inputs ~= nil then
+		for i, v in pairs(inputs) do
+			value = v.value
+		end
+	end
+	return value
+end
+
+function set_inputValue_Random()
+	local inputs = self.getInputs()
+	for i, v in pairs(inputs) do
+		self.editInput({value = "Random"})
+	end
+end
+
+function return_searchDeck_Params(search)
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Search All" then
+			search = "All"
+		elseif v.label == "Search Loaded" then
+			search = "Loaded"
+		end
+	end
+	return search
+end
+
+function removeButton_draw_removeInput_field()
+	removeButton_draw()
+	removeInput_field()
+end
+
+-- String Format Functions - Sets to NOT case Sensitive------------------------
+
+function nocase (s)
+	s = string.gsub(s, "%a", function (c)
+		return string.format(string.lower(c), string.upper(c))
+	end)
+	return s
+end
+
+--Create labels to Define Search All or Current Loaded ------------------------
+function createButton_searchLoaded()
+	removeButton_searchAll()
+
+	self.createButton({click_function = "dud", function_owner = self, label = "Search Loaded", position = {0, 0.3, 0}, rotation = {-5, 0, 0},
+	width = 0, height = 0, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function removeButton_searchLoaded()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Search Loaded" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function createButton_searchAll()
+	removeButton_searchLoaded()
+
+	self.createButton({click_function = "dud", function_owner = self, label = "Search All", position = {0, 0.3, 0}, rotation = {-5, 0, 0},
+	width = 0, height = 0, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function removeButton_searchAll()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Search All" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+-- Create Initial buttons onLoad -----------------------------------------------
+
+function createButtons()
+
+	--------------------------------------------------------------------------------
+	self.createButton({click_function = "set_deck_BASIC", function_owner = self, label = "Basic Resources", position = {-15, 0.3, 3.7}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "set_deck_STRANGE", function_owner = self, label = "Strange Resources", position = {15, 0.3, 3.7}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+	--------------------------------------------------------------------------------
+	self.createButton({click_function = "set_deck_FA", function_owner = self, label = "Fighting Arts", position = {-20, 0.3, -2.3}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "set_deck_SFA", function_owner = self, label = "Secret Arts", position = {-10, 0.3, -2.3}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "set_deck_GEAR", function_owner = self, label = "Gear", position = {0, 0.3, -2.2}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "set_deck_DIS", function_owner = self, label = "Disorders", position = {10, 0.3, -2.3}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "set_deck_ABIL", function_owner = self, label = "Abilities", position = {20, 0.3, -2.3}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "set_deck_INJ", function_owner = self, label = "Severe Injuries", position = {0, 0.3, 3.7}, rotation = {-5, 0, 0}, width = 4000, height = 500, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	--------------------------------------------------------------------------------
+	self.createButton({click_function = "createButton_searchAll", function_owner = self, label = "<", position = {-4.3, 0.2, 0}, rotation = {-5, 0, 0}, width = 750, height = 750, font_size = 800, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "createButton_searchLoaded", function_owner = self, label = ">", position = {4.3, 0.2, 0}, rotation = {-5, 0, 0}, width = 750, height = 750, font_size = 800, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "dud", function_owner = self, label = "Search Loaded", position = {0, 0.3, 0}, rotation = {-5, 0, 0}, width = 0, height = 0, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+
+end
+
+function dud()
+end
+
+
+-- DRAW CARDS TOOL

@@ -1,0 +1,48 @@
+function onLoad()
+  createButton()
+end
+
+
+function createButton()
+  self.createButton({click_function = "onFlip", function_owner = self, label = "Dodge",
+  position = {0, 0.5, 0}, rotation = {-5, 0 , 0}, scale = {0.5, 0.5, 0.5}, width = 5000, height = 1600, font_size = 0,
+  color = {0,0,0}, font_color = {1,1,1}, font_size=800})
+end
+
+function onFlip(object, player_color)
+  cannotDodge = false
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+  local objectsInZone = zone.getObjects()
+  for _, object in ipairs(objectsInZone) do
+    if object.getName() == "Replica Flower Sword" then
+      cannotDodge = true
+      broadcastToColor("Replica Flower Sword ~ You cannot Dodge", player_color, {1,1,1})
+      return
+
+    elseif object.getName() == "Extra Sense" and object.getRotation().z < 165 then
+      broadcastToColor("Extra Sense ~ You may dodge an additional time", player_color, {1,1,1})
+
+    elseif object.getName() == "Hyper Sensitivity" then
+      broadcastToColor("Hyper Sensitivity ~ You may dodge an additional time", player_color, {1,1,1})
+
+    elseif (object.getName() == "Sun Drunk" and object.getRotation().z < 165) and object.getName() == "Strength" then
+      broadcastToColor("Sun Drunk ~ You cannot Dodge, Dash or Runaway while you have any (+1) Strength Tokens", player_color, {1,1,1})
+
+    elseif object.getName() == "King of a Thousand Battles" and object.getRotation().z < 165 then
+      broadcastToColor("King of a Thousand Battles ~ You may Dodge any number of times in a round", player_color, {1,1,1})
+      cannotDodge = true -- can dodge but this line disables dodge token from flipping
+    end
+  end
+  if cannotDodge == false then
+      self.setRotation({self.getRotation().x, self.getRotation().y, self.getRotation().z+180})
+      changeSurvivors("survival", -1, grid)
+  elseif cannotDodge == true then
+    return
+  end
+end
+
+function changeSurvivors(location, amount, grid)
+  local grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

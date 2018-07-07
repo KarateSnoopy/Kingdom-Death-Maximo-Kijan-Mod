@@ -1,0 +1,9 @@
+function onLoad()
+    graveyard = {}
+end
+
+function onSave()
+    local data_to_save = graveyard
+    saved_data = JSON.encode(graveyard)
+    self.script_state = saved_data
+end

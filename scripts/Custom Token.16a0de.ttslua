@@ -1,0 +1,49 @@
+function onLoad()
+
+  self.createButton({click_function = "call_left", function_owner = self, label = " ", position = {-1.2, 0.02, 0},
+  scale = {0.5, 0.5, 0.5}, width = 1400, height = 1000, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+  self.createButton({click_function = "call_right", function_owner = self, label = " ", position = {1.2, 0.02, 0},
+  scale = {0.5, 0.5, 0.5}, width = 1400, height = 1000, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+  self.createButton({click_function = "call_up", function_owner = self, label = " ", position = {0, 0.02, -1.2},
+  scale = {0.5, 0.5, 0.5}, width = 1000, height = 1400, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+self.createButton({click_function = "call_down", function_owner = self, label = " ", position = {0, 0.02, 1.2},
+scale = {0.5, 0.5, 0.5}, width = 1000, height = 1400, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+self.createButton({click_function = "call_perm", function_owner = self, label = " ", position = {0, 0.02, 0},
+scale = {0.5, 0.5, 0.5}, width = 900, height = 900, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+end
+
+function call_perm()
+  local gearTool = getObjectFromGUID('a00bce')
+  gearTool.call("green_perm")
+end
+
+function call_left()
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("green_left")
+end
+
+function call_right()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("green_right")
+
+end
+
+function call_up()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("green_up")
+
+end
+
+function call_down()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("green_down")
+
+end

@@ -1,0 +1,53 @@
+function onLoad()
+	createButtons()
+end
+
+sigil = " \u{03E2} "
+
+function createButtons()
+	self.createButton({click_function = "change_color", function_owner = self, label = "Apply Color", position = {0, 0.1, 3.1}, scale = {1, 0.5, 1}, width = 2500, height = 550, font_size = 450, color = {0,0,0,0}, font_color = {1,1,1,100}})
+end
+
+function change_color(object, player_color)
+	tint = self.getColorTint()
+
+	portrait_frame = getObjectFromGUID('d5a008')
+	portrait_frame.setColorTint(tint)
+
+	weapon_selector = getObjectFromGUID(Global.getTable('weaponSelector').green.guid)
+	weapon_selector.setColorTint(tint)
+
+	grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+	grid.setColorTint(tint)
+	grid.getTable("msg_color")
+	grid.setTable("msg_color", tint)
+
+	menu_token = getObjectFromGUID('148863')
+	menu_token.call("clearButtons")
+	menu_token.call("createButtons")
+
+	survCard = getObjectFromGUID(Global.getTable('survCards').green.guid)
+	survCard.call("clearButtons")
+	survCard.call("create_init_Buttons")
+
+	frenzy_token = getObjectFromGUID('8120c3')
+	frenzy_token.call("clearButtons")
+	frenzy_token.call("createButtons")
+
+	dice_roller_left = getObjectFromGUID('914f32')
+	dice_roller_left.call("reset_Buttons")
+
+	dice_roller_right = getObjectFromGUID('65a3d4')
+	dice_roller_right.call("reset_Buttons")
+
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "Player Three" then
+			obj.setColorTint(tint)
+		end
+	end
+
+	broadcastToColor("Color Applied", player_color, {1,1,1})
+end
+
+-- settings P3

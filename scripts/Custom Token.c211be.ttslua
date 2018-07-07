@@ -1,0 +1,49 @@
+function onLoad()
+  createButtons()
+end
+
+function createButtons()
+    self.createButton{index = 4, click_function = 'bleed6', function_owner = self,
+    label = '', position = {x = -0.05, y = 0, z = -0.6}, rotation = {x = 0, y = 0, z = 0},
+    scale = {x = 0.5, y = 1, z = 0.5}, width = 800, height = 800, font_size = 500,
+    color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+
+    self.createButton{index = 3, click_function = 'bleed7', function_owner = self,
+    label = '', position = {x = -0.05, y = 0, z = 2}, rotation = {x = 0, y = 0, z = 0},
+    scale = {x = 0.5, y = 1, z = 0.5}, width = 800, height = 800, font_size = 500,
+    color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+
+  end
+
+function bleed6()
+  local object = getObjectFromGUID('6653a6')
+  object.clone({position={-8.83, 4.27, -18.56}})
+  anyBleedEffects()
+end
+
+function bleed7()
+  local object = getObjectFromGUID('6653a6')
+  object.clone({position={-8.84, 4.27, -19.23}})
+  anyBleedEffects()
+end
+
+function anyBleedEffects(object, player_color)
+  zonesTable = Global.getTable('zones')
+  zone = getObjectFromGUID(zonesTable.zoneP1.guid)
+  local objectsInZone = zone.getObjects()
+  for _, object in ipairs(objectsInZone) do
+    if object.getName() == "Monster Controller" then
+      monsterController = true
+      if (monsterController) and object.getName() == "Red Ring" then
+        if object.getRotation().z > 179 then
+        broadcastToAll("Red Ring: Monster Suffers 1 Wound ~ Limit Twice Per Round", {1,1,1})
+        monsterConroller = false
+        end
+      end
+    elseif object.getName() == "Transcended Masochist" then
+      broadcastToColor("Transcended Masochist: Gain (+1) Survival and (+1) Insanity", player_color, {1,1,1})
+    elseif object.getName() == "Ink Blood Bow" then
+      broadcastToColor("Ink Blood Bow ~ Gain a (+1) Strength Token for each Bleeding Token you have", player_color, {1,1,1})
+    end
+  end
+end

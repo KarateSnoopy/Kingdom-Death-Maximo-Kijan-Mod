@@ -1,0 +1,25 @@
+function onLoad()
+  createButton()
+end
+
+
+function createButton()
+
+  self.createButton({click_function = "craftGear", function_owner = self, label = "[ Back to Crafting ]",
+  position = {0, 0.2, 0}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1100, color = {0,0,0}, font_color = {1,1,1}, font_size = 750})
+end
+
+function craftGear(object, player)
+  local zone = getObjectFromGUID('704832')
+  local objectsInZone = zone.getObjects()
+  for _, object in ipairs(objectsInZone) do
+    if object.getName() == "Endeavor" then
+      object.setPosition({50.88, 4.32, 20.71})
+    elseif object.getName() == "Matchmaker Endeavor" then
+      object.setPosition({53.62, 4.35, 8.85})
+    end
+  end
+    local parameters = {}
+    parameters.position=  {51.07, 4.38, 15}
+    Player[player].lookAt(parameters)
+end

@@ -1,0 +1,4 @@
+function onLoad()
+	settings_P4_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+	self.setColorTint(settings_P4_token.getColorTint())
+end

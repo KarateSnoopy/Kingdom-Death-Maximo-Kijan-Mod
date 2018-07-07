@@ -1,0 +1,80 @@
+function onLoad()
+	createButton()
+	PlayerName = "Player Three"
+	settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+   zone = grid.getVar("zonePlayer")
+
+end
+
+function createButton()
+	self.createButton({click_function = "callDash", function_owner = self, label = "Dash",
+	position = {0, 0.5, 0}, rotation = {-5, 0 , 0}, scale = {0.5, 0.5, 0.5}, width = 5000, height = 1600, font_size = 0,
+	color = {0,0,0}, font_color = {1,1,1}, font_size=800})
+end
+
+function callDash(object, player_color)
+	cannotDash = false
+	has_torn_muscle = false
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Torn Muscle" then
+			cannotDash = true
+			has_torn_muscle = true
+		end
+	end
+	has_moving_ground = false
+	local zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+		if card.getName() == "Moving Ground" then
+			cannotDash = true
+			has_moving_ground = true
+		end
+	end
+
+	if cannotDash then
+		if has_torn_muscle then
+			broadcastToColor("Torn Muscle ~ You cannot Dash", player_color, msg_color)
+		end
+		if has_moving_ground then
+			broadcastToColor("Moving Ground ~ Survivors cannot Dash", player_color, msg_color)
+		end
+		return
+	end
+
+	if cannotDash == false then
+		-- Gorm's Den
+		if hasGormYard then
+			changeSurvivors("survival", - 2, grid)
+		else
+			changeSurvivors("survival", - 1, grid)
+		end
+
+		self.setRotation({self.getRotation().x, self.getRotation().y, self.getRotation().z + 180})
+		-- Move Camera
+		local rotZ = settings_token.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+			has_move_camera = true
+		else
+			has_move_camera = false
+		end
+		if has_move_camera then
+			local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+			for _, object in ipairs(zoneShowdown.getObjects()) do
+				if object.getName() == PlayerName then
+					playerPos = object.getPosition()
+				end
+			end
+			camera_pitch = tonumber(settings_token.getDescription())
+			local parameters = {}
+			parameters.position = playerPos
+			parameters.pitch = camera_pitch
+			parameters.yaw = 0
+			Player[player_color].lookAt(parameters)
+		end
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

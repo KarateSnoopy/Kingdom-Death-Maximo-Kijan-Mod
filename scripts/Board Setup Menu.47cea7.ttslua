@@ -1,0 +1,58 @@
+function onLoad()
+	createButtons()
+end
+
+function createButtons()
+self.createButton({click_function = "open_mainMenu", function_owner = self, label = "Enter Here",
+position = {0, 0.7, 6.2}, scale = {1.4, 1, 1.1}, width = 3000, height = 600, font_size = 400, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 100}})
+
+self.createButton({click_function = "dud", function_owner = self, label = "Kingdom Death",
+position = {0, 0.7, -6.8}, scale = {1.4, 1, 1.1}, width = 0, height = 0, font_size = 500, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function open_mainMenu()
+	get_effects()
+self.setState(22)
+end
+
+-- Utility Functions -----------------------------------------------------------
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function get_effects()
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+
+		bag_effects_wipe = getObjectFromGUID('d02e2e')
+		effects_wipe = bag_effects_wipe.takeObject({
+			position       = {-0.11, 4.65, -20.93},
+			smooth         = false,
+			callback			= "lock_callback",
+			callback_owner = Global
+		})
+		effects_wipe.AssetBundle.playLoopingEffect(2)
+
+		bag_chain_effect = getObjectFromGUID('bce2c2')
+		chain_effect = bag_chain_effect.takeObject({
+			position       = {-0.04, 4.40, -14.07},
+			smooth         = false,
+			callback			= "lock_callback",
+			callback_owner = Global
+		})
+		chain_effect.AssetBundle.playLoopingEffect(9)
+
+		startLuaCoroutine(self, "store_effects_wipe_coR")
+	end
+end
+
+function store_effects_wipe_coR()
+	wait(1.75)
+	effects_wipe.destroy()
+	wait(1.25)
+	chain_effect.destroy()
+	return 1
+end

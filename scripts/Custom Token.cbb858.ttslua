@@ -1,0 +1,229 @@
+function onLoad()
+    createButton_ArmorSets()
+		deck_toSearch = getObjectFromGUID(Global.getTable('decks_toSearch').deckARMOR.guid)
+		pos = self.getPosition()
+		pos_offset = {pos.x - 2, pos.y + 0.5, pos.z + 1.87}
+end
+
+function createButton_ArmorSets()
+
+	btn_params = {
+		click_function = 'createButtons',
+		function_owner = self,
+		label          = "Armor Sets",
+		position 		= {0, 0.5, 0},
+		rotation 		= {-5, 0 ,0},
+		scale          = {0.5,0.5,0.5},
+		width          = 5000,
+		height         = 1100,
+		font_size      = 800,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+	self.createButton(btn_params)
+
+end
+
+function createButtons()
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		scale          = {0.5,0.5,0.5},
+		width          = 5000,
+		height         = 1100,
+		font_size      = 600,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "closeMenu"
+	btn_params.position = {x = -8.6, y = 0.2, z = 3}
+	btn_params.label = 'Close Menu'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getWL"
+	btn_params.position = {x = -8.6, y = 0.2, z = 0}
+	btn_params.label = 'White Lion'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getWAR"
+	btn_params.position = {x = -8.6, y = 0.2, z = -1.5}
+	btn_params.label = 'Warlord'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getVAG"
+	btn_params.position = {x = -8.6, y = 0.2, z = -3}
+	btn_params.label = 'Vagabond'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getSILK"
+	btn_params.position = {x = -8.6, y = 0.2, z = -4.5}
+	btn_params.label = 'Silk'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getSCREAM"
+	btn_params.position = {x = -8.6, y = 0.2, z = -6}
+	btn_params.label = 'Screaming'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getROLL"
+	btn_params.position = {x = -8.6, y = 0.2, z = -7.5}
+	btn_params.label = 'Rolling'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getRAW"
+	btn_params.position = {x = -8.6, y = 0.2, z = -9}
+	btn_params.label = 'Rawhide'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getPNIX"
+	btn_params.position = {x = -8.6, y = 0.2, z = -10.5}
+	btn_params.label = 'Phoenix'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getLEAT"
+	btn_params.position = {x = -8.6, y = 0.2, z = -12}
+	btn_params.label = 'Leather'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getLANT"
+	btn_params.position = {x = -8.6, y = 0.2, z = -13.5}
+	btn_params.label = 'Lantern'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getGORM"
+	btn_params.position = {x = -8.6, y = 0.2, z = -15}
+	btn_params.label = 'Gorment'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getGRN"
+	btn_params.position = {x = -8.6, y = 0.2, z = -16.5}
+	btn_params.label = 'Green'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getDRG"
+	btn_params.position = {x = -8.6, y = 0.2, z = -18}
+	btn_params.label = 'Dragon'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getDNCR"
+	btn_params.position = {x = -8.6, y = 0.2, z = -19.5}
+	btn_params.label = 'Dancer'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getCYC"
+	btn_params.position = {x = -8.6, y = 0.2, z = -21}
+	btn_params.label = 'Cycloid'
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getBRW"
+	btn_params.position = {x = -8.6, y = 0.2, z = -22.5}
+	btn_params.label = 'Brawler'
+	self.createButton(btn_params)
+
+end
+
+function getBRW()
+	card = {cardName = "Brawler Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getCYC()
+	card = {cardName = "Cycloid Scale Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getDNCR()
+	card = {cardName = "Dancer Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getDRG()
+	card = {cardName = "Dragon Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getGRN()
+	card = {cardName = "Green Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getGORM()
+	card = {cardName = "Gorment Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getLANT()
+	card = {cardName = "Lantern Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getLEAT()
+	card = {cardName = "Leather Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getPNIX()
+	card = {cardName = "Phoenix Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getRAW()
+	card = {cardName = "Rawhide Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getROLL()
+	card = {cardName = "Rolling Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getSCREAM()
+	card = {cardName = "Screaming Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getSILK()
+	card = {cardName = "Silk Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getVAG()
+	card = {cardName = "Vagabond Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getWAR()
+	card = {cardName = "Warlord Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function getWL()
+	card = {cardName = "White Lion Armor", zone ="", deck = deck_toSearch}
+	execute()
+end
+
+function execute()
+	Global.setTable('card', card)
+	Global.setTable('pos_toSpawn', pos_offset)
+	Global.call("get_Card")
+	removeButtons_All()
+	createButton_ArmorSets()
+	card = {}
+end
+
+function removeButtons_All()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		self.removeButton(v.index)
+	end
+end
+
+function closeMenu()
+	removeButtons_All()
+	createButton_ArmorSets()
+end

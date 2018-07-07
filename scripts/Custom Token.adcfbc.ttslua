@@ -1,0 +1,67 @@
+function onLoad()
+
+  self.createButton({click_function = "call_left", function_owner = self, label = " ", position = {-1.2, 0.02, 0},
+  scale = {0.5, 0.5, 0.5}, width = 1400, height = 1000, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+  self.createButton({click_function = "call_right", function_owner = self, label = " ", position = {1.2, 0.02, 0},
+  scale = {0.5, 0.5, 0.5}, width = 1400, height = 1000, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+  self.createButton({click_function = "call_up", function_owner = self, label = " ", position = {0, 0.02, -1.2},
+  scale = {0.5, 0.5, 0.5}, width = 1000, height = 1400, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+self.createButton({click_function = "call_down", function_owner = self, label = " ", position = {0, 0.02, 1.2},
+scale = {0.5, 0.5, 0.5}, width = 1000, height = 1400, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+self.createButton({click_function = "call_perm", function_owner = self, label = " ", position = {0, 0.02, 0},
+scale = {0.5, 0.5, 0.5}, width = 900, height = 900, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+--self.createButton({click_function = "resetDeck", function_owner = self, label = "Reset Master Deck",
+--position = {-4.8, 0.1, 2.7}, width = 2300, height = 400, font_size = 250, color={0,0,0}, font_color={1,1,1}})
+
+end
+
+function resetDeck()
+  local zone_gearDeck = getObjectFromGUID('b1ed8f')
+  for _, object in ipairs(zone_gearDeck.getObjects()) do
+    if object.tag == "Deck" then
+      object.destroy()
+    end
+  end
+  local bag = getObjectFromGUID('dfd3c6')
+  local new_Deck = bag.takeObject({position = {75.00, 5.16, -50.77}, rotation = {0,180,0}, smooth=false})
+  new_Deck.clone({position = {75.87, 5.06, -33.19}})
+  new_Deck.setPositionSmooth({76.04, 6.26, -53.86}, false, false)
+end
+
+function call_perm()
+  local gearTool = getObjectFromGUID('a00bce')
+  gearTool.call("red_perm")
+end
+
+function call_left()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("red_left")
+
+end
+
+function call_right()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("red_right")
+
+end
+
+function call_up()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("red_up")
+
+end
+
+function call_down()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("red_down")
+
+end

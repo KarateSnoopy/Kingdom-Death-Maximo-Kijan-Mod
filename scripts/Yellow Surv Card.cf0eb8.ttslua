@@ -1,0 +1,1536 @@
+--------------------------------------------------------------------------------
+--                           TABLE OF CONTENTS                                --
+--                   Scripts created by Maximo and Kijan                      --
+--------------------------------------------------------------------------------
+
+-- Start Act -------------------------------------------------------------------
+
+-- End Act ---------------------------------------------------------------------
+
+-- Attack Functions ------------------------------------------------------------
+	-- function attack
+	-- function attackBlind
+	-- function endAttack
+
+-- Move Functions --------------------------------------------------------------
+	-- function move
+	-- function knockdown_survivor
+	-- function knockback_survivor
+
+-- Ability Functions -----------------------------------------------------------
+	----- Fist and Tooth
+	----- Steadfast
+	----- Momentum
+
+-- Blocking and Deflecting Functions -------------------------------------------
+
+-- Buttons ---------------------------------------------------------------------
+	-- function set_buttons_Table
+	-- function create_init_Buttons
+	-- function createButton_knockdown_survivor
+	-- function createButton_start_your_act
+	-- function createButtons
+	-- function createButton_small_end_your_act
+
+-- Move Buttons ----------------------------------------------------------------
+	-- function createButton_move
+	-- function removeButton_move
+	-- function createButton_ShadowWalk
+	-- function removeButton_ShadowWalk
+
+-- Attack Buttons --------------------------------------------------------------
+	-- function createButton_Attack
+	-- function create_AttackBlind_Button
+	-- function create_Honorable_Button
+	-- function createButton_End_Attack
+	-- function createButtons_attack_attackBlind(object, player_color)
+	-- function removeButtons_attack_attackBlind
+
+-- Ability Buttons -------------------------------------------------------------
+	----- Fist and Tooth
+	----- Steadfast
+	----- Momentum
+	----- Fencing
+	----- Crossarm Block
+	----- Ripple Pattern
+	----- Stalwart
+	----- Knockback
+	----- Bash
+	----- Deflect
+	----- Block
+	----- Fecal Salve
+
+-- Utility Functions -----------------------------------------------------------
+	-- function clearButtons
+	-- function set_roller_survAttack
+	-- function action_spent
+	-- function goTo
+	-- function broadcast_message_coR
+	-- function wait
+	-- function changeSurvivors
+	-- function move_camera_toHitLocations(object, player)
+
+-- END TABLE OF CONTENTS -------------------------------------------------------
+
+zone = ""
+-- For Surv Figure Showdown Zone Search
+PlayerName = "Player Two"
+-- For Token Spawnwers
+color = "yellow"
+-- Grid Camera
+player_grid_pos = { - 14.16, 4.28, - 19.78}
+
+-- Button Positions
+steadfast_Table = {}
+steadfast_add_pos = { - 3.2, 0.2, 3.1}
+momentum_pos = {-3.2, 0.2, 2.5}
+end_momentum_pos = {-3.2, 0.2, 2.5}
+
+crossarm_block_pos = {-33.5, 13, 11.3}
+ripple_pattern_pos = {-33.5, 13, 12.3}
+steadfast_sub_pos = {-33.5, 13, 13.3}
+fencing_pos = {-33.5, 13, 14.3}
+knocked_down_token_pos  = {-2.83, 4.53, -5.72}
+
+deflect1_pos = {-33.5, 13, 15.3}
+deflect2_pos = {-33.5, 13, 16.3}
+deflect3_pos = {-33.5, 13, 17.3}
+block1_pos = {-33.5, 13, 18.3}
+block2_pos = {-33.5, 13, 19.3}
+
+knockback_button_pos = {-37.07, 3.5, 29.5}
+stalwart_button_pos = {-37.07, 3.5, 28.89}
+ignore_bash_button_pos = {-37.07, 3.5, 30.12}
+
+-- Colors
+--msg_color = {0.905, 0.898, 0.172}
+--font_color = {0.905, 0.898, 0.172}
+btn_rotation = { - 5, 0, 0}
+
+isSurging_survCard = false
+
+-- Variables
+surv_action_menu = {}
+
+function onLoad()
+   zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+   zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+   zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+   zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+   grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+	persistentCard = getObjectFromGUID(Global.getTable('persistentCard').card.guid)
+
+   momentum_Counter = getObjectFromGUID('2795b6')
+   steadfast_token = getObjectFromGUID('3c3882')
+   surv_MenuToken = getObjectFromGUID("4825fa")
+   roller_survAttack = getObjectFromGUID('ff240b')
+	knockdownToken = getObjectFromGUID('31af47')
+
+	settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+
+	set_buttons_Table()
+	create_init_Buttons()
+end
+
+function resetButtons()
+	self.clearButtons()
+	set_buttons_Table()
+	create_init_Buttons()
+end
+
+-- Attack Functions ------------------------------------------------------------
+function attack(object, player)
+   action_spent()
+   fecalSalveReset()
+   removeButtons_attack_attackBlind()
+   -- Calls Dice Roller
+   roller_survAttack.call("yellowClicked")
+   roller_survAttack.call("clickToHit")
+   surv_MenuToken.call("clear_spawned_gear_cards")
+	move_camera_toHitLocations(object, player)
+end
+
+function attackBlind(object, player)
+   action_spent()
+   fecalSalveReset()
+   removeButtons_attack_attackBlind()
+
+   --Calls Dice Roller
+   roller_survAttack.call("yellowClicked")
+   roller_survAttack.call("clickToBlindHit")
+   surv_MenuToken.call("clear_spawned_gear_cards")
+	move_camera_toHitLocations(object, player)
+end
+
+function endAttack()
+   for _, obj in ipairs(zonePlayer.getObjects()) do
+      local desc = obj.getDescription()
+      if string.find(desc, "end of attack") then
+         obj.destroy()
+      elseif string.find(desc, ", sharp to_endOfattack") then
+         local new_desc = string.gsub(desc, ", sharp to_endOfattack", "")
+         obj.setDescription(new_desc)
+		elseif string.find(desc, ", once per attack used") then
+			local new_desc = string.gsub(desc, ", once per attack used", "")
+			obj.setDescription(new_desc)
+
+			-- Vespertine Bow
+		elseif obj.getName() == "Vespertine Bow" then
+			local new_desc = string.gsub(obj.getDescription(), ", slow", "")
+			obj.setDescription(new_desc)
+		end
+   end
+   local btns = self.getButtons()
+   for i, v in pairs(btns) do
+      if v.label == "End Attack" then
+         self.removeButton(v.index)
+      end
+   end
+
+	persistentCard.call("delete_endOfAttack_tokens")
+
+	-- Rest Display Triggers for Next Player
+	if isSurging_survCard then
+		physics_wound_queue = getObjectFromGUID('e06cea')
+		zone_drawnHit = getObjectFromGUID(Global.getTable('zones').zoneLeft_drawnHit.guid)
+	else
+		physics_wound_queue = getObjectFromGUID('802f92')
+		zone_drawnHit = getObjectFromGUID(Global.getTable('zones').zoneRight_drawnHit.guid)
+	end
+	local pos = physics_wound_queue.getPosition()
+
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {2,2,2},
+		max_distance 	= 0,
+		debug				= true
+	})
+
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.tag == "Card" then
+			entry.hit_object.destroy()
+		end
+	end
+
+	-- Cleanup Display Cards
+	for _, card in ipairs(zone_drawnHit.getObjects()) do
+		local desc = card.getDescription()
+		if string.find(desc, "gear")
+		or string.find(desc, "essential") then
+			card.destroy()
+		end
+	end
+
+   if not actStarted then
+      createButton_start_your_act()
+   end
+   --[[if isEndAct and not isSurging_survCard then
+      createButton_end_your_act()
+   end--]]
+
+   if isSurging_survCard then
+      isSurging_survCard = false
+      set_roller_survAttack()
+   end
+end
+
+--------- EVERYTHING BELOW THIS LINE IS IDENTICAL ON EACH SURVCARD -------------
+
+-- Start Act -------------------------------------------------------------------
+function startAct(object, player_color)
+
+	broadcastTable = {}
+	broadcastToColor("________________  Act Started  ________________", player_color, msg_color)
+
+	actStarted = true
+	actEnded = false
+	createButtons()
+
+	--Removes Button to show that act has started and taken place or removes blocking buttons that ended at start of act
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+	   if v.label == "Start Act"
+		or v.label == "Blocking 1"
+		or v.label == "Blocking 2" then
+	      self.removeButton(v.index)
+	   end
+	end -- end
+
+	--Checks Survival Amount and If you are insane
+	local survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	local insanity = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	--Checks Zone for Card Triggers
+	isInsane = false
+	for _, object in ipairs(zonePlayer.getObjects()) do
+		local rotZ = object.getRotation().z
+	   if object.getName() == "isInsane" and rotZ > 165 and rotZ < 195 then
+	      isInsane = true
+	   end
+	end -- end
+
+	-- If Insane Card Triggers
+	for _, object in ipairs(zonePlayer.getObjects()) do
+		local rotZ = object.getRotation().z
+	   if isInsane then
+	      -- Antelope Mask
+	      if object.getName() == "Antelope Mask" and rotZ > 165 and rotZ < 195 then
+	         table.insert(broadcastTable, "Antelope Mask ~ Gain +1 ♘")
+
+	         -- God Mask
+	      elseif object.getName() == "God Mask" and rotZ > 165 and rotZ < 195 then
+	         table.insert(broadcastTable, "God Mask ~ You gained (+1) Survival")
+	         changeSurvivors("survival", 1, grid)
+
+	         -- Forsaker Mask
+	      elseif object.getName() == "Forsaker Mask" then
+	         table.insert(broadcastTable, "Forsaker Mask ~ Gain +1 Action")
+	      end
+	   end
+	end -- end Insane card triggers
+
+	-- Other Start of Act triggers
+	for _, object in ipairs(zonePlayer.getObjects()) do
+
+	   -- Burning Focus
+	   if (survival == 0) and object.getName() == "Burning Focus" then
+	      table.insert(broadcastTable, "Burning Focus ~ You have 0 Survival ~ You gained (+1) Survival")
+	      changeSurvivors("survival", 1, grid)
+
+	   -- Apostle Crown
+	   elseif object.getName() == "Apostle Crown" then
+	      for _, tok in ipairs(zonePlayer.getObjects()) do
+	         if string.find(tok.getDescription() "plus1str") then
+	            table.insert(broadcastTable, "Apostle Crown ~ You may look at the top 4 Hit Locations and put them back in any order")
+	         end
+	      end
+
+	   -- Deathpact
+	   elseif object.getName() == "Deathpact" then
+	      table.insert(broadcastTable, "Deathpact ~ You gained (+1) Survival")
+	      changeSurvivors("survival", 1, grid)
+
+	      -- Story of the Young Hem
+	   elseif object.getName() == "Story of the Young Hem" then
+	      table.insert(broadcastTable, "Story of the Young Hem ~ You may choose to gain (+1) Survival and 2 Bleeding Tokens")
+
+	   -- Bone Witch Mehndi
+	   elseif object.getName() == "Bone Witch Mehndi" and rotZ > 165 and rotZ < 195 then
+	      table.insert(broadcastTable, "Bone Witch Mehndi ~ You may spend 3 Insanity to gain (+1) Survival or 3 Survival to gain (+1) Insanity")
+
+	   -- Hyperactive
+	   elseif object.getName() == "Hyperactive" then
+	      table.insert(broadcastTable, "Hyperactive ~ You must move at least 1 space every round")
+
+	   elseif object.getDescription() == "until next act" then
+	      object.destroy()
+	   end
+	end -- end other start of act triggers
+	startLuaCoroutine(self, "broadcast_message_coR")
+end
+
+
+
+
+
+-- End Act ---------------------------------------------------------------------
+function endAct(object, player_color)
+    if( player_color == nil ) then
+        player_color = "White"
+    end
+   broadcastTable = {}
+   broadcastToColor("________________  Act Ended  ________________", player_color, msg_color)
+   actEnded = true
+
+   -- Remove End Your Act Button
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "End Your Act"
+		or v.label == "[ Move ]"
+		or v.label == "[ Shadow Walk ]"
+		or v.label == "Attack"
+		or v.label == "Attack Blind"
+		or v.label == "Honorable"
+		then
+         self.removeButton(v.index)
+      end
+		if v.label == "End Attack" then
+			endAttack()
+		end
+   end
+
+   -- Forbidden Light
+   has_forbiddenLight = false
+   for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Forbidden Light" then
+         has_forbiddenLight = true
+      end
+   end
+   if has_forbiddenLight then
+      for _, surv in ipairs(zoneEffect.getObjects()) do
+         if surv.getName() == PlayerName then
+            local stats = {color = color, stat = "str", modifier = "neg", num = 1, phase = "forbidden light"}
+            Global.setTable('temp', stats)
+            startLuaCoroutine(Global, "spwn_tok")
+            table.insert(broadcastTable, "Forbidden Light ~ You gained a (-1) Strength Token")
+         end
+      end
+   end
+
+   -- Predator's Aura
+   has_PredatorAura = false
+   for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Predator's Aura" then
+         has_PredatorAura = true
+      end
+   end
+   if has_PredatorAura then
+      for _, surv in ipairs(zoneEffect.getObjects()) do
+         if surv.getName() == PlayerName then
+            table.insert(broadcastTable, "Predator's Aura ~ You are in the Zone of Death")
+         end
+      end
+   end
+
+   -- Thunderfoot
+   has_Thunderfoot = false
+   for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Thunder Foot" then
+         has_Thunderfoot = true
+      end
+   end
+   if has_Thunderfoot then
+      for _, surv in ipairs(zoneEffect.getObjects()) do
+         if surv.getName() == PlayerName then
+            table.insert(broadcastTable, "Thunderfoot ~ Suffer Knockback 5 and you are knocked down")
+         end
+      end
+   end
+   startLuaCoroutine(self, "broadcast_message_coR")
+end
+
+
+
+
+
+-- Move Functions --------------------------------------------------------------
+function move(object, player)
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "End Attack" then
+			endAttack()
+		end
+	end
+
+	removeButton_move()
+
+	surv_MenuToken.call("clear_spawned_gear_cards")
+
+	-- Move Camera
+	local rotZ = settings_token.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		has_move_camera = true
+	else
+		has_move_camera = false
+	end
+
+	if has_move_camera then
+		for _, object in ipairs(zoneShowdown.getObjects()) do
+		   if object.getName() == PlayerName then
+				playerPos = object.getPosition()
+		   end
+		end
+		camera_pitch = tonumber(settings_token.getDescription())
+		local parameters = {}
+	   parameters.position = playerPos
+	   parameters.pitch = camera_pitch
+	   parameters.yaw = 0
+	   Player[player].lookAt(parameters)
+	end
+
+
+
+	-- Cycloid Scale Hood
+	-- Cycloid Scale Jacket
+	for _, object in ipairs(zonePlayer.getObjects()) do
+	   if object.getName() == "Cycloid Scale Hood" then
+	      local stats = {color = color, stat = 'eva', modifier = "pos", num = 1, phase = "untilNextAct"}
+	      Global.setTable('temp', stats)
+	      startLuaCoroutine(Global, "spwn_tok")
+	      broadcastToColor("Cycloid Scale Hood ~ You gained a (+1) Evasion Token until your next act", player, msg_color)
+	   end
+	   if object.getName() == "Cycloid Scale Jacket" then
+	      broadcastToColor("You are Shadow Walking", player, msg_color)
+	      removeButton_move()
+	      createButton_ShadowWalk()
+	   end
+	end
+end
+
+function knockdown_survivor(object, player_color)
+	broadcastTable = {}
+
+	has_lastManStanding = false
+	cannot_beKnockedDown = false
+	for _, card in ipairs(zonePlayer.getObjects()) do
+
+		-- Iron Will
+		if card.getName() == "Iron Will" then
+			table.insert(broadcastTable, "Iron Will ~ You cannot be knocked down")
+			cannot_beKnockedDown = true
+		end
+
+		-- Last Man Standing
+		if card.getName() == "Last Man Standing" then
+			has_lastManStanding = true
+		end
+
+		-- Rolling Armor
+		if card.getName() == "Rolling Armor" then
+			local desc = card.getDescription()
+			if not string.find(desc, "once per round used") then
+				cannot_beKnockedDown = true
+				table.insert(broadcastTable, "Rolling Armor ~ Suffer Knockback 5 Instead")
+				card.setDescription(desc .. ", oncer per round used")
+			end
+		end
+
+		-- Story of the Forsaker
+		if card.getName() == "Story of the Forsaker" then
+			for _, board in ipairs(zoneInjuryBoard.getObjects()) do
+				if string.find(board.getDescription(), "nemesis") then
+					table.insert(broadcastTable, "Story of the Forsaker ~ You cannot be knocked down")
+					cannot_beKnockedDown = true
+				end
+			end
+		end
+	end
+
+	if has_lastManStanding then
+		local count = 0
+		for _, surv in ipairs(zoneShowdown.getObjects()) do
+			if string.find(surv.getName(), "Player") then
+				count = count + 1
+			end
+		end
+		if count < 2 then
+			cannot_beKnockedDown = true
+			table.insert(broadcastTable, "Last Man Standing: You cannot be knocked down")
+		end
+	end
+	if cannot_beKnockedDown then
+		startLuaCoroutine(self, "broadcast_message_coR")
+		return
+	end
+
+	knocked_down = false
+	for _, object in ipairs(zoneShowdown.getObjects()) do
+		if object.getName() == PlayerName then
+			if object.getRotation().z < 45 or object.getRotation().z > 270 then
+				object.setPosition({object.getPosition().x, object.getPosition().y + 2, object.getPosition().z})
+				object.setRotation({object.getRotation().x, object.getRotation().y, object.getRotation().z + 180})
+				knocked_down = true
+				broadcastToColor("___________  You are Knocked Down  ___________", player_color, msg_color)
+			elseif object.getRotation().z > 165 and object.getRotation().z < 190 then
+				broadcastToAll("You are already knocked down", msg_color)
+			end
+		end
+	end
+
+	if knocked_down then
+
+		-- deprecate
+		--knockdownToken.setPosition(knocked_down_token_pos)
+
+		removeButton_knockdown_survivor()
+		createButton_stand_survivor()
+
+		hasSteadfastPotion = false
+		hasKatarMastery = false
+		hasRhythmChaser = false
+		hasInstrument = false
+		for _, effect in ipairs(zonePlayer.getObjects()) do
+			local desc = effect.getDescription()
+			local rotZ = effect.getRotation().z
+
+			-- Brawler Armor
+			if effect.getName() == "Brawler Armor" then
+				table.insert(broadcastTable, "Brawler Armor ~ You gained a (+1) Strength Token")
+				local stats = {color = color, stat = 'str', modifier = "pos", num = 1, phase = nil}
+				Global.setTable('temp', stats)
+				startLuaCoroutine(Global, "spwn_tok")
+			end
+
+			-- Cat Fang Knife
+			if effect.getName() == "Cat Fang Knife" then
+				hasCatFangKnife = true
+				table.insert(broadcastTable, "Cat Fang Knife ~ You lost all your (+1) Strength Tokens")
+			end
+			if string.find(effect.getDescription(), "plus1str") then
+				if hasCatFangKnife then
+					effect.destroy()
+				end
+			end
+
+			-- Carapace of Will
+			if effect.getName() == "Steadfast Token" then
+				table.insert(broadcastTable, "Carapace of Will ~ You lost all your Steadfast Tokens")
+				effect.destroy()
+			end
+
+			-- Dragon Belt
+			if effect.getName() == "Dragon Belt" and object.getRotation().z > 165 then
+				table.insert(broadcastTable, "Dragon Belt ~ You are not knocked down from suffering a Heavy Injury")
+			end
+
+			-- Harvestman
+			if effect.getName() == "Harvestman" then
+				table.insert(broadcastTable, "Harvestman: You gained a (-1) Movement Token")
+				local stats = {color = color, stat = 'mov', modifier = "neg", num = 1, phase = nil}
+				Global.setTable('temp', stats)
+				startLuaCoroutine(Global, "spwn_tok")
+			end
+
+			-- Katar Mastery
+			if effect.getName() == "Katar" and effect.getRotation().z < 165 then
+				hasKatarMastery = true
+				table.insert(broadcastTable, "Katar Mastery Effect ~ You lose all your (+1) Evasion Tokens")
+			end
+			if string.find(effect.getDescription(), "plus1eva") then
+				if hasKatarMastery then
+					effect.destroy()
+				end
+			end
+
+			-- Propulsion Drive
+			if effect.getName() == "Propulsion Drive" then
+				table.insert(broadcastTable, "Propulsion Drive ~ Lose all your Momentum Tokens")
+			end
+
+			-- Rhythm Chaser
+			if effect.getName() == "Rhythm Chaser" and effect.getRotation().z < 165 then
+				hasRhythmChaser = true
+			end
+			if string.find(desc, "instrument") then
+				hasInstrument = true
+			end
+			if hasRhythmChaser and not hasInstrument then
+				if string.find(effect.getDescription(), "plus1eva") then
+					effect.destroy()
+					table.insert(broadcastTable, "Rhythm Chaser ~ You do not have an Instrument ~ You lost all your (+1) Evasion Tokens")
+					end
+				end -- end Rhythm Chaser
+
+				-- Steadfast Potion
+				if effect.getName() == "Steadfast Potion" then
+					table.insert(broadcastTable, "Steadfast Potion ~ You lose all your (+1) Strength Tokens")
+					hasSteadfastPotion = true
+				end
+				if string.find(effect.getDescription(), "plus1str") then
+					if hasSteadfastPotion then
+						effect.destroy()
+					end
+				end
+
+				-- Sour Death
+				if effect.getName() == "Sour Death" then
+					table.insert(broadcastTable, "Sour Death ~ You may Encourage yourself. If you do, gain +1 Strength Token")
+					end
+
+				end -- end for loop -----------------------------------------------------
+			end -- end 'if knocked_down'
+			startLuaCoroutine(self, "broadcast_message_coR")
+end
+
+function stand_survivor()
+	for _, object in ipairs(zoneShowdown.getObjects()) do
+		if object.getName() == PlayerName then
+			object.setRotation({object.getRotation().x, object.getRotation().y, 0})
+            object.setPosition({object.getPosition().x, object.getPosition().y - 2, object.getPosition().z})
+		end
+	end
+	removeButton_stand_survivor()
+	createButton_knockdown_survivor()
+end
+
+function knockback_survivor(object, player)
+	-- Move Camera
+	local rotZ = settings_token.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		has_move_camera = true
+	else
+		has_move_camera = false
+	end
+
+	if has_move_camera then
+		for _, object in ipairs(zoneShowdown.getObjects()) do
+			if object.getName() == PlayerName then
+				playerPos = object.getPosition()
+			end
+		end
+		camera_pitch = tonumber(settings_token.getDescription())
+		local parameters = {}
+		parameters.position = playerPos
+		parameters.pitch = camera_pitch
+		parameters.yaw = 0
+		Player[player].lookAt(parameters)
+	end
+
+	for _, card in ipairs(zonePlayer.getObjects()) do
+		-- Motion Sickness
+		if card.getName() == "Motion Sickness" then
+			broadcastToColor("Motion Sickness ~ When you suffer Knockback ~ Gain a Bleeding Token", player, msg_color)
+		end
+		-- Feather Mantle
+		if card.getName() == "Feather Mantle" then
+			broadcastToColor("Feather Mantle ~ You may ignore collision with other Survivors ~ Reduce Knockback by 3", player, msg_color)
+		end
+		-- Iron Will
+		if card.getName() == "Iron Will" then
+			broadcastToColor("Iron Will ~ Knockback Effects you suffer cannot move you more than 1 Space ", player, msg_color)
+		end
+	end
+end
+
+
+
+
+
+-- Ability Functions -----------------------------------------------------------
+----- Fist and Tooth --------------------------------
+function use_Fist_and_Tooth(player_color)
+   for _, object in ipairs(zoneShowdown.getObjects()) do
+      if object.getName() == PlayerName then
+         object.setRotation({object.getRotation().x, object.getRotation().y, 0})
+         broadcastToColor("You used Fist & Tooth Proficiency to Stand Up", player_color, msg_color)
+      end
+   end
+   remove_Fist_and_Tooth()
+end
+
+----- Steadfast -------------------------------------
+function steadfast_add(object, player_color)
+   steadfast_Table = {}
+   table.insert(steadfast_Table, steadfast_token.clone( {position = {26.35 + #steadfast_Table * 0.69, 4.21, - 15.61}} ) )
+   broadcastToColor("You gained a Steadfast Token", player_color, msg_color)
+end
+
+function steadfast_sub()
+   for _, object in ipairs(zonePlayer.getObjects()) do
+      if object.getName() == "Steadfast Token" then
+         object.destroy()
+      end
+   end
+   broadcastToColor("You Blocked a Hit!", player_color, msg_color)
+   steadfast_Table = {}
+end
+
+----- Momentum --------------------------------------
+function reset_Momentum_Button(object, player_color)
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "End Momentum" then
+         self.removeButton(v.index)
+      end
+   end
+   broadcastToColor("Luck Tokens Removed", player_color, msg_color)
+   createMomentumButton()
+   for k, v in pairs(momentum_Tokens_Table) do
+      v.destroy()
+   end
+end
+
+function momentumEffect(object, player_color)
+	momentum_Tokens_Table = {}
+	local count = tonumber(momentum_Counter.call('getCount'))
+	if count <= 4 then
+		broadcastToColor("You only have " .. count .. " Momentum Tokens", player_color, msg_color)
+		return
+	end
+	if count >= 5 then
+		removeMomentumButton()
+		end_Momentum_Button()
+		broadcastToColor("You gained (+ " .. count .. ") Luck for the first Selected Hit Location of this Attack", player_color, msg_color)
+	end
+	momentum_Counter.call('setCount')
+	local stats = {color = color, stat = "lck", modifier = "pos", num = count, phase = "endOfwoundattempt"}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+end
+
+
+
+
+
+-- Blocking and Deflecting Functions -------------------------------------------
+function deflect1()
+   broadcastToColor("You Deflected a Hit!", player_color, msg_color)
+   -- Removes Deflecting Button
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Deflect 1" then
+         self.removeButton(v.index)
+      end
+   end -- end remove button
+end
+
+function deflect2()
+   broadcastToColor("You Deflected a Hit!", player_color, msg_color)
+   -- Removes Deflecting Button
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Deflect 2" then
+         self.removeButton(v.index)
+      end
+   end -- end remove button
+end
+
+function deflect3()
+   broadcastToColor("You Deflected a Hit!", player_color, msg_color)
+   -- Removes Deflecting Button
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Deflect 3" then
+         self.removeButton(v.index)
+      end
+   end -- end remove button
+end
+
+function block1(object, player_color)
+   when_you_block_a_hit()
+   broadcastToColor("You Blocked a Hit!", player_color, msg_color)
+
+   -- Removes Blocking Button
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Blocking 1" then
+         self.removeButton(v.index)
+      end
+   end -- end remove button
+end
+
+function block2(object, player_color)
+   when_you_block_a_hit()
+   broadcastToColor("You Blocked a Hit!", player_color, msg_color)
+
+   -- Removes Blocking Button
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Blocking 2" then
+         self.removeButton(v.index)
+      end
+   end -- end remove button
+end
+
+function when_you_block_a_hit()
+   for _, object in ipairs(zonePlayer.getObjects()) do
+      -- Steadfast Potion
+      if object.getName() == "Steadfast Potion" then
+         local stats = {color = color, stat = 'str', modifier = "pos", num = 1, phase = nil}
+         Global.setTable('temp', stats)
+         startLuaCoroutine(Global, "spwn_tok")
+         broadcastToColor("Steadfast Potion ~ You gained a (+1) Strength Token", player_color, msg_color)
+      end
+      -- Blast Sword
+      if object.getName() == "Blast Sword" then
+         changeSurvivors("survival", 1, grid)
+         broadcastToColor("Blast Sword ~ You gained (+1) Survival", player_color, msg_color)
+      end
+   end
+end
+
+
+
+
+
+-- Buttons ---------------------------------------------------------------------
+function set_buttons_Table()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = btn_rotation,
+		scale          = {0.5, 0.5, 0.5},
+		width          = 2500,
+		height         = 500,
+		font_size      = 450,
+		color          = {0, 0, 0, 1},
+		font_color     = font_color,
+	}
+end
+
+function create_init_Buttons()
+	msg_color = settings_token.getColorTint()
+	font_color = settings_token.getColorTint()
+	createButton_start_your_act()
+	create_KnockbackButton()
+
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Stand Up" then
+				return
+			end
+		end
+	end
+	createButton_knockdown_survivor()
+end
+
+function createButton_knockdown_survivor()
+	set_buttons_Table()
+	btn_params.label = "Knockdown"
+	btn_params.height = 400
+	btn_params.width = 2500
+	btn_params.font_size = 350
+	btn_params.position = {0, 0.2, -2.03}
+	btn_params.click_function = "knockdown_survivor"
+	self.createButton(btn_params)
+end
+
+function removeButton_knockdown_survivor()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Knockdown" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function createButton_stand_survivor()
+	set_buttons_Table()
+	btn_params.label = "Stand Up"
+	btn_params.height = 400
+	btn_params.width = 2500
+	btn_params.font_size = 350
+	btn_params.position = {0, 0.2, -2.03}
+	btn_params.click_function = "stand_survivor"
+	self.createButton(btn_params)
+end
+
+function removeButton_stand_survivor()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Stand Up" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function createButton_start_your_act()
+	set_buttons_Table()
+	btn_params.label = "Start Act"
+	btn_params.height = 800
+	btn_params.width = 3700
+	btn_params.font_size = 600
+	btn_params.position = {0, 1, 2.5}
+	btn_params.click_function = "startAct"
+	self.createButton(btn_params)
+end
+
+function createButtons()
+   createButton_move()
+	createButton_Attack()
+   createButton_small_end_your_act()
+	createButton_Additional_Attack()
+
+	-- Honorable
+	has_Honorable = false
+	for _, card in ipairs(zonePlayer.getObjects()) do
+		if card.getName() == "Honorable" then
+			has_Honorable = true
+		end
+	end
+	if has_Honorable then
+		create_Honorable_Button()
+	else
+		create_AttackBlind_Button()
+	end
+end
+
+function createButton_small_end_your_act()
+	set_buttons_Table()
+	btn_params.label = "End Your Act"
+	btn_params.font_size = 350
+	btn_params.position = {0, 3.5, -1.44}
+	btn_params.click_function = "endAct"
+	btn_params.font_color = {1,1,1}
+	self.createButton(btn_params)
+end
+
+-- Move Buttons ----------------------------------------------------------------
+function createButton_move()
+	set_buttons_Table()
+	btn_params.label = "[ Move ]"
+	btn_params.position = {0, 0.2, 2}
+	btn_params.click_function = "move"
+	self.createButton(btn_params)
+end
+
+function removeButton_move()
+	if actStarted then
+		isEndAct = true
+		local buttons = self.getButtons()
+		for i, v in pairs(buttons) do
+			if v.label == "[ Move ]" then
+				self.removeButton(v.index)
+			end
+			if v.label == "Attack" then
+				isEndAct = false
+			end
+		end
+		if isEndAct then
+			local btns = self.getButtons()
+			for i, v in pairs(btns) do
+				if v.label == "End Your Act" then
+					self.removeButton(v.index)
+				end
+			end
+			--createButton_end_your_act()
+		end
+	else -- if not actStarted (next round removes buttons if they were not removed during players act)
+		local buttons = self.getButtons()
+		for i, v in pairs(buttons) do
+			if v.label == "[ Move ]" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function createButton_ShadowWalk()
+	set_buttons_Table()
+	btn_params.label = "[ Shadow Walk ]"
+	btn_params.position = {0, 0.2, 2}
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeButton_ShadowWalk()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "[ Shadow Walk ]" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+
+-- Attack Buttons --------------------------------------------------------------
+function createButton_Attack()
+	set_buttons_Table()
+	btn_params.label = "Attack"
+	btn_params.position = {0, 0.2, 2.6}
+	btn_params.click_function = "attack"
+	self.createButton(btn_params)
+end
+
+function create_AttackBlind_Button()
+	set_buttons_Table()
+	btn_params.label = "Attack Blind"
+	btn_params.position = {0, 0.2, 3.2}
+	btn_params.click_function = "attackBlind"
+	self.createButton(btn_params)
+end
+
+function create_Honorable_Button()
+	set_buttons_Table()
+	btn_params.label = "Honorable"
+	btn_params.position = {0, 0.2, 3.2}
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function createButton_End_Attack()
+	set_buttons_Table()
+	btn_params.label = "End Attack"
+	btn_params.position = {0, 0.2, 2.6}
+	btn_params.click_function = "endAttack"
+	self.createButton(btn_params)
+end
+
+
+function createButtons_attack_attackBlind(object, player_color)
+	if not isSurging_survCard then
+		local btns = self.getButtons()
+		if btns ~= nil then
+			for i, v in pairs(btns) do
+				if v.label == "Start Act" then
+					if player_color ~= nil then
+						broadcastToColor("Start your Act First", player_color, msg_color)
+					end
+					return
+				end
+			end
+		end
+	end
+	createButton_Attack()
+	-- Honorable
+	has_Honorable = false
+	for _, card in ipairs(zonePlayer.getObjects()) do
+		if card.getName() == "Honorable" then
+			has_Honorable = true
+		end
+	end
+	if has_Honorable then
+		create_Honorable_Button()
+	else
+		create_AttackBlind_Button()
+	end
+
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Attack" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function createButton_Additional_Attack()
+	set_buttons_Table()
+	btn_params.label = "Reroll"
+	btn_params.position = {0, 0.2, 3.8}
+	btn_params.font_size = 325
+	btn_params.click_function = "createButtons_attack_attackBlind"
+	self.createButton(btn_params)
+end
+
+function removeButton_Additional_Attack()
+	local buttons = self.getButtons()
+	if buttons ~= nil then
+		for i, v in pairs(buttons) do
+			if v.label == "Extra Attack" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function removeButtons_attack_attackBlind()
+	if actStarted then
+		isEndAct = true
+		local buttons = self.getButtons()
+		if buttons ~= nil then
+			for i, v in pairs(buttons) do
+				if v.label == "Attack"
+				or v.label == "Attack Blind"
+				or v.label == "Honorable"
+				then
+					self.removeButton(v.index)
+				end
+				if v.label == "[ Move ]" then
+					isEndAct = false
+				end
+			end
+		end
+		createButton_End_Attack()
+
+	else -- if not actStarted (next round removes buttons if they were not removed during players act)
+		local buttons = self.getButtons()
+		if buttons ~= nil then
+			for i, v in pairs(buttons) do
+				if v.label == "Attack"
+				or v.label == "Attack Blind"
+				or v.label == "Honorable"
+				then
+					self.removeButton(v.index)
+				end
+			end
+		end
+		if isSurging_survCard then
+			createButton_End_Attack()
+		end
+	end
+end
+
+
+
+
+
+-- Ability Buttons -------------------------------------------------------------
+----- Fist and Tooth -------------------------
+function create_Fist_and_Tooth_Button()
+	set_buttons_Table()
+	btn_params.label = "Stand [Fist & Tooth]"
+	btn_params.width = 4000
+	btn_params.font_size = 350
+	btn_params.position = {0, 0.2, 4.4}
+	btn_params.click_function = "use_Fist_and_Tooth"
+	self.createButton(btn_params)
+end
+
+function remove_Fist_and_Tooth()
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Stand [Fist & Tooth]" then
+         self.removeButton(v.index)
+      end
+   end
+end
+
+----- Steadfast ------------------------------
+function createSteadfastButton()
+	set_buttons_Table()
+	btn_params.label = "Steadfast"
+	btn_params.width = 1700
+	btn_params.font_size = 350
+	btn_params.position = steadfast_add_pos
+	btn_params.click_function = "steadfast_add"
+	self.createButton(btn_params)
+
+	btn_params.label = "Steadfast"
+	btn_params.height = 700
+	btn_params.width = 4500
+	btn_params.font_size = 650
+	btn_params.position = steadfast_sub_pos
+	btn_params.click_function = "steadfast_sub"
+	self.createButton(btn_params)
+end
+
+function removeSteadfastButton()
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Steadfast" then
+         self.removeButton(v.index)
+      end
+   end
+end
+
+----- Momentum -------------------------------
+function createMomentumButton()
+	set_buttons_Table()
+	btn_params.label = "Momentum"
+	btn_params.position = momentum_pos
+	btn_params.click_function = "steadfast_sub"
+	self.createButton(btn_params)
+end
+
+function end_Momentum_Button()
+	set_buttons_Table()
+	btn_params.label = "End Momentum"
+	btn_params.position = end_momentum_pos
+	btn_params.click_function = "reset_Momentum_Button"
+	self.createButton(btn_params)
+end
+
+function removeMomentumButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+	   if v.label == "Momentum" then
+	      self.removeButton(v.index)
+	   end
+	end
+end
+
+----- Fencing --------------------------------
+function createFencingButton()
+	set_buttons_Table()
+	btn_params.label = "Fencing"
+	btn_params.font_size = 650
+	btn_params.position = fencing_pos
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeFencingButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Fencing" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+----- Crossarm Block -------------------------
+function createCrossarmBlockButton()
+	set_buttons_Table()
+	btn_params.label = "Crossarm Block"
+	btn_params.font_size = 650
+	btn_params.position = crossarm_block_pos
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeCrossArmBlockButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Crossarm Block" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+----- Ripple Pattern --------------------------
+function createRipplePatternButton()
+	set_buttons_Table()
+	btn_params.label = "Ripple Pattern"
+	btn_params.font_size = 650
+	btn_params.position = ripple_pattern_pos
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeRipplePatternButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Ripple Pattern" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+----- Stalwart ---------------------------------
+function createStalwartButton()
+	set_buttons_Table()
+	btn_params.label = "Stalwart"
+	btn_params.height = 0
+	btn_params.width = 0
+	btn_params.font_size = 300
+	btn_params.position = stalwart_button_pos
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeStalwartButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+	   if v.label == "Stalwart" then
+	      self.removeButton(v.index)
+	   end
+	end
+end
+
+----- Knockback ---------------------------------
+-- This button has camera move function
+function create_KnockbackButton()
+	set_buttons_Table()
+	btn_params.label = "Knockback"
+	btn_params.height = 400
+	btn_params.width = 2700
+	btn_params.font_size = 350
+	btn_params.position = knockback_button_pos
+	btn_params.click_function = "knockback_survivor"
+	self.createButton(btn_params)
+end
+
+function createKnockbackButton()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Knockback" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+	set_buttons_Table()
+	btn_params.label = "Ignore Knockback"
+	btn_params.height = 400
+	btn_params.width = 2700
+	btn_params.font_size = 350
+	btn_params.position = knockback_button_pos
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeKnockbackButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+	   if v.label == "Ignore Knockback" then
+	      self.removeButton(v.index)
+	   end
+	end
+end
+
+----- Bash --------------------------------------
+function createBashButton()
+	set_buttons_Table()
+	btn_params.label = "Ignore Bash"
+	btn_params.height = 0
+	btn_params.width = 0
+	btn_params.font_size = 300
+	btn_params.position = ignore_bash_button_pos
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function removeBashButton()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+	   if v.label == "Ignore Bash" then
+	      self.removeButton(v.index)
+	   end
+	end
+end
+
+----- Deflect ------------------------------------
+function deflectButton1()
+	set_buttons_Table()
+	btn_params.label = "Deflect 1"
+	btn_params.height = 700
+	btn_params.width = 4500
+	btn_params.font_size = 650
+	btn_params.position = deflect1_pos
+	btn_params.click_function = "deflect1"
+	self.createButton(btn_params)
+end
+
+function deflectButton2()
+	set_buttons_Table()
+	btn_params.label = "Deflect 2"
+	btn_params.height = 700
+	btn_params.width = 4500
+	btn_params.font_size = 650
+	btn_params.position = deflect2_pos
+	btn_params.click_function = "deflect2"
+	self.createButton(btn_params)
+end
+
+function deflectButton3()
+	set_buttons_Table()
+	btn_params.label = "Deflect 3"
+	btn_params.height = 700
+	btn_params.width = 4500
+	btn_params.font_size = 650
+	btn_params.position = deflect3_pos
+	btn_params.click_function = "deflect3"
+	self.createButton(btn_params)
+end
+
+----- Block ---------------------------------------
+function blockButton1()
+	set_buttons_Table()
+	btn_params.label = "Blocking 1"
+	btn_params.height = 700
+	btn_params.width = 4500
+	btn_params.font_size = 650
+	btn_params.position = block1_pos
+	btn_params.click_function = "block1"
+	self.createButton(btn_params)
+end
+
+function blockButton2()
+	set_buttons_Table()
+	btn_params.label = "Blocking 2"
+	btn_params.height = 700
+	btn_params.width = 4500
+	btn_params.font_size = 650
+	btn_params.position = block2_pos
+	btn_params.click_function = "block2"
+	self.createButton(btn_params)
+end
+
+----- Fecal Salve ----------------------------------
+function fecalSalveButton()
+	set_buttons_Table()
+	btn_params.label = "Not a Threat"
+	btn_params.height = 350
+	btn_params.width = 2700
+	btn_params.font_size = 300
+	btn_params.position = {0, 3.5, 1.25}
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+end
+
+function fecalSalveReset(object, player_color)
+   local buttons = self.getButtons()
+   for i, v in pairs(buttons) do
+      if v.label == "Not a Threat" then
+         self.removeButton(v.index)
+      end
+   end
+end
+
+
+
+
+
+-- Utility Functions -----------------------------------------------------------
+function clearButtons()
+   --self.clearButtons()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Your Act"
+			or v.label == "[ Move ]"
+			or v.label == "[ Shadow Walk ]"
+			or v.label == "Attack"
+			or v.label == "Attack Blind"
+			or v.label == "Honorable"
+			then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function set_roller_survAttack()
+	if isSurging_survCard then
+		roller_survAttack = getObjectFromGUID('c160b7')
+	else
+		roller_survAttack = getObjectFromGUID('ff240b')
+	end
+end
+
+function action_spent()
+	-- Chatter
+	for _, surv in ipairs(zoneEffect.getObjects()) do
+	   if surv.getName() == PlayerName then
+	      for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+	         if card.getName() == "Chatter" then
+	            broadcastToAll("Chatter Noise Radius ~ Suffer 2 Brain Damage and Double your Age Tokens", msg_color)
+	         end
+	      end
+	   end
+	end
+end
+
+function goTo(object, player)
+	local parameters = {}
+	parameters.position = player_grid_pos
+	Player[player].lookAt(parameters)
+end
+
+function broadcast_message_coR()
+	if #broadcastTable > 0 then
+	   for _, b in pairs(broadcastTable) do
+	      broadcastToAll(b, msg_color)
+	      wait(2)
+	   end
+	end
+	return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function changeSurvivors(location, amount, grid)
+   local obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+   obj.call("add", {location, amount})
+end
+function move_camera_toHitLocations(object, player)
+	local params = {}
+	params.distance = 10
+	params.yaw = 0
+	params.pitch = 70
+	if isSurging_survCard then
+		params.position = {-10.13, 4.29, -2.35}
+	else
+		params.position = {9.92, 4.29, -2.35}
+	end
+	Player[player].lookAt(params)
+end
+
+function dud() end
+
+-- end yellow surv card --------------------------------------------------------

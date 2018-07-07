@@ -1,0 +1,4 @@
+function onLoad()
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	self.setColorTint(settings_P2_token.getColorTint())
+end

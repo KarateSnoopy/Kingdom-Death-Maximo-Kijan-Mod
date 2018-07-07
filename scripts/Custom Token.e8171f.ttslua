@@ -1,0 +1,168 @@
+function onLoad()
+
+  self.createButton({click_function = "call_left", function_owner = self, label = " ", position = {-1.2, 0.02, 0},
+  scale = {0.5, 0.5, 0.5}, width = 1400, height = 1000, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+  self.createButton({click_function = "call_right", function_owner = self, label = " ", position = {1.2, 0.02, 0},
+  scale = {0.5, 0.5, 0.5}, width = 1400, height = 1000, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+  self.createButton({click_function = "call_up", function_owner = self, label = " ", position = {0, 0.02, -1.2},
+  scale = {0.5, 0.5, 0.5}, width = 1000, height = 1400, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+	self.createButton({click_function = "call_down", function_owner = self, label = " ", position = {0, 0.02, 1.2},
+	scale = {0.5, 0.5, 0.5}, width = 1000, height = 1400, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+	self.createButton({click_function = "call_perm", function_owner = self, label = " ", position = {0, 0.02, 0},
+	scale = {0.5, 0.5, 0.5}, width = 900, height = 900, font_size = 0, color = {1,1,1,0}, font_color = {1,1,1,100}})
+
+	createButtons()
+end
+
+function createButtons()
+	local btn_params = {
+		click_function = "dud",
+		function_owner = self,
+		label 			= "",
+		position 		= {4, 0.1, -4},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 4000,
+		height 			= 700,
+		font_size 		= 600,
+		color				= {0,0,0,0},
+		font_color 		= {1,1,1,100}
+	}
+
+	btn_params.label = "Oxidation"
+	btn_params.click_function = "set_oxidation"
+	btn_params.position = {4, 0.1, -4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Sense Memory"
+	btn_params.click_function = "set_sense_memory"
+	btn_params.position = {-9, 0.1, -4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Cooking"
+	btn_params.click_function = "set_cooking"
+	btn_params.position = {-4, 0.1, -4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Light Forging"
+	btn_params.click_function = "set_light_forging"
+	btn_params.position = {9, 0.1, -4}
+	self.createButton(btn_params)
+
+end
+
+function set_oxidation()
+	pageToLoad = "oxidation"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_sense_memory()
+	pageToLoad = "sense memory"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_cooking()
+	pageToLoad = "cooking"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function set_light_forging()
+	pageToLoad = "light forging"
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get_storyEvent()
+	local pos = self.getPosition()
+	local deck = getObjectFromGUID("21fb65")
+	for _, story in ipairs(deck.getObjects()) do
+		local desc = story.description
+		local name = story.nickname
+		local scale = {1.96, 1.00, 1.96}
+		if string.find(string.lower(story.nickname), pageToLoad) and string.find(desc, "one") then
+			local page = deck.takeObject({position = {55.23, 4.96, -31.93}, rotation = {12,180,0}, guid = story.guid, smooth = false})
+			page.setLock(true)
+			page.setScale(scale)
+			page.setRotation({12,180,0})
+		elseif string.find(string.lower(story.nickname), pageToLoad) and string.find(desc, "two") then
+			local page = deck.takeObject({position = {63.17, 4.96, -31.93}, rotation = {12,180,0}, guid = story.guid, smooth = false})
+			page.setLock(true)
+			page.setScale(scale)
+			page.setRotation({12,180,0})
+		end
+	end
+end
+
+
+function destroy_currentLoaded()
+	local pos = self.getPosition()
+
+	local hitList = Physics.cast({
+		origin			= {pos.x - 4.00, 4.96, pos.z + 13.22},
+		direction 		= {0,1,0},
+		type				= 2,
+		size				= {1,1,1},
+		max_distance 	= 10
+	})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+
+	local hitList = Physics.cast({
+		origin			= {pos.x + 4.00, 4.96, pos.z + 13.22},
+		direction 		= {0,1,0},
+		type				= 2,
+		size				= {1,1,1},
+		max_distance 	= 10
+	})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getDescription(), "story") then
+			entry.hit_object.destroy()
+		end
+	end
+end
+
+
+
+
+-- Affinity Functions ----------------------------------------------------------
+function call_perm()
+  local gearTool = getObjectFromGUID('a00bce')
+  gearTool.call("blue_perm")
+end
+
+function call_left()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("blue_left")
+
+end
+
+function call_right()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("blue_right")
+
+end
+
+function call_up()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("blue_up")
+
+end
+
+function call_down()
+
+local gearTool = getObjectFromGUID('a00bce')
+gearTool.call("blue_down")
+
+end

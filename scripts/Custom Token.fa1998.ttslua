@@ -1,0 +1,92 @@
+survTable = {}
+
+function onLoad()
+
+	self.createButton{index = 0, click_function = 'callClickFunctions', function_owner = self,
+		label = 'Add New Survivor', position = {x = 0, y = 0.1, z = 0}, rotation = {x = 0, y = 0, z = 0},
+		scale = {x = 0.5, y = 1, z = 0.5}, width = 6800, height = 1000, font_size = 1200,
+	color = {0, 0, 0}, font_color = {1, 1, 1}}
+end
+
+function callClickFunctions()
+	addSurv()
+	checkInnovations()
+end
+
+function addSurv()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneNewSurvivors.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		if object.getName() == "New Survivors" then
+			newSurv = object.takeObject({position = {0.50, 5, - 63.03}})
+			newPos = getNextPlacementPos()
+			if newPos ~= nil then
+				newSurv.setPosition(newPos)
+			end
+		end
+	end
+	if newPos == nil then return end
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneSettlement.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local desc = object.getDescription()
+		if string.find(desc, "SettlementSheet") then
+			object.call("add", {"population", 1})
+			broadcastToAll("Population Updated", {1, 1, 1})
+		end
+	end
+end
+
+function callClickFunctions()
+	addSurv()
+	--updatePopulation()
+	checkInnovations()
+end
+
+function checkInnovations()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneInnovations.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local name = object.getName()
+		if object.getName() == "Barbaric" then
+			print("Barbaric -----> (+1) Strength")
+		elseif object.getName() == "Graves" then
+			print("Graves -----> (+1) Understanding")
+		elseif object.getName() == "Romantic" then
+			print("Romantic ----->(+1) Understanding")
+		elseif object.getName() == "Clan of Death" then
+			print("Clan of Death -----> (+1) Strength ~ (+1) Accuracy ~ (+1) Evasion")
+		elseif object.getName() == "Saga" then
+			print("Saga -----> (+2) Hunt Experience ~ (+2) Survival")
+		elseif object.getName() == "Survival of the Fittest" then
+			print("Survival of the Fittest -----> (+1) Strength ~ (+1) Evasion")
+		elseif object.getName() == "Empire" then
+			print("Empire -----> (+1) Strength ~ Pristine Ability")
+		end
+	end
+end
+
+function getNextPlacementPos()
+	for j = 0, 1 do
+		for i = 0, 6 do
+			if checkPositionByName({17.66 - i * - 4.72, 4.17, - 40.53 - j * 10.12}) == false then
+				return {17.66 - i * - 4.72, 4.17, - 40.53 - j * 10.12}
+			end
+		end
+	end
+	broadcastToAll("All spots are filled.", {1, 1, 1})
+	return nil
+end
+
+function checkPositionByName(pos)
+	local hitList = Physics.cast({origin = pos, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getDescription() == "SurvivorSheet" then
+			return true
+		end
+	end
+	return false
+end

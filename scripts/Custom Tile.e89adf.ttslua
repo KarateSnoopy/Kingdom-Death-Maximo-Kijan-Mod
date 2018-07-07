@@ -1,0 +1,96 @@
+function onLoad()
+  createButtons()
+end
+
+
+function createButtons()
+
+self.createButton({click_function = "dud", function_owner = self, label = "Survivors Return", position = {-40.7, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "dud", function_owner = self, label = "Gain Endeavors", position = {-35.8, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "resetArmor", function_owner = self, label = "Heal and Reset", position = {-40.7, 0.1, 0.1},
+scale = {0.5, 0.5, 0.5}, width = 4000, height = 800, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "dud", function_owner = self, label = "Settlement Events", position = {-25.1, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "addNew", function_owner = self, label = "[ Add New Survivors ]", position = {-14.6, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 9000, height = 1200, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "dud", function_owner = self, label = "Added Settlement Event", position = {-4.2, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = "Add Settlement Event"})
+
+self.createButton({click_function = "updateDeath", function_owner = self, label = "[ Update Death Count ~ Timeline]", position = {6.5, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 9000, height = 1200, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "craftGear", function_owner = self, label = "[ Craft Gear ]", position = {15.1, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 4000, height = 1200, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "dud", function_owner = self, label = "  Choose Departing    Special Showdown", position = {22.7, 0.1, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "dud", function_owner = self, label = "Record and Archive", position = {31.4, 0, -6.3},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+
+self.createButton({click_function = "dud", function_owner = self, label = "Survivors Depart", position = {40.4, 0, -0.7},
+scale = {0.5, 0.5, 0.5}, width = 0, height = 0, font_size = 600, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}, tooltip = ""})
+end
+
+function resetArmor()
+  local redGrid = getObjectFromGUID(Global.getTable('grids').red.guid)
+  redGrid.call('resetArmor')
+  local yellowGrid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+  yellowGrid.call('resetArmor')
+  local greenGrid = getObjectFromGUID(Global.getTable('grids').green.guid)
+  greenGrid.call('resetArmor')
+  local blueGrid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+  blueGrid.call('resetArmor')
+  print("\u{21a6} Survivor Injury Levels Healed and Armor Levels Reset")
+end
+
+function addNew(object, player)
+    local parameters = {}
+    parameters.position=  {-12.82, 4.17, -34.89}
+    Player[player].lookAt(parameters)
+end
+
+function updateDeath(object, player)
+    local parameters = {}
+    parameters.position=  {-47.96, 4.35, 42.68}
+    Player[player].lookAt(parameters)
+end
+
+function craftGear(object, player)
+  storeResources()
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneEndeavors.guid)
+  local objectsInZone = zone.getObjects()
+  for _, object in ipairs(objectsInZone) do
+    if object.getName() == "Endeavor" then
+      object.setScale({0.55, 0.55, 0.55})
+      object.setPosition({50.88, 4.32, 20.71})
+    elseif object.getName() == "Matchmaker Endeavor" then
+        object.setScale({0.55, 0.55, 0.55})
+        object.setPosition({53.62, 4.35, 8.85})
+    end
+  end
+    local parameters = {}
+    parameters.position=  {51.07, 4.38, 15}
+    Player[player].lookAt(parameters)
+end
+
+function dud()
+end
+
+function storeResources()
+  local resourceZone = getObjectFromGUID('d7a543')
+  local objectsInZone = resourceZone.getObjects()
+  for _, object in ipairs(objectsInZone) do
+    if object.tag == "Deck" or object.tag == "Card" then
+      object.setPosition({43.01, 4.34, 16.32})
+    end
+  end
+  print("\u{21a6} Resources Archived and put into Settlement Storage")
+end

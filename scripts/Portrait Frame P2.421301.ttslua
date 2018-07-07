@@ -1,0 +1,35 @@
+function onLoad()
+	createButtons()
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	self.setColorTint(settings_P2_token.getColorTint())
+end
+
+function createButtons()
+	btn_params = {
+		click_function = "dud",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 0,
+		height 			= 0,
+		font_size 		= 525,
+		color 			= {0, 0, 0, 1},
+		font_color		= {0, 0, 0, 100}
+	}
+
+	btn_params.position = {0, 0.1, 0}
+	btn_params.label = "Avatar"
+	self.createButton(btn_params)
+
+	btn_params.position = {0, 0.1, -1}
+	btn_params.label = "Place"
+	self.createButton(btn_params)
+
+	btn_params.position = {0, 0.1, 1}
+	btn_params.label = "Here"
+	self.createButton(btn_params)
+
+end
+
+function dud() end

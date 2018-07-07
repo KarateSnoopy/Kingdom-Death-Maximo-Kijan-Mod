@@ -1,0 +1,35 @@
+function onLoad()
+
+end
+
+
+function onObjectEnterScriptingZone(zone, enter_object)
+	zoneTrophy = getObjectFromGUID('442fa5')
+	if enter_object ~= nil then
+		if zone == zoneTrophy then
+
+			if string.find(enter_object.getDescription(), "monster") then
+				enter_object.setColorTint({0.3,0.3,0.3})
+			end
+
+			local zoneSettlement = getObjectFromGUID(Global.getTable('zones').zoneSettlement.guid)
+			for _, obj in ipairs(zoneSettlement.getObjects()) do
+				if string.find(obj.getDescription(), "SettlementSheet") then
+					settlementSheet = obj
+					break
+				end
+			end
+			if settlementSheet ~= nil then
+				local inputs = settlementSheet.getInputs()
+				if inputs ~= nil then
+					for i, v in pairs(inputs) do
+						if enter_object.getName() == v.value then
+							enter_object.highlightOn({1, 0.14, 0}, 60)
+							enter_object.setColorTint({1,1,1})
+						end
+					end
+				end
+			end
+		end
+	end
+end

@@ -1,0 +1,2464 @@
+
+--scripts created by Kijan and Maximo1984
+
+-------------------------------------------------------------------------------
+-- Table of Contents: Search Project Parameters
+-------------------------------------------------------------------------------
+
+-- Search by Card name
+--> -- Card Name (example) "-- True Blade"
+
+-----------------        Tables / Objects / Booleans        --------------------
+
+------------        INVENTORY P1-P4        ------------------------------------
+-- strToken_pos = {}
+-- accToken_pos = {}
+-- evaToken_pos = {}
+-- msg_color = {}
+
+-- affinity_red = object
+-- affinity_green = object
+-- affinity_blue = object
+-- momentum_Counter  = object
+-- extraBleed  = object
+-- bleedTool  = object
+-- extraSlots = object
+
+-- weaponGUID = object
+-- color = "" (red, yellow, green, blue) used for spawn surv stat tokens
+
+------------        DRAW HIT LOCATIONS TOOL     -------------------------------
+-- hitLocation = {}
+-- cleanUpList = {}
+-- drawn_hitLocations = {}
+
+
+------------        SURVIVOR ATTACK ROLLERS      ------------------------------
+-- spawnedDice = {}
+-- cleanUpList = {}
+-- rolledHitLocation = "num 1-7"
+-- sharpValue = "num"
+-- blind = "num"
+-- playerClicked = ""
+
+-- msg_red = {}
+-- msg_yellow = {}
+-- msg_green = {}
+-- msg_blue = {}
+
+-- grid = "player grid"
+-- zone = "player zone"
+
+-- hit = true/false
+-- hit_blind = true/false
+-- sharp = false
+-- red_attacked = true/false
+-- yellow_attacked = true/false
+-- green_attacked = true/false
+-- blue_attacked = true/false
+
+------------        KNOCKDOWN MONSTER TOKEN    --------------------------------
+-- monster_knocked_down = false
+-- reactionsCancelled_EndOfRound = false
+-- isDazed = false
+
+
+------------        PERSISTENT INJURY / AREA OF EFFECT     --------------------
+-- zoneEffect_stored = {}
+-- token_knockdown_monster = object
+-- tool_NextRound = object
+-- roller = var, object
+
+-------------------------------------------------------------------------------
+--User Settings
+-------------------------------------------------------------------------------
+--If True ~ checks card zones for movement bonus/penalty and broadcasts msg
+onPickUp = true
+
+--If True ~ checks card zones for knockdown effects and broadcasts msg
+onKnockDown = true
+
+-- If True ~ Moves Camera after Monster Dice Roller is activated to Hit Location Rollers on Left/Right
+monsterAttackRollCamera = true
+
+-------------------------------------------------------------------------------
+-- Table of Contents Notes
+-------------------------------------------------------------------------------
+
+--> when you depart / when you return
+-- [Depart Tool]
+
+--> when you are knocked down
+-- [Showdown Board]
+
+--> when a survivor dies
+-- [grid], ["Survivor Died in Settlement"]
+
+--> when you gain a bleeding token
+-- [Bleeding Tools]
+
+--> when you gain card effects
+-- [grid] onObjectEnterScriptingZone
+
+--> when you lose card effects
+-- [grid] onObjectLeaveScriptingZone
+
+-------------------------------------------------------------------------------
+isLoading = true
+isSettingUp = false --(turns off clone on leave container while setup menu is open)
+onLeaveClone = true
+
+function onload()
+
+	isLoading = true
+	Timer.create({identifier = "setLoadingOff", function_name = "setLoading", function_owner = Global, delay = 5})
+	for i = 1, #objectTable, 1 do
+		obj = getObjectFromGUID(objectTable[i])
+		if obj ~= nil then
+			obj.interactable = false
+		end
+	end
+	Timer.create({identifier = "closeBags", function_name = "closeOpenShowdownBags", function_owner = Global, delay = 1})
+end
+
+function setLoading()
+	isLoading = false
+end
+
+objectTable = { "c40d11", "26f63c", "daa5cf", "567941", "1e2c86", "516c7e", "b56bb5", "cdb758", "463cb7", "1b5c7a", "fd8b97", "86e4fd", "f7c730", "9eaa8a", "d5b02b", "27e3f2", "36b956", "bcaedd", "a3cdcc"}
+-- 463cb7 = Monster AI Board
+-- red grid = 1b5c7a
+-- yellow grid = fd8b97
+-- green grid = 86e4fd
+-- blue grid = f7c730
+-- hunt board track = d5b02b
+-- story boards
+-- hunt = 9eaa8a
+-- timeline = 27e3f2
+-- monster timelinee = 36b956
+-- settlement event display board = a519ba
+
+function closeOpenShowdownBags()
+	for i, v in pairs(getAllObjects()) do
+		if v.tag == "Bag" then
+			local buttons = v.getButtons()
+			if buttons ~= nil and next(v.getObjects()) == nil then
+				for _, groupName in pairs(memBags) do
+					local group = Global.getTable(groupName)
+					if group[v.getGUID()] == "recalled" then
+						group[v.getGUID()] = "placed"
+						Global.setTable(groupName, group)
+					end
+				end
+			end
+		end
+	end
+end
+
+
+-------------------------------------------------------------------------------
+--Admin Settings (do not alter unless you know what you are doing)
+	-------------------------------------------------------------------------------
+	--unsaved
+	bypassSavedLoad = false	-- used to bypass load init manually
+	prologueBypass = true  	--not ready, keep true
+	--saved
+	clearSavedData = false 		-- used to clear save data
+	interactPlaceholders = false 	-- makes placeholders interactable if true
+	autoDeckRefresh = true
+
+	--autoHunt = true		--allows automatic hunt deployment of objects
+	--autoShowdown = true 	--allows automatic showdown deployment of objects
+	--autoMonsterDeck = false		--not ready, keep false
+	--debug = false		--not ready, keep false
+	--devMode = false		--changes interactive for static/placeholder objects, toggles rest interactive options below
+	--interactBox = false 	--makes gamebox interactable if true
+
+	--interactStatics = false		--makes static objs interactable if true
+
+
+
+-------------------------------------------------------------------------------
+--Tables
+-------------------------------------------------------------------------------
+-- For takeObject
+bags_stats = {
+	bag_spd = {guid = '922010'},
+	bag_acc = {guid = '08250f'},
+	bag_str = {guid = '0bf641'},
+	bag_lck = {guid = '6a1312'},
+	bag_mov = {guid = '4cb96b'},
+	bag_eva = {guid = 'f0ee1d'},
+}
+
+-- Token positions to clone to
+pos_mov = {x = -4.60, y = 4.40, z = 0.30}
+neg_mov = {x = -4.02, y = 4.40, z = 0.30}
+
+pos_spd = {x = -3.40, y = 4.40, z = 0.30}
+neg_spd = {x = -2.76, y = 4.40, z = 0.30}
+
+pos_acc = {x = -1.53, y = 4.40, z = 0.30}
+neg_acc = {x = -2.17, y = 4.40, z = 0.30}
+
+pos_dmg = {x = -0.90, y = 4.40, z = 0.30}
+neg_dmg = {x = -0.30, y = 4.40, z = 0.30}
+
+pos_tgh = {x = 2.75, y = 4.40, z = 0.30}
+neg_tgh = {x = 3.39, y = 4.40, z = 0.30}
+
+pos_eva = {x = 4.02, y = 4.40, z = 0.30}
+neg_eva = {x = 4.59, y = 4.40, z = 0.30}
+
+pos_lck = {x = 5.25, y = 4.40, z = 0.30}
+neg_lck = {x = 5.84, y = 4.40, z = 0.30}
+
+dice_Rollers = {
+	attack_Right = {guid = 'ff240b'},
+	attack_Left = {guid = 'c160b7'},
+}
+
+rollers = {
+	right = {guid = 'ff240b'},
+	left = {guid = 'c160b7'},
+}
+
+persistentCard = {
+	card = {guid ='6d1dae'},
+}
+
+weaponSelector = {
+	red = {guid = '567941'},
+	yellow = {guid = '1e2c86'},
+	green = {guid = '516c7e'},
+	blue = {guid = 'b56bb5'},
+}
+
+grids = {
+	red = {guid = '1b5c7a'},
+	yellow = {guid = 'fd8b97'},
+	green = {guid = '86e4fd'},
+	blue = {guid = 'f7c730'},
+}
+
+survCards = {
+	red = {guid = '777299'},
+	yellow = {guid = 'cf0eb8'},
+	green = {guid = '11ad61'},
+	blue = {guid = '093319'},
+}
+
+menu_tokens = {
+	red = {guid = 'a66bc1'},
+	yellow = {guid = '4825fa'},
+	green = {guid = '148863'},
+	blue = {guid = '5e9f5a'},
+}
+
+user_settings = {
+	set_Lighting = {guid = '362e59'},
+	set_Sound = {guid = 'd2c2ff'},
+	set_Visual = {guid = '553dbd'},
+	settings_P1_token = {guid = 'aa4045'},
+	settings_P2_token = {guid = 'd01d70'},
+	settings_P3_token = {guid = '46eed3'},
+	settings_P4_token = {guid = '962eb1'},
+	music_player = {guid = 'b81b9b'},
+	hunt_phase_soundtrack = {guid = 'cbfd14'},
+	showdown_phase_soundtrack = {guid = '06b681'},
+	settlement_phase_soundtrack = {guid = 'a82278'},
+}
+
+--[[ example: lighting and sound Functions
+
+-- Lighting
+local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+local rotZ = set_Visual.getRotation().z
+if rotZ < 10 or rotZ > 350 then
+	-- do stuff
+end
+
+-- Visual
+local set_Lighting = getObjectFromGUID(Global.getTable('user_settings').set_Lighting.guid)
+local rotZ = set_Lighting.getRotation().z
+if rotZ < 10 or rotZ > 350 then
+	tool_Lighting = getObjectFromGUID('cdef09')
+	tool_Lighting.call("setLightingTable_showdown")
+end
+
+-- Music
+function play_music_track()
+	local set_Sound = getObjectFromGUID(Global.getTable('user_settings').set_Sound.guid)
+	local rotZ = set_Sound.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local music_player = getObjectFromGUID(Global.getTable('user_settings').music_player.guid)
+		local showdown_phase_soundtrack = getObjectFromGUID(Global.getTable('user_settings').showdown_phase_soundtrack.guid)
+		local track = tonumber(showdown_phase_soundtrack.getDescription())
+		if music_player ~= nil then
+			music_player.AssetBundle.playLoopingEffect(track)
+		end
+	end
+end
+]]
+
+boards = {
+	--boardHunt = {guid = 'd5b02b'},
+	--boardSettlement = {guid = 'cdb758'},
+	boardMonster = {guid = '463cb7'},
+	--boardStoryL = {guid = '40ac46'},
+	--boardStoryR = {guid = 'e42941'},
+	--boardStoryT = {guid = ' fece67'},
+}
+
+placeholders = {
+	--essentialDecks
+	deckVermin = {guid = '00ec16'},
+	discardVermin = {guid = '304843'},
+	deckBasicResources = {guid = '47057b'},
+	discardBasicResources = {guid = '9ec313'},
+	deckStrangeResources = {guid = '7aadc0'},
+	--deckBasicHunt = {guid = '4e9d9e'},
+	--deckSpecialHunt = {guid = '148b16'},
+	--deckTerrain = {guid = '51b305'},
+	--deckSevereInjuries = {guid = 'b36278'},
+	--deckDisorders = {guid = '58ae79'},
+	--deckAbilities = {guid = '8a5104'},
+	--deckFightingArts = {guid = '9d5a10'},
+	--deckSecretFightingArts = {guid = 'd21ff4'},
+	--discards
+	--discardStrangeResources = {guid = '215b76'},
+	--discardSevereInjuries = {guid = '893fd2'},
+	--discardDisorders = {guid = '4c3588'},
+	--discardAbilities = {guid = 'a74166'},
+	--discardFightingArts = {guid = '081afc'},
+	--discardSecretFightingArts = {guid = '2ede33'},
+	--monsterDecks
+	--deckMonsterHunt = {guid = '9cc235'},
+	--deckMonsterSpecialHunt = {guid = '1dca94'},
+	--deckMonsterResources = {guid = 'f8c095'},
+	--deckMonsterAIBasic = {guid = 'be3886'},
+	--deckMonsterAIAdvanced = {guid = '3b984a'},
+	--deckMonsterAILegendary = {guid = '918627'},
+	--deckMonsterAISpecial = {guid = 'da09a1', flip = true},
+	--cardMonsterBasicAction = {guid = 'ce146d'},
+	--deckMonsterHitLocations = {guid = '24cc56'},
+}
+
+decks_toSearch = {
+	deckFA = {guid = 'dccfc9'},
+	masterFA = {guid = 'dcbd97'},
+	deckSFA = {guid = '2ccd16'},
+	masterSFA = {guid = '03f0e9'},
+	deckDIS = {guid = 'a9d248'},
+	masterDIS = {guid = '98c5a1'},
+	deckABIL = {guid = '3f9088'},
+	deckINJ = {guid = '40432d'},
+	deckBASIC = {guid = '976c3a'},
+	deckSTRANGE = {guid = '240aed'},
+	deckGEAR = {guid = 'a551d9'},
+	deckARMOR = {guid = 'b8e6aa'},
+	deckWEAP = {guid = ''},
+	deckTERRAIN = {guid = '503359'},
+	deckSURV_STATUS = {guid = 'a6979a'},
+	deckBASIC_HUNT = {guid = '5baab8'},
+}
+
+zonesDestruct = {
+	monsterResourceZone = {guid = '947223'},
+	zoneShowdown = {guid = '784686'},
+	zoneSurvivorStatus = {guid = '37f246'},
+	zoneAIBoard = {guid = 'cb34c6'},
+	monsterInjuryZone = {guid = 'af0ca5'},
+	showdownBagZone = {guid = '6604b4'},
+}
+
+zones = {
+	zoneAll = {guid = ''},
+	--general areas
+	zoneMain = {guid = '4b6961'},
+	zoneSettlement = {guid = 'f80cf2'},
+	zoneEndeavors = {guid = 'ebedb5'},
+	zoneInnovations = {guid = '90a6fe'},
+	zoneCrafting = {guid = 'b6059d'},
+	zoneGearStation = {guid = 'ce5217'},
+	zoneTrophy = {guid = '442fa5'},
+
+	-- Area of effects
+	zoneEffect = {guid = 'c8093f'},
+	zoneEffect2 = {guid = '13023e'},
+	-- Zone for Lighting Tool
+	zoneSpecialEffects = {guid = '7ff6ad'},
+
+	--AI and Hit Location Zones
+	zoneAIBoard = {guid = 'cb34c6'},
+	zoneInjuryBoard = {guid = 'af0ca5'},
+
+	-- Right Roller
+	zoneRight_drawnHit = {guid = 'd2f7eb'},
+	zoneHitLoc1 = {guid = '8ed80f'},
+	zoneHitLoc2 = {guid = 'b7a102'},
+	zoneHitLoc3 = {guid = 'abbef3'},
+	zoneHitLoc4 = {guid = '4ec99c'},
+	zoneHitLoc5 = {guid = '001a5b'},
+	zoneHitLoc6 = {guid = '4046c9'},
+	zoneHitLoc7 = {guid = '407339'},
+
+	-- Left Roller
+	zoneLeft_drawnHit = {guid = 'bb9f6a'},
+	zoneHitLoc1b = {guid = '57c1f0'},
+	zoneHitLoc2b = {guid = '1a49b1'},
+	zoneHitLoc3b = {guid = 'dcdbfd'},
+	zoneHitLoc4b = {guid = '299551'},
+	zoneHitLoc5b = {guid = 'fd2e1b'},
+	zoneHitLoc6b = {guid = 'ca1260'},
+	zoneHitLoc7b = {guid = 'b555a9'},
+
+	-- New / Dead Survivors
+	zoneGraveyard = {guid = 'ec52c8'},
+	zoneGraveyard_Left = {guid = 'aef4b2'},
+	zoneNewSurvivors = {guid = 'af191c'},
+
+	--Player Zones
+	zoneP1 = {guid = '0950d0'},
+	zoneP2 = {guid = '52f59e'},
+	zoneP3 = {guid = '041282'},
+	zoneP4 = {guid = '74bfa7'},
+
+	--Hunt Phase setup zones
+	deckBasicHunt = {guid = '7a742c'},
+	deckMonsterHunt = {guid = '19068d'},
+
+	-- Deck zones for Card Search
+	zone_deckFA = {guid = '10f3f2'},
+	zone_deckSFA = {guid = '97321d'},
+	zone_deckDIS = {guid = 'fd3573'},
+	zone_deckTERRAIN = {guid = '30eacb'},
+	zone_deckBasicHunt = {guid = '01febb'},
+
+	deckMonsterAI = {guid = '2b142f'},
+	deckHitLocations = {guid = '8ec08e'},
+	deckConsequences = {guid = '4ffa5e'},
+	deckBasicHunt = {guid = 'ad54c9'},
+	deckSpecialHunt = {guid = '7b57f7'},
+	deckTerrain = {guid = '6bbd14'},
+	deckVermin = {guid = 'ff95ac'},
+	deckStrangeResources = {guid = 'eedfb6'},
+	deckBasicResources = {guid = '7970d0'},
+	deckMonsterResources = {guid = '947223'},
+	--deckSevereInjuries = {guid = '3f2cdb'},
+	--deckDisorders = {guid = 'ef6b0d'},
+	--deckAbilities = {guid = '2b96e1'},
+	--deckFightingArts = {guid = '9c035b'},
+	--deckSecretFightingArts = {guid = '3fd943'},
+	deckRareGear = {guid = '2e276b'},
+	--discards
+	discardVermin = {guid = '40df56'},
+	discardBasicResources = {guid = '98a7be'},
+
+	--//TODO: DEPRECATE
+	--zoneHunt = {guid = '7300c1'},
+	--zoneMonsterBoard = {guid = '4b6961'},
+	--zoneSurvivors = {guid = 'a5ff30'},
+	--zoneCurrentShowdownBag = {'6604b4'},
+	--zoneGearDeack = {guid = 'b1ed8f'},
+	--discardStrangeResources = {guid = '0acd8e'},
+	--discardSevereInjuries = {guid = 'dd32b9'},
+	--discardDisorders = {guid = 'e5b4c6'},
+	--discardAbilities = {guid = 'bcfb16'},
+	--discardFightingArts = {guid = '5334cb'},
+	--discardSecretFightingArts = {guid = '5287c2'},
+	--deckSpawnedHunt = {guid = 'c00ce0'},
+	--zoneSpawnedHuntTool = {guid = 'ec785c'},
+	--zoneSpawnedResources = {guid = '5a6a8a'},
+	--zoneMonsterBags = {guid = '854a52'},
+	--essential decks
+	--Hit Location Die Zones
+	--zoneRightHL = {guid = '80b18b'},
+	--zoneLefHL = {guid = 'bb9f6a'},
+}
+
+bags = {
+	bagHuntEvents = {guid = '2ae2c5'},
+	terrain = {guid = 'd0cac3'},
+	-- old
+	--gameBox = {guid = '0ad7f0'},
+	-- new
+	gameBox = {guid = '93281a'},
+}
+
+-- Trimmed Essential Decks Table
+essentialDecks = {
+	deckBasicResources = {
+		-- original guid = '47057b',
+		guid = '976c3a',
+		name = 'Basic Resources Deck',
+		description = 'essential, resource, basic',
+		minCount = 21
+	},
+	deckVermin = {
+		guid = '536f57',
+		name = 'Vermin Deck',
+		description = 'essential, vermin',
+		minCount = 8
+	},
+}
+
+memBags = {"gearBags", "timelineBags", "monsterTimelineBags", "milestone_monsterBags",
+"settlementBags", "monsterTimelineBags", "showdownBags", "armorSetBags", "rulesBags",
+"huntBags", "craftingBags", "trophyDisplay", "shadowbags", "shadowbags_saltTop", "shadowbags_saltBottom"}
+gearBags = {}
+shadowbags = {}
+shadowbags_saltTop = {}
+shadowbags_saltBottom = {}
+timelineBags = {}
+craftingBags = {}
+monsterTimelineBags = {}
+milestone_monsterBags = {}
+settlementBags = {}
+monsterTimelineBags = {}
+showdownBags = {}
+armorSetBags = {}
+rulesBags = {}
+huntBags = {}
+trophyDisplay = {}
+
+--Monster Stat token tables gained through critical hits during showdown
+movStat = {}
+spdStat = {}
+accStat = {}
+dmgStat = {}
+tghStat = {}
+tghEndofAttack = {}
+evaStat = {}
+lckStat = {}
+--armorSetStatModifiers = {}
+
+--Adds cleanup list for deleting temporary stat tokens when hit location is selected
+cleanUpHitLocation = {}
+cleanUpHitLocation2 = {}
+
+currentQuarryTable = {'null'}
+currentShowdownTable = {'null'}
+
+--vars
+offsetXHuntCards = {15.6, 13, 10.4, 7.8, 5.2, 2.6, 0, - 2.6, - 5.2, - 7.8, - 10.4, - 13, - 15.6}
+offsetScaleHuntBoard = 4.23325157
+
+
+	-- Physics Objects to cast from for Stacking Tokens for Monster
+	tokSpawn = {
+		pos_mov = {guid = 'd3d212'},
+		neg_mov = {guid = '2ebe81'},
+		pos_spd = {guid = '5b08d0'},
+		neg_spd = {guid = '1477a4'},
+		pos_acc = {guid = '7c3d50'},
+		neg_acc = {guid = '509f14'},
+		pos_dmg = {guid = '2aaea5'},
+		neg_dmg = {guid = 'ab593f'},
+		pos_tgh = {guid = 'c96c00'},
+		neg_tgh = {guid = 'b417df'},
+		pos_eva = {guid = 'bac8d9'},
+		neg_eva = {guid = '7037fe'},
+		pos_lck = {guid = 'a442b8'},
+		neg_lck = {guid = 'cd3824'},
+	}
+
+	-- Tokens to clone for Monster during Showdown
+	--[[stats_monst = {
+		--pos_mov = {guid = '5e845e'},
+		neg_mov = {guid = 'd261c3'},
+		--pos_spd = {guid = 'a8c3f5'},
+		neg_spd = {guid = 'b5ca1a'},
+		--pos_acc = {guid = '6af27e'},
+		neg_acc = {guid = '83084c'},
+		--pos_dmg = {guid = '6e3c11'},
+		neg_dmg = {guid = 'c937f8'},
+		--pos_tgh = {guid = '657ba6'},
+		neg_tgh = {guid = 'b417df'},
+		--pos_eva = {guid = 'd3c679'},
+		neg_eva = {guid = '7c330a'},
+		--pos_lck = {guid = '0a5ff0'},
+		neg_lck = {guid = 'f83957'},
+	}--]]
+
+	-- Unused ????
+	--[[stat_token = {
+		spd = {guid = '2aa9dc'},
+		acc = {guid = '7dad89'},
+		str = {guid = '35b0e3'},
+		lck = {guid = '4b017b'},
+		eva = {guid = '40f1d1'},
+		mov = {guid = '2db99f'},
+	}--]]
+
+
+
+	--[[messages = {
+		msgLine = '__________________________________________',
+		msgBlank = '                                          ',
+		msgPageBreak = '------------------------------------------',
+		msgWelcomeTitle = 'Welcome to KINGDOM DEATH MONSTER.',
+		msgWelcomeSubtitle = "Maximo1984's Ultimate Scripted Edition",
+	}--]]
+
+
+
+	--[[persistentCard = {
+		card = {guid ='6d1dae'},
+	}--]]
+
+
+
+	--[[bags = {
+		gameBox = {guid = '0ad7f0'},
+		manuals = {guid = '615893'},
+		terrain = {guid = 'd0cac3'},
+	}]]--
+
+
+
+	-- Original Essential Decks Table
+	--[[essentialDecks = {
+		--essential card decks
+		deckBasicHunt = {
+			guid = 'ed8975',
+			name = 'Basic Hunt Events Deck',
+			description = 'essential, hunt, basic',
+			minCount = 12
+		},
+		deckSpecialHunt = {
+			guid = '340243',
+			name = 'Special Hunt Events Deck',
+			description = 'essential, hunt, special',
+			minCount = 2
+		},
+		deckAbilities = {
+			guid = '68a3b5',
+			name = 'Abilities Deck',
+			description = 'essential, character, abilities',
+			minCount = 45
+		},
+		deckSecretFightingArts = {
+			guid = '6df1d4',
+			name = 'Secret Fighting Arts Deck',
+			description = 'essential, character, fighting art, secret',
+			minCount = 6
+		},
+		deckFightingArts = {
+			guid = 'dccfc9',
+			name = 'Fighting Arts Deck',
+			description = 'essential, character, fighting art',
+			minCount = 20
+		},
+		deckDisorders = {
+			guid = '212bb6',
+			name = 'Disorders Deck',
+			description = 'essential, character, disorder',
+			minCount = 23
+		},
+		deckStrangeResources = {
+			guid = '2aa690',
+			name = 'Strange Resources Deck',
+			description = 'essential, resource, strange',
+			minCount = 21
+		},
+		deckTerrain = {
+			guid = '503359',
+			name = 'Terrain Deck',
+			description = 'essential, terrain card',
+			minCount = 21
+		},
+		deckSevereInjuries = {
+			guid = '1140cc',
+			name = 'Severe Injuries Deck',
+			description = 'essential, character, psi',
+			minCount = 26
+		},
+
+		deckBasicResources = {
+			-- original guid = '47057b',
+			guid = '976c3a',
+			name = 'Basic Resources Deck',
+			description = 'essential, resource, basic',
+			minCount = 21
+		},
+		deckVermin = {
+			guid = '536f57',
+			name = 'Vermin Deck',
+			description = 'essential, vermin',
+			minCount = 8
+		},
+	}--]]
+
+	deckTokens = {
+		--essential deck refresh tokens
+		discardVermin = {
+			guid = 'e068d9',
+		},
+		discardStrangeResources = {
+			guid = '032768',
+		},
+		discardBasicResources = {
+			guid = '10fa4d',
+		},
+		discardSevereInjuries = {
+			guid = '69bff5',
+		},
+		discardDisorders = {
+			guid = '005a6c',
+		},
+		discardAbilities = {
+			guid = '957b42',
+		},
+		discardFightingArts = {
+			guid = 'a1b0aa',
+		},
+		discardSecretFightingArts = {
+			guid = '113f7d',
+		},
+	}
+
+	--added monster decks
+	monsterDecks = {
+		deckMonsterHunt = {
+			name = '__ Hunt Events Deck',
+		},
+		deckMonsterSpecialHunt = {
+			name = '__ Special Hunt Events Deck',
+		},
+		deckMonsterResources = {
+			name = '__ Resources Deck',
+		},
+		deckMonsterAIBasic = {
+			name = '__ Basic AI Deck',
+		},
+		deckMonsterAIAdvanced = {
+			name = '__ Advanced AI Deck',
+		},
+		deckMonsterAILegendary = {
+			name = '__ Legendary AI Deck',
+		},
+		deckMonsterAISpecial = {
+			name = '__ Special AI Deck',
+		},
+		cardMonsterBasicAction = {
+			name = '__ Basic Action Card',
+		},
+		deckMonsterHitLocations = {
+			name = '__ Hit Locations Deck',
+		},
+	}
+
+
+
+	----------------------------------------------------------------
+	--Common Utility Functions
+	----------------------------------------------------------------
+
+--Functions for Callbacks
+function flipCard(obj)
+	obj.flip(obj)
+end
+
+function lockCard(obj)
+	obj.setLock(true)
+	obj.highlightOn({0.856, 0.1, 0.094}, 60)
+end
+
+function set_locked_hitlocation(obj)
+	obj.setRotationSmooth({35, 180, 0}, false, true)
+	obj.setPositionSmooth({obj.getPosition().x, 5.14, obj.getPosition().z}, false, true)
+	obj.setLock(true)
+	if obj.getName() == "Battle Pressure" then
+		obj.setPositionSmooth({8.56, 4.5, 0.23})
+		obj.setScale({0.42, 1.00, 0.42})
+		obj.setRotation({0,180,0})
+		obj.setLock(false)
+		broadcastToAll("Battle Pressure ~ Hit Cancelled", {1,1,1})
+	end
+end
+
+function lockShadowToken(obj)
+	obj.setLock(true)
+end
+
+function lock_callback(obj)
+	obj.setLock(true)
+end
+
+
+--[[ ------------------------------custom get obj fcn, searches for obj(s) through custom searches
+types of search and params
+tag = search for objs by tags, includes/excludes, params = {conditional = 'and' or 'or', criteria = string looked for, exclude = strings to exclude obj if found}
+name = search for objs by name, with varying strings, params = {conditional = 'contains' or 'matches', criteria = string looked for, exclude = strings to exclude obj if found}
+--]]
+function getObj(searchType, container, params) --params = {conditional = '', criteria = {}, exclude = {}}
+	if container ~= nil then
+		local containerType = container.tag
+		local objs = zone.getObjects()
+		local zone = getObjectFromGUID(zones.zoneMain.guid)
+		local objGUIDs = {}
+		local text = {}
+		local excludes = params.exclude
+		local includes = params.criteria
+		local objAdded = false
+		local isFound = false
+		local foundCount = 0
+		if searchType == 'tag' then
+			for k, v in pairs(objs) do
+				objAdded = false
+				isFound = false
+				foundCount = 0
+				text = v.getDescription()
+				for i = 1, #includes do
+					if string.find(string.lower(text), string.lower(includes[i])) then
+						foundCount = foundCount + 1
+					end
+				end
+				if params.conditional == 'and' then
+					if foundCount == #includes then
+						isFound = true
+					end
+				elseif params.conditional == 'or' then
+					if foundCount > 0 then
+						isFound = true
+					end
+				end
+				if isFound == true then
+					table.insert(objGUIDs, v.getGUID())
+					objAdded = true
+				end
+				isFound = false
+				if #excludes > 0 then
+					for i = 1, #excludes do
+						if string.find(string.lower(text), string.lower(excludes[i])) then
+							isFound = true
+						end
+					end
+					if objAdded == true and isFound == true then
+						table.remove(objGUIDs)
+					end
+				end
+			end
+		elseif searchType == 'name' then
+			for k, v in pairs(objs) do
+				objAdded = false
+				isFound = false
+				if containerType == 'Bag' then
+					text = v.name
+				elseif containerType == 'Deck' then
+					text = v.nickname
+				else
+					text = v.getName()
+				end
+				for i = 1, #includes do
+					if params.conditional == 'matches' then
+						if text == includes[i] then
+							isFound = true
+						end
+
+					elseif params.conditional == 'contains' then
+						if string.find(text, includes[i]) then
+							isFound = true
+						end
+					end
+					if isFound == true then
+						table.insert(objGUIDs, v.guid)
+						objAdded = true
+					end
+				end
+				isFound = false
+				if #excludes > 0 then
+					for i = 1, #excludes do
+						if params.conditional == 'matches' then
+							if text == excludes[i] then
+								isFound = true
+							end
+						elseif params.conditional == 'contains' then
+							if string.find(text, excludes[i]) then
+								isFound = true
+							end
+						end
+					end
+					if objAdded == true and isFound == true then
+						table.remove(objGUIDs)
+					end
+				end
+			end
+		end
+		if #objGUIDs > 0 then
+			local obj = {}
+			if containerType == 'Bag' or containerType == 'Deck' then
+				obj = objGUIDs
+			else
+				for i = 1, #objGUIDs do
+					obj[i] = getObjectFromGUID(objGUIDs[i])
+				end
+			end
+			return obj
+		else
+			return nil
+		end
+	else
+
+
+	end
+end
+
+-------------------duplicate object
+function duplicate(object, params)
+	if object ~= nil then
+		return object.clone(params)
+	else
+		return nil
+	end
+end
+
+--zoneFindDeck = nil
+
+---------------------findDeck or card
+function findDeck(zone)
+	local isDeck = false
+	local obj = {}
+	local deck = {}
+	local card = nil
+	local objs = zone.getObjects()
+	for k, v in pairs(objs) do
+		if string.find(v.tag, 'Deck') then
+			isDeck = true
+			deck = v
+		elseif string.find(v.tag, 'Card') then
+			isDeck = false
+			card = v
+		end
+	end
+	local foundDeck = {}
+	if isDeck == true then
+		foundDeck = {deck, 'Deck'}
+		return foundDeck
+	elseif isDeck == false and card ~= nil then
+		foundDeck = {card, 'Card'}
+		return foundDeck
+	else
+		return nil
+	end
+end
+
+-- Get Card from Deck in Zone
+card = {
+	cardName = nil,
+	zone = "",
+	deck = ""}
+
+	card_pos = {
+		resource = {},
+	}
+
+	pos_toSpawn = {}
+
+--[[example call
+local card_toGet = {cardName = "Black Blood Red", zone = "", deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckSURV_STATUS.guid)}
+Global.setTable("card", card_toGet)
+local pos_toSpawn = {-24.93, 4.19, -24.23}
+Global.setTable("pos_toSpawn", pos_toSpawn)
+Global.call("get_Card")
+]]
+
+function get_Card()
+	local zone = card.zone
+	local card_toGet = card.cardName
+	local deck = card.deck
+
+	--if zone ~= "" then
+	if deck == "" then
+		for _, v in ipairs(zone.getObjects()) do
+			if string.find(v.tag, "Deck") then
+				deck = v
+				break
+			end
+		end
+	end
+
+	local cardsInDeck = deck.getObjects()
+	card_Found = false
+	for i, card in ipairs(cardsInDeck) do
+		if card_toGet == nil then
+			deck.shuffle()
+			deck.takeObject({top = true, position = pos_toSpawn, callback = "flipCard", callback_owner = Global, smooth = false})
+			break
+		end
+		if card_toGet ~= nil then
+			if card.nickname == card_toGet then
+				card_Found = true
+				deck.takeObject({guid = card.guid, position = pos_toSpawn, callback = "flipCard", callback_owner = Global, smooth = false})
+				break
+			end
+		end
+	end
+
+	card = {
+		cardName = nil,
+		zone = "",
+		deck = "",
+	}
+	pos_toSpawn = {}
+end
+---------------------trig calc
+function trig(obj, distance)
+	local r = obj.getRotation()[2]
+	r = math.rad(r)
+	return {distance * math.cos(r), 0, distance * math.sin(r)}
+end
+
+---------------------findPos
+function findPos(var)
+	local guid = placeholder[var].guid
+	local placeholder = getObjectFromGUID(guid)
+	local params = {}
+	--if placeholder != nil or null then
+	if placeholder ~= nil or null then
+		local pos = placeholder.getPosition()
+		local rot = placeholder.getRotation()
+		params = {position = pos, rotation = rot}
+		return params
+	else
+		printToAll('Placeholder not found.', rgbError)
+		return nil
+	end
+end
+
+
+--Features Functions
+recallParams = {}
+
+--Essential Deck Refresh
+function onObjectLeaveContainer(container, object)
+	local gameBox = getObjectFromGUID('93281a')
+	gameBox_pos = gameBox.getPosition()
+	if onLeaveClone then
+		if container.tag == "Deck" then
+
+			-- Terrain Setups
+			if object.getName() == "Egg Sacs" then
+				for _, obj in ipairs(gameBox.getObjects()) do
+					if obj.name == "Egg Sac Miasma" then
+						gameBox.takeObject({guid = obj.guid, smooth = false, position = {73.23, 4.10, 44.54}})
+					end
+					if obj.name == "Egg Sac Explosion Effect" then
+						gameBox.takeObject({guid = obj.guid, smooth = false, position = {73.23, 4.10, 41.35}})
+					end
+				end
+				local spiderling_action = getObjectFromGUID('c880f5')
+				spiderling_action.clone({-19.08, 4.28, 0.64})
+
+			end
+			if object.getName() == "Flower Patch" then
+				for _, obj in ipairs(gameBox.getObjects()) do
+					if obj.name == "Flower Knight Resources Deck" then
+						local pos_to_spawn = {-24.24, 4.20, 11.01}
+						local deck = gameBox.takeObject({
+							guid = obj.guid,
+							smooth = false,
+							rotation = {0, 180, 180},
+							position = {gameBox_pos.x, gameBox_pos.y + 10, gameBox_pos.z}
+						})
+						local clone = deck.clone(deck.getPosition())
+						clone.setPosition(pos_to_spawn)
+						gameBox.putObject(deck)
+					end
+				end
+			end
+
+
+			if isSettingUp == false then
+				if autoDeckRefresh == true then
+					local desc = object.getDescription()
+					--Card Clone Backup Scripts
+					if string.find(desc, 'archive') then
+						if container then
+							local params = {}
+							local destination = {}
+							if string.find(desc, 'gear') or string.find(desc, 'story') or string.find(desc, 'strange resource') then
+								destination = container.getPosition()
+								destination.y = destination.y + 0.2
+							elseif string.find(desc, 'essential') then
+								local discard = ''
+								local notDiscard = false
+								if string.find(desc, 'vermin') then
+									discard = 'discardVermin'
+								elseif string.find(desc, 'basic') and string.find(desc, 'resource') then
+									discard = 'discardBasicResources'
+								else
+									notDiscard = true
+								end
+								if notDiscard == false then
+									destination = getObjectFromGUID(placeholders[discard].guid).getPosition()
+									local token = getObjectFromGUID(deckTokens[discard].guid)
+									local rot = token.getRotation().z
+									if rot < 170 or rot > 350 then
+										table.insert(recallParams, {discard})
+										startLuaCoroutine(Global, 'recallAuto')
+									end
+								else
+									destination = container.getPosition()
+								end
+								destination.y = destination.y + destination.y + 2
+							end
+							params.position = destination
+							local clone = object.clone(params)
+							desc = string.gsub(desc, 'archive', 'copy')
+							object.setDescription(desc)
+						else
+							printToAll('Container depleted. Cannot clone card. Replicate manually.', rgbError)
+						end
+					end
+				end
+			end
+		elseif container.tag == "Bag" then
+			local bag_quarry_showdowns = getObjectFromGUID('f18343')
+			local bag_nemesis_showdowns = getObjectFromGUID('3cb738')
+			local desc = object.getDescription()
+
+			if string.find(desc, "backup, quarry") then
+				pos_toClone = bag_quarry_showdowns.getPosition()
+				local clone = object.clone({position = pos_toClone})
+			elseif string.find(desc, "backup, nemesis") then
+				pos_toClone = bag_nemesis_showdowns.getPosition()
+				local clone = object.clone({position = pos_toClone})
+			end
+		end
+	end
+
+	-- Set color change for endeavors and dice
+	if string.find(container.getName(), "P1") then
+		local settings_P1_token = getObjectFromGUID('aa4045')
+		object.setColorTint(settings_P1_token.getColorTint())
+
+	elseif string.find(container.getName(), "P2") then
+		local settings_P2_token = getObjectFromGUID('d01d70')
+		object.setColorTint(settings_P2_token.getColorTint())
+
+	elseif string.find(container.getName(), "P3") then
+		local settings_P3_token = getObjectFromGUID('46eed3')
+		object.setColorTint(settings_P3_token.getColorTint())
+
+	elseif string.find(container.getName(), "P4") then
+		local settings_P4_token = getObjectFromGUID('962eb1')
+		object.setColorTint(settings_P4_token.getColorTint())
+	end
+
+end
+
+function recallAuto()
+	for i = 1, 85 do
+		coroutine.yield(0)
+	end
+	local deck = recallParams[1]
+	recallDiscards(deck)
+	table.remove(recallParams, 1)
+	return 1
+end
+
+tableShuffle = {}
+
+function recallDiscards(deck)
+	if autoDeckRefresh == true or debuggingDecks == true then
+		local deckString = deck[1]
+		local zone = getObjectFromGUID(zones[deckString].guid)
+		local result = findDeck(zone)
+		if result == nil then
+		else
+			local obj = result[1]
+			deckString = string.gsub(deckString, 'discard', 'deck')
+			local params = {}
+			local deckPos = getObjectFromGUID(placeholders[deckString].guid).getPosition()
+			params.position = {deckPos[1], deckPos[2] + 2, deckPos[3]}
+			obj.setPositionSmooth(params.position)
+			params.rotation = getObjectFromGUID(placeholders[deckString].guid).getRotation()
+			obj.setRotationSmooth(params.rotation)
+			local gainingDeck = findDeck(getObjectFromGUID(zones[deckString].guid))
+			local deckObject = gainingDeck[1]
+			if deckObject then
+				table.insert(tableShuffle, deckObject)
+				startLuaCoroutine(Global, 'coroutineShuffle')
+			end
+		end
+	end
+end
+
+function coroutineShuffle()
+	for i = 1, 85 do
+		coroutine.yield(0)
+	end
+	local shuffleDeck = tableShuffle[1]
+	if shuffleDeck then
+		shuffleDeck.shuffle()
+		table.remove(tableShuffle, 1)
+	end
+	return 1
+end
+
+function addBroadcast(tbl)
+	table.insert(broadcastTable[tbl[1]], tbl[2])
+end
+
+broadcastTable = {
+	hit = {category = "__________    Attack Hit    __________"},
+	perfecthit = {category = "__________  Perfect Hit  __________"},
+	wound = {category = "__________  Wound  __________"},
+	crit = {category = "__________  Critical Wound  __________"},
+	reflex = {category = "__________  Reflex Reaction  __________"},
+	failure = {category = "__________  Failure Reaction  __________"},
+	wound_reaction = {category = "__________  Wound Reaction  __________"},
+	effect = {category = "__________  Special Effect  __________"},
+	encourage = {category = "__________  When you Encourage  __________"},
+	blind = {category = "__________  When you attack from the Blind Spot  __________"},
+	injury = {category = "__________  When you suffer a Severe Injury  __________"},
+	bleed = {category = "__________  When you gain a Bleeding Token  __________"},
+	dies = {category = "__________  When a Survivor Dies __________"},
+	knockdown = {category = "__________  When you are Knocked Down  __________"},
+	gainInsanity = {category = "__________  When you gain Insanity  __________"},
+	gainSurvival = {category = "__________  When you gain Survival  __________"},
+	brainTrauma = {category = "__________  When you suffer a Brain Trauma  __________"},
+}
+
+function clearBroadcast()
+	broadcastTable = {
+		hit = {category = "__________    Attack Hit    __________"},
+		perfecthit = {category = "__________  Perfect Hit  __________"},
+		wound = {category = "__________  Wound  __________"},
+		crit = {category = "__________  Critical Wound  __________"},
+		reflex = {category = "__________  Reflex Reaction  __________"},
+		failure = {category = "__________  Failure Reaction  __________"},
+		wound_reaction = {category = "__________  Wound Reaction  __________"},
+		effect = {category = "__________  Special Effect  __________"},
+		encourage = {category = "__________  When you Encourage  __________"},
+		blind = {category = "__________  When you attack from the Blind Spot  __________"},
+		injury = {category = "__________  When you suffer a Severe Injury  __________"},
+		bleed = {category = "__________  When you gain a Bleeding Token  __________"},
+		dies = {category = "__________  When a Survivor Dies __________"},
+		knockdown = {category = "__________  When you are Knocked Down  __________"},
+		gainInsanity = {category = "__________  When you gain Insanity  __________"},
+		gainSurvival = {category = "__________  When you gain Survival  __________"},
+		brainTrauma = {category = "__________  When you suffer a Brain Trauma  __________"},
+	}
+end
+
+function print_endAct()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "endact" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, broadcast_msg_color.color)
+				wait(1.5)
+				for _, msg in pairs(tbl) do
+					if msg.effect ~= nil then
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(1.5)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printInjury()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "injury" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, broadcast_msg_color.color)
+				wait(1.5)
+				for _, msg in pairs(tbl) do
+					if msg.effect ~= nil then
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(1.5)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printBleed()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "bleed" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, broadcast_msg_color.color)
+				wait(1.50)
+				for _, msg in pairs(tbl) do
+					if msg.effect ~= nil then
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(1.5)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printBlind()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "blind" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, broadcast_msg_color.color)
+				wait(1.50)
+				for _, msg in pairs(tbl) do
+					if msg.effect ~= nil then
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(1.5)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printEncourage()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "encourage" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(1.50)
+				for _, msg in pairs(tbl) do
+					if msg.effect ~= nil then
+						broadcastToAll(msg.effect, {1, 1, 1})
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, {1, 1, 1})
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printEffect()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "effect" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(0.50)
+				for _, msg in pairs(tbl) do
+					if msg.effect ~= nil then
+						broadcastToAll(msg.effect, {1, 1, 1})
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, {1, 1, 1})
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+broadcast_msg_color = {
+	color = {}
+}
+
+function printHit()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "hit" or name == "perfecthit" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(0.50)
+				for _, msg in pairs(tbl) do
+					if msg.gear ~= nil then
+						broadcastToAll(msg.gear, broadcast_msg_color.color)
+						wait(0.50)
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printWound()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "wound" or name == "crit" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(0.50)
+				for _, msg in pairs(tbl) do
+					if msg.gear ~= nil then
+						broadcastToAll(msg.gear, broadcast_msg_color.color)
+						wait(0.50)
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						--wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printWoundReaction()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "wound_reaction" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(0.50)
+				for _, msg in pairs(tbl) do
+					if msg.gear ~= nil then
+						broadcastToAll(msg.gear, broadcast_msg_color.color)
+						wait(0.50)
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printReflex()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "reflex" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(0.50)
+				for _, msg in pairs(tbl) do
+					if msg.gear ~= nil then
+						broadcastToAll(msg.gear, broadcast_msg_color.color)
+						wait(0.50)
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+function printFailure()
+	for name, tbl in pairs(broadcastTable) do
+		if name == "failure" then
+			if #tbl > 0 then
+				broadcastToAll(tbl.category, {1, 1, 1})
+				wait(0.50)
+				for _, msg in pairs(tbl) do
+					if msg.gear ~= nil then
+						broadcastToAll(msg.gear, broadcast_msg_color.color)
+						wait(0.50)
+						broadcastToAll(msg.effect, broadcast_msg_color.color)
+						wait(0.50)
+						if msg.effect2 ~= "" and msg.effect2 ~= nil then
+							broadcastToAll(msg.effect2, broadcast_msg_color.color)
+						end
+						wait(2)
+					end
+				end
+				wait(0)
+			end
+		end
+	end
+	return 1
+end
+
+--[[addStr_red, num = false
+addStr_yellow, num = false
+addStr_green = false
+addStr_blue = false]]
+
+
+monst = {
+	stat = nil,
+	modifier = nil,
+	num = 0,
+	phase = nil,
+}
+
+------------------------- MONSTER STAT CALLBACKS -------------------------------
+
+modifier_mov_num = 1
+monster_stat_mov = {movement = 1}
+
+function set_mov_modifier(obj)
+	if monster_stat_mov.movement == 1 then
+		modifier_mov_num = 1
+		obj.setLuaScript("isKdmEffectsObject = true effects = {move = 1} function getEffects() effects.movement = 1 return effects end")
+	elseif monster_stat_mov.movement == 2 then
+		modifier_mov_num = 2
+		obj.setLuaScript("isKdmEffectsObject = true effects = {move = 1} function getEffects() effects.movement = 2 return effects end")
+	end
+	modifier_mov_num = 1
+	monster_stat_mov = {movement = 1}
+end
+
+modifier_spd_num = 0
+monster_stat_spd = {speed = 1}
+
+function set_mov_modifier(obj)
+	if monster_stat_spd.speed == 1 then
+		modifier_spd_num = 1
+		obj.setLuaScript("isKdmEffectsObject = true effects = {move = 1} function getEffects() effects.movement = 1 return effects end")
+	elseif monster_stat_spd.speed == 2 then
+		modifier_spd_num = 2
+		obj.setLuaScript("isKdmEffectsObject = true effects = {move = 1} function getEffects() effects.movement = 2 return effects end")
+	end
+	modifier_spd_num = 0
+	monster_stat_spd = {speed = 1}
+end
+
+----------------------------------- RED ----------------------------------------
+--[[example call
+
+local stats = {color = "red", stat = "mov", modifier = "neg", num = 1, phase = ""}
+Global.setTable('stats_red', stats)
+startLuaCoroutine(Global, "spawn_tok_red")
+
+"endOfround"
+"endOfattack"
+"endOfwoundattempt"
+"endOfwound"
+
+]]
+
+stats_red = {
+	color = nil,
+	stat = nil,
+	modifier = nil,
+	num = 0,
+	phase = nil,
+}
+
+function spawn_tok_red()
+	wait(0.1)
+
+	if stats_red.color == "red" then
+		if stats_red.stat == "spd" then
+			if stats_red.modifier == "pos" then
+				local obj = getObjectFromGUID('7082c7')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_red.modifier == "neg" then
+				local obj = getObjectFromGUID('240b6e')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_red.stat == "acc" then
+			if stats_red.modifier == "pos" then
+				local obj = getObjectFromGUID('c1d57d')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_red.modifier == "neg" then
+				local obj = getObjectFromGUID('cfe590')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_red.stat == "str" then
+			if stats_red.modifier == "pos" then
+				local obj = getObjectFromGUID('546ac3')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_red.modifier == "neg" then
+				local obj = getObjectFromGUID('f4312c')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_red.stat == "lck" then
+			if stats_red.modifier == "pos" then
+				local obj = getObjectFromGUID('df58a3')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_red.modifier == "neg" then
+				local obj = getObjectFromGUID('66d804')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_red.stat == "mov" then
+			if stats_red.modifier == "pos" then
+				local obj = getObjectFromGUID('8d1164')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_red.modifier == "neg" then
+				local obj = getObjectFromGUID('7c59c6')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_red.stat == "eva" then
+			if stats_red.modifier == "pos" then
+				local obj = getObjectFromGUID('dc1e69')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_red.modifier == "neg" then
+				local obj = getObjectFromGUID('c020d3')
+				for i = 1, stats_red.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		end
+	end
+	stats_red = {
+		color = nil,
+		stat = nil,
+		modifier = nil,
+		num = 0,
+		phase = nil,
+	}
+	return 1
+end
+
+---------------------------------- YELLOW --------------------------------------
+--[[example call
+
+local stats = {color = "yellow", stat = "mov", modifier = "neg", num = 1, phase = ""}
+Global.setTable('stats_yellow', stats)
+startLuaCoroutine(Global, "spawn_tok_yellow")
+
+"endOfround"
+"endOfattack"
+"endOfwoundattempt"
+"endOfwound"
+
+]]
+
+stats_yellow = {
+	color = nil,
+	stat = nil,
+	modifier = nil,
+	num = 0,
+	phase = nil,
+}
+
+function spawn_tok_yellow()
+	wait(0.1)
+
+	if stats_yellow.color == "yellow" then
+		if stats_yellow.stat == "spd" then
+			if stats_yellow.modifier == "pos" then
+				local obj = getObjectFromGUID('57b789')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_yellow.modifier == "neg" then
+				local obj = getObjectFromGUID('e610ef')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_yellow.stat == "acc" then
+			if stats_yellow.modifier == "pos" then
+				local obj = getObjectFromGUID('7ae41f')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_yellow.modifier == "neg" then
+				local obj = getObjectFromGUID('142d0c')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_yellow.stat == "str" then
+			if stats_yellow.modifier == "pos" then
+				local obj = getObjectFromGUID('adfe37')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_yellow.modifier == "neg" then
+				local obj = getObjectFromGUID('0cf9bb')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_yellow.stat == "lck" then
+			if stats_yellow.modifier == "pos" then
+				local obj = getObjectFromGUID('8fa971')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_yellow.modifier == "neg" then
+				local obj = getObjectFromGUID('eb39f2')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_yellow.stat == "mov" then
+			if stats_yellow.modifier == "pos" then
+				local obj = getObjectFromGUID('1fc841')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_yellow.modifier == "neg" then
+				local obj = getObjectFromGUID('fdf2bf')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_yellow.stat == "eva" then
+			if stats_yellow.modifier == "pos" then
+				local obj = getObjectFromGUID('ddc17a')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_yellow.modifier == "neg" then
+				local obj = getObjectFromGUID('383409')
+				for i = 1, stats_yellow.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		end
+	end
+	stats_yellow = {
+		color = nil,
+		stat = nil,
+		modifier = nil,
+		num = 0,
+		phase = nil,
+	}
+	return 1
+end
+
+---------------------------------- GREEN ---------------------------------------
+--[[example call
+
+local stats = {color = "green", stat = "mov", modifier = "neg", num = 1, phase = ""}
+Global.setTable('stats_green', stats)
+startLuaCoroutine(Global, "spawn_tok_green")
+
+"endOfround"
+"endOfattack"
+"endOfwoundattempt"
+"endOfwound"
+
+]]
+
+stats_green = {
+	color = nil,
+	stat = nil,
+	modifier = nil,
+	num = 0,
+	phase = nil,
+}
+
+function spawn_tok_green()
+	wait(0.1)
+
+	if stats_green.color == "green" then
+		if stats_green.stat == "spd" then
+			if stats_green.modifier == "pos" then
+				local obj = getObjectFromGUID('7eb335')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_green.modifier == "neg" then
+				local obj = getObjectFromGUID('ebe802')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_green.stat == "acc" then
+			if stats_green.modifier == "pos" then
+				local obj = getObjectFromGUID('0abdaf')
+
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_green.modifier == "neg" then
+				local obj = getObjectFromGUID('ed131b')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_green.stat == "str" then
+			if stats_green.modifier == "pos" then
+				local obj = getObjectFromGUID('84504f')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_green.modifier == "neg" then
+				local obj = getObjectFromGUID('f8bd6b')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_green.stat == "lck" then
+			if stats_green.modifier == "pos" then
+				local obj = getObjectFromGUID('2ac438')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_green.modifier == "neg" then
+				local obj = getObjectFromGUID('96119b')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_green.stat == "mov" then
+			if stats_green.modifier == "pos" then
+				local obj = getObjectFromGUID('338cf2')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_green.modifier == "neg" then
+				local obj = getObjectFromGUID('3e239b')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_green.stat == "eva" then
+			if stats_green.modifier == "pos" then
+				local obj = getObjectFromGUID('aec732')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_green.modifier == "neg" then
+				local obj = getObjectFromGUID('a5f026')
+				for i = 1, stats_green.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		end
+	end
+	stats_green = {
+		color = nil,
+		stat = nil,
+		modifier = nil,
+		num = 0,
+		phase = nil,
+	}
+	return 1
+end
+
+---------------------------------- BLUE ----------------------------------------
+--[[example call
+
+local stats = {color = "blue", stat = "mov", modifier = "neg", num = 1, phase = ""}
+Global.setTable('stats_blue', stats)
+startLuaCoroutine(Global, "spawn_tok_blue")
+
+"endOfround"
+"endOfattack"
+"endOfwoundattempt"
+"endOfwound"
+
+]]
+
+stats_blue = {
+	color = nil,
+	stat = nil,
+	modifier = nil,
+	num = 0,
+	phase = nil,
+}
+
+function spawn_tok_blue()
+	wait(0.1)
+
+	if stats_blue.color == "blue" then
+		if stats_blue.stat == "spd" then
+			if stats_blue.modifier == "pos" then
+				local obj = getObjectFromGUID('23aff3')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_blue.modifier == "neg" then
+				local obj = getObjectFromGUID('939d76')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_blue.stat == "acc" then
+			if stats_blue.modifier == "pos" then
+				local obj = getObjectFromGUID('026ade')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_blue.modifier == "neg" then
+				local obj = getObjectFromGUID('216b2a')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_blue.stat == "str" then
+			if stats_blue.modifier == "pos" then
+				local obj = getObjectFromGUID('983833')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_blue.modifier == "neg" then
+				local obj = getObjectFromGUID('d50a3a')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_blue.stat == "lck" then
+			if stats_blue.modifier == "pos" then
+				local obj = getObjectFromGUID('773017')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_blue.modifier == "neg" then
+				local obj = getObjectFromGUID('715294')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_blue.stat == "mov" then
+			if stats_blue.modifier == "pos" then
+				local obj = getObjectFromGUID('686442')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_blue.modifier == "neg" then
+				local obj = getObjectFromGUID('985151')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		elseif stats_blue.stat == "eva" then
+			if stats_blue.modifier == "pos" then
+				local obj = getObjectFromGUID('aa14f2')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			elseif stats_blue.modifier == "neg" then
+				local obj = getObjectFromGUID('899e92')
+				for i = 1, stats_blue.num do
+					obj.call("spawn_token")
+					wait(1)
+				end
+			end
+		end
+	end
+	stats_blue = {
+		color = nil,
+		stat = nil,
+		modifier = nil,
+		num = 0,
+		phase = nil,
+	}
+	return 1
+end
+
+------------------------------- ALL SURVIVORS ---------------------------------
+
+temp = {
+	color = nil,
+	stat = nil,
+	modifier = nil,
+	num = 0,
+	phase = nil,
+}
+
+--[[example call
+
+local stats = {color = "red", stat = "mov", modifier = "neg", num = age_count_red, phase = "haze"}
+Global.setTable('temp', stats)
+startLuaCoroutine(Global, "spwn_tok")
+
+]]
+
+function spwn_tok()
+
+	if temp.color == "red" then
+		if temp.stat == "spd" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('7082c7')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('240b6e')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "acc" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('c1d57d')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('cfe590')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "str" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('546ac3')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('f4312c')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "lck" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('df58a3')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('66d804')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "mov" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('8d1164')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('7c59c6')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "eva" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('dc1e69')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('c020d3')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		end
+
+	elseif temp.color == "yellow" then
+		if temp.stat == "spd" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('57b789')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('e610ef')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "acc" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('7ae41f')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('142d0c')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "str" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('adfe37')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('0cf9bb')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "lck" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('8fa971')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('eb39f2')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "mov" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('1fc841')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('fdf2bf')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "eva" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('ddc17a')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('383409')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		end
+
+	elseif temp.color == "green" then
+		if temp.stat == "spd" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('7eb335')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('ebe802')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "acc" then
+			print(temp.stat)
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('0abdaf')
+
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('ed131b')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "str" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('84504f')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('f8bd6b')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "lck" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('2ac438')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('96119b')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "mov" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('338cf2')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('3e239b')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "eva" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('aec732')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('a5f026')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		end
+
+	elseif temp.color == "blue" then
+		if temp.stat == "spd" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('23aff3')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('939d76')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "acc" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('026ade')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('216b2a')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "str" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('983833')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('d50a3a')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "lck" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('773017')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('715294')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "mov" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('686442')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('985151')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		elseif temp.stat == "eva" then
+			if temp.modifier == "pos" then
+				local obj = getObjectFromGUID('aa14f2')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			elseif temp.modifier == "neg" then
+				local obj = getObjectFromGUID('899e92')
+				for i = 1, temp.num do
+					obj.call("spawn_token")
+					wait(0.25)
+				end
+			end
+		end
+	end
+	temp = {
+		color = nil,
+		stat = nil,
+		modifier = nil,
+		num = 0,
+		phase = nil,
+	}
+	return 1
+end
+
+function returnIsDeaf()
+	isDeaf_red = getObjectFromGUID('f847a4')
+	isDeaf_yellow = getObjectFromGUID('60e832')
+	isDeaf_green = getObjectFromGUID('e5c453')
+	isDeaf_blue = getObjectFromGUID('cdbacb')
+
+	isDeafRed = false
+	isDeafYellow = false
+	isDeafGreen = false
+	isDeafBlue = false
+	if isDeaf_red.getRotation().z > 165 and isDeaf_red.getRotation().z < 195 then
+		isDeafRed = true
+	end
+	if isDeaf_yellow.getRotation().z > 165 and isDeaf_yellow.getRotation().z < 195 then
+		isDeafYellow = true
+	end
+	if isDeaf_green.getRotation().z > 165 and isDeaf_green.getRotation().z < 195 then
+		isDeafGreen = true
+	end
+	if isDeaf_blue.getRotation().z > 165 and isDeaf_blue.getRotation().z < 195 then
+		isDeafBlue = true
+	end
+end
+
+--Coroutine Timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+
+
+
+
+-- global stable

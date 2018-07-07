@@ -1,0 +1,302 @@
+function onLoad()
+    createButtons()
+end
+
+function createButtons()
+
+    self.createButton({index = 0, click_function = 'createWeaponButtons', function_owner = self,
+label = 'Select Weapon Proficiency', position = {x = -2, y = 0.2, z = -0.6}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 7000, height = 1100, font_size = 600,
+color = {0,0,0}, font_color = {1,1,1}})
+
+end
+
+function createWeaponButtons()
+
+    self.createButton({index = 1, click_function = 'clearMenuButtons', function_owner = self,
+label = 'Close Menu', position = {x = -2, y = 0.2, z = 0.6}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 600,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 2, click_function = 'getWhip', function_owner = self,
+label = 'Whip', position = {x = -9, y = 0.2, z = -2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 3, click_function = 'getTwilightSword', function_owner = self,
+label = 'Twilight Sword', position = {x = -9, y = 0.2, z = -3.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 4, click_function = 'getSword', function_owner = self,
+label = 'Sword', position = {x = -9, y = 0.2, z = -5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 5, click_function = 'getSpear', function_owner = self,
+label = 'Spear', position = {x = -9, y = 0.2, z = -6.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 6, click_function = 'getShield', function_owner = self,
+label = 'Shield', position = {x = -9, y = 0.2, z = -8}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 7, click_function = 'getScythe', function_owner = self,
+label = 'Scythe', position = {x = -9, y = 0.2, z = -9.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 8, click_function = 'getKatar', function_owner = self,
+label = 'Katar', position = {x = -9, y = 0.2, z = -11}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 9, click_function = 'getKatana', function_owner = self,
+label = 'Katana', position = {x = -9, y = 0.2, z = -12.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 10, click_function = 'getGrandWeapon', function_owner = self,
+label = 'Grand Weapon', position = {x = -9, y = 0.2, z = -14}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 11, click_function = 'getFistAndTooth', function_owner = self,
+label = 'Fist and Tooth', position = {x = -9, y = 0.2, z = -15.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 12, click_function = 'getDagger', function_owner = self,
+label = 'Dagger', position = {x = -9, y = 0.2, z = -17}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 13, click_function = 'getClub', function_owner = self,
+label = 'Club', position = {x = -9, y = 0.2, z = -18.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 14, click_function = 'getBow', function_owner = self,
+label = 'Bow', position = {x = -9, y = 0.2, z = -20}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+    self.createButton({index = 15, click_function = 'getAxe', function_owner = self,
+label = 'Axe', position = {x = -9, y = 0.2, z = -21.5}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 5000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+self.createButton({index = 16, click_function = 'getShieldArmorBonus', function_owner = self,
+label = 'Shield Proficiency Armor Bonus', position = {x = 8.5, y = 0.2, z = -0.6}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 12000, height = 1100, font_size = 800,
+color = {0,0,0}, font_color = {1,1,1}})
+
+end
+
+function clearMenuButtons()
+    local buttons = self.getButtons()
+    for i, v in pairs(buttons) do
+        if v.label == "Axe" or v.label == "Bow" or v.label == "Club" or v.label == "Dagger" or v.label == "Fist and Tooth" or v.label == "Grand Weapon" or v.label == "Katana" or v.label == "Katar" then
+            self.removeButton(v.index)
+        end
+        if v.label == "Scythe" or v.label == "Shield" or v.label == "Spear" or v.label == "Sword" or v.label == "Twilight Sword" or v.label == "Whip" or v.label == "Close Menu" then
+        self.removeButton(v.index)
+        end
+    end
+end
+
+function getShieldArmorBonus()
+  clearMenuButtons()
+  local deck = getObjectFromGUID("75e90e")
+  local cardsInDeck = deck.getObjects()
+  	for i, card in ipairs(cardsInDeck) do
+  	if card.nickname == "Shield Add 1" then
+  		deck.takeObject({guid = card.guid, smooth=false, callback = "setScale", callback_owner=self, position={29.20, 4.41, -27.79}})
+  		break
+  	end
+  end
+end
+
+function setScale(object)
+  object.setScale({0.49, 1.00, 0.49})
+end
+
+function getAxe()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Axe" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getBow()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Bow" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getClub()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Club" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getDagger()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Dagger" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getFistAndTooth()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Fist & Tooth" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getGrandWeapon()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Grand Weapon" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getKatana()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Katana" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getKatar()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Katar" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getScythe()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Scythe" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getShield()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Shield" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getSpear()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Spear" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getSword()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Sword" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getTwilightSword()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Twilight Sword" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+function getWhip()
+  clearMenuButtons()
+    local deck = getObjectFromGUID("75e90e")
+    local cardsInDeck = deck.getObjects()
+    	for i, card in ipairs(cardsInDeck) do
+    	if card.nickname == "Whip" then
+    		deck.takeObject({guid = card.guid, smooth=false, position={27.24, 4.41, -27.74}})
+    		break
+    	end
+    end
+end
+
+--Utility Functions
+function clearMenuButtons()
+    local buttons = self.getButtons()
+    for i, v in pairs(buttons) do
+        if v.index >= 1 then
+            self.removeButton(v.index)
+        end
+    end
+end
