@@ -17,7 +17,7 @@ function spawn_token()
 	local bag = getObjectFromGUID('08250f')
 	local pos = self.getPosition()
 
-	token_temp = {pos.x - 0.25, pos.y + 2, pos.z + 0.91}
+	token_temp = {pos.x, pos.y + 2, pos.z + 0.45}
 	token_perm = {pos.x, pos.y + 2, pos.z + 0.45}
 	rot = {0, 180, 0}
 
