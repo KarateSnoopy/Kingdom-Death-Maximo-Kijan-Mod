@@ -271,7 +271,7 @@ function createButtons_navigation()
 	btn_params.click_function = "prologue_first_page"
 	self.createButton(btn_params)
 
-	btn_params.label = "Start Prologue Showdow"
+	btn_params.label = "Start Prologue Showdown"
 	btn_params.position = {0, 0.5, 1.1}
 	btn_params.click_function = "load_prologue_showdown_bag"
 	self.createButton(btn_params)
