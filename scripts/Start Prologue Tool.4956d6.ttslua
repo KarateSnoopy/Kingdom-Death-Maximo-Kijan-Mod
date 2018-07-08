@@ -5,7 +5,43 @@ function onLoad()
 end
 
 function start_prologue()
-	set_deck_prologue()
+    zoneP1 = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	found_P1 = false
+	for _, obj in ipairs(zoneP1.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P1 = true
+		end
+	end
+
+    zoneP2 = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	found_P2 = false
+	for _, obj in ipairs(zoneP2.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P2 = true
+		end
+	end
+
+    zoneP3 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	found_P3 = false
+	for _, obj in ipairs(zoneP3.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P3 = true
+		end
+	end
+
+    zoneP4 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	found_P4 = false
+	for _, obj in ipairs(zoneP4.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P4 = true
+		end
+	end
+
+    if( found_P1 or found_P2 or found_P3 or found_P4 ) then
+        set_deck_prologue()
+    else
+        broadcastToAll("Click Enter Here and choose a campaign first", {1,1,1})
+    end
 end
 
 -- Set Deck Functions  --------------------------------------------------------
