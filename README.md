@@ -15,6 +15,10 @@ https://github.com/maximo1984/Kingdom-Death-Maximo-Kijan-Mod/issues
 
 Install Atom and use the TTS plugin: http://berserk-games.com/knowledgebase/atom-editor-plugin/
 
+In Atom, go to File->Settings->Packages->Click on settings for tabletopsimulator-lua
+
+Recommended: Under Load/Saving, change the dropdown to "Do not automatically open any files sent from Tabletop Simulator".  This will stop Atom from automaticaly opening all the files as tabs which I find annoying.
+
 ### To update TTS with a fix made in GitHub 
 
 * In TTS, load the starting point save
