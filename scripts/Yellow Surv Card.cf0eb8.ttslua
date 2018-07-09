@@ -1094,12 +1094,18 @@ function createButtons_attack_attackBlind(object, player_color)
 	end
 end
 
+function reroll(object, player_color)
+	local persistentCard = getObjectFromGUID(Global.getTable('persistentCard').card.guid)
+	persistentCard.call("delete_endOfAttack_tokens")
+	createButtons_attack_attackBlind(object, player_color)
+end
+
 function createButton_Additional_Attack()
 	set_buttons_Table()
 	btn_params.label = "Reroll"
 	btn_params.position = {0, 0.2, 3.8}
 	btn_params.font_size = 325
-	btn_params.click_function = "createButtons_attack_attackBlind"
+	btn_params.click_function = "reroll"
 	self.createButton(btn_params)
 end
 
