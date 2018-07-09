@@ -146,9 +146,6 @@ function kill(guid)
 end
 
 function onObjectPickUp(player_color, picked_up_object)
-print("onObjectPickUp")
-print(player_color)
-
 	if string.find(picked_up_object.getName(), "Player") then
 
 		local gPos = picked_up_object.getPosition()
@@ -173,8 +170,6 @@ print(player_color)
 					zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
 				end
 
-print("onObjectPickUp1")
-
 				local zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
 				hasHairworm = false
 				for _, card in ipairs(zoneInjuryBoard.getObjects()) do
@@ -182,15 +177,12 @@ print("onObjectPickUp1")
 						hasHairworm = true
 					end
 				end
-                print("onObjectPickUp2")
-
 
 				local pColor = picked_up_object.getColorTint()
 				msg_color = picked_up_object.getColorTint()
 				if grid then
 					local charSheet = grid.getVar('FullCharSheet')
 					 insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
-                     print("onObjectPickUp3")
 					if charSheet ~= nil then
 						isInsane = false
 						if insanity_value >= 3 then
@@ -219,7 +211,6 @@ print("onObjectPickUp1")
 						overlay(params)
 					end
 				end
-                print("onObjectPickUp2")
 
 				--Start On PickUp section
 				onPickUp = Global.getVar('onPickUp')
@@ -276,8 +267,6 @@ print("onObjectPickUp1")
 								broadcastToColor("--- ♞ Lantern Cuirass: (-2) Movement ♞ ---", player_color, msg_color)
 							end
 						end -- end for loop body
-
-                        print("onObjectPickUp3")
 					end -- end if grid and zone
 				end -- end if onPickUp
 			end

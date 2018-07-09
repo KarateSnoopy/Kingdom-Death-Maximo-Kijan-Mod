@@ -270,7 +270,6 @@ function tokSpawn_coR()
 	wait(0.1)
 	-- Rear Up
 	if cardName == "Rubber Bone Harness" then
-		print(count_neg_str)
 		if count_neg_spd >= 1 then
 			local stats = {color = color, stat = "spd", modifier = "pos", num = count_neg_spd, phase = nil}
 			Global.setTable('stats_yellow', stats)

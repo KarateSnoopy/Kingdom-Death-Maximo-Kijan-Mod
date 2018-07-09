@@ -628,7 +628,6 @@ function departSurv(grid, zone, name)
 			-- Cycloid Scale Skirt
 		elseif object.getName() == "Cycloid Scale Skirt" and (rotZ > 165 and rotZ < 195) then
 			local numBlueAffinity = tonumber(affinity_blue.call("getCount"))
-			print(numBlueAffinity)
 			for i=1, numBlueAffinity do
 				changeSurvivors("survival", 1, grid)
 			end

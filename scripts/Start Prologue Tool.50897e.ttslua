@@ -234,8 +234,6 @@ end
 
 -- Load Page Functions  --------------------------------------------------------
 function get_storyEvent()
-    --print("next_page_left: " .. next_page_left)
-    --print("next_page_right: " .. next_page_right)
 	isViewing = true
 	local pos = self.getPosition()
 	for _, story in ipairs(deck_toSearch.getObjects()) do
@@ -272,23 +270,15 @@ function get_storyEvent()
 end
 
 function destroy_currentLoaded()
-    --print("was: next_page_left: " .. next_page_left)
-    --print("was: next_page_right: " .. next_page_right)
-
     if page_turn == "right" then
         if isPageExist(next_page_left + 2)==true then
             next_page_left = next_page_left + 2
             next_page_right = next_page_right + 2
-            --print("going right: next_page_left: " .. next_page_left)
-            --print("going right: next_page_right: " .. next_page_right)
         else
-            --print("isPageExist not found: " .. next_page_left + 2)
         end
     elseif page_turn == "left" and next_page_left > 1 then
         next_page_left = next_page_left - 2
         next_page_right = next_page_right - 2
-        --print("going right: next_page_left: " .. next_page_left)
-        --print("going right: next_page_right: " .. next_page_right)
     end
 
 	local pos = self.getPosition()
@@ -300,18 +290,6 @@ function destroy_currentLoaded()
 		max_distance = 0,
 	})
 	for _, entry in ipairs(hitList) do
-        --[[
-		if isViewing then
-			local actualPage = entry.hit_object.getDescription():match("%a+, %a+, (%a+)")
-			if page_turn == "right" and actualPage ~= nil then
-				next_page_left = tableNumbers[actualPage] + 2
-                print("new 1 next_page_left: " .. next_page_left)
-			elseif page_turn == "left" and actualPage ~= nil then
-				next_page_left = tableNumbers[actualPage] - 2
-                print("new 2 next_page_left: " .. next_page_left)
-			end
-		end
-        --]]
 		if string.find(entry.hit_object.getDescription(), "story") then
 			entry.hit_object.destroy()
 		end
@@ -325,18 +303,6 @@ function destroy_currentLoaded()
 		max_distance = 0,
 	})
 	for _, entry in ipairs(hitList) do
-        --[[
-		if isViewing then
-			local actualPage = entry.hit_object.getDescription():match("%a+, %a+, (%a+)")
-			if page_turn == "right" and actualPage ~= nil then
-				next_page_right = tableNumbers[actualPage] + 2
-                print("new 1 next_page_right: " .. next_page_right)
-			elseif page_turn == "left" and actualPage ~= nil then
-				next_page_right = tableNumbers[actualPage] - 2
-                print("new 2 next_page_right: " .. next_page_right)
-			end
-		end
-        --]]
 		if string.find(entry.hit_object.getDescription(), "story") then
 			entry.hit_object.destroy()
 		end
@@ -556,7 +522,6 @@ function removeButtons_All()
 end
 
 function reset_page_display()
-    --print("reset_page_display")
 	next_page_left = 1
 	next_page_right = 2
     page_turn = ""
@@ -565,22 +530,16 @@ end
 function storyEvent_next_page()
 	page_turn = "right"
     if isPageExist(next_page_left + 2)==true then
-        --print("turn page right")
     	destroy_currentLoaded()
-        --print("get_storyEvent")
     	get_storyEvent()
-        --print("get_storyEvent done")
     end
 end
 
 function storyEvent_previous_page()
 	page_turn = "left"
     if next_page_left > 1 then
-        --print("turn page left")
     	destroy_currentLoaded()
-        --print("get_storyEvent")
     	get_storyEvent()
-        --print("get_storyEvent done")
     end
 end
 
