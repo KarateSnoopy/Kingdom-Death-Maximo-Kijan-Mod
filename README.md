@@ -59,6 +59,13 @@ git commit -m "Some description you like"
 git push --set-upstream origin someBranchName
 ```
 
+There's some other useful command tools you should know about:
+```
+git status
+git gui
+gitk
+```
+
 * Go to https://github.com/maximo1984/Kingdom-Death-Maximo-Kijan-Mod and you'll see a button to create a pull request button for the branch in your fork that you just pushed
 
 After you're done with the pull request, you should go back to master branch, so your ready to make other bug fixes
