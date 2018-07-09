@@ -1256,7 +1256,7 @@ function display_catarium()
 
   local location = getObjectFromGUID('9c0c56')
   local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({9.25, 1.00, 9.25})
+  cloned_location.setScale({4.51, 1.00, 4.51})
   cloned_location.setDescription("copy")
 
   location_armor_Table = {}
