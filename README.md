@@ -17,7 +17,7 @@ Install Atom and use the TTS plugin: http://berserk-games.com/knowledgebase/atom
 
 In Atom, go to File->Settings->Packages->Click on settings for tabletopsimulator-lua
 
-Required: Set the "base path for files you wish to #include" to something "c:\git\kdm\scripts\" which is the Git scripts folder
+Required: Set the "base path for files you wish to #include" to something "c:\git\kdm\scripts\\" which is the Git scripts folder
 
 Recommended: Under Load/Saving, change the dropdown to "Do not automatically open any files sent from Tabletop Simulator".  This will stop Atom from automaticaly opening all the files as tabs which I find annoying.
 
