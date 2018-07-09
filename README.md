@@ -19,6 +19,8 @@ In Atom, go to File->Settings->Packages->Click on settings for tabletopsimulator
 
 Recommended: Under Load/Saving, change the dropdown to "Do not automatically open any files sent from Tabletop Simulator".  This will stop Atom from automaticaly opening all the files as tabs which I find annoying.
 
+In Atom, go to File->Settings->Packages->Click on settings for whitespace, and disable "Ensure Single Trailing Newline" option.
+
 ### To update TTS with a fix made in GitHub 
 
 * In TTS, load the starting point save
