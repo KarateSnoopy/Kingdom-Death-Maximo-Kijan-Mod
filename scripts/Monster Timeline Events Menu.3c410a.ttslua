@@ -179,7 +179,7 @@ function createButtons()
 end
 
 function get_story_promise_under_the_sun()
-	pageToLoad = self.setDescription("Promise Under the Sun")
+	pageToLoad = self.setDescription("promise under the sun")
 	destroy_currentLoaded()
 	reset_page_display()
 	get_storyEvent()
