@@ -1162,6 +1162,26 @@ function onObjectEnterScriptingZone(zone, enter_object)
 				end
 			end -- end Gloom Mehndi
 
+			if enter_object.getName() == "Sword of Silence" then
+
+				-- Get Understanding Value
+				local objbtns = getObjectFromGUID(self.getVar("FullCharSheetGUID")).getTable("buttons")
+				local understanding = 0
+				for i, v in pairs(objbtns) do
+					prefix = string.sub(i, 1, 14)
+					if prefix == "understanding_" then
+						if v.label ~= '' then
+							understanding = understanding + 1
+						end
+					end
+				end -- end
+
+				if understanding >= 5 then
+					enter_object.setDescription(enter_object.getDescription() .. ", sharp")
+					broadcastToAll("Sword of Silence ~ gained sharp due to your understanding", msg_color)
+				end
+			end
+
 			-- Tool belt
 			if enter_object.getName() == "Tool Belt" then
 				for _, object in ipairs(zonePlayer.getObjects()) do
@@ -1316,6 +1336,13 @@ function onObjectLeaveScriptingZone(zone, leave_object)
 					if object.getName() == "isInsane" then
 						object.setRotation({0, 0, 0})
 					end
+				end
+			end
+
+			if leave_object.getName() == "Sword of Silence" then
+				if string.find(descript, ", sharp") then
+					leave_object.setDescription("gear, weapon, melee, sword, other, 2spd, 5acc, 6str, sentient, irreplaceable, unique, blue_left, red_up, green_right, copy")
+					broadcastToAll("Sword of Silence ~ lost sharp", msg_color)
 				end
 			end
 
