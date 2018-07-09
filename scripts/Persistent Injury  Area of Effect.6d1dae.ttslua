@@ -1530,19 +1530,38 @@ end
 
 
 -- Utility Functions -----------------------------------------------------------
+function delete_endOfAttack_tokens_in_zone(targetZone)
+    for _, token in ipairs(targetZone.getObjects()) do
+        if string.find(token.getDescription(), "end of wound attempt") then
+            if token ~= nil then
+                token.destroy()
+            end
+        elseif string.find(token.getDescription(), "endOfwoundattempt") then
+            if token ~= nil then
+                token.destroy()
+            end
+        elseif string.find(token.getDescription(), "end of attack") then
+            if token ~= nil then
+                token.destroy()
+            end
+        elseif string.find(token.getDescription(), "endOfAttack") then
+            if token ~= nil then
+                token.destroy()
+            end
+        end
+    end
+end
+
 function delete_endOfAttack_tokens()
-	for _, token in ipairs(zoneAIBoard.getObjects()) do
-		if string.find(token.getDescription(), "end of wound attempt") then
-			if token ~= nil then
-				token.destroy()
-			end
-		elseif string.find(token.getDescription(), "end of attack") then
-			if token ~= nil then
-				token.destroy()
-			end
-		end
+	-- delete all the endOfAttack and endOfWoundAttemp tokens in player zones
+	for zoneKey, zoneGUIDtable in pairs(playerZones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		delete_endOfAttack_tokens_in_zone(zone)
 	end
-	--Timer.destroy("end of attack")
+
+	-- delete all the endOfAttack and endOfWoundAttemp tokens in AI zone
+	delete_endOfAttack_tokens_in_zone(zoneAIBoard)
 end
 
 function broadcastDelay1()
