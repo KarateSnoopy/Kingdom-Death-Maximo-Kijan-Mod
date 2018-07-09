@@ -195,6 +195,7 @@ end
 function get_story_the_hanged_man()
 	pageToLoad = self.setDescription("the hanged man")
 	destroy_currentLoaded()
+	reset_page_display()
 	get_storyEvent()
 end
 
