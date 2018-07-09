@@ -742,7 +742,7 @@ function buttonClicked(name, playerColorClicked)
 					obj.destroy()
 				end
 			end
-			parameters.position={-23.33, 4.12, -19}
+			parameters.position={-23.33, 4.12, -24}
 		elseif name == sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3
 			or name == sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4 then
 				-- clean up hit location die zone right
@@ -752,8 +752,11 @@ function buttonClicked(name, playerColorClicked)
 						obj.destroy()
 					end
 				end
-			parameters.position={23.41, 4.12, -19}
+			parameters.position={23.41, 4.12, -24}
 		end
+		parameters.yaw = 0
+		parameters.pitch = 60
+		parameters.distance = 15
 		Player[playerColorClicked].lookAt(parameters)
 
 		if role == "Villain" then
