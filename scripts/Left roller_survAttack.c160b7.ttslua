@@ -1272,6 +1272,11 @@ end
 
 function remove_manhunterHitLocations()
 	-- Remove Manhunter Hit Locations from Severe Injury area if they were not used for Rolls
+
+	-- TODO debug why this code fails.  this code handle certain hit locations
+	-- on manhunter that cause alterations to the roll on severe injury tables.
+
+	--[[
 	local zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
 	for _, board in ipairs(zoneInjuryBoard.getObjects()) do
 		if board.getName() == "Manhunter" then
@@ -1288,6 +1293,7 @@ function remove_manhunterHitLocations()
 		   end
 		end
 	end
+	--]]
 end
 
 
