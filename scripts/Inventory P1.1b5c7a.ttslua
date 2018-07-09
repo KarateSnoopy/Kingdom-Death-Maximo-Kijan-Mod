@@ -92,6 +92,10 @@ surv_died_rot = {323.13, 90.00, 90.00}
 cannibalize_resource_pos = {-35.18, 4.51, -24.53}
 
 gained_resource_pos = {-5.86, 4.7, -7.22}
+grave_pos = {-12.84, 4.12, - 58.74}
+-- grave_pos for p2 = {-12.84, 4.12, - 58.74}
+-- grave_pos for p3 = {12.84, 4.12, - 58.74}
+-- grave_pos for p4 = {12.84, 4.12, - 58.74}
 
 survivorBags = {
 	male = {
@@ -285,15 +289,19 @@ function buttonClick_SurvDied()
 			for _, object in ipairs(zoneShowdown.getObjects()) do
 				local rotZ = object.getRotation().z
 
-				if object.getName() == "Player Three" and (rotZ > 165 and rotZ < 195) then
+				if PlayerName ~= "Player One" and object.getName() == "Player One" and (rotZ > 165 and rotZ < 195) then
 					object.setRotation({0, 0, 0})
-					broadcastToAll("You were Encouraged by their Dying Words", color_green)
+					broadcastToAll("You were Encouraged by their Dying Words", color_red)
 
-				elseif object.getName() == "Player Two"and (rotZ > 165 and rotZ < 195) then
+				elseif PlayerName ~= "Player Two" and object.getName() == "Player Two"and (rotZ > 165 and rotZ < 195) then
 					object.setRotation({0, 0, 0})
 					broadcastToAll("You were Encouraged by their Dying Words", color_yellow)
 
-				elseif object.getName() == "Player Four" and (rotZ > 165 and rotZ < 195) then
+				elseif PlayerName ~= "Player Three" and object.getName() == "Player Three" and (rotZ > 165 and rotZ < 195) then
+					object.setRotation({0, 0, 0})
+					broadcastToAll("You were Encouraged by their Dying Words", color_blue)
+
+				elseif PlayerName ~= "Player Four" and object.getName() == "Player Four" and (rotZ > 165 and rotZ < 195) then
 					object.setRotation({0, 0, 0})
 					broadcastToAll("You were Encouraged by their Dying Words", color_blue)
 				end
@@ -301,88 +309,125 @@ function buttonClick_SurvDied()
 		end
 
 		-- When a Survivor Dies
-		for _, object in ipairs(zoneYellow.getObjects()) do
-			local scale = object.getScale()
-			local grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
-			local pos = grid.getTable("gained_resource_pos")
+		if PlayerName ~= "Player One" then
+			for _, object in ipairs(zoneRed.getObjects()) do
+				local scale = object.getScale()
+				local grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+				local pos = grid.getTable("gained_resource_pos")
 
-			-- Ruthless
-			if object.getName() == "Ruthless" then
-				broadcastToAll("Player Two ~ Ruthless ~ Effect Triggered", color_yellow)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
+				-- Ruthless
+				if object.getName() == "Ruthless" then
+					broadcastToAll("Player One ~ Ruthless ~ Effect Triggered", color_red)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
 
-				-- Vengeance
-			elseif object.getName() == "Vengeance" then
-				broadcastToAll("Player Two ~ Vengeance ~ Effect Triggered", color_yellow)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
+					-- Vengeance
+				elseif object.getName() == "Vengeance" then
+					broadcastToAll("Player One ~ Vengeance ~ Effect Triggered", color_red)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
 
-				-- Revenge
-			elseif object.getName() == "Revenge" then
-				broadcastToAll("Player Two ~ Revenge ~ Effect Triggered", color_yellow)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
-			end
-		end -- end yellow
+					-- Revenge
+				elseif object.getName() == "Revenge" then
+					broadcastToAll("Player One ~ Revenge ~ Effect Triggered", color_red)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+				end
+			end -- end red
+		end
 
-		for _, object in ipairs(zoneGreen.getObjects()) do
-			local scale = object.getScale()
-			local grid = getObjectFromGUID(Global.getTable('grids').green.guid)
-			local pos = grid.getTable("gained_resource_pos")
+		if PlayerName ~= "Player Two" then
+			for _, object in ipairs(zoneYellow.getObjects()) do
+				local scale = object.getScale()
+				local grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+				local pos = grid.getTable("gained_resource_pos")
 
-			-- Ruthless
-			if object.getName() == "Ruthless" then
-				broadcastToAll("Player Three ~ Ruthless ~ Effect Triggered", color_green)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
+				-- Ruthless
+				if object.getName() == "Ruthless" then
+					broadcastToAll("Player Two ~ Ruthless ~ Effect Triggered", color_yellow)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
 
-				-- Vengeance
-			elseif object.getName() == "Vengeance" then
-				broadcastToAll("Player Three ~ Vengeance ~ Effect Triggered", color_green)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
+					-- Vengeance
+				elseif object.getName() == "Vengeance" then
+					broadcastToAll("Player Two ~ Vengeance ~ Effect Triggered", color_yellow)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
 
-				-- Revenge
-			elseif object.getName() == "Revenge" then
-				broadcastToAll("Player Three ~ Revenge ~ Effect Triggered", color_green)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
-			end
-		end -- end yellow
+					-- Revenge
+				elseif object.getName() == "Revenge" then
+					broadcastToAll("Player Two ~ Revenge ~ Effect Triggered", color_yellow)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+				end
+			end -- end yellow
+		end
 
-		for _, object in ipairs(zoneBlue.getObjects()) do
-			local scale = object.getScale()
-			local grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
-			local pos = grid.getTable("gained_resource_pos")
-			-- Ruthless
-			if object.getName() == "Ruthless" then
-				broadcastToAll("Player Four ~ Ruthless ~ Effect Triggered", color_blue)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
+		if PlayerName ~= "Player Three" then
+			for _, object in ipairs(zoneGreen.getObjects()) do
+				local scale = object.getScale()
+				local grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+				local pos = grid.getTable("gained_resource_pos")
 
-				-- Vengeance
-			elseif object.getName() == "Vengeance" then
-				broadcastToAll("Player Four ~ Vengeance ~ Effect Triggered", color_blue)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
+				-- Ruthless
+				if object.getName() == "Ruthless" then
+					broadcastToAll("Player Three ~ Ruthless ~ Effect Triggered", color_green)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
 
-				-- Revenge
-			elseif object.getName() == "Revenge" then
-				broadcastToAll("Player Four ~ Revenge ~ Effect Triggered", color_blue)
-				object.setScale({0.49, 1.00, 0.49})
-				object.clone({position = pos})
-				object.setScale(scale)
-			end
-		end -- end green
+					-- Vengeance
+				elseif object.getName() == "Vengeance" then
+					broadcastToAll("Player Three ~ Vengeance ~ Effect Triggered", color_green)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+
+					-- Revenge
+				elseif object.getName() == "Revenge" then
+					broadcastToAll("Player Three ~ Revenge ~ Effect Triggered", color_green)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+				end
+			end -- end yellow
+		end
+
+		if PlayerName ~= "Player Four" then
+			for _, object in ipairs(zoneBlue.getObjects()) do
+				local scale = object.getScale()
+				local grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+				local pos = grid.getTable("gained_resource_pos")
+				-- Ruthless
+				if object.getName() == "Ruthless" then
+					broadcastToAll("Player Four ~ Ruthless ~ Effect Triggered", color_blue)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+
+					-- Vengeance
+				elseif object.getName() == "Vengeance" then
+					broadcastToAll("Player Four ~ Vengeance ~ Effect Triggered", color_blue)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+
+					-- Revenge
+				elseif object.getName() == "Revenge" then
+					broadcastToAll("Player Four ~ Revenge ~ Effect Triggered", color_blue)
+					object.setScale({0.49, 1.00, 0.49})
+					object.clone({position = pos})
+					object.setScale(scale)
+				end
+			end -- end green
+		end
+
 		startLuaCoroutine(self, "set_skull_dead_token")
 	end
 
@@ -394,7 +439,7 @@ end
 
 function burySurvivor()
 	local objectsInZone = zoneGraveyard.getObjects()
-	graveObj.setPosition({-12.84 - #objectsInZone * 1.64, 4.12, - 58.74})
+	graveObj.setPosition({grave_pos.x - #objectsInZone * 1.64, grave_pos.y, grave_pos.z})
 	graveObj.removeButton(0)
 	broadcastToAll("Population Updated", {1, 1, 1})
 end
