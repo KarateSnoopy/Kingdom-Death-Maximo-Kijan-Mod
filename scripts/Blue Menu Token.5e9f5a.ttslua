@@ -499,6 +499,10 @@ end
 -- Survival Action Functions ---------------------------------------------------
 
 -- Encourage ------------------------------------
+function encourage_select_via_params(params)
+	encourage_select(params.object, params.player_color)
+end
+
 function encourage_select(object, player_color)
 	broadcastToColor("Select a Player to Encourage", player_color, msg_color)
 	clearMenuButtons()
@@ -1334,7 +1338,7 @@ function use_special(object, player_color)
 			broadcastToColor("Suffer the Frenzy Brain Trauma", player_color, msg_color)
 			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
 			--Knockdown Player
-			survCard.call('knockdown_survivor')
+			survCard.call('knockdown_survivor_via_params', {object=object, player_color=player_color})
 			-- Move Camera to Hit Location Roller
 			local parameters = {}
 			parameters.position = hitlocation_roller_camera
@@ -2875,6 +2879,8 @@ function frenzyPotion(object, player_color)
 
 	local parameters = {}
 	parameters.position = hitlocation_roller_camera
+	parameters.pitch = 60
+	parameters.distance = 15
 	Player[player_color].lookAt(parameters)
 
 	broadcastToAll(sigil .. "  Frenzy Drink Consumed  " .. sigil, msg_color)
@@ -2917,6 +2923,8 @@ function lonelyAnt(object, player_color)
 	--Go to Blue Grid
 	local parameters = {}
 	parameters.position = grid_camera
+	parameters.pitch = 60
+	parameters.distance = 15
 	Player[player].lookAt(parameters)
 
 	clearMenuButtons()

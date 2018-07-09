@@ -11,8 +11,12 @@ end
 
 function callEncourage(object, player_color)
 	local menuToken = getObjectFromGUID('4825fa')
-	menuToken.call("survival_buttons")
-	menuToken.call("encourage_select")
+	menuToken.call("encourage_select_via_params", {object=object, player_color=player_color})
 
-	Player[player_color].lookAt({position = {-0.25, 4.47, -4.38}})
+	local parameters = {}
+	parameters.position = {-0.25, 4.47, -4.38}
+	parameters.pitch = 60
+	parameters.yaw = 0
+	parameters.distance = 15
+	Player[player_color].lookAt(parameters)
 end

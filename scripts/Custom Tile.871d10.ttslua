@@ -9,7 +9,7 @@ function createButton()
   color = {0,0,0}, font_color = {1,1,1}, font_size=800})
 end
 
-function onFlip()
+function onFlip(object, player_color)
   local survCard = getObjectFromGUID(Global.getTable('survCards').red.guid)
-  survCard.call('knockdown_survivor')
+  survCard.call('knockdown_survivor_via_params', {object=object, player_color=player_color})
 end

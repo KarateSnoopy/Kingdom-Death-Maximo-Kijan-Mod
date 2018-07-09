@@ -498,6 +498,10 @@ end
 -- Survival Action Functions ---------------------------------------------------
 
 -- Encourage ------------------------------------
+function encourage_select_via_params(params)
+	encourage_select(params.object, params.player_color)
+end
+
 function encourage_select(object, player_color)
 	broadcastToColor("Select a Player to Encourage", player_color, msg_color)
 	clearMenuButtons()
@@ -1333,7 +1337,7 @@ function use_special(object, player_color)
 			broadcastToColor("Suffer the Frenzy Brain Trauma", player_color, msg_color)
 			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
 			--Knockdown Player
-			survCard.call('knockdown_survivor')
+			survCard.call('knockdown_survivor_via_params', {object=object, player_color=player_color})
 			-- Move Camera to Hit Location Roller
 			local parameters = {}
 			parameters.position = hitlocation_roller_camera

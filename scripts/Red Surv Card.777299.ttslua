@@ -471,6 +471,10 @@ function move(object, player)
 	end
 end
 
+function knockdown_survivor_via_params(params)
+	knockdown_survivor(params.object, params.player_color)
+end
+
 function knockdown_survivor(object, player_color)
 	broadcastTable = {}
 
