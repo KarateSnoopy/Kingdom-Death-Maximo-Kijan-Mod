@@ -1,15 +1,3 @@
-function setup()
-	portrait_frame = getObjectFromGUID('077506')
-	weapon_selector = getObjectFromGUID(Global.getTable('weaponSelector').red.guid)
-	grid = getObjectFromGUID(Global.getTable('grids').red.guid)
-	menu_token = getObjectFromGUID('a66bc1')
-	survCard = getObjectFromGUID(Global.getTable('survCards').red.guid)
-	frenzy_token = getObjectFromGUID('7636f9')
-	dice_roller_left = getObjectFromGUID('914f32')
-	dice_roller_right = getObjectFromGUID('65a3d4')
-	zoneShowdownPlayerName = "Player One"
-end
-
 function onLoad()
 	createButtons()
 end
@@ -55,4 +43,3 @@ function change_color(object, player_color)
 	broadcastToColor("Color Applied", player_color, {1,1,1})
 end
 
--- settings P1
