@@ -2254,7 +2254,6 @@ function spwn_tok()
 				end
 			end
 		elseif temp.stat == "acc" then
-			print(temp.stat)
 			if temp.modifier == "pos" then
 				local obj = getObjectFromGUID('0abdaf')
 

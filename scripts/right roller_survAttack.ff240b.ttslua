@@ -1815,8 +1815,6 @@ function when_monster_suffers_wound()
 		-- Red Lens
 		if card.getName() == "Red Lens" and rotZ < 10 or rotZ > 350 then
 			if hasRed and not hasWhite then
-				print(hasWhite)
-				print("hasWhite")
 				card.flip()
 				Global.call("addBroadcast", {"wound", {gear = "You have a Red Aura ~ Red Lens flipped Open", effect = "" }})
 			end
