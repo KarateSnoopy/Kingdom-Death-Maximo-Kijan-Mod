@@ -220,7 +220,3 @@ function encourage_select_via_params(params)
 end
 
 #include shared/menuToken
-	parameters.pitch = 60
-	parameters.distance = 15
-	parameters.pitch = 60
-	parameters.distance = 15
