@@ -356,6 +356,11 @@ function createButtons_nemesis()
 	btn_params.label = 'The Butcher'
 	self.createButton(btn_params)
 
+	btn_params.click_function = "showTYRANT"
+	btn_params.position = {-50, 0.1, 0}
+	btn_params.label = 'The Tyrant'
+	self.createButton(btn_params)
+
 end
 
 function showLEGEND()

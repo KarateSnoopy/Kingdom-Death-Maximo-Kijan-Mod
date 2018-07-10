@@ -8,7 +8,8 @@
 
 
 -- Depart ----------------------------------------------------------------------
-	-- function departClick
+	-- function departClick(nemesis)
+	-- function calculate_departing_bonuses()
 	-- function departCoroutine
 	-- function departSurv
 	-- function checkStinkyGear
@@ -402,18 +403,28 @@ function departClick(nemesis)
 	end
 
 	if nemesis then
+		removeButtons_monsterSetup()
 		createNemesisButtons()
 		--local showdownTool = getObjectFromGUID('c3451a')
 		--showdownTool.call("createNemesisButtons")
 		nemesis_perm = tonumber(buttons.counts["survivalN_perm"])
 		nemesis_temp = tonumber(buttons.counts["survivalN_temp"])
 	else
+		removeButtons_monsterSetup()
 		createQuarryButtons()
 		bag_Hunt.call('buttonClick_place')
 		huntLoaded.setRotation({0,180,0})
 		nemesis_perm = 0
 		nemesis_temp = 0
 	end
+	--[[
+	changeAllSurvivors("survival", tonumber(buttons.counts["survival_perm"]) + nemesis_perm + tonumber(buttons.counts["survival_temp"]) + nemesis_temp)
+	changeAllSurvivors("insanity", tonumber(buttons.counts["insanity_perm"]) + tonumber(buttons.counts["insanity_temp"]))
+	broadcastToAll("_____________ Departing Bonuses Gained _____________", {1, 1, 1})
+	startLuaCoroutine(self, "departCoroutine") --]]
+end
+
+function calculate_departing_bonuses()
 	changeAllSurvivors("survival", tonumber(buttons.counts["survival_perm"]) + nemesis_perm + tonumber(buttons.counts["survival_temp"]) + nemesis_temp)
 	changeAllSurvivors("insanity", tonumber(buttons.counts["insanity_perm"]) + tonumber(buttons.counts["insanity_temp"]))
 	broadcastToAll("_____________ Departing Bonuses Gained _____________", {1, 1, 1})
@@ -1318,6 +1329,7 @@ function setup_great_golden_cat()
 	changeMonster({mov = 9, tgh = 17, spd = 3, dmg = 5, lck = 1, acc = 3})
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 function setup_beast_of_sorrow()
@@ -1327,6 +1339,7 @@ function setup_beast_of_sorrow()
 	changeMonster({mov = 7, tgh = 13, spd = 1, dmg = 1})
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 function setup_mad_steed()
@@ -1336,6 +1349,7 @@ function setup_mad_steed()
 	changeMonster({mov = 9, tgh = 22, spd = 3, dmg = 5, lck = 1, acc = 1})
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 function setup_golden_king()
@@ -1345,6 +1359,7 @@ function setup_golden_king()
 	changeMonster({mov = 10, tgh = 25, spd = 3, dmg = 3, lck = 1000, evs = 1, acc = 2})
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 
@@ -1418,6 +1433,7 @@ function setup_level1(object, player)
 	end
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 function setup_level2(object, player)
@@ -1481,6 +1497,7 @@ function setup_level2(object, player)
 	end
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 function setup_level3(object, player)
@@ -1544,6 +1561,7 @@ function setup_level3(object, player)
 	end
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 
 function setup_level4(object, player)
@@ -1556,6 +1574,7 @@ function setup_level4(object, player)
 	end
 	get_bag_Showdown()
 	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
 end
 -- additional levels
 	-- DBK - changeMonster({mov = 9, tgh = 25, spd = 2, dmg = 5, acc = 1, lck = 3})

@@ -267,6 +267,12 @@ function openMonster()
 	btn_params.label = "Spelunking of Death"
 	self.createButton(btn_params)
 
+	btn_params.click_function = "get24"
+	btn_params.position = {-32, 0.25, 9}
+	btn_params.label = "Breakthrough"
+	self.createButton(btn_params)
+
+
 end
 
 function get6()
@@ -373,6 +379,12 @@ end
 
 function get23()
 	pageToLoad = self.setDescription("spelunking of death")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get24()
+	pageToLoad = self.setDescription("breakthrough")
 	destroy_currentLoaded()
 	get_storyEvent()
 end
