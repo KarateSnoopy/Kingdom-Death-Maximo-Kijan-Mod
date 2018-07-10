@@ -1,9 +1,8 @@
+#include shared/rollForHitLocations
 
 --If this tool will work with other copies of itself (true or false)
 --Any roller clicked by the same color player will be treated as the same
 setting.coop = true
-
-#include shared/rollForHitLocations
 
 -- head/body pos = {-24.92, 4.47, -17.55} (1,2,6)
 -- waist/arms/legs = {-24.92, 4.47, -18.49} (3,4,5)

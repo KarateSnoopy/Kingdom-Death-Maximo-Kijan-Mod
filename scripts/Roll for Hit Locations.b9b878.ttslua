@@ -1,9 +1,9 @@
 
+#include shared/rollForHitLocations
+
 --If this tool will work with other copies of itself (true or false)
 --Any roller clicked by the same color player will be treated as the same
 setting.coop = false
-
-#include shared/rollForHitLocations
 
 function finalizeRoll(p)
   --Rotates and Orders Hit Location Die results
@@ -56,4 +56,3 @@ function onClickCleanUp()
     end
   end
 end
-
