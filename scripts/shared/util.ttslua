@@ -1,0 +1,88 @@
+function playerLookAt(player_color, position)
+	local parameters = {}
+	parameters.position = position
+	parameters.yaw = 0
+	parameters.pitch = 60
+	parameters.distance = 15
+	if( player_color != nil ) then
+		Player[player_color].lookAt(parameters)
+	end
+end
+
+function allsPlayerLookAt(position)
+	local players = Player.getPlayers()
+	for _, obj in ipairs(players) do
+		playerLookAt(obj.color, position)
+	end
+end
+
+function playerLookAtWithDist(player_color, position, dist)
+	local parameters = {}
+	parameters.position = position
+	parameters.yaw = 0
+	parameters.pitch = 60
+	parameters.distance = dist
+	if( player_color != nil ) then
+		Player[player_color].lookAt(parameters)
+	end
+end
+
+function isCampaignLoaded()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.zoneSettlement.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local desc = object.getDescription()
+		if string.find(desc, "SettlementSheet") then
+			return true
+		end
+	end
+
+	return false
+end
+
+function isAnyoneAlive()
+	zoneP1 = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	found_P1 = false
+	for _, obj in ipairs(zoneP1.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P1 = true
+		end
+	end
+
+	zoneP2 = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	found_P2 = false
+	for _, obj in ipairs(zoneP2.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P2 = true
+		end
+	end
+
+	zoneP3 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	found_P3 = false
+	for _, obj in ipairs(zoneP3.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P3 = true
+		end
+	end
+
+	zoneP4 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	found_P4 = false
+	for _, obj in ipairs(zoneP4.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			found_P4 = true
+		end
+	end
+
+	if( found_P1 or found_P2 or found_P3 or found_P4 ) then
+		return true
+	end
+
+	return false
+end
+
+function goToCampaignStartButton()
+	allsPlayerLookAt({0.00, 4.26, -16.98})
+	broadcastToAll("Click Enter Here and choose a campaign first", {1,1,1})
+end
+

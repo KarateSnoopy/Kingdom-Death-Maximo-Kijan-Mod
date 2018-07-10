@@ -1,12 +1,4 @@
-#include shared/dash
-
-function onLoad()
-	createButton()
-	PlayerName = "Player Four"
-	settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
-	grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
-   zone = grid.getVar("zonePlayer")
-end
+#include util
 
 function createButton(object, player_color)
 	self.createButton({click_function = "callDash", function_owner = self, label = "Dash",

@@ -1,10 +1,10 @@
+#include shared/util
+
 function onLoad()
   createButton()
 end
 
-
 function createButton()
-
   self.createButton({click_function = "callEncourage", function_owner = self, label = "Encourage",
   position = {0, 0.5, 0}, rotation = {-5, 0 , 0}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1100, color = {0,0,0}, font_color = {1,1,1}, font_size = 750})
 end
@@ -12,11 +12,5 @@ end
 function callEncourage(object, player_color)
 	local menuToken = getObjectFromGUID('148863')
 	menuToken.call("encourage_select_via_params", {object=object, player_color=player_color})
-
-	local parameters = {}
-	parameters.position = {-0.25, 4.47, -4.38}
-	parameters.pitch = 60
-	parameters.yaw = 0
-	parameters.distance = 15
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, {-0.25, 4.47, -4.38})
 end

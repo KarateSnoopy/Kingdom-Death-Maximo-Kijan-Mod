@@ -30,6 +30,8 @@
 
 -- END TABLE OF CONTENTS -------------------------------------------------------
 
+#include shared/util
+
 function onLoad()
 	createButtons()
 	nextRoundTool = getObjectFromGUID('b94669')
@@ -41,6 +43,11 @@ end
 
 -- Start the Showdown ----------------------------------------------------------
 function callStartShowdown_Functions()
+	if isCampaignLoaded() == false then
+		goToCampaignStartButton()
+		return
+	end
+	
 	self.clearButtons()
 	self.setPosition({ - 0.16, 0, - 5.33})
 	if self.getDescription() == "prologue" then

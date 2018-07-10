@@ -1,3 +1,5 @@
+#include shared/util
+
 pageToLoad = ""
 
 function onLoad()
@@ -210,9 +212,7 @@ function storyEvent_previous_page()
 end
 
 function goto_Search(object, player)
-  local parameters = {}
-  parameters.position = {0.00, 4.26, -27.63}
-  Player[player].lookAt(parameters)
+  playerLookAt(player, {0.00, 4.26, -27.63})
 end
 
 -- Set Page to Load: Core Game -------------------------------------------------

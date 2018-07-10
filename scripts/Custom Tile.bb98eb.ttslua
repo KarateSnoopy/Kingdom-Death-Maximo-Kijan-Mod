@@ -1,3 +1,5 @@
+#include shared/util
+
 function onLoad()
   createButton()
 end
@@ -10,7 +12,5 @@ function createButton()
 end
 
 function goTo(object, player)
-  local parameters = {}
-  parameters.position=  {-61.29, 4.63, 28.73}
-  Player[player].lookAt(parameters)
+	playerLookAt(player, {-61.29, 4.63, 28.73})
 end

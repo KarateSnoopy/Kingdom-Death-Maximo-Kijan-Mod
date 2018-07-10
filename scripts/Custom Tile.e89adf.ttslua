@@ -1,3 +1,5 @@
+#include shared/util
+
 function onLoad()
   createButtons()
 end
@@ -52,15 +54,11 @@ function resetArmor()
 end
 
 function addNew(object, player)
-    local parameters = {}
-    parameters.position=  {-12.82, 4.17, -34.89}
-    Player[player].lookAt(parameters)
+	playerLookAt(player, {-12.82, 4.17, -34.89})
 end
 
 function updateDeath(object, player)
-    local parameters = {}
-    parameters.position=  {-47.96, 4.35, 42.68}
-    Player[player].lookAt(parameters)
+	playerLookAt(player, {-47.96, 4.35, 42.68})
 end
 
 function craftGear(object, player)
@@ -76,9 +74,7 @@ function craftGear(object, player)
         object.setPosition({53.62, 4.35, 8.85})
     end
   end
-    local parameters = {}
-    parameters.position=  {51.07, 4.38, 15}
-    Player[player].lookAt(parameters)
+	playerLookAt(player, {51.07, 4.38, 15})
 end
 
 function dud()

@@ -1,3 +1,5 @@
+#include shared/util
+
 function onLoad()
   createButton()
 end
@@ -19,7 +21,5 @@ function craftGear(object, player)
       object.setPosition({53.62, 4.35, 8.85})
     end
   end
-    local parameters = {}
-    parameters.position=  {51.07, 4.38, 15}
-    Player[player].lookAt(parameters)
+  playerLookAt(player, {51.07, 4.38, 15})
 end

@@ -1,3 +1,5 @@
+#include shared/util
+
 --Clicker Roller Universal      by: MrStump
 setting = {print={}} --Don't edit this line
 
@@ -516,28 +518,22 @@ function createCameraButton()
 end
 
 function goToInnovate(object, player)
-  local zone = getObjectFromGUID(Global.getTable('zones').zoneCrafting.guid)
-  local objectsInZone = zone.getObjects()
-  for _, object in ipairs(objectsInZone) do
-    if object.getName() == "Endeavor" then
-      object.setPosition({-50.28, 4.39, 17.00})
-    elseif object.getName() == "Matchmaker Endeavor" then
-      object.setPosition({-50.27, 4.37, 19.52})
-    end
-  end
-    local parameters = {}
-    parameters.position=  {-44.15, 4.37, 22.58}
-    Player[player].lookAt(parameters)
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneCrafting.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+	if object.getName() == "Endeavor" then
+		object.setPosition({-50.28, 4.39, 17.00})
+	elseif object.getName() == "Matchmaker Endeavor" then
+		object.setPosition({-50.27, 4.37, 19.52})
+	end
+	end
+	playerLookAt(player, {-44.15, 4.37, 22.58})
 end
 
 function goToIntimacy(object, player)
-  local parameters = {}
-  parameters.position = {-59.59, 4.24, -35.19}
-  Player[player].lookAt(parameters)
+	playerLookAt(player, {-59.59, 4.24, -35.19})
 end
 
 function goToGearBuilder(object, player)
-  local parameters = {}
-  parameters.position = {59.26, 4.27, -36.07}
-  Player[player].lookAt(parameters)
+	playerLookAt(player, {59.26, 4.27, -36.07})
 end

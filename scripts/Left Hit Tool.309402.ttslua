@@ -1,3 +1,4 @@
+#include shared/util
 -- hit location tool
 
 hitLocation = {}
@@ -404,12 +405,7 @@ end
 --Utility Functions
 ------------------------------------------------
 function move_camera_toHome(object, player)
-	local parameters = {}
-	parameters.position = {-1.34, 4.54, -4.04}
-	parameters.yaw = 0
-	parameters.pitch = 72
-	parameters.distance = 11
-	Player[player].lookAt(parameters)
+	playerLookAt(player, {-1.34, 4.54, -4.04})
 end
 
 function cleanUp()

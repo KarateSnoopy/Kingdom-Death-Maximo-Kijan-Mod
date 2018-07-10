@@ -1,3 +1,5 @@
+#include util
+
 --Clicker Roller Universal      by: MrStump
 setting = {print={}} --Don't edit this line
 
@@ -135,12 +137,7 @@ function createButton_home(object, player)
 end
 
 function move_camera_toHome(object, player)
-	local parameters = {}
-	parameters.position = {-1.34, 4.54, -4.04}
-	parameters.yaw = 0
-	parameters.pitch = 72
-	parameters.distance = 11
-	Player[player].lookAt(parameters)
+	playerLookAt(player, {-1.34, 4.54, -4.04})
 end
 
 --Spawn dice for rolling
@@ -538,9 +535,7 @@ function alphanumsort(o)
 end
 
 function goTo(object, player)
-  local parameters = {}
-  parameters.position={0.00, 4.52, -36.15}
-  Player[player].lookAt(parameters)
+  	playerLookAt(player, {0.00, 4.52, -36.15})
 
 	bagInjuries = getObjectFromGUID('f974d8')
 	bagInjuries.call("buttonClick_place")

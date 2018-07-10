@@ -80,6 +80,8 @@
 
 -- End Hunt --------------------------------------------------------------------
 
+#include shared/util
+
 -- Tables and Variables --------------------------------------------------------
 btn_removal = {}
 hunt_Phase = false
@@ -374,6 +376,11 @@ end
 
 -- Depart ----------------------------------------------------------------------
 function departClick(nemesis)
+	if isCampaignLoaded() == false then
+		goToCampaignStartButton()
+		return
+	end
+
 	-- Reset Game State for Start of Showdown without triggering monster AI cards in Injury Board Zone
 	local next_round_tool = getObjectFromGUID('b94669')
 	next_round_tool.call("nextRound")

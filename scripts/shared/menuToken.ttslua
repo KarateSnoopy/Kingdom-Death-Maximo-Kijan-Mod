@@ -165,6 +165,7 @@
 
 
 -------------------------- End Table of Contents -------------------------------
+#include util
 
 -- Variables -------------------------------------------------------------------
 menuTable = {}
@@ -621,12 +622,8 @@ function Dash(player_color, object)
 					playerPos = object.getPosition()
 				end
 			end
-			camera_pitch = tonumber(settings_token.getDescription())
-			local parameters = {}
-			parameters.position = playerPos
-			parameters.pitch = camera_pitch
-			parameters.yaw = 0
-			Player[player_color].lookAt(parameters)
+			--camera_pitch = tonumber(settings_token.getDescription())
+			playerLookAt(player_color, playerPos)
 		end
 	end
 	-- Resets the Main Menu
@@ -1116,9 +1113,7 @@ function use_special(object, player_color)
 			--Knockdown Player
             survCard.call('knockdown_survivor_via_params', {object=object, player_color=player_color})
 			-- Move Camera to Hit Location Roller
-			local parameters = {}
-			parameters.position = hitlocation_roller_camera
-			Player[player_color].lookAt(parameters)
+			playerLookAt(player_color, hitlocation_roller_camera)
 			isUsing_Berserker = false
 		end
 
@@ -1264,9 +1259,7 @@ function use_special(object, player_color)
 		-- Lure Epilepsy [DONE]
 		if object.getName() == "Lure Epilepsy" and isUsing_LureEpilepsy then
 			object.setDescription(desc .. ", once per showdown used")
-			local parameters = {}
-			parameters.position = { - 8.21, 4.42, - 34.71}
-			Player[player_color].lookAt(parameters)
+			playerLookAt(player_color, { - 8.21, 4.42, - 34.71})
 			survCard.call("knockdown_survivor")
 			broadcastToColor("Suffer a Random Brain Trauma", player_color, msg_color)
 			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
@@ -1455,9 +1448,7 @@ function use_special(object, player_color)
 			broadcastToColor("Suffer 2 Brain Damage ~ You gained a (+1) Speed Token", player_color, msg_color)
 			broadcastToColor(sigil .. "  " .. name .. "  " .. sigil, player_color, msg_color)
 			-- Go to Grid
-			local parameters = {}
-			parameters.position = hitlocation_camera
-			Player[player_color].lookAt(parameters)
+			playerLookAt(player_color, hitlocation_camera)
 			isUsing_SpeedPowder = false
 		end
 
@@ -2193,9 +2184,7 @@ function catEyeCirclet(object, player)
 		obj.takeObject({position = {11.07, 4.31, - 2.44}, top = true, callback = "flipCard", callback_owner = Global, })
 		obj.takeObject({position = {13.53, 4.31, - 2.46}, top = true, callback = "flipCard", callback_owner = Global, })
 	end
-	local parameters = {}
-	parameters.position = {8.66, 4.44, - 3.65}
-	Player[player].lookAt(parameters) -- end
+	playerLookAt(player, {8.66, 4.44, - 3.65})
 
 	clearMenuButtons()
 	menuTable = {}
@@ -2235,9 +2224,7 @@ function necromancerEye(object, player)
 		obj.takeObject({position = {13.53, 4.31, - 2.46}, top = true, callback = "flipCard", callback_owner = Global, })
 		obj.takeObject({position = {16.07, 4.31, - 2.45}, top = true, callback = "flipCard", callback_owner = Global, })
 	end
-	local parameters = {}
-	parameters.position = {8.66, 4.44, - 3.65}
-	Player[player].lookAt(parameters) -- end
+	playerLookAt(player, {8.66, 4.44, - 3.65})
 
 	clearMenuButtons()
 	menuTable = {}
@@ -2253,9 +2240,7 @@ function rawHide(object, player)
 		obj.takeObject({position = { - 11.43, 4.31, - 2.37}, top = true, callback = "flipCard", callback_owner = Global, })
 	end
 	broadcastToColor(sigil .. "  Rawhide Headband  " .. sigil, player, msg_color)
-	local parameters = {}
-	parameters.position = { - 3.74, 7.02, - 2.49}
-	Player[player].lookAt(parameters) -- end
+	playerLookAt(player, { - 3.74, 7.02, - 2.49})
 
 	clearMenuButtons()
 	menuTable = {}
@@ -2298,9 +2283,7 @@ function trashCrown(object, player)
 	end
 	broadcastToColor("Discard 3 Hit Locations that are not Traps", player, msg_color)
 	broadcastToColor(sigil .. "  Trash Crown  " .. sigil, player, msg_color)
-	local parameters = {}
-	parameters.position = {8.66, 4.44, - 3.65}
-	Player[player].lookAt(parameters) -- end
+	playerLookAt(player, {8.66, 4.44, - 3.65})
 
 	clearMenuButtons()
 	menuTable = {}
@@ -2533,9 +2516,7 @@ function blisteringPlasmaFruit(object, player_color)
 	broadcastToAll(sigil .. "  Blistering Plasma Fruit Consumed  " .. sigil, msg_color)
 	getNightmareBlood()
 	--Go to Grid
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, grid_camera)
 	broadcastToColor("You gained the Nightmare Blood Ability ~ Archive Blistering Plasma Fruit", player_color, msg_color)
 
 	clearMenuButtons()
@@ -2613,9 +2594,7 @@ function darkWater(object, player_color)
 	broadcastToAll(sigil .. "  Dark Water Consumed  " .. sigil, msg_color)
 	broadcastToColor("You are knocked down ~ Gain a Random Disorder ~ Archive Dark Water", player_color, msg_color)
 	--Go to Disorders
-	local parameters = {}
-	parameters.position = {0.01, 4.43, - 25.57}
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, {0.01, 4.43, - 25.57})
 
 	--Destroy Current Disorders and flip Dark Water Vial
 	for _, object in ipairs(zone.getObjects()) do
@@ -2635,9 +2614,7 @@ end
 function freshAcanthus(object, player_color)
 	broadcastToAll(sigil .. "  Fresh Acanthus Consumed  " .. sigil, msg_color)
 	broadcastToColor("Heal 1 Hit location of your choice ~ Including Armor Levels ~ Archive Fresh Acanthus", player_color, msg_color)
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player].lookAt(parameters)
+	playerLookAt(player, grid_camera)
 
 	clearMenuButtons()
 	menuTable = {}
@@ -2653,10 +2630,7 @@ function frenzyPotion(object, player_color)
 		end
 	end -- end
 
-	local parameters = {}
-	parameters.position = hitlocation_roller_camera
-	Player[player_color].lookAt(parameters)
-
+	playerLookAt(player_color, hitlocation_roller_camera)
 	broadcastToAll(sigil .. "  Frenzy Drink Consumed  " .. sigil, msg_color)
 	broadcastToColor("Suffer the Frenzy Brain Trauma", player_color, msg_color)
 	clearMenuButtons()
@@ -2679,9 +2653,7 @@ function jaggedMarrowFruit(object, player_color)
 	broadcastToAll(sigil .. "  Jagged Marrow Fruit Consumed  " .. sigil, msg_color)
 	getNightmareSpurs()
 	--Go to Grid
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, grid_camera)
 	broadcastToColor("You gained the Nightmare Spurs Ability ~ Archive Jagged Marrow Fruit", player_color, msg_color)
 
 	clearMenuButtons()
@@ -2695,9 +2667,7 @@ function lonelyAnt(object, player_color)
 	broadcastToColor("Swap your Insanity and Survival Values ~ Archive Lonely Ant", player_color, msg_color)
 
 	--Go to Blue Grid
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player].lookAt(parameters)
+	playerLookAt(player, grid_camera)
 
 	clearMenuButtons()
 	menuTable = {}
@@ -2710,9 +2680,7 @@ function lanternBloom(object, player_color)
 	broadcastToColor("You gained (+3) Luck Tokens ~ Gain (-1) Permanent Luck ~ Archive Lantern Bloom", player_color, msg_color)
 	getFlowerAddiction()
 	--Go to Grid
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, grid_camera)
 
 	-- Add +3 Luck Tokens
 	local stats = {color = color, stat = "lck", modifier = "pos", num = 3, phase = nil}
@@ -2730,9 +2698,7 @@ function osseousBloom(object, player_color)
 	broadcastToColor("Your Bleeding and Negative Stat Tokens were removed ~ Archive Osseous Bloom", player_color, msg_color)
 	getFlowerAddiction()
 
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, grid_camera)
 	broadcastToColor("You gained the Flower Addiction Disorder", player_color, msg_color)
 
 	for _, obj in ipairs(zone.getObjects()) do
@@ -2832,9 +2798,7 @@ function porousFleshFruit(object, player_color)
 	broadcastToAll(sigil .. "  Porous Flesh Fruit Consumed  " .. sigil, msg_color)
 	getNightmareMembrane()
 	--Go to Grid
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, grid_camera)
 	broadcastToColor("You gained the Nightmare Membrane Ability ~ Archive Porous Flesh Fruit", player_color, msg_color)
 
 	clearMenuButtons()
@@ -2895,9 +2859,7 @@ function stomach(object, player_color)
 	broadcastToAll(sigil .. "  Stomach Consumed  " .. sigil, msg_color)
 	broadcastToColor("Gain 1 Hunt XP ~ Archive Stomach", player_color, msg_color)
 	--Go to Blue Grid
-	local parameters = {}
-	parameters.position = grid_camera
-	Player[player].lookAt(parameters)
+	playerLookAt(player, grid_camera)
 
 	clearMenuButtons()
 	menuTable = {}

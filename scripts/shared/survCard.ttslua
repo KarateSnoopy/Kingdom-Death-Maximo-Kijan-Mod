@@ -72,6 +72,8 @@
 
 -- END TABLE OF CONTENTS -------------------------------------------------------
 
+#include util
+
 function endAttack()
    for _, obj in ipairs(zonePlayer.getObjects()) do
       local desc = obj.getDescription()
@@ -150,6 +152,15 @@ end
 
 -- Start Act -------------------------------------------------------------------
 function startAct(object, player_color)
+	if isCampaignLoaded() == false then
+		goToCampaignStartButton()
+		return
+	end
+
+	if grid == nil or getObjectFromGUID(grid.getVar("FullCharSheetGUID")) == nil then
+		broadcastToColor("No survivor sheet", player_color, msg_color)
+		return
+	end
 
 	broadcastTable = {}
 	broadcastToColor("________________  Act Started  ________________", player_color, msg_color)
@@ -352,12 +363,8 @@ function move(object, player)
 		      playerPos = object.getPosition()
 		   end
 		end
-		camera_pitch = tonumber(settings_token.getDescription())
-		local parameters = {}
-	   parameters.position = playerPos
-	   parameters.pitch = camera_pitch
-	   parameters.yaw = 0
-	   Player[player].lookAt(parameters)
+		--camera_pitch = tonumber(settings_token.getDescription())
+	   	playerLookAt(player, playerPos)
 	end
 
 	-- Cycloid Scale Hood
@@ -582,12 +589,8 @@ function knockback_survivor(object, player)
 				playerPos = object.getPosition()
 			end
 		end
-		camera_pitch = tonumber(settings_token.getDescription())
-		local parameters = {}
-		parameters.position = playerPos
-		parameters.pitch = camera_pitch
-		parameters.yaw = 0
-		Player[player].lookAt(parameters)
+		--camera_pitch = tonumber(settings_token.getDescription())
+		playerLookAt(player, playerPos)
 	end
 
 	for _, card in ipairs(zonePlayer.getObjects()) do
@@ -1411,9 +1414,7 @@ function action_spent()
 end
 
 function goTo(object, player)
-	local parameters = {}
-	parameters.position = player_grid_pos
-	Player[player].lookAt(parameters)
+	playerLookAt(player, player_grid_pos)
 end
 
 function broadcast_message_coR()
@@ -1438,15 +1439,12 @@ function changeSurvivors(location, amount, grid)
 end
 function move_camera_toHitLocations(object, player)
 	local params = {}
-	params.distance = 10
-	params.yaw = 0
-	params.pitch = 70
 	if isSurging_survCard then
 		params.position = {-10.13, 4.29, -2.35}
 	else
 		params.position = {9.92, 4.29, -2.35}
 	end
-	Player[player].lookAt(params)
+	playerLookAt(player, params.position)
 end
 
 function dud() end

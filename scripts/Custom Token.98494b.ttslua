@@ -1,3 +1,5 @@
+#include shared/util
+
 function onLoad()
 	createButton()
 end
@@ -63,45 +65,25 @@ function openInjuries()
 end
 
 function move_camera_toP1(object, player)
-	local parameters = {}
-	parameters.position = {-30.70, 4.77, -18.55}
-	parameters.yaw = 0
-	parameters.pitch = 70
-	parameters.distance = 15
-	Player[player].lookAt(parameters)
+	playerLookAt(player, {-30.70, 4.77, -18.55})
 	grid_position = {-29.37, 4.76, -21.53}
 	move_cards_toGrid()
 end
 
 function move_camera_toP2(object, player)
-	local parameters = {}
-	parameters.position = {-17.93, 4.76, -18.55}
-	parameters.yaw = 0
-	parameters.pitch = 70
-	parameters.distance = 15
-	Player[player].lookAt(parameters)
+	playerLookAt(player, {-17.93, 4.76, -18.55})
 	grid_position = {-12.78, 4.77, -21.44}
 	move_cards_toGrid()
 end
 
 function move_camera_toP3(object, player)
-	local parameters = {}
-	parameters.position = {16.10, 4.81, -18.55}
-	parameters.yaw = 0
-	parameters.pitch = 70
-	parameters.distance = 15
-	Player[player].lookAt(parameters)
+	playerLookAt(player, {16.10, 4.81, -18.55})
 	grid_position = {17.40, 4.75, -21.64}
 	move_cards_toGrid()
 end
 
 function move_camera_toP4(object, player)
-	local parameters = {}
-	parameters.position = {30.80, 4.81, -18.55}
-	parameters.yaw = 0
-	parameters.pitch = 70
-	parameters.distance = 15
-	Player[player].lookAt(parameters)
+	playerLookAt(player, {30.80, 4.81, -18.55})
 	grid_position = {33.97, 4.76, -21.57}
 	move_cards_toGrid()
 end

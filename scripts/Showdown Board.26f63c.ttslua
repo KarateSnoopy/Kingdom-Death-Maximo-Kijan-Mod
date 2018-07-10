@@ -1,3 +1,5 @@
+#include shared/util
+
 arrowDuration = 5
 arrowRotation = 0.01
 rotateHight = 150 --should be a multiple of rotateDegrees
@@ -40,12 +42,7 @@ function createButtons_home_camera()
 end
 
 function camera_home(object, player_color)
-	local parameters = {}
-	parameters.position = {-1.34, 4.54, -4.04}
-	parameters.yaw = 0
-	parameters.pitch = 72
-	parameters.distance = 11
-	Player[player_color].lookAt(parameters)
+	playerLookAt(player_color, {-1.34, 4.54, -4.04})
 end
 
 function overlay(params)
