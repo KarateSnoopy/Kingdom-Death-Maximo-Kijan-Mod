@@ -37,6 +37,7 @@ Restart Atom
 
 ```
 cd c:\git\kdm
+git checkout master
 git pull
 CopyToTTS.cmd
 ```
