@@ -52,6 +52,8 @@ CopyToTTS.cmd
 
 ```
 cd c:\git\kdm
+git checkout master
+git pull
 git checkout -b someBranchName
 CopyFromTTS.cmd
 git add .
@@ -67,6 +69,16 @@ gitk
 ```
 
 * Go to https://github.com/maximo1984/Kingdom-Death-Maximo-Kijan-Mod and you'll see a button to create a pull request button for the branch in your fork that you just pushed
+
+If you have merge conflicts, do:
+
+```
+git pull
+git merge origin/master
+git mergetool HEAD .
+and then fix your merge conflicts in your git merge tool.
+git push
+```
 
 After you're done with the pull request, you should go back to master branch, so your ready to make other bug fixes
 ```
