@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Keep In Play", effect = ""}})
+Global.call('addBroadcast', {"crit", {gear = "Roll 1d10", effect = "On a 5+ ~ Gain (+1) Courage ~ (+1) Survival", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+  Global.call('addBroadcast', {"failure", {gear = "Roll 1d10", effect = ""}})
+  Global.call('addBroadcast', {"failure", {gear = "On a 4+ ~ Suffer ★ Brain Damage ~ You are Knocked Down", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

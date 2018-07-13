@@ -1,0 +1,113 @@
+
+-- ALL
+
+--[[
+local stats = {color = color, stat = "lck", modifier = "pos", num = 3, phase = nil}
+Global.setTable('temp', stats)
+startLuaCoroutine(Global, "spwn_tok")
+
+"endOfround"
+"endOfattack"
+"endOfwoundattempt"
+"endOfwound"
+--]]
+
+-- RED ----------------------------------------------------------------------
+
+function spawn_tok_red_coR()
+
+	if coR_Name == "Frenzy" then
+		wait(0.1)
+		local stats = {color = "red", stat = "spd", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_red', stats)
+		startLuaCoroutine(Global, "spawn_tok_red")
+
+		-- Wait 1.1 more than Number of Tokens Spawning
+		wait(1.1)
+		local stats = {color = "red", stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_red', stats)
+		startLuaCoroutine(Global, "spawn_tok_red")
+
+		-- Reset Global Table when done
+		wait(5)
+		local stats = {color = nil, stat = nil, modifier = nil, num = 0, phase = nil}
+		Global.setTable('stats_red', stats)
+	end
+
+	return 1
+end
+
+-- YELLOW ----------------------------------------------------------------------
+
+function spawn_tok_yellow_coR()
+
+	if coR_Name == "Frenzy" then
+		wait(0.1)
+		local stats = {color = "yellow", stat = "spd", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_yellow', stats)
+		startLuaCoroutine(Global, "spawn_tok_yellow")
+
+		-- Wait 1.1 more than Number of Tokens Spawning
+		wait(1.1)
+		local stats = {color = "yellow", stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_yellow', stats)
+		startLuaCoroutine(Global, "spawn_tok_yellow")
+
+		-- Reset Global Table when done
+		wait(5)
+		local stats = {color = nil, stat = nil, modifier = nil, num = 0, phase = nil}
+		Global.setTable('stats_yellow', stats)
+	end
+
+	return 1
+end
+
+-- GREEN ----------------------------------------------------------------------
+
+function spawn_tok_green_coR()
+
+	if coR_Name == "Frenzy" then
+		wait(0.1)
+		local stats = {color = "green", stat = "spd", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_green', stats)
+		startLuaCoroutine(Global, "spawn_tok_green")
+
+		-- Wait 1.1 more than Number of Tokens Spawning
+		wait(1.1)
+		local stats = {color = "green", stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_green', stats)
+		startLuaCoroutine(Global, "spawn_tok_green")
+
+		-- Reset Global Table when done
+		wait(5)
+		local stats = {color = nil, stat = nil, modifier = nil, num = 0, phase = nil}
+		Global.setTable('stats_green', stats)
+	end
+
+	return 1
+end
+
+-- BLUE ----------------------------------------------------------------------
+
+function spawn_tok_blue_coR()
+
+	if coR_Name == "Frenzy" then
+		wait(0.1)
+		local stats = {color = "blue", stat = "spd", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_blue', stats)
+		startLuaCoroutine(Global, "spawn_tok_blue")
+
+		-- Wait 1.1 more than Number of Tokens Spawning
+		wait(1.1)
+		local stats = {color = "blue", stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('stats_blue', stats)
+		startLuaCoroutine(Global, "spawn_tok_blue")
+
+		-- Reset Global Table when done
+		wait(5)
+		local stats = {color = nil, stat = nil, modifier = nil, num = 0, phase = nil}
+		Global.setTable('stats_blue', stats)
+	end
+
+	return 1
+end

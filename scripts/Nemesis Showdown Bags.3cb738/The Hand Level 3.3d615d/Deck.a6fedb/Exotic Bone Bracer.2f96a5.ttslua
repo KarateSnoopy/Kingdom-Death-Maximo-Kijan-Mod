@@ -1,0 +1,100 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Ignore all Closed Lens effects and instead flip a Lens of your choice", effect = ""}})
+  getMonsterResource()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Broken Lantern", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Broken Lantern", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Broken Lanterns", effect = ""}})
+	end
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Perform Ghost Step ~ Suffer 3 Brain Damage and Knockback 7", effect = ""}})
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  local hitTool = getObjectFromGUID('10e61e')
+  local hitTable = hitTool.getTable('hitLocation')
+  green_open = false
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      green_open = true
+    end
+  end
+  if green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      obj.setDescription(obj.getDescription() .. ", super_dense")
+    end
+    broadcastToAll("Green Lens Open ~ (+4) Toughness to Wound this Location and it gained 'Super Dense'", {1,1,1})
+    startLuaCoroutine(self, "addStat_coR")
+  end
+  if not green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      local desc = obj.getDescription()
+      if string.find(desc, "super_dense") then
+        local new_desc = string.gsub(desc, ", super_dense", "")
+        obj.setDescription(new_desc)
+      end
+    end
+  end
+end -- end function
+
+
+function addStat_coR()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	for i=1, 4 do
+		obj.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end

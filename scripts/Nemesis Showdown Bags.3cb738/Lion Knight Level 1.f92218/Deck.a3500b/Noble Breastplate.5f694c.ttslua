@@ -1,0 +1,53 @@
+function criticalWoundEffect()
+	getVars()
+	changeSurvivors("survival", 1, grid)
+	Global.call('addBroadcast', {"crit", {gear = "You gained (+1) Survival", effect = ""}})
+	if role == "Ruler" then
+		Global.call('addBroadcast', {"crit", {gear = "You are the ♚ Ruler ♚ ~ All other Survivors gain (+1) Survival", effect = ""}})
+		Global.call('addBroadcast', {"crit", {gear = "They may stand if knocked down", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not the ♚ Ruler ♚", effect = ""}})
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	grid.call("return_role")
+	role = grid.getVar("role")
+	color = grid.getVar("color")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	getVars()
+	if role == "Ruler" then
+		local stats = {color = color, stat = "lck", modifier = "neg", num = 1, phase = nil}
+		Global.setTable('temp', stats)
+		startLuaCoroutine(Global, "spwn_tok")
+		Global.call('addBroadcast', {"failure", {gear = "You are the ♚ Ruler ♚", effect = ""}})
+		Global.call('addBroadcast', {"failure", {gear = "You are knocked Down and gained a (-1) Luck Token", effect = ""}})
+	else
+		Global.call('addBroadcast', {"failure", {gear = "You are not the ♚ Ruler ♚", effect = ""}})
+	end
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

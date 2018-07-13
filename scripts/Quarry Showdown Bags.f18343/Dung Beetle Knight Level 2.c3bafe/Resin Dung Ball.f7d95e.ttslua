@@ -1,0 +1,18 @@
+function check_adjacent_toDungBall()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {5,5,5},
+		max_distance 	= 0,
+	})
+	isAdjacent = false
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Dung Beetle Knight" then
+			isAdjacent = true
+		end
+	end
+end
+
+-- resin dung ball

@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Gain 1 Bleeding Token and suffer the Frenzy Brain Trauma", effect = "Something disgusting has accumulated under The Lion God's Nails"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

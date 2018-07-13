@@ -1,0 +1,31 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	broadcastToAll("You may cancel your attack", msg_color)
+	Global.call('addBroadcast', {"reflex", {gear = "All Survivors adjacent to the Loneyly Tree or an Acanthus Plant ~ Gain 2 Bleeding Tokens", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	color = grid.getVar("color")
+	msg_color = grid.getTable("msg_color")
+end

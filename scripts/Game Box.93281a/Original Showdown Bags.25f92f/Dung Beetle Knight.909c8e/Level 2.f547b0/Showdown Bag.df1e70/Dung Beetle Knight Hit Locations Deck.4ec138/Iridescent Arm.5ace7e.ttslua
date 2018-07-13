@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "If you have (3+) Courage ~ Resolve the Critical Wound effect on this Hit Location", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "The Dung Beetle Knight suffers Knockback 3", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "Perform Ground Pound", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,85 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	gain_the_priority_target_token()
+	self.setPositionSmooth({2.08, 4.24, -21.37}, false, false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Lion Ovaries", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Lion Ovaries", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Lion Ovaries", effect = ""}})
+	end
+end
+
+function gain_the_priority_target_token()
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	hasPriority = false
+	cannot_be_removed = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if string.find(tok.getDescription(), "permanent") then
+			cannot_be_removed = true
+		end
+	end
+	if cannot_be_removed then
+		Global.call('addBroadcast', {"crit", {gear = "A Survivor already has the Priority Target Permanently ~ From a Game Effect", effect = ""}})
+		return
+	end
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,0.5,0})
+				priority_target.setPosition(pos)
+				priority_target.setDescription('permanent')
+			else
+				local obj = getObjectFromGUID('3bc58d')
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone(objPos)
+				surv.translate({0,0.5,0})
+				priority_target.setPosition(pos)
+				priority_target.setDescription('permanent')
+			end
+		end
+		Global.call('addBroadcast', {"crit", {gear = "You gained the Priority Target permanently until either you are dead or the Black Lion is dead", effect = ""}})
+	end
+end

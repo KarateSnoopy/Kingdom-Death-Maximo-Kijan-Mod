@@ -1,0 +1,18 @@
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Lion God is Knocked Down!", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll('Hypnotic and Bright, you lose 2 Survival', {1,1,1})
+end

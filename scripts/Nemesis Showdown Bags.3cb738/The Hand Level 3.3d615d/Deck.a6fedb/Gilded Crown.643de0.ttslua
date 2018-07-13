@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "You may Spend 3 Survival to impress The Hand", effect = "If you do"}})
+  Global.call('addBroadcast', {"crit", {gear = "You are Knocked Down ~ Heal 'Broken' Injuries and gain (+1) Permanent Speed", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  Global.call('addBroadcast', {"reflex", {gear = "Perform Ghost Step ~ Targeting the Attacker", effect = ""}})
+  Global.call('addBroadcast', {"reflex", {gear = "Attacker must spend 3 Survival", effect = "If you do not"}})
+  Global.call('addBroadcast', {"reflex", {gear = "Suffer 5 Damage to a Random Hit Location ~ Bash ~ Gain a (-1) Speed Token", effect = "~ or ~"}})
+end
+
+function addStatModifier()
+end

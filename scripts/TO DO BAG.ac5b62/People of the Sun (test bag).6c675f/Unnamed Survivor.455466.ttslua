@@ -1,0 +1,563 @@
+--by Kijan
+thick = 0.1
+
+hideButtonBack = true
+Grid = nil
+GridGUID = ""
+isKDMFULL = true
+-------------------------------------------------------------
+--Customizable Buttons EDIT BELOW
+-------------------------------------------------------------
+function initCustomButtons()
+	thick = 0.14
+
+	--header
+	dx = 0; dy = -11.8
+	createTextField('Unnamed Survivor', 'txt', dx, dy)
+
+	dx = -4.65 ; dy = -11.28; px = 0.55
+	setupButton('gender_m', "toggleB", dx, dy); dx = dx + px;
+	setupButton('gender_f', "toggleB", dx, dy)
+
+	--survival
+	dx = -4.35; dy = -9.8
+	setupButton('survival', 'counter', dx, dy)
+
+
+	dx = -3.28; dy = -9.23; yd = 0.44
+	setupButton('survival_double', "toggleA", dx, dy)
+	setupButton('survival_unless_Insane', "toggleA", dx, dy - yd)
+	setupButton('survival_while_Insane', "toggleA", dx, dy - 2*yd)
+	setupButton('survival_disabled', "toggleA", dx, dy - 3*yd)
+
+	dx = 5.335; dy = -6.53
+	setupButton('disable_fightingarts', "toggleA", dx, dy)
+
+	dx = 5.335; dy = -6.95
+	setupButton('no_hunt', "toggleA", dx, dy)
+
+	--stats
+	dx = -4.5; dy = -8.2; px = 1.34
+	setupButton('movement', 'counters', dx, dy); dx = dx + px;
+	setupButton('speed', 'counters', dx, dy); dx = dx + px;
+	setupButton('accuracy', 'counters', dx, dy); dx = dx + px;
+	setupButton('strength', 'counters', dx, dy); dx = dx + px;
+	setupButton('luck', 'counters', dx, dy); dx = dx + px;
+	setupButton('evasion', 'counters', dx, dy)
+
+	--insanity
+	dx = 3.93; dy = -9.2
+	setupButton('insanity', 'counter', dx, dy)
+	dx = 5; dy = -9.68
+	setupButton('brain_injury', "toggleA", dx, dy)
+
+	--experience
+	dx = -3.17; dy = -6.07; px = 0.513
+	setupButton('xp_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_3', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_4', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_5', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_6', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_7', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_8', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_9', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_10', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_11', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_12', "toggleA", dx, dy); dx = dx + px + 0.016;
+	setupButton('xp_13', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_14', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_15', "toggleA", dx, dy); dx = dx + px;
+	setupButton('xp_16', "toggleA", dx, dy)
+
+
+	--skills
+
+	dx = -4.25; dy = 3.23; px = 0.49
+	setupButton('proficiency_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('proficiency_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('proficiency_3', "toggleA", dx, dy); dx = dx + px;
+	setupButton('proficiency_4', "toggleA", dx, dy); dx = dx + px + 0.01;
+	setupButton('proficiency_5', "toggleA", dx, dy); dx = dx + px + 0.01;
+	setupButton('proficiency_6', "toggleA", dx, dy); dx = dx + px;
+	setupButton('proficiency_7', "toggleA", dx, dy); dx = dx + px + 0.03;
+	setupButton('proficiency_8', "toggleA", dx, dy)
+
+	dx = -4.43; dy = -1.65; px = 0.473
+	setupButton('courage_1', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_2', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_3', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_4', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_5', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_6', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_7', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_8', "toggleC", dx, dy); dx = dx + px;
+	setupButton('courage_9', "toggleC", dx, dy)
+
+	dx = 0.635; dy = -1.665; px = 0.473
+	setupButton('understanding_1', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_2', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_3', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_4', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_5', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_6', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_7', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_8', "toggleC", dx, dy); dx = dx + px;
+	setupButton('understanding_9', "toggleC", dx, dy)
+
+	setupButton('purified', "toggleC", -4.4, -0.02)
+	setupButton('sun_eater', "toggleC", -1.246, -0.02)
+	setupButton('child_of_the_sun', "toggleC", 2.027, -0.02)
+
+	dx = 4.73; dy = 3.635; px = 0.379 py = 0.38; rx = dx
+	setupButton('intracranial_hemorrhage', "toggleB", dx, dy); dy = dy + py;
+	setupButton('deaf', "toggleB", dx, dy); dy = dy + py + 0.01;
+	setupButton('blind_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('blind_2', "toggleB", dx, dy); dx = rx;dy = dy + py + 0.01
+	setupButton('shattered_jaw', "toggleB", dx, dy);
+
+	dx = 4.73; dy = 5.41; px = 0.365; py = 0.38; rx = dx
+	setupButton('dismembered_arm_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('dismembered_arm_2', "toggleB", dx, dy); dx = rx; dy = dy + py
+	setupButton('ruptured_muscle', "toggleB", dx, dy); dy = dy + py;
+	setupButton('contracture_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('contracture_2', "toggleB", dx, dy); dx = dx - px;
+	setupButton('contracture_3', "toggleB", dx, dy); dx = dx - px;
+	setupButton('contracture_4', "toggleB", dx, dy); dx = dx - px;
+	setupButton('contracture_5', "toggleB", dx, dy); dx = rx;dy = dy + py
+	setupButton('broken_arm_1', "toggleB", dx, dy); dx = dx - px
+	setupButton('broken_arm_2', "toggleB", dx, dy); dx = dx - px
+
+	dx = 4.73; dy = 7.18; px = 0.36; py = 0.38; rx = dx
+	setupButton('gaping_chest_wound_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('gaping_chest_wound_2', "toggleB", dx, dy); dx = dx - px;
+	setupButton('gaping_chest_wound_3', "toggleB", dx, dy); dx = dx - px;
+	setupButton('gaping_chest_wound_4', "toggleB", dx, dy); dx = dx - px;
+	setupButton('gaping_chest_wound_5', "toggleB", dx, dy); dx = rx;dy = dy + py
+	setupButton('destroyed_back', "toggleB", dx, dy); dx = rx; dy = dy + py
+	setupButton('broken_rib_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('broken_rib_2', "toggleB", dx, dy); dx = dx - px;
+	setupButton('broken_rib_3', "toggleB", dx, dy); dx = dx - px;
+	setupButton('broken_rib_4', "toggleB", dx, dy); dx = dx - px;
+	setupButton('broken_rib_5', "toggleB", dx, dy)
+
+	dx = 4.73; dy = 8.58; px = 0.36; py = 0.38; rx = dx
+	setupButton('intestinal_prolapse', "toggleB", dx, dy); dy = dy + py
+	setupButton('warped_pelvis_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('warped_pelvis_2', "toggleB", dx, dy); dx = dx - px;
+	setupButton('warped_pelvis_3', "toggleB", dx, dy); dx = dx - px;
+	setupButton('warped_pelvis_4', "toggleB", dx, dy); dx = dx - px;
+	setupButton('warped_pelvis_5', "toggleB", dx, dy); dx = rx;dy = dy + py
+	setupButton('destroyed_genitals', "toggleB", dx, dy); dy = dy + py
+	setupButton('broken_hip', "toggleB", dx, dy)
+
+	dx = 4.73; dy = 10.36; px = 0.36; py = 0.38; rx = dx
+	setupButton('dismembered_leg_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('dismembered_leg_2', "toggleB", dx, dy); dx = rx;dy = dy + py
+	setupButton('hamstrung', "toggleB", dx, dy); dy = dy + py
+	setupButton('broken_leg_1', "toggleB", dx, dy); dx = dx - px;
+	setupButton('broken_leg_2', "toggleB", dx, dy)
+
+	createTextField('Nickname', 'txt', 0, -3.7)
+	createTextField('Partner', 'txt', 0, 2)
+end
+
+------------------
+--Style Sheet
+------------------
+
+function initButtonsTable()
+	buttons = {}
+	inputs = {}
+	token = {}
+	buttons.count = 0
+	scaleButtons = {1, 1, 1}
+
+	buttons.counter = {
+		width = 0, height = 0, font = 800,
+		ox = 0.47, oz = -0.4, ow = 300, oh = 300
+	}
+	buttons.counters = {
+		width = 0, height = 0, font = 500,
+		ox = 0.28, oz = 0.76, ow = 300, oh = 300
+	}
+	buttons.toggleA = {
+		width = 300, height = 300, font = 400, toggleSymbol = '\u{25a0}', emptySymbol = ''
+	}
+	buttons.toggleB = {
+		width = 200, height = 200, font = 250, toggleSymbol = '\u{25a0}', emptySymbol = ''
+	}
+	buttons.toggleC = {
+		width = 200, height = 200, font = 320, toggleSymbol = '\u{25a0}', emptySymbol = ''
+	}
+	buttons.txt = {
+		width = 4900, height = 300, font = 250, alignment = 3
+	}
+end
+
+----------------------------------------------------
+--DO NO EDIT BELOW unless you know what you're doing
+--SAVE
+----------------------------------------------------
+
+function forceSave()
+	local data_to_save = {buttons = {}, inputs = {}}
+	for i, v in pairs(buttons) do
+		if i ~= "count" then
+			data_to_save.buttons[i] = v.value
+		end
+	end
+	local inputs = self.getInputs()
+	for _, v in pairs(inputs) do
+		data_to_save.inputs[v.label] = v.value
+	end
+	saved_data = JSON.encode_pretty(data_to_save)
+	if Global.getVar("clearSavedData") then
+		saved_data = ""
+	end
+	self.script_state = saved_data
+	return saved_data
+end
+
+function onDropped(player_color)
+		forceSave()
+end
+
+function onload(saved_data)
+	initButtonsTable()
+
+	if not Global.getVar("bypassSavedLoad") then
+		loaded_data = JSON.decode(saved_data)
+		if loaded_data ~= nil then
+			for i, v in pairs(loaded_data.buttons) do
+				buttons[i] = {value = v}
+			end
+			for i, v in pairs(loaded_data.inputs) do
+				inputs[i] = v
+			end
+		end
+	end
+
+	initCustomButtons()
+end
+
+
+function dud()
+end
+
+function clickedToggle(index, symbol, emptySymbol)
+-- \u{2611}\u{2610}\u{2612}
+	if buttons[index].value == 0 then
+		buttons[index].label = symbol
+		buttons[index].value = 1
+		if index == "gender_m" then
+			buttons["gender_f"].label = emptySymbol
+			buttons["gender_f"].value = 0
+			self.editButton(buttons["gender_f"])
+		elseif index == "gender_f" then
+			buttons["gender_m"].label = emptySymbol
+			buttons["gender_m"].value = 0
+			self.editButton(buttons["gender_m"])
+		end
+	else
+		buttons[index].label = emptySymbol
+		buttons[index].value = 0
+	end
+	self.editButton(buttons[index])
+	forceSave()
+end
+
+function createTextField(name, type, x, z)
+	local input_parameters = {}
+	input_parameters.height = buttons[type].height
+	input_parameters.width = buttons[type].width
+	input_parameters.font_size = buttons[type].font
+	input_parameters.alignment = buttons[type].alignment
+
+	if name == 'Unnamed Survivor' then
+		input_parameters.input_function = "setName"
+	else
+		input_parameters.input_function = "dud"
+	end
+	input_parameters.function_owner = self
+	input_parameters.label = name
+	input_parameters.scale = scaleButtons
+	input_parameters.position = {x, thick, z}
+	if hideButtonBack then
+		input_parameters.color = {1, 1, 1, 0}
+		input_parameters.font_color = {0, 0, 0, 100}
+	end
+
+	if inputs[name] ~= nil then
+		input_parameters.value = inputs[name]
+	end
+	-- input_parameters.tooltip = string tooltip \u{2013}Optional
+	-- input_parameters.value = string input_value \u{2013}Optional
+	-- input_parameters.validation = int (1 = None, 2 = Integer, 3 = Float, 4 = Alphanumeric, 5 = Username, 6 = Name) \u{2013}Optional
+	self.createInput(input_parameters)
+end
+
+function setName(obj, color, txt, writing)
+	if writing == false then
+		self.setName(txt)
+	end
+end
+
+function setupButton(name, type, x, z)
+	local button_parameters = {}
+	button_parameters.index = buttons.count
+	button_parameters.height = buttons[type].height
+	button_parameters.width = buttons[type].width
+	button_parameters.font_size = buttons[type].font
+
+	if buttons[name] ~= nil then
+		button_parameters.value = buttons[name].value
+	else
+		button_parameters.value = 0
+	end
+
+	if type == "counter" or type == "counters" then
+		button_parameters.click_function = "dud"
+		button_parameters.label = button_parameters.value
+		createpm(name, type, x, z)
+		button_parameters.index = buttons.count
+	elseif type == "toggleA" or type == "toggleB" or type == "toggleC" then
+		self.setVar("toggleClick_" .. name, function () clickedToggle(name, buttons[type].toggleSymbol, buttons[type].emptySymbol) end)
+		button_parameters.click_function = "toggleClick_" .. name
+		if button_parameters.value == 0 then
+			button_parameters.label = buttons[type].emptySymbol
+		else
+			button_parameters.label = buttons[type].toggleSymbol
+		end
+
+	else
+		button_parameters.click_function = "dud"
+		button_parameters.label = button_parameters.value
+	end
+
+	if hideButtonBack then
+		button_parameters.color = {1, 1, 1, 0}
+		button_parameters.font_color = {0, 0, 0, 100}
+	end
+	button_parameters.scale = scaleButtons
+	button_parameters.position = {x, thick, z}
+	button_parameters.function_owner = self
+
+	self.createButton(button_parameters)
+	buttons[name] = button_parameters
+	buttons.count = buttons.count + 1
+end
+
+function createpm(name, type, x, z)
+	local button_parameters = {}
+	button_parameters.index = buttons.count
+	button_parameters.height = buttons[type].oh
+	button_parameters.width = buttons[type].ow
+	button_parameters.font_size = buttons[type].font * 0.7
+	self.setVar("add_" .. name, function () add({name, 1}) end)
+	button_parameters.click_function = "add_" .. name
+	button_parameters.label = "+"
+	button_parameters.function_owner = self
+	button_parameters.scale = scaleButtons
+	if hideButtonBack then
+		button_parameters.color = {1, 1, 1, 0}
+		button_parameters.font_color = {0, 0, 0, 100}
+	end
+
+	button_parameters.position = {x + buttons[type].ox, thick, z + buttons[type].oz}
+	self.createButton(button_parameters)
+	buttons["p_" .. name] = button_parameters
+	buttons.count = buttons.count + 1
+
+	button_parameters.index = buttons.count
+	self.setVar("sub_" .. name, function () add({name, - 1}) end)
+	button_parameters.click_function = "sub_" .. name
+	button_parameters.label = "-"
+	button_parameters.position = {x - buttons[type].ox, thick, z + buttons[type].oz}
+	self.createButton(button_parameters)
+	buttons["m_" .. name] = button_parameters
+	buttons.count = buttons.count + 1
+end
+
+function add(params)
+	local pos = self.getPosition()
+	local name = params[1]
+	local amount = params[2]
+	local diff = buttons[name].label - buttons[name].value
+
+	if name == "survival" then
+
+		isInsane = false
+		if tonumber(buttons["insanity"].label) >= 3 then
+			isInsane = true
+		end
+
+		if pos.x > 25 then
+			zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+			msg_color = {0.118, 0.53, 1}
+		elseif pos.x > 9 and pos.x < 12 then
+			zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+			msg_color = {0.192, 0.701, 0.168}
+		elseif pos.x > - 20 and pos.x < - 16 then
+			zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+			msg_color = {0.905, 0.898, 0.172}
+		elseif pos.x < - 30 then
+			zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+			msg_color = {1, 0.14, 0}
+		end
+
+		if amount > 0 then
+			cannotGainSurvival = false
+			hasDouble = false
+
+			for _, card in ipairs(zonePlayer.getObjects()) do
+
+				-- Thrill Seeker
+				if card.getName() == "Thrill Seeker" then
+					hasDouble = true
+					broadcastToAll("Thrill Seeker ~ Gain an Additional Survival", msg_color)
+
+					-- Apathetic
+				elseif card.getName() == "Apathetic" then
+					cannotGainSurvival = true
+					broadcastToAll("Apathetic ~ You cannot gain Survival", msg_color)
+				end
+			end
+
+			if not cannotGainSurvival then
+				buttons[name].value = buttons[name].value + amount
+				if hasDouble then
+					buttons[name].value = buttons[name].value + 1
+				end
+				-- self.editButton(buttons[name])
+				hasDouble = false
+			end
+
+		end
+
+		if amount < 0 then
+			cannotSpendSurvival = false
+			hasDouble = false
+			for _, card in ipairs(zonePlayer.getObjects()) do
+
+				-- Apathetic
+				if card.getName() == "Apathetic" then
+					cannotSpendSurvival = true
+					broadcastToAll("Apathetic ~ You cannot use Survival", msg_color)
+				end
+
+				-- Immortal
+				if card.getName() == "Immortal" then
+					if isInsane then
+						cannotSpendSurvival = true
+						broadcastToAll("Immortal ~ You cannot spend Survival while insane", msg_color)
+					end
+				end
+
+				-- Prey
+				if card.getName() == "Prey" then
+					if not isInsane then
+						cannotSpendSurvival = true
+						broadcastToAll("Prey ~ You can only spend Survival while insane", msg_color)
+					end
+				end
+
+				-- Ghostly Beauty
+				if card.getName() == "Ghostly Beauty" then
+					hasDouble = true
+					broadcastToAll("Ghostly Beauty ~ Your Survival use was Doubled", msg_color)
+				end
+
+			end ---------------------- end for loop body -------------------------
+
+			if not cannotSpendSurvival then
+				buttons[name].value = buttons[name].value + amount
+				if hasDouble then
+					buttons[name].value = buttons[name].value - 1
+				end
+				-- self.editButton(buttons[name])
+				hasDouble = false
+			end
+
+
+		end -- end if amount < 0 (survival used)
+
+		zoneGuid = Global.getTable("zones").zoneSettlement.guid
+		zoneObj = getObjectFromGUID(zoneGuid).getObjects()
+		for _, v in pairs(zoneObj) do
+			if v.getDescription() == "SettlementSheet" then
+				survlimit = v.getTable("buttons").survival_limit.label
+			end
+		end
+		if tonumber(buttons[name].value) > tonumber(survlimit) then
+			buttons[name].value = tonumber(survlimit)
+		end
+
+	else
+		buttons[name].value = buttons[name].value + amount
+	end
+
+	if name == "survival" or name == "insanity" then
+		if tonumber(buttons[name].value) < 0 then
+			buttons[name].value = 0
+		end
+	end
+	buttons[name].label = tostring(buttons[name].value + diff)
+
+	-- if name == "insanity" then
+	self.editButton(buttons[name])
+	-- end
+
+	if Grid ~= nil then
+		Grid.call('diceStats')
+	end
+	forceSave()
+end
+
+function addTemp(params)
+	buttons[params[1]].label = buttons[params[1]].label + params[2]
+	self.editButton(buttons[params[1]])
+	if Grid ~= nil then
+		Grid.call('diceStats')
+	end
+	forceSave()
+end
+
+function resetStat()
+	if buttons ~= nil then
+		for _, v in pairs({'movement', 'speed', 'accuracy', 'strength', 'luck', 'evasion'}) do
+			buttons[v].label = buttons[v].value
+			self.editButton(buttons[v])
+		end
+		if Grid ~= nil then
+			Grid.call('diceStats')
+		end
+		forceSave()
+	end
+end
+
+function resetBrain()
+	if buttons ~= nil then
+		if buttons["brain_injury"].value > 0 then
+			buttons["brain_injury"].label = ""
+			buttons["brain_injury"].value = 0
+			self.editButton(buttons["brain_injury"])
+		end
+	end
+end
+
+function onCollisionExit(collision_info)
+	local obj = collision_info.collision_object
+	if obj.getVar("isGearGrid") then
+		resetStat()
+		resetBrain()
+	end
+end
+
+function onCollisionEnter(collision_info)
+	local obj = collision_info.collision_object
+	if obj.getVar("isGearGrid") then
+		Grid = obj
+		GridGUID = obj.guid
+	end
+end

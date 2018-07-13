@@ -1,0 +1,47 @@
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+	getStatToken()
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+				    obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+				end
+				Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Screaming Antelope Resource", effect = ""}})
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9ac8a3')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    object.setScale({0.43, 1.00, 0.43})
+	local accStat = Global.getTable('accStat')
+        table.insert(accStat, object.clone({
+		position = {-14.31, 4.42, 0.51 + #accStat * -1}}))
+		Global.call('addBroadcast', {"crit", {gear = "The Screaming Antelope gaine a (-1) Accuracy Token", effect = ""}})
+    object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('accStat', accStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

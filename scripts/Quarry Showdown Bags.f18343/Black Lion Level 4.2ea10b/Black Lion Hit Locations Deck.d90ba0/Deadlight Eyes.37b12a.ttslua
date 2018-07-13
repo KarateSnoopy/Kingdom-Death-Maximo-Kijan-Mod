@@ -1,0 +1,65 @@
+function criticalWoundEffect()
+	for i=1, 2 do
+		local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+		local var = ""
+		obj.getVar("phase")
+		obj.setVar("phase", var)
+		obj.call("spawn_token")
+	end
+	Global.call('addBroadcast', {"crit", {gear = "The Black Lion gained a (-2) Accuracy Tokens", effect = ""}})
+
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Black Lion gained a (+1) Damage Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	if check_isInsane(isInsane) then
+		Global.call('addBroadcast', {"reflex", {gear = "You are Insane ~ Your Attack is Cancelled", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "You may not spend Survival Actions until the Start of your next act", effect = ""}})
+	end
+	if not check_isInsane(isInsane) then
+		Global.call('addBroadcast', {"reflex", {gear = "You are not Insane", effect = ""}})
+	end
+end
+
+function addStatModifier()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+end
+
+function check_isInsane(isInsane)
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "isInsane" and (obj.getRotation().z > 165 and obj.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+	return isInsane
+end

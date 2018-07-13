@@ -1,0 +1,41 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+
+end
+
+function addStatModifier()
+  broadcastToAll("First Strike!", {1,1,1})
+  startLuaCoroutine(self, 'msgDelay')
+  startLuaCoroutine(self, 'msgDelay2')
+
+end
+
+function msgDelay()
+  wait(2)
+  broadcastToAll("If you are in the Light ~ Suffer \u{263C} Damage to \u{2606} Locations", {1,1,1})
+  return 1
+end
+
+function msgDelay2()
+  wait(4.5)
+  broadcastToAll("The Sunstalker moves 1 space away from you ~ Cancel all hits now out of range", {1,1,1})
+  return 1
+end
+
+function reflexEffect()
+end
+
+function failureEffect()
+
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end

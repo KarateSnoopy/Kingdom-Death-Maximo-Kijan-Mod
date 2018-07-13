@@ -1,0 +1,64 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+
+	if grid.getName() == "Inventory P1" then
+		card.getVar("inDarkness_red")
+		card.setVar("inDarkness_red", true)
+	elseif grid.getName() == "Inventory P2" then
+		card.getVar("inDarkness_yellow")
+		card.setVar("inDarkness_yellow", true)
+	elseif grid.getName() == "Inventory P3" then
+		card.getVar("inDarkness_green")
+		card.setVar("inDarkness_green", true)
+	elseif grid.getName() == "Inventory P4" then
+		card.getVar("inDarkness_blue")
+		card.setVar("inDarkness_blue", true)
+	end
+	Global.call('addBroadcast', {"crit", {gear = "You are in Darkness until the End of the Attack", effect = ""}})
+
+end
+
+function woundEffect()
+
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "All Survivors within ☀ +1 Suffer Bash, ☀ Damage and Knockback 12", effect = ""}})
+end
+
+function reflexEffect()
+
+end
+
+function addStatModifier()
+
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Prismatic Gills", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Prismatic Gills", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Prismatic Gills", effect = ""}})
+	end
+end

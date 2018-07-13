@@ -1,0 +1,54 @@
+
+function criticalWoundEffect()
+    createButton()
+     Global.call('addBroadcast', {"crit", {gear = "All Survivors Gain (+1) Survival", effect = ""}})
+	 Global.call('addBroadcast', {"crit", {gear = "Is the Flower Knight outside the Fairy Ring? ~ If Yes, use Button on Hit Location", effect = ""}})
+end
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getStatToken', function_owner = self,
+label = 'Outside Fairy Ring', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('846081')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local spdStat = Global.getTable('spdStat')
+        		table.insert(spdStat, object.clone({
+				position = {-15.47, 4.42, 0.51 + #spdStat * -1}}))
+                broadcastToAll("The Flower Knight gained a (-1) Speed Token", {1,1,1})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('spdStat', spdStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local drawHitLocationTool = getObjectFromGUID('10e61e')
+	local Table = drawHitLocationTool.getTable('hitLocation')
+	for k, v in ipairs(Table) do
+		obj = getObjectFromGUID(v)
+		if obj.getName() == "Delicate Knee Joint" then
+		    clone()
+		end
+	end
+end
+
+function clone()
+	local object = getObjectFromGUID('693899')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {6.79, 6, 0.02}}))
+        broadcastToAll("(-2) Toughness to Wound this location Calculated.", {1,1,1})
+	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

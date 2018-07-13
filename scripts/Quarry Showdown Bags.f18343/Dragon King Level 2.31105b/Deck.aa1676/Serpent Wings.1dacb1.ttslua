@@ -1,0 +1,49 @@
+
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "Place a Lava Pool Terrain Tile in an unoccupied space as close to you as possible", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "The Dragon King turns to face the Attacker", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "All Survivors directly in front ~ Suffer Knockback 5", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Without turning ~ Move the Dragon King 2 spaces back", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Place 2 Lava Pool Terrain Tiles directly in front", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+end
+
+function getMonsterResource()
+
+	local tbl = {cardName = "Husk", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Husk", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Husks", effect = ""}})
+	end
+end

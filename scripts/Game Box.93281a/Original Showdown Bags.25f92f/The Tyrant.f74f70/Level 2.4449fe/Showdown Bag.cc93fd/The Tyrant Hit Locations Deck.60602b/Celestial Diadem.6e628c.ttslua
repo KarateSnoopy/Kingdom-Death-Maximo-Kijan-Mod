@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Gain Survival = to Number of Gates on Showdown", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

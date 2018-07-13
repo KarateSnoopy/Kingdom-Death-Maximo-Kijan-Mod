@@ -1,0 +1,57 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+	getVars()
+	changeSurvivors("survival", 1, grid)
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You gained (+1) Survival", effect = "", effect2 = ""}})
+
+	 obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "startOfMonsterTurn"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Kingsman gained (-2) Toughness until the start of its next turn", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zone")
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function addStatModifier()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

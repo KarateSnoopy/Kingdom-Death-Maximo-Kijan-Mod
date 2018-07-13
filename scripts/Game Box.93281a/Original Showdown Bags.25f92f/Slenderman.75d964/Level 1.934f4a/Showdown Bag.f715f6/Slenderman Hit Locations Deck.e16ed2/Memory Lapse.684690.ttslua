@@ -1,0 +1,48 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll("The Slenderman Ensares you!", {1,1,1})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("You gain (+3) Insanity", {1,1,1})
+    createButton()
+    startLuaCoroutine(self, 'broadcastDelay1')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('Do you have the Blotted Out Fighting Art?', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getWeaponModifier', function_owner = self,
+label = 'Blotted Out', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getWeaponModifier()
+    	local object = getObjectFromGUID('87ed9c')
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, object.clone({position = {-5.39, 4.32, 0.24}}))
+            broadcastToAll("(+3) Strength to Wound this location Calculated.", {1,1,1})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+    end

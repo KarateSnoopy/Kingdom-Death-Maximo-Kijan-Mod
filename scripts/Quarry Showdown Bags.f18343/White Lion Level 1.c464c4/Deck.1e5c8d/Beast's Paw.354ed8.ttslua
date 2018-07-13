@@ -1,0 +1,67 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Foot ~ Keep in Play", effect = ""}})
+	self.setPositionSmooth({2.16, 4.34, -21.56}, false, false)
+	getMonsterResource()
+	getStatToken()
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Lion Claw", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Lion Claw", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Lion Claws", effect = ""}})
+	end
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_mov.guid)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Movement Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Perform Basic Action ~ Targeting Attacker ~ with (+2) Damage", effect = ""}})
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getVars()
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	msg_color = grid.getTable("msg_color")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+-- paw

@@ -1,0 +1,54 @@
+function criticalWoundEffect()
+	getVars()
+	changeSurvivors("insanity", 3, grid)
+	Global.call('addBroadcast', {"crit", {gear = "Is this Fight even real? ~ You gained (+3) Insanity", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Suffer Bash and Knockback 7", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ Full Move the Lion Knight towards the closet threat ♘", effect = ""}})
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	if hasKatar then
+		broadcastToAll("You hit with a Katar ~ End your attack and you are Knocked Down", msg_color)
+	else
+		broadcastToAll("You did not hit with a Katar", msg_color)
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+	zone = grid.getVar("zonePlayer")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	hasKatar = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "katar") and gear.getGUID() == weaponGUID then
+			hasKatar = true
+		end
+	end
+end

@@ -1,0 +1,75 @@
+buttons = {}
+num = 0
+
+button_display = {}
+button_display.click_function = 'doNothing'
+button_display.function_owner = self
+button_display.label = tostring(num)
+button_display.position = {0,0.1,0}
+button_display.width = 0
+button_display.height = 0
+button_display.font_size = 800
+table.insert(buttons, button_display)
+
+button_minus = {}
+button_minus.click_function = 'minus'
+button_minus.function_owner = self
+button_minus.label = '-'
+button_minus.position = {-0.35,0.1,0}
+button_minus.width = 390
+button_minus.height = 980
+button_minus.font_size = 120
+table.insert(buttons, button_minus)
+
+button_plus = {}
+button_plus.click_function = 'plus'
+button_plus.function_owner = self
+button_plus.label = '+'
+button_plus.position = {0.35,0.1,0}
+button_plus.width = 390
+button_plus.height = 980
+button_plus.font_size = 120
+table.insert(buttons, button_plus)
+
+function onSave()
+    local data_to_save = {num}
+    local saved_data = JSON.encode(data_to_save)
+    return saved_data
+end
+
+function onload(saved_data)
+    for k, v in pairs(buttons) do
+        self.createButton(v)
+    end
+
+    if saved_data ~= nil and saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        num = loaded_data[1]
+        updatedisplay()
+    else
+        num = 0
+        updatedisplay()
+    end
+end
+
+-- functions
+function doNothing()
+end
+
+function updatedisplay()
+    button_display.label = tostring(num)
+    self.editButton(button_display)
+end
+
+function changedisplay(magn)
+    num = num + magn
+    updatedisplay()
+end
+
+function minus()
+    changedisplay(-1)
+end
+
+function plus()
+    changedisplay(1)
+end

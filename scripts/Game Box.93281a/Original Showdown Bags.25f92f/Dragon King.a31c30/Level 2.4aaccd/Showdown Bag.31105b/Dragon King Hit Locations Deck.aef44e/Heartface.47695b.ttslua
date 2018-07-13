@@ -1,0 +1,38 @@
+function criticalWoundEffect()
+    removeStatToken()
+    Global.call('addBroadcast', {"crit", {gear = "gain (+1) Survival for each token removed this way", effect = "Remove all (-1) Toughness Tokens from the Dragon King then"}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "it Lost all its (-1) Toughness Tokens", effect = "The Dragon King's Chest Sphincter unfurls and"}})
+    removeStatToken()
+    getStatToken()
+end
+
+function removeStatToken()
+    local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in ipairs(objectsInZone) do
+        local name = object.getName()
+        if object.name == "Toughness -1" then
+            broadcastToAll("Toughness (-1) Token Removed")
+            object.destroy()
+        end
+        local tghStat = Global.getTable('tghStat')
+        local tghStat = {}
+        Global.setTable('tghStat', tghStat)
+    end
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('0ad6e4')
+	local desc = object.getDescription()
+	object.setDescription('end of round')
+    	object.setScale({0.43, 1.00, 0.43})
+			object.clone({position = {-8.57, 4.35, 0.41}})
+                Global.call('addBroadcast', {"wound", {gear = "The Dragon King gained (+4) Toughness until the end of the round", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+end

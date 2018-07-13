@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "If you are adjacent to the Flower Knight: You suffer Bash", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Without turning, The Flower Knight moves 3 spaces toward the Center ♘", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- fey hilt

@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+	self.setPositionSmooth({2.05, 4.23, -21.44})
+  Global.call('addBroadcast', {"crit", {gear = "A Survivor adjacent to the Loney Tree may archive this location to gain a 'Bone Axe' Gear", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

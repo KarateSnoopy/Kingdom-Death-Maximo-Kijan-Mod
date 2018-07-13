@@ -1,0 +1,17 @@
+function onLoad()
+	self.createButton({
+		label = "", click_function = "spawnShade", function_owner = self,
+		position = {0, 0.2, 0}, height = 350, width = 350,
+		font_size = 0, color = {0, 0, 0}, font_color = {1, 1, 1}
+	})
+end
+
+function spawnShade()
+	local pos = self.getPosition()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "Bag_Shades" then
+			local shade = obj.takeObject({position = {pos.x, pos.y + 0.2, pos.z}, smooth = false})
+		end
+	end
+end

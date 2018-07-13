@@ -1,0 +1,22 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Black Lion gained a (-1) Toughness Token", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You deal an additional wound but suffer the Dismembered Arm Injury", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	broadcastToAll("You may choose to cancel your attack ~ If you do ~ Discard all drawn hit locations", msg_color)
+end

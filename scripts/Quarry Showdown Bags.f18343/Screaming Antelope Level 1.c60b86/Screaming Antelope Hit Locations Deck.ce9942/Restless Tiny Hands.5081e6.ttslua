@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "All adjacent Survivors gain (+1) Insanity", effect = ""}})
+	getMonsterResource(deck, name, params)
+end
+
+function getMonsterResource(deck, name, params)
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zone")
+	pos = grid.getTable("gained_resource_pos")
+
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+function woundEffect()
+end
+
+function failureEffect()
+
+Global.call('addBroadcast', {"failure", {gear = "You must spend an action to retrieve your weapon before it can be used", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,49 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Unbalanced Tail", effect = "Keep in Play"}})
+self.setPositionSmooth({-2.12, 4.33, -14.15})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+	getVars()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "The Dragon King turns to face away from the Attacker", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Roll 1d10 and add your " .. get_courage_value(courage) .. " Courage", effect = ""}})
+	 Global.call('addBroadcast', {"wound_reaction", {gear = "If the result is less than 8 ~ Suffer Bash and +1★ Damage to the Legs", effect = ""}})
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end

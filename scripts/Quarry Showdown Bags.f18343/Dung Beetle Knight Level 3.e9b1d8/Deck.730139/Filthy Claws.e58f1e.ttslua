@@ -1,0 +1,58 @@
+function criticalWoundEffect()
+	getVars()
+	local courage = get_courage_value(courage)
+	if courage >= 3 then
+		changeSurvivors("survival", 1, grid)
+		Global.call('addBroadcast', {"crit", {gear = "You have " .. courage .. " Courage ~ You gained (+1) Survival", effect = ""}})
+		Global.call('addBroadcast', {"crit", {gear = "The Dung Beetle Knight and you both suffer Knockback 5", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You do not have 3+ Courage", effect = ""}})
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Ground Pound", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- claws

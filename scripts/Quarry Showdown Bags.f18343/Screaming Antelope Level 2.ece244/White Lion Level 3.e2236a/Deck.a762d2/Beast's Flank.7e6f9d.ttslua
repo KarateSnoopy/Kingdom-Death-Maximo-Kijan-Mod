@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The White Lion is knocked Down!", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "You gain the Priority Target Token", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

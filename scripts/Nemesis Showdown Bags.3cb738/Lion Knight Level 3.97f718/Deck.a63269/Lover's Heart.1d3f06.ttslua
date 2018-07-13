@@ -1,0 +1,52 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "The Lion Knight is knocked down!", effect = ""}})
+
+	getVars()
+	if role == "Damsel" then
+		Global.call('addBroadcast', {"crit", {gear = "You are the ♛ Damsel ♛ ~ The Lion Knight suffers an Additional Wound", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not the ♛ Damsel ♛", effect = ""}})
+	end
+end
+
+
+function woundEffect()
+	getVars()
+	if role == "Damsel" then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are the ♛ Damsel ♛ ~ Undo any Wounds caused by this Hit and Heal 1", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "If you are not the ♛ Damsel ♛", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+	zone = grid.getVar("zonePlayer")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	hasKatar = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "katar") and gear.getGUID() == weaponGUID then
+			hasKatar = true
+		end
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

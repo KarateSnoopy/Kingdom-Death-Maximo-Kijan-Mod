@@ -1,0 +1,23 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Ruined Coolants", effect = "Keep in Play"}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local tghStat = Global.getTable('tghStat')
+        		table.insert(tghStat, object.clone({
+				position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+                Global.call('addBroadcast', {"wound", {gear = "The Dragon King gained a (-1) Toughness Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('tghStat', tghStat)
+end

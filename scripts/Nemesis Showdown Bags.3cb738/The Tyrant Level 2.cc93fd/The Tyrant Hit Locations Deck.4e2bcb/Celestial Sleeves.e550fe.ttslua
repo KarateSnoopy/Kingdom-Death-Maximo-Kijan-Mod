@@ -1,0 +1,17 @@
+
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "If there are 2+ Gates ~ Gain (+1) Permanent Strength", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Perform Crooked Step", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

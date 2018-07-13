@@ -1,0 +1,53 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Ensnare Attacker", effect = ""}})
+end
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	changeSurvivors("insanity", 3, grid)
+	broadcastToAll("You gained (+3) Insanity", msg_color)
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	 grid = roller.getVar("grid")
+	 pos = grid.getTable("gained_resource_pos")
+	msg_color = grid.getTable("msg_color")
+	 color = grid.getVar("color")
+
+	local zone = grid.getVar("zone")
+	hasBlottedOut = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Blotted Out" then
+			hasBlottedOut = true
+			local stats = {color = color, stat = "str", modifier = "pos", num = 3, phase = "endOfwoundattempt"}
+			Global.setTable('temp', stats)
+			startLuaCoroutine(Global, "spwn_tok")
+			broadcastToAll("You have Blotted Out ~ You gained (+3) Strength to Wound this Location", msg_color)
+		end
+	end
+	if not hasBlottedOut then
+		broadcastToAll("You do not have Blotted Out", {1,1,1})
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

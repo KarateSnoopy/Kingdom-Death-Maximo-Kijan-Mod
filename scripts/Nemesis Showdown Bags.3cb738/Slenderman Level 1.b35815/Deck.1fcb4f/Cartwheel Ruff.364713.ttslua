@@ -1,0 +1,69 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	changeSurvivors("survival", 1, grid)
+	Global.call('addBroadcast', {"crit", {gear = "You gained (+1) Survival", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	hasBlottedOut = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Blotted Out" then
+			hasBlottedOut = true
+			broadcastToAll("You have the Blotted Out Fighting Art ~ You gained (+4) to Wound this Location", msg_color)
+			local stats = {color = color, stat = "lck", modifier = "pos", num = 4, phase = "endOfwoundattempt"}
+			Global.setTable('temp', stats)
+			startLuaCoroutine(Global, "spwn_tok")
+		end
+	end
+	if not hasBlottedOut then
+		broadcastToAll("You do not have the Blotted Out Fighting Art", msg_color)
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	zone = grid.getVar("zonePlayer")
+	color = grid.getVar("color")
+	msg_color = grid.getTable("msg_color")
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Dark Water", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Dark Water", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There is no more Dark Water", effect = ""}})
+	end
+end
+
+-- cartwheel ruff

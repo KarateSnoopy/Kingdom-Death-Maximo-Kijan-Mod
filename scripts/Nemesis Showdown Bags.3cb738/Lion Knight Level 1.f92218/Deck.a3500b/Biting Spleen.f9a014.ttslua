@@ -1,0 +1,99 @@
+function criticalWoundEffect()
+	getVars()
+	if role == "Fool" then
+		Global.call('addBroadcast', {"crit", {gear = "You are the ☛ Fool ☚", effect = ""}})
+
+		gaining_the_priority_target_token()
+		Global.call('addBroadcast', {"crit", {gear = "You gained the Priority Target Token", effect = ""}})
+
+		local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = ""
+		obj.getVar("phase")
+		obj.setVar("phase", var)
+		obj.call("spawn_token")
+		Global.call('addBroadcast', {"crit", {gear = "The Lion Knight gained a (+1) Damage Token", effect = ""}})
+
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not the ☛ Fool ☚", effect = ""}})
+	end
+end
+
+function gaining_the_priority_target_token()
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	hasPriority = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			else
+				local obj = getObjectFromGUID('3bc58d')
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone(objPos)
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			end
+		end
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	grid.call("return_role")
+	role = grid.getVar("role")
+	PlayerName = grid.getVar("PlayerName")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	if role == "Fool" then
+		Global.call('addBroadcast', {"reflex", {gear = "You are the ☛ Fool ☚", effect = ""}})
+		obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+		local var = "endOfattack"
+		obj.getVar("phase")
+		obj.setVar("phase", var)
+		Global.call('addBroadcast', {"reflex", {gear = "The Lion Knight gained (-2) Toughness until the end of your attack", effect = ""}})
+		startLuaCoroutine(self, "addStat_coR")
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "You are not the ☛ Fool ☚", effect = ""}})
+	end
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,41 @@
+function onLoad()
+
+    self.createButton({
+        click_function="click_copy", function_owner=self,
+        position={0,0.1,-0.01}, height=280, width=280, color={1,1,1,0}
+    })
+end
+
+function click_copy()
+    scale = self.getScale().x
+    local die1 = getDiceOnPad(self.positionToWorld({ 1.01,0,0}))
+    local die2 = getDiceOnPad(self.positionToWorld({-1.01,0,0}))
+
+    if die1 == nil and die2 == nil then
+        broadcastToAll("Both source die and target die missing.", {0.9,0.2,0.2})
+    elseif die1 == nil then
+        broadcastToAll("Source die missing.", {0.9,0.2,0.2})
+    elseif die2 == nil then
+        broadcastToAll("Target die missing.", {0.9,0.2,0.2})
+    else
+        print("This Far")
+        local rotValTable = die1.getRotationValues()
+        die2.setRotationValues(rotValTable)
+        broadcastToAll("Rotation Values Copied To Target", {0.2,0.9,0.2})
+    end
+end
+
+
+--Does a raycost on each pad
+function getDiceOnPad(pos)
+    local hitList = Physics.cast({
+        origin=pos, direction={0,1,0}, type=2,
+        size={1.5*scale,1.5*scale,1.5*scale}, max_distance = 0, --debug=true,
+    })
+    for _, entry in ipairs(hitList) do
+        if entry.hit_object.tag == "Dice" then
+            return entry.hit_object
+        end
+    end
+    return nil
+end

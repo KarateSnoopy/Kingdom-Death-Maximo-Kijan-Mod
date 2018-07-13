@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Spidicules lifts its body high into the air", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "Unless you are attacking with a Spear ~ End your Attack", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "\u{2658} Perform Spawn ~ Move all Spiderlings towards you \u{2658}", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Spidicules lifts its body high into the air", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "Unless you are attacking with a Spear ~ End your Attack", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "\u{2658} Perform Spawn ~ Move all Spiderlings towards you \u{2658}", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

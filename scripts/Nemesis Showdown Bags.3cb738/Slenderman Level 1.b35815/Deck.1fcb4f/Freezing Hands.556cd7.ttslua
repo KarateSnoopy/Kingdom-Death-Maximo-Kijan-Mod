@@ -1,0 +1,46 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You suffer 3 Brain Damage", effect = ""}})
+end
+
+function woundEffect()
+	if hasMetalWeapon then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You hit with a Metal Weapon ~ Suffer 2 Damage to the Arms", effect = ""}})
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You cannot spend Survival until your next act", effect = ""}})
+		Global.call('addBroadcast', {"wound_reaction", {gear = "Cancel remaining hits on this attack", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are not attacking with a Metal Weapon", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	hasMetalWeapon = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "metal") and gear.getGUID() == weaponGUID then
+			hasMetalWeapon = true
+		end
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- freezing hands

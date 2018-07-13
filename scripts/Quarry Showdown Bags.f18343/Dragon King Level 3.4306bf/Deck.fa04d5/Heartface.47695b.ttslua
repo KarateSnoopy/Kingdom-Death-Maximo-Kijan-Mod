@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+	count = 0
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Toughness" and object.getPosition().x < 3 then
+			count = count + 1
+			object.destroy()
+		end
+	end
+	Global.call('addBroadcast', {"crit", {gear = "The Dragon Kings ~ " .. count .. " ~ (-1) Toughness Tokens were Removed", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You gain " .. count .. " Survival", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function woundEffect()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfround"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Dragon King gained (+4) Toughness until the End of the Round", effect = ""}})
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	for i=1, 4 do
+		obj.call('spawn_token')
+		wait(0.25)
+	end
+end

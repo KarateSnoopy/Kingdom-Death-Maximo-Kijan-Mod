@@ -1,0 +1,57 @@
+function onLoad()
+  createButtons()
+  bleed = getObjectFromGUID('6653a6')
+end
+
+function createButtons()
+self.createButton({
+  click_function = "bleed_middle",
+  function_owner = self,
+  label = "+",
+  position = {-0.02, 0.15, -0.08},
+  scale = {0.5, 0.5, 0.5},
+  width = 300, height = 300, font_size = 300, font_color = {1,1,1}, color = {0,0,0,100}})
+
+  self.createButton({
+    click_function = "bleed_left",
+    function_owner = self,
+    label = "+",
+    position = {-0.5, 0.15, 0.16},
+    scale = {0.5, 0.5, 0.5},
+    width = 300, height = 300, font_size = 300, font_color = {1,1,1}, color = {0,0,0,100}})
+
+    self.createButton({
+      click_function = "bleed_right",
+      function_owner = self,
+      label = "+",
+      position = {0.44, 0.15, 0.16},
+      scale = {0.5, 0.5, 0.5},
+      width = 300, height = 300, font_size = 300, font_color = {1,1,1}, color = {0,0,0,100}})
+
+      self.createButton({click_function = "remove_tokens", function_owner = self, label = "Remove",
+      position = {0, 0.2, 1.4}, scale = {0.5, 0.5, 0.5}, width = 2100, height = 200, font_size = 150,
+      color = {0,0,0}, font_color = {1,1,1}})
+end
+
+function remove_tokens()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+  for _, object in ipairs(zone.getObjects()) do
+    if object.getName() == "Bleeding" then
+      object.destroy()
+    end
+  end
+end
+
+function bleed_middle()
+  bleed.clone({position = {self.getPosition().x -0.02, self.getPosition().y + 0.2, self.getPosition().z + 0.15}})
+end
+
+function bleed_left()
+  local new_bleed = bleed.clone({position = {self.getPosition().x -0.5, self.getPosition().y + 0.2, self.getPosition().z - 0.07}})
+  new_bleed.setRotation({0.00, 149.81, 0.00})
+end
+
+function bleed_right()
+  local new_bleed = bleed.clone({position = {self.getPosition().x + 0.44, self.getPosition().y + 0.2, self.getPosition().z - 0.07}})
+  new_bleed.setRotation({0.00, 210.00, 0.00})
+end

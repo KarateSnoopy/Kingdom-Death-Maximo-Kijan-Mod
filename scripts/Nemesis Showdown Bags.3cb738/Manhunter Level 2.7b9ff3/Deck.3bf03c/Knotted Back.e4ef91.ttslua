@@ -1,0 +1,83 @@
+
+
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Cancel the next Reaction in this Attack", effect = "You knock the wind out of the Manhunter"}})
+
+	local posX = self.getPosition().x
+	if posX > 6.0 then
+		hitTool_right = getObjectFromGUID('10e61e')
+		hitTool_right.call("reactionsCancelled_nextWoundAttempt")
+		hitTool_right.call('removeButton_ReactionTriggered')
+	elseif posX < 4.0 then
+		hitTool_left = getObjectFromGUID('309402')
+		hitTool_left.call("reactionsCancelled_nextWoundAttempt")
+		hitTool_left.call('removeButton_ReactionTriggered')
+	end
+
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(+2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	msg_color = grid.getTable("msg_color")
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Red Vial", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Red Vial", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Red Vials", effect = ""}})
+	end
+end
+
+-- knotted back

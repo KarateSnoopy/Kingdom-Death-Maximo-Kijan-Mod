@@ -1,0 +1,45 @@
+function criticalWoundEffect()
+	getVars()
+	value = (insanity_value * -1)
+	changeSurvivors("insanity", value, grid)
+	Global.call('addBroadcast', {"crit", {gear = "Your Insanity was set to 0", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	local weapon = grid.getTable("weapon")
+	if weapon.name == "FistAndTooth" then
+		Global.call('addBroadcast', {"reflex", {gear = "You are attacking with Fist and Tooth ~ Ignore this Reaction", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "If you are adjacent ~ All remaining hits in this attack are cancelled", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "Your weapon is Lost and Archived ~ Unless you follow to the Dark Place", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+end
+
+
+function addStatModifier()
+end

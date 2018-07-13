@@ -1,0 +1,50 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "Suffer 3 Brain Damage ~ Gain 1 Bleeding Token", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Move The Watcher to the center of the showdown board", effect = ""}})
+	local understanding = get_understanding_value(understanding)
+	if understanding >= 6 then
+		Global.call('addBroadcast', {"reflex", {gear = "You have 6+ Understanding", effect = ""}})
+	end
+end
+
+function addStatModifier()
+
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+end
+
+function get_understanding_value(understanding)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	understanding = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 14)
+		if prefix == "understanding_" then
+			if v.label ~= '' then
+				understanding = understanding + 1
+			end
+		end
+	end
+	return understanding
+end

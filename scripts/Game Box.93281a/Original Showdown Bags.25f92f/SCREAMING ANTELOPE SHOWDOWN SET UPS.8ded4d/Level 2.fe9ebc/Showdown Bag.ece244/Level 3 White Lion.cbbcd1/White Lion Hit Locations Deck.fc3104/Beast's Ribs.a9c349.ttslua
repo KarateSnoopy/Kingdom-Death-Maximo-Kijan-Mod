@@ -1,0 +1,30 @@
+
+function criticalWoundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local tghStat = Global.getTable('tghStat')
+        		table.insert(tghStat, object.clone({
+				position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Toughness Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('tghStat', tghStat)
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "If you have 3+ Understanding ~ The sound of cracking ribs encourages you", effect = "Gain (+1) Survival"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

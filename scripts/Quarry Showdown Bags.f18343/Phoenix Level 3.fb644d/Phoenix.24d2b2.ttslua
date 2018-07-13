@@ -1,0 +1,300 @@
+-- Phoenix
+
+function onLoad()
+zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+zoneEffect2 = getObjectFromGUID(Global.getTable('zones').zoneEffect2.guid)
+zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+end
+
+zoneEffect_stored = {-55.04, 8.26, -70.92}
+
+function onPickUp(color, obj)
+  if self.getName() == "Phoenix" then
+
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Chatter" then
+        zoneEffect.setPosition(zoneEffect_stored)
+      elseif card.getName() == "Predator's Aura" then
+        zoneEffect2.setPosition(zoneEffect_stored)
+      end
+    end
+  end
+end
+
+function onDropped(player_color)
+  if self.getName() == "Phoenix" then
+    pos = self.getPosition()
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Chatter" then
+        zoneEffect.setPosition({pos.x, pos.y, pos.z})
+      elseif card.getName() == "Predator's Aura" then
+        zoneEffect2.setPosition({pos.x, pos.y, pos.z})
+      end
+    end
+  end
+end
+
+
+function overlay_chatter()
+
+	local btn_params = {
+		click_function = "chatter",
+		function_owner = self,
+		label = "■",
+		scale = {1.8, 1, 1.8},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {1.00, 0.70, 0.22, 0.6}
+	}
+
+	init_posX = 3.28
+	offsetX = 1.64
+
+	offsetY = -2.85
+
+	init_posZ = -0.12
+	offsetZ = 1.64
+
+
+	-- LEFT ROW
+	offset = createOffset()
+	for i=1, 5 do
+		btn_params.position = {init_posX + offsetX - (offset()), offsetY, - (offsetZ * 2)}
+		self.createButton(btn_params)
+	end
+
+		-- FRONT
+		btn_params.position = {init_posX, offsetY, init_posZ - offsetZ}
+		self.createButton(btn_params)
+
+		-- center
+		btn_params.position = {init_posX, offsetY, init_posZ}
+		self.createButton(btn_params)
+		-- center
+
+		btn_params.position = {init_posX, offsetY, init_posZ + offsetZ}
+		self.createButton(btn_params)
+		-- END FRONT
+
+			-- BACK
+			btn_params.position = {init_posX - (init_posX * 2), offsetY, init_posZ - offsetZ}
+			self.createButton(btn_params)
+
+			-- center
+			btn_params.position = {init_posX - (init_posX * 2), offsetY, init_posZ}
+			self.createButton(btn_params)
+			-- center
+
+			btn_params.position = {init_posX - (init_posX * 2), offsetY, init_posZ + offsetZ}
+			self.createButton(btn_params)
+		-- END BACK
+
+	-- RIGHT ROW
+	offset = createOffset()
+	for i=1, 5 do
+		btn_params.position = {init_posX + offsetX - (offset()), offsetY, init_posZ + (offsetZ * 2)}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_chatter()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v ~= nil then
+			if v.click_function == "chatter" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function chatter() end
+
+function overlay_predatorsAura()
+
+	local btn_params = {
+		click_function = "predatorsAura",
+		function_owner = self,
+		label = "■",
+		scale = {1.8, 1, 1.8},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.3}
+	}
+
+	init_posX = 8.20
+	init_posX2 = -1.64
+	offsetX = 1.64
+
+	offsetY = -2.85
+
+	init_posZ = -0.12
+	offsetZ = 1.64
+
+	------------------ row1 --------------------
+
+	offset = createOffset()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ - (offsetZ * 4)}
+		self.createButton(btn_params)
+	end
+
+	------------------ row2 --------------------
+
+	offset = createOffset()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ - (offsetZ * 3)}
+		self.createButton(btn_params)
+	end
+
+	------------------ row3 --------------------
+
+	offset = createOffset()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ - (offsetZ * 2)}
+		self.createButton(btn_params)
+	end
+
+	------------------ row4 --------------------
+
+	offset = createOffset()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ - offsetZ}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX2 - (offset()), offsetY, init_posZ - offsetZ}
+		self.createButton(btn_params)
+	end
+
+	------------------ center row --------------------
+
+	offset = createOffset()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX2 - (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+	------------------ row6 --------------------
+
+	offset = createOffset()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ + offsetZ}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX2 - (offset()), offsetY, init_posZ + offsetZ}
+		self.createButton(btn_params)
+	end
+
+	------------------ row7 --------------------
+
+	offset = createOffset()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ + (offsetZ * 2)}
+		self.createButton(btn_params)
+	end
+
+	------------------ row8 --------------------
+
+	offset = createOffset()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ + (offsetZ * 3)}
+		self.createButton(btn_params)
+	end
+
+	------------------ row9 --------------------
+
+	offset = createOffset()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ + (offsetZ * 4)}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_predatorsAura()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v ~= nil then
+			if v.click_function == "predatorsAura" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function predatorsAura() end
+
+function createOffset()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 1.64
+		return i
+	 end
+ end
+
+function overlay_eyeOfTheStorm()
+
+	local btn_params = {
+		click_function = "eyeOfTheStorm",
+		function_owner = self,
+		label = "■",
+		scale = {1.8, 1, 1.8},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {1.0, 0.0, 0.76, 0.6}
+	}
+
+	btn_params.position = {3.28, -2.85, -0.11}
+	self.createButton(btn_params)
+
+	btn_params.position = {-3.28, -2.85, -0.11}
+	self.createButton(btn_params)
+
+	btn_params.position = {0, -2.85, -3.4}
+	self.createButton(btn_params)
+
+	btn_params.position = {0, -2.85, 3.12}
+	self.createButton(btn_params)
+
+end
+
+function eyeOfTheStorm() end
+
+function remove_overlay_eyeOfTheStorm()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.click_function == "eyeOfTheStorm" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end

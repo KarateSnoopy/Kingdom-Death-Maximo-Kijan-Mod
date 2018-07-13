@@ -1,0 +1,44 @@
+function criticalWoundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9a6c93')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local movStat = Global.getTable('movStat')
+        		table.insert(movStat, object.clone({
+				position = {-16.61, 4.42, 0.51 + #movStat * -1}}))
+                Global.call('addBroadcast', {"crit", {gear = "The Gorm's Palms are wounded ~ It gained a (-1) Movement Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('movStat', movStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+	startLuaCoroutine(self, "broadcastDelay1")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('The Gorm performs its Basic Action targeting you', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

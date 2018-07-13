@@ -1,0 +1,65 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	getMonsterResource()
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "Gain a Random Disorder", effect = ""}})
+	local bool = check_isInsane(isInsane)
+	if bool then
+		Global.call('addBroadcast', {"reflex", {gear = "You are Insane ~ Gain another Random Disorder", effect = ""}})
+	end
+end
+
+function check_isInsane(isInsane)
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "isInsane" and (obj.getRotation().z > 165 and obj.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+	return isInsane
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = roller.getVar("zone")
+	pos = grid.getTable("gained_resource_pos")
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+end
+
+function getMonsterResource()
+
+	local tbl = {cardName = "Horn Fragment", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Horn Fragment", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Horn Fragments", effect = ""}})
+	end
+end

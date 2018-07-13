@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Survivors passed over suffer Grab and gain 1 Bleeding Token", effect = "Full move The Lion God forward and cancel all hits out of range"}})
+end
+
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

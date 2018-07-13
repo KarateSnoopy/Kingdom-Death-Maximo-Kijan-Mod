@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('3a6d32')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local dmgStat = Global.getTable('dmgStat')
+        		table.insert(dmgStat, object.clone({
+				position = {-13.19, 4.42, 0.51 + #dmgStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The Slenderman gained a (-1) Damage Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('dmgStat', dmgStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

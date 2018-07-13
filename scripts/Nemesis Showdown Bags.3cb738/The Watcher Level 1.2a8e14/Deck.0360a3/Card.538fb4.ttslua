@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "If you have 3 Disorders ~ You are knocked down and gain 1 Bleeding Token", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "Otherwise, gain a Random Disorder", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

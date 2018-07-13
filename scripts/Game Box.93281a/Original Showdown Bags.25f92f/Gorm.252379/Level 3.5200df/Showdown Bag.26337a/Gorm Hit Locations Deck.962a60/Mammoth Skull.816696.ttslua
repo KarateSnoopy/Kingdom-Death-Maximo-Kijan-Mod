@@ -1,0 +1,63 @@
+
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckStrangeResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Strange Resources Deck" then
+					deck = object
+					break
+	                print("Strange Resources Deck Found")
+	            else
+	                print("Strange Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Active Thyroid" then
+					    print("Active Thyroid found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Active Thyroid", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+						Global.call('addBroadcast', {"crit", {gear = "There are no Active Thyroids left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "Turn the Gorm to face the opposite board edge", effect = ""}})
+	Global.call('addBroadcast', {"wound", {gear = "\u{2658} The Gorm full moves forward in a straight line \u{2658}", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

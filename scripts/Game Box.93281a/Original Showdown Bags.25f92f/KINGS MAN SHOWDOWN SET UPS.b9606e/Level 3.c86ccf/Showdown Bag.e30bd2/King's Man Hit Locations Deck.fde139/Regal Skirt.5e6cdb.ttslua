@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Adjacent Survivors may ~ Spend 1 Survival to gain 1 Courage", effect = ""}})
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered ~ Return Battle Pressure Cards ~ Perform Basic Action", {1,1,1})
+end
+
+function addStatModifier()
+end

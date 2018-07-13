@@ -1,0 +1,18 @@
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You gain a (+1) Evasion Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll('If you have less than 5 Courage, end your attack, full move away from the Lion God and you are Knocked Down', {1,1,1})
+    broadcastToAll('____________________  !!! First Strike !!!  ____________________', {1,1,1})
+end

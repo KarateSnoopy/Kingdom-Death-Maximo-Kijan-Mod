@@ -1,0 +1,63 @@
+function criticalWoundEffect()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+	hasPottery = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Pottery" then
+			hasPottery = true
+		end
+	end
+	if hasPottery then
+		getVars()
+		startLuaCoroutine(self, "token_coR")
+		Global.call('addBroadcast', {"crit", {gear = "The Settlement has Pottery ~ You gained a (+1) Strength and (+1) Accuracy Token", effect = ""}})
+		Global.call('addBroadcast', {"crit", {gear = "You may archive a Century Carapace in the Hit Location Discard Pile", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "The Settlement does not have Pottery", effect = ""}})
+	end
+end
+
+function token_coR()
+	local stats = {color = color, stat = "str", modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	wait(0.50)
+	local stats = {color = color, stat = "acc", modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	return 1
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	color = grid.getVar("color")
+end
+
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Turn to face directly away from Attaker ♘", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "All Survivors in the Blind Spot suffer Knockback 7", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- back

@@ -1,0 +1,110 @@
+
+
+function onLoad()
+
+    self.createButton({
+            label="Build AI Deck", click_function="buildDeck",
+            function_owner=self, position={0,0,-1.5},
+            height=250, width=2300, font_size=400, color={0,0,0}, font_color={1,1,1}
+            })
+
+function buildDeck()
+    getBasicAIcards()
+    getAdvancedAIcards()
+    getLegendaryAIcards()
+    Timer.create({
+        function_owner=self,
+        identifier="shuffleDelay",
+        function_name="shuffle",
+        delay=1.5
+    })
+    Timer.create({
+        function_owner=self,
+        identifier="deleteAIcards",
+        function_name="deleteLeftoverAICards",
+        delay=1
+    })
+end
+
+function getBasicAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Basic" then
+            deck = object
+            deck.shuffle()
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+        end
+    end
+end
+
+function getAdvancedAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Advanced" then
+            deck = object
+            deck.shuffle()
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+        end
+    end
+end
+
+function getLegendaryAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Legendary" then
+            deck = object
+            deck.shuffle()
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+        end
+    end
+end
+
+function shuffle()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for k, v in pairs(objectsInZone) do
+        if v.tag == 'Deck' then
+            v.shuffle()
+        end
+    end
+end
+
+
+function deleteLeftoverAICards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Basic" then
+            object.destroy()
+        elseif object.getName() == "Advanced" then
+            object.destroy()
+        elseif object.getName() == "Legendary" then
+            object.destroy()
+        elseif object.getName() == "Special" then
+            object.destroy()
+            end
+        end
+    end
+
+
+
+end

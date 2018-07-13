@@ -1,0 +1,72 @@
+--Distance to look for an object
+searchDistance = 7
+
+function onload()
+    createButtonsAndDisplay()
+end
+
+function buttonClick_select()
+    local localPos = self.getPosition()
+    local scaleFactor = self.getScale().x
+    local objFound = false
+    for _, obj in ipairs(getAllObjects()) do
+        if obj~=self and findProximity(localPos,obj)<searchDistance*scaleFactor then
+            targetScale = obj.getScale()
+            local objName = obj.name
+            if obj.getName() ~= "" then
+                objName = obj.getName()
+            end
+            self.editButton({index=0, label=objName})
+            objFound = true
+            break
+        end
+    end
+    if objFound == false then
+        broadcastToAll("No object was found to select. Place object onto pad.", {1,1,1})
+        self.editButton({index=0, label='No Current Selection'})
+        targetScale = nil
+    end
+end
+
+function buttonClick_resize()
+    local localPos = self.getPosition()
+    local scaleFactor = self.getScale().x
+    for _, obj in ipairs(getAllObjects()) do
+        if obj~=self and findProximity(localPos,obj)<searchDistance*scaleFactor then
+            if targetScale ~= nil then
+                obj.setScale(targetScale)
+            else
+                broadcastToAll("Error: Must Set Selection.", {1,0,0})
+                break
+            end
+        end
+    end
+end
+
+--Finds linear distance on the x/z axis between object and position
+function findProximity(targetPos, object)
+    local objectPos = object.getPosition()
+    local xDistance = math.abs(targetPos.x - objectPos.x)
+    local zDistance = math.abs(targetPos.z - objectPos.z)
+    local distance = xDistance^2 + zDistance^2
+    return math.sqrt(distance)
+end
+
+--Creates buttons
+function createButtonsAndDisplay()
+    self.createButton({
+        label='No Current Selection', click_function="none",
+        function_owner=self, position={0,0,8}, rotation={180,0,0},
+        width=0, height=0, font_size=300, font_color={1,1,1}, color={0,0,0}
+    })
+    self.createButton({
+        label="Set Selection", click_function="buttonClick_select",
+        function_owner=self, position={-6,0,-8}, rotation={180,0,0},
+        width=2000, height=500, font_size=300, font_color={1,1,1}, color={0.5,0.5,0.5}
+    })
+    self.createButton({
+        label="Resize", click_function="buttonClick_resize",
+        function_owner=self, position={6,0,-8}, rotation={180,0,0},
+        width=2000, height=500, font_size=300, font_color={1,1,1}, color={0.5,0.5,0.5}
+    })
+end

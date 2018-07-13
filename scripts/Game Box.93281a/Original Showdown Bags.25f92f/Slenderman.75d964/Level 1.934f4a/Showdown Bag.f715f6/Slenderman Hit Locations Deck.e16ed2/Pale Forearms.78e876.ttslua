@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You may spend 5 Survival to gain (+1) Permanent Evasion", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "If you are Insane ~ undo any Wounds caused by this Hit", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "The closest Survivor to you suffers 4 damage to a random hit location", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

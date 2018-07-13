@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Screaming Antelope is knocked down!", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function addStatModifier()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

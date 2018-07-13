@@ -1,0 +1,52 @@
+
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9ac8a3')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    object.setScale({0.43, 1.00, 0.43})
+	local accStat = Global.getTable('accStat')
+        table.insert(accStat, object.clone({
+		position = {-14.31, 4.42, 0.51 + #accStat * -1}}))
+        Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Accuracy Tokens ", effect = ""}})
+    object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('accStat', accStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+    startLuaCoroutine(self, "broadcastDelay2")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll("\u{2658} Full Move the White Lion forward in a straight line \u{2658}", {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll('Any Survivor passed over suffers Grab', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

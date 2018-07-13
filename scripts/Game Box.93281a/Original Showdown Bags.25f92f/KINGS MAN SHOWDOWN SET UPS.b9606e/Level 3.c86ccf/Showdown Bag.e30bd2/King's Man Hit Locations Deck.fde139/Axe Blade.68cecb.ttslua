@@ -1,0 +1,51 @@
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('846081')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local spdStat = Global.getTable('spdStat')
+        		table.insert(spdStat, object.clone({
+				position = {-15.47, 4.42, 0.51 + #spdStat * -1}}))
+                Global.call('addBroadcast', {"crit", {gear = "The Kingsman gained a (-1) Speed Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('spdStat', spdStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll('____________________  !!! First Strike !!!  ____________________', {1,1,1})
+    startLuaCoroutine(self, 'broadcastDelay1')
+    startLuaCoroutine(self, 'broadcastDelay2')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('If you are wearing any Heavy Gear, you are knocked down', {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll('Return any discarded Battle Pressure cards to the top of the Hit Location Deck', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end

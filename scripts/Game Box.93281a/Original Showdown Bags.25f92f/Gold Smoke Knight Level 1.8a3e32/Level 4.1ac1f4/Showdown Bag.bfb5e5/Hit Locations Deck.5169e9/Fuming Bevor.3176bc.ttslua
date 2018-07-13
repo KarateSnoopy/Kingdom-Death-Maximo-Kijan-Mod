@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "If adjacent you may spend 5 Survival to gain (+1) Permanent Accuracy and Archive this Card", effect = ""}})
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('All Survivors within 5 spaces of the Monster suffer 1 damage and knockback 3', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

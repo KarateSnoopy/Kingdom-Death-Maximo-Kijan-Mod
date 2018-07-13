@@ -1,0 +1,37 @@
+
+--------------------------
+--Init
+----------------------------
+function onLoad()
+
+	self.createButton({
+		click_function = 'getMonsterResource',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 150,
+		font_size = 150
+	})
+
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+					obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+					break
+			end
+		broadcastToAll("You gained 1 Random Sunstalker Resource.", {1,1,1})
+		end

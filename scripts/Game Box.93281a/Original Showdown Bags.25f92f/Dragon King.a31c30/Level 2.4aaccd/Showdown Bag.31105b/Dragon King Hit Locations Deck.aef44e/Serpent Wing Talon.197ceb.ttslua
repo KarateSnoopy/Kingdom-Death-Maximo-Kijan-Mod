@@ -1,0 +1,102 @@
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+	getMonsterResource2(deck, name, params)
+	Global.call('addBroadcast', {"crit", {gear = "You gain (+1) Permanent Movement", effect = "If the Settlement has Innovated Forbidden Dance, then", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = "", effect2 = ""}})
+
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Dragon King Resources Deck" then
+					deck = object
+					break
+	                print("Dragon King Resources Deck Found")
+	            else
+	                print("Dragon King Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Veined Wing" then
+					    print("Veined Wing found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Veined Wing", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+						Global.call('addBroadcast', {"crit", {gear = "There are no Veined Wings left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end
+function getMonsterResource2(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Dragon King Resources Deck" then
+					deck = object
+					break
+	                print("Dragon King Resources Deck Found")
+	            else
+	                print("Dragon King Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Husk" then
+					    print("Husk found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Husk", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+						Global.call('addBroadcast', {"crit", {gear = "There are no Husks left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end

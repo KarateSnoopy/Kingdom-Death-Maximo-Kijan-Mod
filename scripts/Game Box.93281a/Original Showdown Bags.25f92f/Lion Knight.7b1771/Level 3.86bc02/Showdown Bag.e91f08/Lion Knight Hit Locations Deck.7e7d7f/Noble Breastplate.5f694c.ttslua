@@ -1,0 +1,34 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Survival", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "If you are the Ruler, all other Survivors gain (+1) Survival", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "They may stand if knocked down", effect = ""}})
+end
+
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, 'broadcastDelay1')
+end
+
+function broadcastDelay1()
+    wait(1.5)
+    broadcastToAll('If you are the Ruler, you are knocked down and gain a (-1) Luck Token', {1,1,1})
+    return 1
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end

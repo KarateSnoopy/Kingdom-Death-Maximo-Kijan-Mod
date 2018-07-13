@@ -1,0 +1,59 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "All non-deaf Survivors Gain (+1) Survival", effect = ""}})
+	getMonsterResource()
+end
+
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Full Move all Spiderlings towards you ♘", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Full Move Spidicules away from all Threats ♘", effect = "Cancel all hits out of range"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	msg_color = grid.getTable("msg_color")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+function getMonsterResource()
+getVars()
+	local tbl = {cardName = "Serrated Fangs", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Serrated Fangs", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Serrated Fangs", effect = ""}})
+	end
+end

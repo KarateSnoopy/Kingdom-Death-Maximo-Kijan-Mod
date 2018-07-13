@@ -1,0 +1,38 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Severed Tentacle ~ Keep in Play", effect = ""}})
+getMonsterResource(deck, name, params)
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+					obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+					break
+			end
+			Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Sunstalker Resource", effect = ""}})
+end
+
+function woundEffect()
+
+end
+
+function addStatModifier()
+
+end
+
+function reflexEffect()
+end
+
+function failureEffect()
+
+end

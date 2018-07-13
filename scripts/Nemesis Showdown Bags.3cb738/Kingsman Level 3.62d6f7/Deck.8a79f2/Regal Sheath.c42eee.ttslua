@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+	self.setPositionSmooth({-2.02, 4.24, -21.32})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Lost Sword ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect ()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  hitTool = getObjectFromGUID('10e61e')
+  hitTool.call("return_battle_pressure")
+  Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+
+function addStatModifier()
+end

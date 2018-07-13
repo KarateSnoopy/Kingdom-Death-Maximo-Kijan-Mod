@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "The Monster stumbles ~ If you are adjacent ~ Suffer the Dismembered Leg Severe Injury ", effect = ""}})
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

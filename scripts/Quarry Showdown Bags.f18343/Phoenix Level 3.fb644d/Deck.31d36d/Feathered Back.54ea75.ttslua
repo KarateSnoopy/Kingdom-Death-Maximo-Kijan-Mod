@@ -1,0 +1,17 @@
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Monster suffers an additional wound", effect = "Move it 1 space forward", }})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Perform Displacement", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

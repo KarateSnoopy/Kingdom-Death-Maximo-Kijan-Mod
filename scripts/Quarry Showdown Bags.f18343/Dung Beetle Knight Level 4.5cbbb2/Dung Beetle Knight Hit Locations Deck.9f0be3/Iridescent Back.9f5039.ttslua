@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "resolve the Critical Wound effect on this Hit Location", effect = "If the Settlement has Innovated Pottery"}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

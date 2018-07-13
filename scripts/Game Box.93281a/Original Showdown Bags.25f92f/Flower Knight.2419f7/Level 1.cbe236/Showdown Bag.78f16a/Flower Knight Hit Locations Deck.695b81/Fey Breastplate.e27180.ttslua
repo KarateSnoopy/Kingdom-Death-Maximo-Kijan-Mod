@@ -1,0 +1,62 @@
+function criticalWoundEffect()
+	 createButton()
+end
+
+function createButton()
+    self.createButton{index = 0, click_function = 'callClickFunctions', function_owner = self,
+label = 'Inside Fairy Ring', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function callClickFunctions()
+	getStatToken()
+	getMonsterResource(deck, name, params)
+    broadcastToAll("You gain a (+1) Luck Token", {1,1,1})
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local tghStat = Global.getTable('tghStat')
+        		table.insert(tghStat, object.clone({
+				position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+                broadcastToAll("The Flower Knight gained a (-1) Toughness Token", {1,1,1})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('tghStat', tghStat)
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+					obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+					break
+				end
+                broadcastToAll("You gained 1 Random Flower Knight Resource", {1,1,1})
+			end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "You Gain (+1) Courage", effect = ""}})
+	Global.call('addBroadcast', {"wound", {gear = "Unless you spend 1 Survival ~ You are knocked down", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

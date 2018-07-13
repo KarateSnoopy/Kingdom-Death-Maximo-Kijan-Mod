@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Spiderlings Explode! ~ Remove them from the Showdown", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+Global.call('addBroadcast', {"reflex", {gear = "You gain the Priority Target Token", effect = ""}})
+Global.call('addBroadcast', {"reflex", {gear = "All Spiderlings perform Spiderling Action targeting you", effect = ""}})
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Attacker loses 2 Armor to a Random Location", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "If adjacent ~ Suffer Knockback 7", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Full Move the Lion Knight towards the Attacker ♘", effect = ""}})
+end
+
+function addStatModifier()
+end

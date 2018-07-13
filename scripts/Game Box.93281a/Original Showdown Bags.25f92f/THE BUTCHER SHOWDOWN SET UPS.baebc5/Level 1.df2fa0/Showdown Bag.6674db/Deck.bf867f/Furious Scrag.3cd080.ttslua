@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "You may gain the Mighty Strike Fighting Art", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

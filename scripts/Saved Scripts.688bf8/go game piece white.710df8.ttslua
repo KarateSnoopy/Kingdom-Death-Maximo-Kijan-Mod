@@ -1,0 +1,545 @@
+--[[
+ KEY WORDS
+-
+ Calculate >
+ Calls >
+ checks
+ creates
+ Destroys >
+ Gets >
+ Inserts >
+ Loops >
+ removes
+ resets
+ Sets >
+ Spawns >
+ token(s)
+
+-
+ TREE FLOWS
+-------------------------------------------------------------------------------
+ SURGE, ATTACK, ATTACK BLIND
+
+-------------------------------------------------------------------------------
+ TRIGGERS
+-------------------------------------------------------------------------------
+ [MENU TOKEN]
+     "At the Start of Your Act"
+     "If Insane at the Start of Your Act"
+     "When you spend an Action"
+
+-------------------------------------------------------------------------------
+ VARIABLES
+-------------------------------------------------------------------------------
+ [DICE ROLLER]
+     clickToHit()
+         hit_blind = Boolean
+         hit = Boolean
+         blind = float
+     redClicked() , yellow, green blue
+         red_attacked = Boolean
+         yellow_attacked = Boolean
+         green_attacked = Boolean
+         blue_attacked = Boolean
+
+     clickedRoll(color)
+         weaponGUID = guid
+
+ [MENU TOKEN]
+     isInsane - Boolean
+     isSurging_survCard - Boolean
+
+ [SURV CARD]
+
+-------------------------------------------------------------------------------
+ TOKEN DESTROY()
+-------------------------------------------------------------------------------
+ [MENU TOKEN]
+					 function surge()
+						 destroys 'end of wound' token(s) in player zone
+
+					 function startAct()
+						 Destroys > token > "until next act"
+
+ [DICE ROLLER]
+					 function redClicked(), yellow, green, blue
+						 Destroys > token > "warlord_luck", "end of wound"
+
+					 (function) clearEndofAttackTokens()
+						 Destroys > token > zone > zonesDestruct > zoneAIBoard > "end of attack"
+
+-------------------------------------------------------------------------------
+ SURGE, ATTACK, ATTACK BLIND
+-------------------------------------------------------------------------------
+ [RED MENU TOKEN]
+ function surge
+	 checks if can surge
+		 if not canSurge then removes / creates menu buttons
+		 if canSurge
+
+			 Gets > bool1 = survCard.getVar("isSurging_survCard")
+			 Sets > survCard.setVar("isSurging_survCard", true)
+
+			 Gets > local persistentCard = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+			 Gets > local bool3 = persistentCard.getVar("isSurging_persistentCard")
+			 Sets > persistentCard.setVar("isSurging_persistentCard", true)
+
+			 Calls > survCard.call("set_roller_survAttack")
+				 if isSurging_survCard then
+					 roller_survAttack = getObjectFromGUID('c160b7')
+				 else
+					 roller_survAttack = getObjectFromGUID('ff240b')
+				 end
+
+			 Uses survival
+			 Sets > rotation > surge token
+			 Clears menu
+
+-------------------------------------------------------------------------------
+ [RED SURV CARD]
+ function attack()
+	 (function) action_spent() - checks "When you spend an Action"
+
+   (function) fecalSalveReset() - removes button 'not a threat'
+
+   (function) startAct()
+     Removes > Button > 'start act', 'blocking1', 'blocking2'
+     Gets > value > survival = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+     Gets > value > insanity = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+     Sets > boolean > isInsane from 'husk of destiny', 'stark raving'
+       if isInsane
+         checks for 'antelope mask', 'forsaker mask', 'god mask'
+       if not isInsane
+         checks for "At the Start of your Act"
+     Destroys > token > "until next act"
+
+   Calls > surv_MenuToken.call("clear_spawned_gear_cards")
+   Calls > roller_survAttack.call("redClicked")
+   Calls > roller_survAttack.call("clickToHit")
+ end
+
+-------------------------------------------------------------------------------
+ [DICE ROLLER]
+   function redClicked(), yellowClicked(), greenClicked(), blueClicked()
+     Sets > boolean > red_attacked
+  	 Sets > boolean > yellow_attacked
+  	 Sets > boolean > green_attacked
+  	 Sets > boolean > blue_attacked
+
+     Sets > grid = getObjectFromGUID(Global.getTable("grids").red.guid)
+     Sets > zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+     Sets > survCard = getObjectFromGUID(Global.getTable('survCards').red.guid)
+     Sets > insanity_val = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+     Gets Position > frenzy = getObjectFromGUID('7636f9') (red)
+       Sets > boolean > hasFrenzy if pos.y >1
+       Sets > boolean > hasConstellation
+       Destroys > token > "warlord_luck", "end of wound"
+
+     (function) cleanUp()
+       Destroys > table > cleanUpList
+       Sets > table > cleanUpList = {}
+
+     (function) onClickCleanUp()
+       Destroys > die > zone > Global > zoneRightHL > "survivor dice"
+
+       Calls > Global.call("clearBroadcast")
+
+     (function) clearEndofAttackTokens()
+       Destroys > token > zone > zonesDestruct > zoneAIBoard > "end of attack"
+
+    ://TODO DEPRECATE
+     (function) removeArmorSetStats_yellow_green_blue()
+       Destroys > token > zone > zonesDestruct > zoneAIBoard > "red", "yellow", "green", "blue"
+			//TODO END
+
+ function clickToHit()
+
+	//TODO POSSIBLE DUPLICATE
+   (function) cleanUp()
+     Destroys > table > cleanUpList
+     Sets > table > cleanUpList = {}
+		//TODO END
+
+   Sets > boolean > hit_blind
+   Sets > boolean > hit
+   Sets > value > blind
+
+   Checks if in Area of Effect Zone while attacking
+   Sets > table > Global Broadcast
+   (function) clickedRoll()
+ end
+-------------------------------------------------------------------------------
+
+
+   function clickedRoll()
+	-------------------------------------------------------------------------------
+	 WHEN ROLLING TO HIT
+	-------------------------------------------------------------------------------
+     if hit == true then (when rolling to hit)
+       Calls > grid.call("checkWeapon")
+       Gets > grid.getVar("weaponGUID")
+
+         Sets > Booleans >
+           hasDevastating_1
+           hasDevastating_2
+           hasEarlyIron
+           hasUnwiedly
+           hasSlow
+
+           hasLionArmor
+           hasWarlord
+
+           hasRegalEdge
+           hasCelestialSpear
+
+           hasAxe
+           hasAxeProf
+           hasAxeMastery
+           hasBow
+           hasBowProf
+           hasClub
+           hasClubProf
+           hasClubMastery
+           hasDagger
+           hasKatar
+           hasGrandProficiency
+           hasGrandMastery
+           hasGrandWeapon
+           hasSwordMastery
+           hasSword
+           hasTwilight_prof4
+           hasWhip
+           hasWhipProf
+           hasWhipMastery
+
+           Fighting Arts
+           hasSneakAttack
+
+         Spawns > token(s) > Accuracy/Strength > for unique weapon conditions
+         Calls > v.call('sub') > which reduces ammunition count on gear card
+
+         Calculate > # of Dice to Roll for Hit
+         Gets > table > grid.getTable("buttons")
+    		 Sets > #Dice > params = {number = tonumber(gridButn['attack'].label), playerColor = color}
+
+           if hasRegalEdge > +1 spd, +4str
+           if hasCelestialSpear > +5str
+           if hasAxe and hasWarlord > +1spd, +1lck
+           if hasLionArmor and hasDagger > +1spd, +2str
+           if hasLionArmor and hasKatar > +1spd, +2str
+           if hasSwordMastery and hasSword > +1spd, +1str
+           if hasBowProf_reRoll > #dice = #count_missed
+           if hasTwilight_prof4 > tonumber(gridButn['attack'].label) + 2
+
+           Timer > function spawnDice()
+             Timer > function rollTheDice()
+               startLuaCoroutine(self, "watchDice")
+                 function checkResults()
+
+                   Gets > table > grid.getTable("buttons")
+                   Gets > table > zone.getObjects()
+
+                   Sets > boolean > timelessEye
+                   Sets > boolean > reroll > "rainbow wing belt"
+                   Sets > boolean > hasLungs
+                   Sets > boolean > hasUnrelenting
+                   Sets > boolean > timelessEye
+
+                   Loops > table > spawnedDice
+                     Gets > value = die.getValue()
+                     Inserts > table > table.insert(rollResults, value)
+                       Sets > Die > Rotation/Position
+
+                       if Value == 1 then
+                         if hasEarlyIron > says msg
+                         if hasUnwiedly > says msg
+                         if hasReroll > says msg
+
+                       Gets > boolean > token_knockdown_monster.getVar("monster_knocked_down")
+												--------------------------------------------------------------------------------
+												 ON A PERFECT HIT
+												--------------------------------------------------------------------------------
+                         if value == 10 or (timelessEye and value == 9)
+                           Sets > boolean > attackHit
+                           Sets > die > tint > Dark Green
+                             (function) perfectHit()
+                               Loops > zone > player > "On a Perfect Hit"
+                             (function) hitEffects()
+                               Loops > zone > player > "When you hit"
+												--------------------------------------------------------------------------------
+												 ON A HIT
+												--------------------------------------------------------------------------------
+                         if (value >= Hit Value - Blind) and value ~= 1
+                           Sets > boolean > attackHit
+                           Sets > die > tint > Green
+                           (function) hitEffects()
+                             Loops > zone > player > "When you hit"
+												--------------------------------------------------------------------------------
+												 CALCULATES IF MONSTER IS KNOCKED DOWN
+												--------------------------------------------------------------------------------
+                         if isKnockedDown then hit on 3+ or if (value >= Hit Value - Blind) and value ~= 1
+                           Sets > boolean > attackHit
+                           Sets > die > tint > Green
+                           (function) hitEffects()
+                             Loops > zone > player > "When you hit"
+												--------------------------------------------------------------------------------
+												 ON A MISS (ATTACK)
+												--------------------------------------------------------------------------------
+                         else
+                           Sets > die > tint > Black
+
+                      	 if attackHit and hasLungs > say msg to re-roll
+
+	                       Count Missed
+	                         Gets > table > zone = getObjectFromGUID("d2f7eb") > zone.getObjects()
+	                         Gets > die > color tint > black > count_missed
+	                           if hasUnrelenting and unrelentingTriggered > say msg
+	                           if hasBow and hasBowProf and count_missed >= 1 > say msg
+--------------------------------------------------------------------------------
+ WHEN ROLLING TO WOUND
+--------------------------------------------------------------------------------
+   if hit ~= true then (when rolling to wound)
+     Calculate > # of Dice to Roll for Hit
+     Sets > #dice > 1
+		 Sets > local desc = ""
+		 Sets > local sharps = 0
+
+     Gets > table > hitTool.getTable('hitLocation')
+       Gets > keyword tags > hit location
+    		 Sets > boolean > cannot_cancel_reaction
+         Sets > boolean > has_SuperDense
+         Sets > boolean > cannotCrit
+         Sets > boolean > needsAxe
+           if hasAxe and hasAxeMastery then
+             Sets > boolean > hasAxe_vs_persistentInjury
+           if hasDagger the
+             Sets > hasDagger_bonus
+         Sets > boolean > hasReflex_Reaction
+         Sets > boolean > hasWound_Reaction
+         Sets > boolean > hasFailure_Reaction
+
+     Sets > local equipedWeapon = ""
+       Sets > equipedWeapon = v
+         Sets > boolean > unlucky
+         Sets > boolean > cannotCrit
+
+     Sets > local descWeapon = ""
+     Sets > local nameWeapon = "FistAndTooth"
+
+     Sets > if equipedWeapon ~= "" then
+       Sets > descWeapon = equipedWeapon.getDescription()
+       Sets > nameWeapon = equipedWeapon.getName()
+
+       Loops > zone > player > card/gear
+         Sets > boolean > hasDevastating_1
+         Sets > boolean > hasDevastating_2
+         Sets > boolean > hasFrail
+         Sets > boolean > centuryCarapace
+         Sets > value(s) > sharps
+
+     else (if not equipedWeapon ~= "" then)
+       if nameWeapon == "FistAndTooth" then
+         Loops > zone > player > "metal maw", "acid Palms"
+           Sets > sharps
+
+   end (else (if not hit then))
+
+   hasFrail > says msg
+   if hasDevastating_1 or hasDevastating_2 > says msg
+
+   if Sharps > 0 > Sets > boolean > sharp
+     Sets > variable > playerClicked = color
+
+		Calls > hitTool.call('removeButton_ReactionTriggered')
+	 	Calls > hitTool.call('removeButton_survival_opportunity')
+	 	Calls > 	hitTool.call('removeButton_FinishReaction')
+
+   Timer > function spawnDice()
+     Timer > function rollTheDice()
+       startLuaCoroutine(self, "watchDice")
+         function checkResults()
+           if sharp then
+             Calculates > sharpValue = sharpValue + die.getValue()
+               (function) rollWound > Gets Value > adds to Wound Roll
+
+           else (if not sharp)
+
+           Sets > Value > Modifiers
+             if hasDoubleWoundAttempt then
+               Sets > value > value = value * 2
+             if hasDagger and hasDagger_bonus then
+               Sets > value > value = value + 3
+
+           Gets > Value
+					--------------------------------------------------------------------------------
+					 ON A CRITICAL WOUND
+					--------------------------------------------------------------------------------
+             if value >= gridButn['crit'].label or hasAxe_vs_persistentInjury and value ~= 1 then
+               Sets > die > tint > Dark Red
+               Sets / boolean > hasFailure_Reaction = false
+               Sets / boolean > hasReflex_Reaction = false
+               Sets / boolean > hasWound_Reaction = false
+
+               (function) critEffects()
+                 Calls > hitTool.call("createButton_survival_Opportunity")
+                 Gets > grid.getTable("weapon")
+                 Loops > zone > player > "When you Critically Wound"
+
+               (function) woundEffects()
+                 Gets > Sets > weapon = grid.getTable("weapon")
+                 Loops > zone > player > "When you Wound"
+
+               (function) hitLocationCriticalWoundEffects()
+
+								Calls > hitTool.call('removeButton_ReactionTriggered')
+ 								Calls > hitTool.call('createButton_survival_Opportunity')
+
+                 Gets > table > hitTool.getTable('hitLocation')
+                   obj = getObjectFromGUID(v)
+                   Calls > obj.call("criticalWoundEffect")
+                   Sets > Lock > unlocks card
+                   Sets > Rotation > rotates card flat
+                   Sets > Position > moves card to hit location discard
+
+               (function) resetHitLocationTable()
+                 Gets > table > buttons > hitTool.getButtons()
+                 Destroys > buttons > "Finish Reaction Trigger"
+                 Sets > boolean > reset_table
+                   if reset_table then
+                     Gets > table > hitTool.getTable('hitLocation')
+                     Sets > table > hitTool.getTable('hitLocation', {})
+
+               (function) when_monster_suffers_wound()
+                 Gets > Zone > zoneInjuryBoard
+                   Loops > Zone > "When the monster suffers a wound"
+						--------------------------------------------------------------------------------
+						 ON A WOUND
+						--------------------------------------------------------------------------------
+             elseif value >= (gridButn['crit'].label or hasAxe_vs_persistentInjury) and value ~= 1 then
+               Sets > die > tint > Red
+               Sets > hasFailure_Reaction = false
+
+               if hasWound_Reaction or hasReflex_Reaction then
+								Calls > hitTool.call('createButton_survival_Opportunity')
+	 							Calls > hitTool.call('createButton_reactionTriggered')
+	 							Calls > hitTool.call('createButton_resolve_attack')
+
+               if cannotCrit then
+                 if unlucky > say msg
+                 if needsAxe > say msg
+
+               (function) woundEffects()
+                 Gets > Sets > weapon = grid.getTable("weapon")
+                 Loops > zone > player > "When you Wound"
+
+               (function) checkReaction()
+                 Gets > table > hitTool.getTable('hitLocation')
+                 Gets > obj = getObjectFromGUID(v)
+                   if hasWound_Reaction or hasFailure_Reaction or hasReflex_Reaction then
+                     Sets > Lock > unlocks card
+                     Sets > Rotation > rotates card flat
+                   else
+                     Sets > Lock > unlocks card
+                     Sets > Rotation > rotates card flat
+                     Sets > Position > moves card to hit location discard
+
+               (function) resetHitLocationTable()
+                 Gets > table > buttons > hitTool.getButtons()
+                 Destroys > buttons > "Finish Reaction Trigger"
+                 Sets > boolean > reset_table
+                   if reset_table then
+                     Gets > table > hitTool.getTable('hitLocation')
+                     Sets > table > hitTool.getTable('hitLocation', {})
+
+							 (function) when_monster_suffers_wound()
+                 Gets > Zone > zoneInjuryBoard
+                   Loops > Zone > "When the monster suffers a wound"
+
+							--------------------------------------------------------------------------------
+							 ON A MISS (WOUND)
+							--------------------------------------------------------------------------------
+               Sets > die > tint > Black
+							 Sets > bollean > hasWound_Reaction = false
+
+							 if hasFailure_Reaction or hasReflex_Reaction then
+								Calls > hitTool.call('createButton_survival_Opportunity')
+	 							Calls > hitTool.call('createButton_reactionTriggered')
+	 							Calls > hitTool.call('createButton_resolve_attack')
+
+							 (function) checkReaction()
+                 Gets > table > hitTool.getTable('hitLocation')
+                 Gets > obj = getObjectFromGUID(v)
+                   if hasWound_Reaction or hasFailure_Reaction or hasReflex_Reaction then
+                     Sets > Lock > unlocks card
+                     Sets > Rotation > rotates card flat
+                   else
+                     Sets > Lock > unlocks card
+                     Sets > Rotation > rotates card flat
+                     Sets > Position > moves card to hit location discard
+
+							 (function) resetHitLocationTable()
+								 Gets > table > buttons > hitTool.getButtons()
+								 Destroys > buttons > "Finish Reaction Trigger"
+								 Sets > boolean > reset_table
+									 if reset_table then
+										 Gets > table > hitTool.getTable('hitLocation')
+										 Sets > table > hitTool.getTable('hitLocation', {})
+
+							 if hasAxe and hasAxeProf > says msg to re-roll wound attempt
+
+	 if hit then > startLuaCoroutine(Global, "printHit")
+	 else > startLuaCoroutine(Global, "printWound")
+
+	 Sets > boolean > cannot_cancel_reaction = false
+	 Sets > value > sharpValue = 0
+
+
+ end function clickedRoll(color)
+
+--------------------------------------------------------------------------------
+[PERSISTENT INJURY CARD]
+--------------------------------------------------------------------------------
+function onObjectEnterScriptingZone(zone, enter_object)
+	if zone == zoneRight_drawnHit
+		Sets > Roller > Right
+
+	if zone == zoneRight_drawnHit
+		Sets > Roller > Left
+
+function onObjectLeaveScriptingZone(zone, enter_object)
+	if zone == zoneLeft_drawnHit
+		Counts > #Hit Locations still in zone
+			if count < 1
+			Sets > boolean > self.setVar("isSurging_persistentCard", false)
+
+			Sets > boolean > red.setVar("isSurging_survCard", false)
+			Sets > boolean > yellow.setVar("isSurging_survCard", false)
+			Sets > boolean > green.setVar("isSurging_survCard", false)
+			Sets > boolean > blue.setVar("isSurging_survCard", false)
+
+			Gets > table > hitTool_Left.getTable("hitLocation")
+			Sets > table > hitTool_Left.setTable("hitLocation", {})
+
+--------------------------------------------------------------------------------
+[HIT LOCATION CARD FUNCTIONS]
+--------------------------------------------------------------------------------
+function criticalWoundEffect()
+
+Gets > guid > getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+Gets > boolean> bool1 = card.getVar("isSurging_persistentCard")
+
+if bool1 then
+	Sets > roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+end
+
+if not bool1 then
+	Sets > roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+end
+
+Gets > zone > zone = roller.getVar("zone")
+Gets > grid > grid = roller.getVar("grid")
+
+ ]]
+
+-- end flow tree

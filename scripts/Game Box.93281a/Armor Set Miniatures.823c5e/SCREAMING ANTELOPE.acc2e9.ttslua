@@ -1,0 +1,43 @@
+function onload()
+  b_display = { index = 0,
+                      click_function = 'getArmorSet',
+                      label = self.getName(),
+                      function_owner = self,
+                      position = {0, 0.09, 0},
+                      rotation = {0, 0, 0},
+                      width = 6000,
+                      height = 500,
+                      font_size = 300}
+
+  local description = string.match(self.getDescription(), '%d+')
+    if description != '' and type(tonumber(description)) == 'number' then
+        b_display.font_size = tonumber(description)
+  end
+
+  self.createButton(b_display)
+end
+
+--Finds Armor Set and spawns to position
+function getArmorSet(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckArmorSets.guid)
+	    local objectsInZone = zone.getObjects()
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Armor Sets" then
+					deck = object
+					break
+	            end
+			end
+		        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+					if card.nickname == "Screaming Armor" then
+						deck.takeObject({
+							guid = card.guid,
+							position={-25.31, 4.29, 21.14},
+						})
+						break
+						end
+					end
+				end

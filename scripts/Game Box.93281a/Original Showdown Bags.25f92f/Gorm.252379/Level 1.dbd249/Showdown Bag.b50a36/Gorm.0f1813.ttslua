@@ -1,0 +1,37 @@
+
+function onLoad()
+  zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+  zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+end
+
+zoneEffect_stored = {-55.04, 8.26, -70.92}
+
+function onPickUp(color, obj)
+  if self.getName() == "Gorm" then
+
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Thunder Foot" then
+        zoneEffect.setPosition(zoneEffect_stored)
+      end
+    end
+  end
+end
+
+function onDropped(player_color)
+  if self.getName() == "Gorm" then
+    pos = self.getPosition()
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Thunder Foot" then
+        zoneEffect.setScale({13.6, 5.10, 13.6})
+        zoneEffect.setPosition({pos.x, pos.y, pos.z})
+      end
+    end
+  end
+end
+
+-- Coroutine timer
+function wait(time)
+  local start = os.time()
+  --each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+  repeat coroutine.yield(0) until os.time() > start + time
+end

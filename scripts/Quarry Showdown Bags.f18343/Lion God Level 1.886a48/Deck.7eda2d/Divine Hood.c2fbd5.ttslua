@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Lion God suffers an Additional Wound and Knockback 3", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "Archive any Terrain it passes over", effect = ""}})
+end
+
+function woundEffect()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfattack"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Lion God gained (+3) Toughness until the End of your Attack", effect = ""}})
+end
+
+function addStat_coR()
+	for i=1, 3 do
+		obj.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,81 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "All non-deaf Survivors Gain (+1) Survival", effect = ""}})
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Spidicules Resources Deck" then
+					deck = object
+					break
+	                print("Spidicules Resources Deck Found")
+	            else
+	                print("Spidicules Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Serrated Fangs" then
+					    print("Serrated Fangs found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Serrated Fangs", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+						Global.call('addBroadcast', {"crit", {gear = "There are no Serrated Fangss left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "\u{2658} Full Move all Spiderlings towards you \u{2658}", effect = ""}})
+	Global.call('addBroadcast', {"wound", {gear = "\u{2658} Full Move Spidicules away from all Threats \u{2658}", effect = "Cancel all hits out of range"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("Are you attacking with a Spear?", {1,1,1})
+    createButton()
+end
+
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getWeaponModifier', function_owner = self,
+label = 'Attack with a Spear', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getWeaponModifier()
+    	local object = getObjectFromGUID('87ed9c')
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, object.clone({position = {-5.39, 4.32, 0.24}}))
+            broadcastToAll("(+3) Strength to Wound this location Calculated.", {1,1,1})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+    end

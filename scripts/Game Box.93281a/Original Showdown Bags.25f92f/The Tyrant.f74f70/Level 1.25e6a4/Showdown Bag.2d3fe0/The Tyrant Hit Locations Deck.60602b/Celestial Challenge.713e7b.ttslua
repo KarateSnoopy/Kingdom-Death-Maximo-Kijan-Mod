@@ -1,0 +1,47 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound", {gear = "Gain the Noble Surname. Gain (+1) Courage. Suffer \u{2605} Brain Damage", effect = "Archive This Card"}})
+end
+
+function failureEffect()
+    broadcastToAll('____________________ ☠ !!! Failure Reaction Triggered !!! ☠ ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll("You are knocked down", {1,1,1})
+    return 1
+end
+
+function reflexEffect()
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function addStatModifier()
+    broadcastToAll('____________________  !!! First Strike !!!  ____________________', {1,1,1})
+    startLuaCoroutine(self, 'broadcastDelay2')
+    startLuaCoroutine(self, 'broadcastDelay3')
+end
+
+function broadcastDelay2()
+  wait(2)
+  broadcastToAll("You suffer (-1) Strength to Wound for each Dragon Trait you have (up to -4)", {1,1,1})
+  return 1
+end
+
+function broadcastDelay3()
+  wait(4)
+  broadcastToAll("You must Manually adjust this", {1,1,1})
+  return 1
+end

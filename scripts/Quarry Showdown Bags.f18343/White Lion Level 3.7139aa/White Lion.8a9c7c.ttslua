@@ -1,0 +1,32 @@
+function onLoad()
+  zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+  zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+end
+
+zoneEffect_stored = {-28.63, 6.67, -78.63}
+
+function onPickUp(color, obj)
+  if self.getName() == "White Lion" then
+
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Alert" then
+        zoneEffect.setPosition(zoneEffect_stored)
+      end
+      if card.getName() == "Beast's Heel" then
+          broadcastToAll("** Persistent Injury ~ Ruptured Tendon **", {1,1,1})
+      end
+    end
+  end
+end
+
+function onDropped(player_color)
+  if self.getName() == "White Lion" then
+    pos = self.getPosition()
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Alert" then
+        zoneEffect.setScale({15.98, 5.10, 15.98})
+        zoneEffect.setPosition({pos.x, pos.y+4, pos.z})
+      end
+    end
+  end
+end

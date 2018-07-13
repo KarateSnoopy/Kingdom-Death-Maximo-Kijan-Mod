@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "", effect = "You may choose to either", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "", effect = "Gain a (+1) Evasion Token", effect2 = "~ or ~"}})
+	Global.call('addBroadcast', {"crit", {gear = "Spend 2 Survival to gain (+1) Permanent Evasion", effect = "", effect2 = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The Dragon King turns to face the attacker", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "If attacker is within 3 spaces ~ Suffer Knockback 7", effect = ""}})
+end
+
+function reflexEffect()
+end

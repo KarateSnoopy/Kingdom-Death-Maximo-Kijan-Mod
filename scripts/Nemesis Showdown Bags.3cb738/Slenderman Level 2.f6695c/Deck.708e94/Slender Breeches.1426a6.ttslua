@@ -1,0 +1,40 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = 'Ensnare Attacker', effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Place Slenderman 5 Spaces away from Attacker ~ As far from other Survivors as possible", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	changeSurvivors("insanity", 3, grid)
+	broadcastToAll("You gained (+3) Insanity", msg_color)
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	msg_color = grid.getTable("msg_color")
+
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

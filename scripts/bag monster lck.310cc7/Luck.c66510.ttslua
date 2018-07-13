@@ -1,0 +1,11 @@
+isKdmEffectsObject = true
+effects = {
+	luck = 1
+}
+
+function getEffects()
+
+	effects.luck = -1
+
+	return effects
+end

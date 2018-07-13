@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Basic Action Vs All in Zone of Death", effect = ""}})
+	--startLuaCoroutine(Global, "printReflex")
+end
+
+
+function addStatModifier()
+end

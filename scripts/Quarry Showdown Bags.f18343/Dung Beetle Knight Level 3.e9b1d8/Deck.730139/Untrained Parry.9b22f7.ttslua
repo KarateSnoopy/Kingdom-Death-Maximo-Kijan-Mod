@@ -1,0 +1,39 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+end
+
+function getMonsterResource()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Dung Beetle Knight Resource", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "♘ Full move towards attacker ♘", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "If adjacent ~ Suffer Bash and Knockback 7", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

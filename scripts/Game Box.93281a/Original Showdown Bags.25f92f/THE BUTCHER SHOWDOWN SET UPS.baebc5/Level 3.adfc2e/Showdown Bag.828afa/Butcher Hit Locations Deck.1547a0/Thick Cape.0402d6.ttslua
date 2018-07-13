@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered ~ Roll 1d10 ~ If greater than your Courage, suffer ★ Brain Damage >>>", {1,1,1})
+end
+
+function addStatModifier()
+end

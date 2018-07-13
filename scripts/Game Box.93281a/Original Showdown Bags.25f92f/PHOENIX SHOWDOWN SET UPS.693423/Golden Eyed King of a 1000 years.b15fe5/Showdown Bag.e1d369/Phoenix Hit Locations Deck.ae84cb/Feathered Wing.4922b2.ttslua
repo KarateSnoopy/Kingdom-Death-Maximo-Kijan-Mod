@@ -1,0 +1,31 @@
+
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9a6c93')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local movStat = Global.getTable('movStat')
+        		table.insert(movStat, object.clone({
+				position = {-16.61, 4.42, 0.51 + #movStat * -1}}))
+                Global.call('addBroadcast', {"crit", {gear = "The Phoenix gained a (-1) Movement Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('movStat', movStat)
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Survivors in the Eye of the Storm ~ Gain (+1) Insanity", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "All other Survivors ~ Suffer Bash and Knockback 7", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

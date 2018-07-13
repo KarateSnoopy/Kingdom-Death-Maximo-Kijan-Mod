@@ -1,0 +1,15 @@
+isKdmEffectsObject = true
+effects = {
+    accuracy = 1
+}
+
+function getEffects()
+
+        effects.accuracy = -1
+
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.accuracy = effects.accuracy * qty
+	end
+    return effects
+end

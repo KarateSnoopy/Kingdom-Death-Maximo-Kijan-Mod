@@ -1,0 +1,53 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+Global.call('addBroadcast', {"wound", {gear = "Gain a (+1) Evasion and (+1) Accuracy Token", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  local hitTool = getObjectFromGUID('10e61e')
+  local hitTable = hitTool.getTable('hitLocation')
+  green_open = false
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      green_open = true
+    end
+  end
+  if green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      obj.setDescription(obj.getDescription() .. ", super_dense")
+    end
+    broadcastToAll("Green Lens Open ~ (+4) Toughness to Wound this Location and it gained 'Super Dense'", {1,1,1})
+    getTokenModifier()
+  end
+  if not green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      local desc = obj.getDescription()
+      if string.find(desc, "super_dense") then
+        local new_desc = string.gsub(desc, "super_dense", "")
+        obj.setDescription(new_desc)
+      end
+    end
+  end
+end -- end function
+
+function getTokenModifier()
+    	local token = getObjectFromGUID('c1cc69')
+      token.setDescription('')
+      token.setRotation({0, 180, 180})
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, token.clone({position = {-5.39, 4.32, 0.24}}))
+      token.setRotation({0, 180, 0})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

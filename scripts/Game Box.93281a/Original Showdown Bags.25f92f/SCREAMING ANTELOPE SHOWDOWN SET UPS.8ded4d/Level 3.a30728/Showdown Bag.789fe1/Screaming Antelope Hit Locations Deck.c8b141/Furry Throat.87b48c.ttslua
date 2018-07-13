@@ -1,0 +1,52 @@
+
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+				    obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+				end
+				Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Screaming Antelope Resource", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("Are you attacking with a Club or Shield?", {1,1,1})
+    createButton()
+end
+
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getWeaponModifier', function_owner = self,
+label = 'Club or Shield', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getWeaponModifier()
+    	local object = getObjectFromGUID('8e1b84')
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, object.clone({position = {-5.39, 4.32, 0.24}}))
+            broadcastToAll("(+2) Luck to Wound this location Calculated.", {1,1,1})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+    end

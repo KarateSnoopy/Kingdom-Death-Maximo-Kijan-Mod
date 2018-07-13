@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Degenerating Wound", effect = "Keep in Play until the End of the Next Round"}})
+	self.setPosition({2.11, 4.34, -21.56})
+end
+
+function woundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_mov.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call('spawn_token')
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Screaming Antelope gained a (-1) Movement Token", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

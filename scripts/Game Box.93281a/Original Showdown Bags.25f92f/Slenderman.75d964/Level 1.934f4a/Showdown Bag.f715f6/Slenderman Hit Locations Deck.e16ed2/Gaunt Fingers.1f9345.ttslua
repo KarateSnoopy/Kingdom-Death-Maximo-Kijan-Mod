@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Courage", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "If you are not wearing any Fur Armor ~ You gain 1 Bleeding Token and are knocked down", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

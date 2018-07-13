@@ -1,0 +1,20 @@
+
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Putrid Spinchter Explodes! ~ Gain (+1) Insanity", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "If you are Insane ~ Gain (+3) Survival Too!", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Survivors in the Eye of the Storm ~ Gain (+1) Insanity", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "All other Survivors ~ Suffer Bash and Knockback 7", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

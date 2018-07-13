@@ -1,0 +1,57 @@
+
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Lost Ding Dong ~ Keep in Play", effect = "", effect2 = ""}})
+	self.setPositionSmooth({-4.18, 4.34, -21.56}, false, false)
+	getMonsterResource(deck, name, params)
+	getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (+1) Damage Token", effect = ""}})
+
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Lion Testes", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Lion Testes", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You already hacked off the Lion's Testes", effect = ""}})
+	end
+end
+
+function getVars()
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

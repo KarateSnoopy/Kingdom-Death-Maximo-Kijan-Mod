@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "All adjacent Survivors gain (+1) Insanity and (+1) Survival", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "If Insane, they may spend 3 survival to gain a Random Fighting Art", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "If you have any Age Tokens ~ Suffer Rewind", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

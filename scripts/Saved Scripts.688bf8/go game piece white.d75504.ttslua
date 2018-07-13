@@ -1,0 +1,1653 @@
+--[[isGearGrid = true
+hideButtonBack = true
+FullCharSheet = nil
+FullCharSheetGUID = ''
+PlayerZone = 'zoneP3'
+SurvMemBag = 'c1d766'
+weapon = {strength = 0, speed = 2, accuracy = 2, luck = 1, name = "FistAndTooth"}
+--zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+
+-- Stat Token Positions
+strToken_pos = {x = 18.18, y = 6, z = -20.95}
+accToken_pos = {x = 17.15, y = 6, z = -20.94}
+evaToken_pos = {19.69, 6, - 19.75}
+
+momentum_on_pos = {3.91, 4.17, - 8.23}
+momentum_off_pos = {3.91, 0, - 8.23}
+extraBleed_pos = {21.38, 0, - 18.81}
+extraSlots_pos_on = {7.92, 4.17, - 26.15}
+extraSlots_pos_off = {7.92, 0, - 26.15}
+
+msg_color = {0.192, 0.701, 0.168}
+
+survivorBags = {
+  male = {
+    {mesh = "http://pastebin.com/raw/tg6gzM2f", diffuse = "http://u.cubeupload.com/redcore/standingman.jpg"},
+    {mesh = "http://pastebin.com/raw/hnx90H3a", diffuse = "http://u.cubeupload.com/redcore/walkingman.jpg"}
+  },
+  female = {
+    {mesh = "http://pastebin.com/raw/GK305Abh", diffuse = "http://u.cubeupload.com/redcore/woman1.jpg"},
+    {mesh = "http://pastebin.com/raw/GGj34rtV", diffuse = "http://u.cubeupload.com/redcore/woman2.jpg"}
+  }
+}
+
+function onload(saved_data)
+  initButtonsTable()
+  initCustomButtons()
+  -- Object GUID's
+  zonesTable = Global.getTable('zones')
+  zoneGUID = zonesTable[PlayerZone].guid
+  zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+  zoneRed = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+  zoneYellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+  zoneGreen = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+  zoneBlue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+
+  zonePlayer = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+
+  affinity_red = getObjectFromGUID('6a59da')
+  affinity_green = getObjectFromGUID('9c51f3')
+  affinity_blue = getObjectFromGUID('9c51f3')
+
+  momentum_Counter = getObjectFromGUID('d41952')
+  extraBleed = getObjectFromGUID('77fbb6')
+  bleedTool = getObjectFromGUID('77a42a')
+  extraSlots = getObjectFromGUID('5ffc13')
+  survCard = getObjectFromGUID(Global.getTable('survCards').green.guid)
+
+  strToken = getObjectFromGUID('4c2300')
+  accToken = getObjectFromGUID('bd41a5')
+  evaToken = getObjectFromGUID('94badb')
+
+  --//TODO: add to grids
+  isDeaf = getObjectFromGUID('e5c453')
+
+  if not Global.getVar("bypassSavedLoad") then
+    loaded_data = JSON.decode(saved_data)
+    if loaded_data ~= nil then
+      if loaded_data.button ~= nil then
+        for i, v in pairs(loaded_data.button) do
+          buttons[i] = {label = v}
+        end
+      end
+    end
+  end
+
+  local objectsInZone = getObjectFromGUID(zoneGUID).getObjects()
+  for k, object in pairs(objectsInZone) do
+    if object.getDescription() == "SurvivorSheet" then
+      FullCharSheet = object
+      FullCharSheetGUID = object.getGUID()
+    end
+  end
+  isFullyLoaded = true
+  startLuaCoroutine(self, "checkTokenDelayed")
+end
+
+function initCustomButtons()
+  thick = 0.14
+
+  --armor and hit locations
+  dx = -1.3; dy = -10.35; px = 3.32
+  setupButton('head', 'counters', dx, dy); dx = dx + px + 0.1
+  setupButton('body', 'counters', dx, dy); dx = dx + px
+  setupButton('waist', 'counters', dx, dy); dx = dx + px - 0.1
+  setupButton('arms', 'counters', dx, dy); dx = dx + px
+  setupButton('legs', 'counters', dx, dy)
+
+  --Stats
+  dx = 1.665; dy = -5.8; px = 2.53
+  setupButton('attack', 'counter', dx, dy); dx = dx + px
+  setupButton('hit', 'counter', dx, dy); dx = dx + px
+  setupButton('wound', 'counter', dx, dy); dx = dx + px
+  setupButton('crit', 'counter', dx, dy)
+
+  dx = -0.2; dy = -10.28; px = 3.32; py = 0.65; ry = dy
+  setupButton('injury_head', 'toggle', dx, dy); dx = dx + px + 0.08; dy = dy - py
+  setupButton('injury_body_l', 'toggle', dx, dy); dy = ry
+  setupButton('injury_body_h', 'toggle', dx, dy); dx = dx + px; dy = dy - py
+  setupButton('injury_wasit_l', 'toggle', dx, dy); dy = ry
+  setupButton('injury_wasit_h', 'toggle', dx, dy); dx = dx + px - 0.08; dy = dy - py
+  setupButton('injury_arms_l', 'toggle', dx, dy); dy = ry
+  setupButton('injury_arms_h', 'toggle', dx, dy); dx = dx + px; dy = dy - py
+  setupButton('injury_legs_l', 'toggle', dx, dy); dy = ry
+  setupButton('injury_legs_h', 'toggle', dx, dy)
+
+  setupButton('Heal and Reset', 'buttonr', 12, - 9.4, "resetArmor")
+  setupButton('Save Survivor', 'buttons', 5, 15, "buttonClick_SaveSurv")
+  setupButton('Survivor Died', 'buttons', - 5, 15, "buttonClick_SurvDied")
+
+end
+
+function initButtonsTable()
+  buttons = {}
+  inputs = {}
+  armor = {}
+  buttons.count = 0
+  buttons.styles = {}
+  scaleButtons = {1, 1, 1}
+
+  buttons.styles.counters = {
+    width = 0, height = 0, font = 700,
+    ox = 0.47, oz = -0.4, ow = 300, oh = 300
+  }
+  buttons.styles.counter = {
+    width = 0, height = 0, font = 700,
+    ox = 0.5, oz = -0.7, ow = 300, oh = 300
+  }
+  buttons.styles.toggle = {
+    width = 300, height = 300, font = 400, toggleSymbol = '■'
+  }
+  buttons.styles.buttonr = {
+    width = 1400, height = 250, font = 200
+  }
+  buttons.styles.buttons = {
+    width = 3000, height = 450, font = 450, font_color = {1, 1, 1, 100}
+  }
+  buttons.styles.txt = {
+    width = 4900, height = 300, font = 250, alignment = 3
+  }
+end
+
+----------------------------------------------------
+--DO NO EDIT BELOW unless you know what you're doing
+--SAVE
+----------------------------------------------------
+
+function forceSave()
+  local data_to_save = {button = {}}
+  local sub = ""
+  for i, v in pairs(buttons) do
+    if i ~= "count" and i ~= "styles" then
+      if v.click_function == "toggleClick_" .. i then
+        if v.label == "" then
+          data_to_save.button[i] = 0
+        else
+          data_to_save.button[i] = 1
+        end
+      elseif v.click_function == "dud" then
+        data_to_save.button[i] = tonumber(v.label)
+      end
+    end
+  end
+  saved_data = JSON.encode_pretty(data_to_save)
+  if Global.getVar("clearSavedData") then
+    saved_data = ""
+  end
+  self.script_state = saved_data
+end
+
+function checkTokenDelayed()
+  wait(2)
+
+  --Reset cards that create buttons on entering scripting zone
+  -- Function Call > survCard
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+  local objectsInZone = zone.getObjects()
+  for _, object in ipairs(objectsInZone) do
+    if object.getName() == "Crossarm Block" then
+      survCard.call("createCrossarmBlockButton")
+    elseif object.getName() == "Century Shoulder Pads" or object.getName() == "Calcified Shoulder Pads" then
+      survCard.call("createRipplePatternButton")
+    elseif object.getName() == "Fencing" then
+      survCard.call("createFencingButton")
+    elseif object.getName() == "Steadfast" then
+      survCard.call("createSteadfastButton")
+    elseif object.getName() == "Momentum" then
+      survCard.call("createMomentumButton")
+    elseif object.getName() == "Stalwart" then
+      survCard.call("createStalwartButton")
+    elseif object.getName() == "Leather Armor" or object.getName() == "Burnt Nerves" then
+      survCard.call("createBashButton")
+    elseif object.getName() == "Quiver & Sun String" then
+      extraSlots.setPosition(extraSlots_pos_on)
+    elseif object.getName() == "Honorable" then
+      local buttons = survCard.getButtons()
+      for i, v in pairs(buttons) do
+        if v.label == "Attack Blind" then
+          survCard.removeButton(v.index)
+        end
+      end
+      survCard.call('create_Honorable_Button')
+    end
+  end
+
+  if FullCharSheet ~= nil then
+    FullCharSheet.call('resetStat')
+    checkToken()
+  end
+  checkWeapon()
+  return 1
+end
+
+function checkWeapon()
+  local foundWeapon = nil
+  local selector = nil
+  local pos = self.getPosition()
+  pos.x = pos.x + 0.2
+  pos.z = pos.z + 0.5
+  for i = 0, 2 do
+    for j = 0, 2 do
+      foundWeapon = nil
+      selector = nil
+      local hitList = Physics.cast({
+        origin = {pos.x + i * 2.2, pos.y, pos.z - j * 2.2}, direction = {0, 1, 0}, type = 2,
+        size = {1, 1, 1}, max_distance = 0, debug = false
+      })
+      for _, entry in ipairs(hitList) do
+        if entry.hit_object.getDescription():find("weapon") then
+          foundWeapon = entry.hit_object
+        end
+        if entry.hit_object.getName() == "Selected Weapon" then
+          selector = entry.hit_object
+        end
+      end
+      if foundWeapon ~= nil and selector ~= nil then
+        -- sets GUID so any functions on the weapon can be called
+        weaponGUID = foundWeapon.getGUID()
+        -- sets Weapon name and description
+        SetWeapon({foundWeapon.getName(), foundWeapon.getDescription()})
+        return
+      end
+    end
+  end
+  SetWeapon({"Bases", "Bases"})
+end
+
+function dud()
+end
+
+function clickedToggle(index, symbol)
+  if buttons[index].label == "" then
+    buttons[index].label = symbol
+  else
+    buttons[index].label = ""
+  end
+  self.editButton(buttons[index])
+end
+
+function setupButton(name, type, x, z, func)
+  local button_parameters = {}
+  button_parameters.index = buttons.count
+  button_parameters.height = buttons.styles[type].height
+  button_parameters.width = buttons.styles[type].width
+  button_parameters.font_size = buttons.styles[type].font
+  if hideButtonBack then
+    button_parameters.color = {1, 1, 1, 0}
+    if buttons.styles[type].font_color ~= nil then
+      button_parameters.font_color = buttons.styles[type].font_color
+    else
+      button_parameters.font_color = {0, 0, 0, 100}
+    end
+  end
+
+  if type == "counter" or type == "counters" then
+    button_parameters.click_function = "dud"
+
+    if buttons[name] ~= nil then
+      button_parameters.label = buttons[name].label
+    else
+      button_parameters.label = 0
+    end
+    createpm(name, type, x, z)
+    button_parameters.index = buttons.count
+  elseif type == "toggle" then
+    self.setVar("toggleClick_" .. name, function () clickedToggle(name, buttons.styles[type].toggleSymbol) end)
+    button_parameters.click_function = "toggleClick_" .. name
+    button_parameters.label = ""
+    if buttons[name] ~= nil then
+      if buttons[name].label == 1 then
+        button_parameters.label = buttons.styles[type].toggleSymbol
+      end
+    end
+  else
+    button_parameters.click_function = func
+    button_parameters.label = name
+  end
+
+  button_parameters.scale = scaleButtons
+  button_parameters.position = {x, thick, z}
+  button_parameters.function_owner = self
+
+  self.createButton(button_parameters)
+  buttons[name] = button_parameters
+  buttons.count = buttons.count + 1
+end
+
+function createpm(name, type, x, z)
+  local button_parameters = {}
+  button_parameters.index = buttons.count
+  button_parameters.height = buttons.styles[type].oh
+  button_parameters.width = buttons.styles[type].ow
+  button_parameters.font_size = buttons.styles[type].font * 0.7
+  self.setVar("add_" .. name, function () add(name, 1) end)
+  button_parameters.click_function = "add_" .. name
+  button_parameters.label = "+"
+  button_parameters.function_owner = self
+  button_parameters.scale = scaleButtons
+  if hideButtonBack then
+    button_parameters.color = {1, 1, 1, 0}
+    button_parameters.font_color = {0, 0, 0, 100}
+  end
+
+  button_parameters.position = {x + buttons.styles[type].ox, thick, z + buttons.styles[type].oz}
+  self.createButton(button_parameters)
+  buttons["p_" .. name] = button_parameters
+  buttons.count = buttons.count + 1
+
+  button_parameters.index = buttons.count
+  self.setVar("sub_" .. name, function () add(name, - 1) end)
+  button_parameters.click_function = "sub_" .. name
+  button_parameters.label = "-"
+  button_parameters.position = {x - buttons.styles[type].ox, thick, z + buttons.styles[type].oz}
+  self.createButton(button_parameters)
+  buttons["m_" .. name] = button_parameters
+  buttons.count = buttons.count + 1
+end
+
+function add(name, amount)
+  buttons[name].label = tonumber(buttons[name].label) + amount
+  self.editButton(buttons[name])
+  forceSave()
+end
+
+function resetArmor()
+  for i, v in pairs(buttons) do
+    if i ~= "count" then
+      if v.click_function == "toggleClick_" .. i then
+        buttons[i].label = ""
+        self.editButton(buttons[i])
+      end
+    end
+  end
+  checkCards()
+  reset_Weapon_Prof()
+  --removes extra bleeding tokens for unconscious Fighter
+  extraBleed.setPosition(extraBleed_pos)
+
+  --resets stat mods
+  local zone = getObjectFromGUID(zoneGUID)
+  local objectsInZone = zone.getObjects()
+  for k, object in pairs(objectsInZone) do
+    local desc = object.getDescription()
+    if string.find(desc, 'token') then
+      object.destruct()
+    end
+  end
+
+  --removes extra bleeding tokens for unconscious Fighter
+  local isExtraButtons = bleedTool.getVar("extraBleed")
+  if isExtraButtons == true then
+    bleedTool.removeButton(5)
+    bleedTool.removeButton(6)
+    bleedTool.setVar("extraBleed", false)
+  end
+
+  --this is the line that updates the tokens
+  if FullCharSheet ~= nil then
+    FullCharSheet.call('resetStat')
+    FullCharSheet.call('resetBrain')
+  end
+  checkToken()
+  forceSave()
+end
+
+function diceStats()
+  if FullCharSheet == nil then
+    return
+  end
+  local EvaBtn = FullCharSheet.getTable("buttons")
+  if EvaBtn == nil then
+    return
+  end
+  local monstr = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
+  local butn = monstr.getTable("buttons")
+
+  buttons['attack'].label = tonumber(EvaBtn['speed'].label) + weapon['speed']
+  buttons['wound'].label = tonumber(butn['tgh'].display.label) - tonumber(EvaBtn['strength'].label) - weapon['strength']
+  buttons['hit'].label = 10 - tonumber(EvaBtn['accuracy'].label) - weapon['accuracy'] + tonumber(butn['evs'].display.label)
+  buttons['crit'].label = 10 + tonumber(butn['lck'].display.label) - tonumber(EvaBtn['luck'].label) - weapon['luck']
+
+  for _, v in pairs({'attack', 'wound', 'hit', 'crit'}) do
+    self.editButton(buttons[v])
+  end
+  forceSave()
+end
+
+function parseEffects(effects, multiplier)
+  for i, v in pairs(effects) do
+    if i == "move" then
+      i = "movement"
+    end
+    FullCharSheet.call('addTemp', {i, v * multiplier})
+  end
+end
+
+function checkToken()
+  local objs = getObjectFromGUID(zoneGUID).getObjects()
+  for _, v in pairs(objs) do
+    if v.getVar("isKdmEffectsObject") then
+      if FullCharSheet ~= nil then
+        parseEffects(v.call("getEffects"), 1)
+      end
+    end
+  end
+end
+
+function onObjectLeaveScriptingZone(zone, leave_object)
+  if leave_object ~= nil then
+    ----------------------------- Start Body ---------------------------------
+    if zone == zonePlayer then
+      local descript = leave_object.getDescription()
+      local rot = leave_object.getRotation()
+
+      -- Lantern Helm
+      -- Deaf
+      -- Glyph of Solitude
+      if leave_object.getName() == "Lantern Helm" and rot.z > 165 then
+        isDeaf.setRotation({0,180,180})
+      elseif leave_object.getName() == "Glyph of Solitude" and rot.z > 165 then
+        isDeaf.setRotation({0,180,180})
+      elseif leave_object.getName() == "Deaf" then
+        isDeaf.setRotation({0,180,180})
+      end
+
+      -- Husk of Destiny
+      -- Stark Raving
+      if leave_object.getName() == "Husk of Destiny" or leave_object.getName() == "Stark Raving" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "isInsane" then
+            object.setRotation({0, 0, 0})
+          end
+        end
+      end
+
+      -- Ink Blood Bow
+      if leave_object.getName() == "Bleeding" then
+        hasInkBow = false
+        count_blood = 0
+        count_strength = 0
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Ink Blood Bow" then
+            hasInkBow = true
+          end
+          if object.getName() == "Bleeding" then
+            count_blood = count_blood + 1
+          end
+          if string.find(object.getDescription(), "str_inkBow") then
+            count_strength = count_strength + 1
+            str_token = object
+          end
+        end
+        if hasInkBow then
+          for i = 1, 2 do
+            str_token.destroy()
+            break
+          end
+        end
+      end
+
+      if leave_object.getName() == "True Blade" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "sword") and string.find(desc, ", deadly, true blade") then
+            local new_desc = string.gsub(object.getDescription(), ", deadly, true blade", "")
+            object.setDescription(new_desc)
+          end
+        end
+      end
+      if string.find(descript, ", deadly, true blade") then
+        local new_desc = string.gsub(leave_object.getDescription(), ", deadly, true blade", "")
+        leave_object.setDescription(new_desc)
+      end
+
+      if leave_object.getName() == "Bitter Frenzy" then
+        local frenzyToken = getObjectFromGUID('8120c3')
+        frenzyToken.setRotationSmooth({0, 180, 0}, false, false)
+      end
+
+      if leave_object.getName() == "Fist & Tooth" then
+        survCard.call("remove_Fist_and_Tooth")
+      elseif leave_object.getName() == "Crossarm Block" then
+        survCard.call("removeCrossArmBlockButton")
+      elseif leave_object.getName() == "Century Shoulder Pads" or leave_object.getName() == "Calcified Shoulder Pads" then
+        survCard.call("removeRipplePatternButton")
+      elseif leave_object.getName() == "Fencing" then
+        survCard.call("removeFencingButton")
+      elseif leave_object.getName() == "Steadfast" then
+        survCard.call("removeSteadfastButton")
+      elseif leave_object.getName() == "Momentum" then
+        momentum_Counter.setPosition(momentum_off_pos)
+        survCard.call("removeMomentumButton")
+      elseif leave_object.getName() == "Stalwart" then
+        survCard.call("removeStalwartButton")
+      elseif leave_object.getName() == "Leather Armor" or leave_object.getName() == "Burnt Nerves" then
+        survCard.call("removeBashButton")
+
+      end -- end card checks for buttons
+
+      -- Honorable
+      if leave_object.getName() == "Honorable" then
+        local buttons = survCard.getButtons()
+        for i, v in pairs(buttons) do
+          if v.label == "Honorable" then
+            survCard.removeButton(v.index)
+            survCard.call('create_AttackBlind_Button')
+          end
+        end
+      end -- end Honorable
+
+      -- Eternal Will
+      if leave_object.getName() == "Eternal Will" then
+        injury = 0
+        hasInjuries = false
+        for _, object in ipairs(zonePlayer.getObjects()) do
+
+          local desc = object.getDescription()
+          if string.find(desc, "injury") then
+            hasInjuries = true
+            injury = injury + 1
+          end
+          if hasInjuries then
+            if object.getName() == "Strength" then
+              for i = 1, injury do
+                object.destroy()
+              end
+            end
+            if object.getName() == "Accuracy" then
+              for i = 1, injury do
+                object.destroy()
+              end
+            end
+          end -- end if hasInjuries
+        end -- end for loop
+      end -- end Eternal Will
+
+      -- Power Cores (DragonKing)
+      if leave_object.getName() == "Red Power Core" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Nuclear Knife" or object.getName() == "Nuclear Scythe" then
+            local desc = string.gsub(object.getDescription(), ", sharp", "")
+            object.setDescription(desc)
+            broadcastToAll("Your " .. object.getName() .. " lost 'Sharp'", msg_color)
+          end
+        end
+
+      elseif leave_object.getName() == "Blue Power Core" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Nuclear Knife" or object.getName() == "Nuclear Scythe" then
+            local desc = string.gsub(object.getDescription(), ", 2lck", "")
+            object.setDescription(desc)
+            broadcastToAll("Your " .. object.getName() .. " lost 'Deadly 2'", msg_color)
+          end
+        end
+
+      elseif leave_object.getName() == "Nuclear Knife" then
+        local desc = leave_object.getDescription()
+        if string.find(desc, ", 2lck") or string.find(desc, ", sharp") then
+          obj.setDescription("gear, weapon, dragon armory, 3spd, 6acc, 3str, copy")
+        end
+
+      elseif leave_object.getName() == "Nuclear Scythe" then
+        local desc = leave_object.getDescription()
+        if string.find(desc, ", 2lck") or string.find(desc, ", sharp") then
+          obj.setDescription("gear, weapon, dragon armory, 2spd, 6acc, 4str, copy")
+        end
+      end -- end Power Cores
+
+      --Black Sword
+      if leave_object.getName() == "Black Sword" then
+        local desc = leave_object.getDescription()
+        if string.find(desc, "20str") then
+          local new_desc = string.gsub(desc, "30str", "10str")
+          obj.setDescription(new_desc)
+        end
+      end -- end Black Sword
+
+      -- Tool belt
+      if leave_object.getName() == "Tool Belt" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if object.getName() == "Bone Sickle" then
+            object.setDescription('gear, weapon, tool, bonesmith, 2spd, 8acc, 1str, green_up, frail, copy')
+            broadcastToAll("Tool Belt ~ Your Bone Sickle lost 'frail' and gained (+1) Speed and (+3) Accuracy", msg_color)
+          end
+          if object.getName() == "Bone Pickaxe" then
+            object.setDescription('gear, weapon, tool, bonesmith, 1spd, 8acc, 2str, green_up, frail, copy')
+            broadcastToAll("Tool Belt ~ Your Bone Pickaxe lost 'frail' and gained (+1) Speed and (+3) Accuracy", msg_color)
+          end
+        end
+      end
+      if leave_object.getName() == "Bone Sickle" then
+        obj.setDescription('gear, weapon, tool, bonesmith, 2spd, 8acc, 1str, green_up, frail, copy')
+      end
+      if leave_object.getName() == "Bone Pickaxe" then
+        obj.setDescription('gear, weapon, tool, bonesmith, 1spd, 8acc, 2str, green_up, frail, copy')
+      end -- end Tool Belt
+
+      -- Shielded Quiver
+      if leave_object.getName() == "Shielded Quiver" then
+        for _, object in ipairs(zonePlayer.getObjects()()) do
+          local desc = object.getDescription()
+          if string.find(desc, "ammunition") then
+            object.call("setStartAmmo")
+          end
+        end
+      end
+      local desc = leave_object.getDescription()
+      if string.find(desc, "ammunition") then
+        obj.call("setStartAmmo")
+      end -- end shielded quiver
+
+      -- Quiver & Sun String
+      if leave_object.getName() == "Quiver & Sun String" then
+        extraSlots.setPosition(extraSlots_pos_off)
+      end -- end
+
+      --Resize resources to fit card grid
+      if leave_object.tag == 'Card' then
+        local descript = leave_object.getDescription()
+        if string.find(descript, "resource") then
+          leave_object.setScale({1.10, 1.00, 1.10})
+        end
+      end -- end resource size
+
+      if leave_object.getVar("isKDMFULL") then
+        if FullCharSheet ~= nil and FullCharSheetGUID == leave_object.guid then
+          FullCharSheet = nil
+          FullCharSheetGUID = ''
+        end
+      end
+
+      if leave_object.getVar("isKdmEffectsObject") then
+        if FullCharSheet ~= nil then
+          parseEffects(leave_object.call("getEffects"), - 1)
+        end
+      end
+
+      --gear bonus
+      if leave_object.tag == 'Card' then
+        removeCard(leave_object.getDescription())
+      end
+    ------------------------------- End Body ----------------------------------
+    end
+    ----------------------- End If Zone = playerZone ---------------------------
+  end -- end if leave_object ~= nil
+  diceStats()
+end
+
+function reset_Weapon_Prof()
+  -- Enables Weapon Prof / Mastery
+  local fistToothToken = getObjectFromGUID('bce349')
+  local pos = fistToothToken.getPosition()
+  local hitList = Physics.cast({origin = {pos.x, pos.y, pos.z - 4}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+  for _, entry in ipairs(hitList) do
+
+    if string.find(entry.hit_object.getDescription(), "proficiency, mastery") then
+      entry.hit_object.setPosition({10.58, 4.41, - 27.72})
+      broadcastToAll("Your Weapon Proficiency / Mastery was Enabled", msg_color)
+    end
+  end
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+  if enter_object ~= nil then
+    -------------------------- Start Body For Loop -----------------------------
+    if zone == zonePlayer then
+      local descript = enter_object.getDescription()
+      local rot = enter_object.getRotation()
+      -- Lantern Helm
+      -- Deaf
+      -- Glyph of Solitude
+      if enter_object.getName() == "Lantern Helm" and rot.z > 165 then
+        isDeaf.setRotation({0,180,180})
+      elseif enter_object.getName() == "Glyph of Solitude" and rot.z > 165 then
+        isDeaf.setRotation({0,180,180})
+      elseif enter_object.getName() == "Deaf" then
+        isDeaf.setRotation({0,180,180})
+      end
+
+      -- Husk of Destiny
+      -- Stark Raving
+      if enter_object.getName() == "Husk of Destiny" or enter_object.getName() == "Stark Raving" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "isInsane" then
+            object.setRotation({0, 0, 180})
+          end
+        end
+      end
+
+      -- True Blade
+      if enter_object.getName() == "True Blade" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "sword") then
+            object.setDescription(desc .. ", deadly, true blade")
+          end
+        end
+      end
+      if string.find(descript, "sword") then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "True Blade" then
+            object.setDescription(object.getDescription() .. ", deadly, true blade")
+          end
+        end
+      end
+
+      -- Bitter Frenzy
+      if enter_object.getName() == "Bitter Frenzy" then
+        local frenzyToken = getObjectFromGUID('8120c3')
+        frenzyToken.setRotationSmooth({0, 180, 180}, false, false)
+        cannotUseFA = false
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Hamstrung" or object.getName() == "Ruptured Muscle" then
+            cannotUseFA = true
+          end
+          -- Enables Fighting Arts if can use
+          if not cannotUseFA and string.find(object.getDescription(), "fighting art") and object.getRotation().z > 165 then
+            object.setRotation({0, 180, 0})
+            broadcastToAll("Your Fighting Arts were Enabled", msg_color)
+          end
+        end
+      end -- end Bitter Frenzy
+
+      -- Emotionless
+      if enter_object.getName() == "Strength" and enter_object.getDescription() == "token, plus1str" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Emotionless" then
+            cannot_gain_Str = true
+            object.destroy()
+          else
+            cannot_gain_Str = false
+          end
+        end
+        if cannot_gain_Str then
+          broadcastToAll("Emotionless ~ You cannot gain (+1) Strength Tokens", msg_color)
+        end
+      end
+
+      --Creates Armor Set Buttons on Survivor Cards
+      if enter_object.getName() == "Crossarm Block" then
+        survCard.call("createCrossarmBlockButton")
+      elseif enter_object.getName() == "Century Shoulder Pads" or enter_object.getName() == "Calcified Shoulder Pads" then
+        survCard.call("createRipplePatternButton")
+      elseif enter_object.getName() == "Fencing" then
+        survCard.call("createFencingButton")
+      elseif enter_object.getName() == "Steadfast" then
+        survCard.call("createSteadfastButton")
+      elseif enter_object.getName() == "Momentum" then
+        momentum_Counter.setPosition(momentum_on_pos)
+        survCard.call("createMomentumButton")
+      elseif enter_object.getName() == "Stalwart" then
+        survCard.call("createStalwartButton")
+      elseif enter_object.getName() == "Leather Armor" or enter_object.getName() == "Burnt Nerves" then
+        survCard.call("createBashButton")
+      end -- end armor set and abilities buttons
+
+      -- Honorable
+      if enter_object.getName() == "Honorable" then
+        local buttons = survCard.getButtons()
+        for i, v in pairs(buttons) do
+          if v.label == "Attack Blind" then
+            survCard.removeButton(v.index)
+          end
+        end
+        survCard.call('create_Honorable_Button')
+      end
+
+      -- Hissing Cockroach
+      if enter_object.getName() == "Hissing Cockroach" then
+        insanity = tonumber(getObjectFromGUID(self.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+        --local zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if (object.getName() == "Husk of Destiny" or object.getName() == "Stark Raving") or insanity >= 3 then
+            broadcastToAll("You are Insane and must consume the Hissing Cockroach", msg_color)
+            break
+          end
+        end
+      end -- end
+
+      -- Possessed
+      if enter_object.getName() == "Possessed" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "fighting art") and object.getRotation().z < 165 then
+            local pos = object.getPosition()
+            object.flip()
+            object.setScale({0.47, 1.00, 0.47})
+            object.clone({position = pos})
+            object.destroy()
+          elseif string.find(desc, "proficiency") then
+            object.destroy()
+          end
+        end
+      end -- end possessed
+
+      -- Hamstrung Card Check
+      if enter_object.getName() == "Hamstrung" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "fighting art") and object.getRotation().z < 165 then
+            local pos = object.getPosition()
+            object.flip()
+            object.setScale({0.47, 1.00, 0.47})
+            object.clone({position = pos})
+            object.destroy()
+          elseif string.find(desc, "ability") and object.getRotation().z < 165 then
+            local pos = object.getPosition()
+            object.flip()
+            object.setScale({0.47, 1.00, 0.47})
+            object.clone({position = pos})
+            object.destroy()
+          end
+        end
+      end -- end Hamstrung
+
+      -- Ruptured Muscle
+      if enter_object.getName() == "Ruptured Muscle" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "fighting art") and object.getRotation().z < 165 then
+            local pos = object.getPosition()
+            object.flip()
+            object.setScale({0.47, 1.00, 0.47})
+            object.clone({position = pos})
+            object.destroy()
+          end
+        end
+      end -- end Ruptured Muscle
+
+      -- Altered Destiny
+      if (enter_object.getName() == "Strength" or enter_object.getName() == "Speed" or enter_object.getName() == "Accuracy" or enter_object.getName() == "Movement Token" or enter_object.getName() == "Evasion" or enter_object.getName() == "Luck") and rot.z > 165 then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Altered Destiny" and object.getRotation().z < 165 then
+            object.setRotation({0, 180, 0})
+            broadcastToAll("Altered Destiny ~ You gain a Positive Token Instead", msg_color)
+          end
+        end
+      end -- end Altered Destiny
+
+      -- Eternal Will
+      if enter_object.getName() == "Eternal Will" and rot.z < 165 then
+
+        -- check for injuries
+        injury = 0
+        hasInjuries = false
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "injury") then
+            hasInjuries = true
+            injury = injury + 1
+          end
+        end -- end check for injuries
+
+        -- if has injuries gain +1 acc and +1 str
+        if hasInjuries then
+          for i = 1, injury do
+            accToken.takeObject({position = {accToken_pos.x, accToken_pos.y + i * 0.5, accToken_pos.z}, rotation = {0, 180, 0}})
+            strToken.takeObject({position = {strToken_pos.x, strToken_pos.y + i * 0.5, strToken_pos.z}, rotation = {0, 180, 0}})
+          end
+          broadcastToAll("Eternal Will ~ You gained (+1) Accuracy and (+1) Strength for each Injury", msg_color)
+        end
+      end -- end Eternal Will
+
+      -- Check for already has Eternal Will when gaining an injury
+      hasEternalWill = false
+      if enter_object.getDescription() == "essential, character, injury, drawn, copy" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Eternal Will" and object.getRotation().z < 165 then
+            hasEternalWill = true
+            if hasEternalWill then
+              accToken.takeObject({position = {accToken_pos.x, accToken_pos.y, accToken_pos.z}, rotation = {0, 180, 0}})
+              broadcastToAll("Eternal Will ~ You gained (+1) Accuracy for this injury", msg_color)
+              strToken.takeObject({position = {strToken_pos.x, strToken_pos.y, strToken_pos.z}, rotation = {0, 180, 0}})
+            end
+          end
+        end
+      end  -- end Eternal Will
+
+      -- When you gain a Bleeding Token
+      --//TODO: ADD TO 'WHEN YOU GAIN A BLEEDING TOKEN'
+      if enter_object.getName() == "Bleeding" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Ink Blood Bow" then
+            local token = strToken.takeObject({rotation = {0, 180, 0}, position = {strToken_pos.x, strToken_pos.y, strToken_pos.z}})
+            token.setDescription("token, plus1str, str_inkBow")
+            broadcastToAll("Ink Blood Bow ~ You gained a (+1) Strength Token for gaining this Bleeding Token", msg_color)
+          end
+          if object.getName() == "Way of the Rust" and object.getRotation().z < 165 then
+            local token = evaToken.takeObject({position = evaToken_pos, rotation = {0, 180, 0}})
+            token.setDescription("token, plus1eva, eva_wayOfRust")
+            broadcastToAll("Way of the Rust ~ You gained a (+1) Evasion Token for gaining this Bleeding Token", msg_color)
+          end
+        end
+      end
+
+      -- Power Cores (DragonKing)
+      if enter_object.getName() == "Red Power Core" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Nuclear Knife" or object.getName() == "Nuclear Scythe" then
+            object.setDescription(object.getDescription() .. ", sharp")
+            broadcastToAll("Your " .. object.getName() .. " gained 'Sharp'", msg_color)
+          end
+        end
+      elseif enter_object.getName() == "Blue Power Core" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Nuclear Knife" or object.getName() == "Nuclear Scythe" then
+            object.setDescription(object.getDescription() .. ", 2lck")
+            broadcastToAll("Your " .. object.getName() .. " gained 'Deadly 2'", msg_color)
+          end
+        end
+
+      elseif enter_object.getName() == "Nuclear Knife" or enter_object.getName() == "Nuclear Scythe" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Red Power Core" then
+            local desc = object.getDescription()
+            object.setDescription(desc .. ", sharp")
+            broadcastToAll("Your " .. object.getName() .. " gained 'Sharp'", {1, 1, 1})
+
+          elseif object.getName() == "Blue Power Core" then
+            local desc = object.getDescription()
+            object.setDescription(desc .. ", 2lck")
+            broadcastToAll("Your " .. object.getName() .. " gained 'Deadly 2'", msg_color)
+
+          end
+        end
+      end -- end Power Cores
+
+      --Black Sword
+      if enter_object.getName() == "Black Sword" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Sword" and object.getRotation().z < 165 then
+            local new_desc = string.gsub(object.getDescription(), "10str", "30str")
+            object.setDescription(new_desc)
+            broadcastToAll("Sword Master ~ Black Sword gained (+20) Strength", msg_color)
+          end
+        end
+      end
+      if enter_object.getName() == "Sword" and rot.z < 165 then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Black Sword" then
+            local new_desc = string.gsub(object.getDescription(), "10str", "30str")
+            object.setDescription(new_desc)
+            broadcastToAll("Sword Master ~ Black Sword gained (+20) Strength", msg_color)
+          end
+        end
+      end -- end Black Sword
+
+      -- Gloom Mehndi
+      hasGloom = false
+      if enter_object.getName() == "Crystal Skin" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Gloom Mehndi" then
+            hasGloom = true
+          end
+        end
+      end
+      if hasGloom then
+        local deck = getObjectFromGUID('1818aa')
+        foundCard = false
+        for _, card in ipairs(deck.getObjects()) do
+          local desc = card.description
+          if string.find(desc, "crystal sword mold") then
+            foundCard = true
+            deck.takeObject({guid = card.guid, position = {7.34, 4.19, - 11.07}, callback_owner = Global, callback = "flipCard"})
+          end
+        end
+        if foundCard then
+          broadcastToAll("You gained the Crystal Sword Mold", msg_color)
+        end
+      end -- end Gloom Mehndi
+
+      -- Tool belt
+      if enter_object.getName() == "Tool Belt" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if object.getName() == "Bone Sickle" then
+            object.setDescription('gear, weapon, tool, bonesmith, 3spd, 5acc, 1str, green_up, copy')
+            broadcastToAll("Tool Belt ~ Your Bone Sickle lost 'frail' and gained (+1) Speed and (+3) Accuracy", msg_color)
+          end
+          if object.getName() == "Bone Pickaxe" then
+            object.setDescription('gear, weapon, tool, bonesmith, 2spd, 5acc, 2str, green_up, copy')
+            broadcastToAll("Tool Belt ~ Your Bone Pickaxe lost 'frail' and gained (+1) Speed and (+3) Accuracy", msg_color)
+          end
+        end
+      end
+      if enter_object.getName() == "Bone Sickle" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Tool Belt" then
+            object.setDescription('gear, weapon, tool, bonesmith, 3spd, 5acc, 1str, green_up, copy')
+            broadcastToAll("Tool Belt ~ Your Bone Sickle lost 'frail' and gained (+1) Speed and (+3) Accuracy", msg_color)
+          end
+        end
+      end
+      if enter_object.getName() == "Bone Pickaxe" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Tool Belt" then
+            object.setDescription('gear, weapon, tool, bonesmith, 2spd, 5acc, 2str, green_up, copy')
+            broadcastToAll("Tool Belt ~ Your Bone Pickaxe lost 'frail' and gained (+1) Speed and (+3) Accuracy", msg_color)
+          end
+        end
+      end -- end Tool Belt
+
+      -- Shielded Quiver
+      if enter_object.getName() == "Shielded Quiver" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, "arrow") then
+            object.call("setStartAmmoPlus1")
+          end
+        end
+      end
+      local enter_desc = enter_object.getDescription()
+      if string.find(enter_desc, "arrow") then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Shielded Quiver" then
+            object.call("setStartAmmoPlus1")
+          end
+        end
+      end -- end shielded quiver
+
+      -- Quiver & Sun String
+      if enter_object.getName() == "Quiver & Sun String" then
+        extraSlots.setPosition(extraSlots_pos_on)
+      end -- end
+
+      -- Silk Body Suit
+      if enter_object.getName() == "Silk Body Suit" then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          local desc = object.getDescription()
+          if string.find(desc, 'heavy') or string.find(desc, 'metal') then
+            broadcastToAll("Silk Body Suit ~ You cannot use this ~ You have 'Heavy' or 'Metal' Gear", msg_color)
+          end
+        end
+      end
+      if string.find(descript, "heavy") or string.find(descript, "metal") then
+        for _, object in ipairs(zonePlayer.getObjects()) do
+          if object.getName() == "Silk Body Suit" then
+            broadcastToAll("You cannot use Silk Body Suit while ----> " .. object.getName() .. " is in your grid", msg_color)
+          end
+        end
+      end -- end silk body suit
+
+      --Resize Resources to fit card grid
+      if string.find(descript, "resource") then
+        enter_object.setScale({0.87, 1.00, 0.87})
+      end -- resize resources
+
+			if zone.getGUID() == zoneGUID then
+        if enter_object.getDescription() == "SurvivorSheet" then
+          if FullCharSheet == nil then
+            FullCharSheet = enter_object
+            FullCharSheetGUID = enter_object.getGUID()
+            checkToken()
+          end
+        end
+
+        if enter_object.getVar("isKdmEffectsObject") then
+          if FullCharSheet ~= nil then
+            parseEffects(enter_object.call("getEffects"), 1)
+          end
+        end
+
+        -- checks for gear bonus
+        if enter_object.tag == 'Card' then
+          local descript = enter_object.getDescription()
+          local tempArmorBonus = {}
+          if string.find(descript, 'armor') or string.find(descript, 'accessory') or string.find(descript, 'shield') or string.find(descript, 'set') or string.find(descript, 'set') then
+            local stringTrim = ''
+            local bonus = 0
+            local possibleHL = {'head', 'body', 'waist', 'arms', 'legs'}
+            for k, location in pairs(possibleHL) do
+              if string.find(descript, location) then
+                stringTrim = string.match(descript, '%d' .. location)
+                bonus = string.match(stringTrim, '%d')
+                buttons[location].label = buttons[location].label + tonumber(bonus)
+                self.editButton(buttons[location])
+              end -- if string.find(descript, location)
+            end -- end for loop
+          end -- end if string.find(descript, 'armor')
+        end -- if enter_object.tag == 'Card'
+      end -- if zone.getGUID() == zoneGUID then
+      diceStats()
+    end -- if zone == zonePlayer
+  end -- end if enter_object ~= nil
+end -- end function onObjectEnterScriptingZone
+
+function checkCards()
+  local objs = getObjectFromGUID(zoneGUID).getObjects()
+  local possibleHL = {head = 0, body = 0, waist = 0, arms = 0, legs = 0}
+
+  hasCrystalSkin = false
+  for _, obj in pairs(objs) do
+    if obj.getName() == "Crystal Skin" then
+      hasCrystalSkin = true
+    end
+  end
+
+  if hasCrystalSkin then
+    for _, obj in pairs(objs) do
+      if obj.tag == 'Card' then
+        local descript = obj.getDescription()
+        if string.find(descript, 'accessory') or string.find(descript, 'shield') or string.find(descript, 'set') then
+          local stringTrim = ''
+          local bonus = 0
+          for location, _ in pairs(possibleHL) do
+            if string.find(descript, location) then
+              stringTrim = string.match(descript, '%d' .. location)
+              bonus = string.match(stringTrim, '%d')
+              possibleHL[location] = possibleHL[location] + tonumber(bonus)
+            end
+          end -- end for loop
+        end -- end if string.find
+      end -- end if obj.tag
+    end -- end for loop
+  end -- end if hasCrystalSkin
+
+  if not hasCrystalSkin then
+    for _, obj in pairs(objs) do
+      if obj.tag == 'Card' then
+        local descript = obj.getDescription()
+        if string.find(descript, 'armor') or string.find(descript, 'accessory') or string.find(descript, 'shield') or string.find(descript, 'set') then
+          local stringTrim = ''
+          local bonus = 0
+          for location, _ in pairs(possibleHL) do
+            if string.find(descript, location) then
+              stringTrim = string.match(descript, '%d' .. location)
+              bonus = string.match(stringTrim, '%d')
+              possibleHL[location] = possibleHL[location] + tonumber(bonus)
+            end
+          end -- end for loop
+        end -- end if string.find
+      end -- end if obj.tag
+    end -- end for loop
+  end -- end if not hasCrystalSkin
+
+  for location, value in pairs(possibleHL) do
+    buttons[location].label = value
+    self.editButton(buttons[location])
+  end
+
+end -- end function
+
+function removeCard(descript)
+  if string.find(descript, 'armor') or string.find(descript, 'accessory') or string.find(descript, 'shield') or string.find(descript, 'set') then
+    if buttons ~= nil then
+      local stringTrim = ''
+      local bonus = 0
+      local possibleHL = {'head', 'body', 'waist', 'arms', 'legs'}
+      for k, location in pairs(possibleHL) do
+        if string.find(descript, location) then
+          stringTrim = string.match(descript, '%d' .. location)
+          bonus = string.match(stringTrim, '%d')
+          buttons[location].label = buttons[location].label - tonumber(bonus)
+          self.editButton(buttons[location])
+        end
+      end
+    end
+  end
+end
+
+function onObjectDestroyed(dying_object)
+  local guid = dying_object.getGUID()
+  if FullCharSheet ~= nil and FullCharSheetGUID == guid then
+    onObjectLeaveScriptingZone(getObjectFromGUID(zoneGUID), dying_object)
+  end
+  local objs = getObjectFromGUID(zoneGUID).getObjects()
+  for _, v in pairs(objs) do
+    if v.getGUID() == dying_object.getGUID() then
+      onObjectLeaveScriptingZone(getObjectFromGUID(zoneGUID), dying_object)
+    end
+  end
+end
+
+function onPickedUp()
+  FullCharSheet = nil
+  FullCharSheetGUID = ''
+  tokens = {}
+  armor = {}
+end
+
+---WEAPONS FUNCTIONS [69]-----
+function checkWeapon()
+  local foundWeapon = nil
+  local selector = nil
+  local pos = self.getPosition()
+  pos.x = pos.x + 0.2
+  pos.z = pos.z + 0.5
+  for i = 0, 2 do
+    for j = 0, 2 do
+      foundWeapon = nil
+      selector = nil
+      local hitList = Physics.cast({
+        origin = {pos.x + i * 2.2, pos.y, pos.z - j * 2.2}, direction = {0, 1, 0}, type = 2,
+        size = {1, 1, 1}, max_distance = 0, debug = false
+      })
+      for _, entry in ipairs(hitList) do
+        if entry.hit_object.getDescription():find("weapon") then
+          foundWeapon = entry.hit_object
+        end
+        if entry.hit_object.getName() == "Selected Weapon" then
+          selector = entry.hit_object
+        end
+      end
+      if foundWeapon ~= nil and selector ~= nil then
+        -- sets GUID so any functions on the weapon can be called
+        weaponGUID = foundWeapon.getGUID()
+        -- sets Weapon name and description
+        SetWeapon({foundWeapon.getName(), foundWeapon.getDescription()})
+        return
+      end
+    end
+  end
+  SetWeapon({"Bases", "Bases"})
+end
+
+---WEAPONS FUNCTIONS [69]-----
+function SetWeapon(WpnStat)
+  if WpnStat ~= nil then
+    WeaponName = WpnStat[1]
+    if WeaponName ~= 'Bases' then
+      local descript = WpnStat[2]
+      local regxEverythingExceptComma = '([^,]+)'
+      local BaseSpeed = 0
+      local Basecrit = 0
+      local BaseStr = 0
+      local Baseacc = 0
+
+      for x in string.gmatch(descript, regxEverythingExceptComma) do
+        if x:find("spd") then
+          BaseSpeed = tonumber(string.match (x, "%d+"))
+        end
+
+        if x:find("acc") then
+          if x:find("acc%+weaponProf") then
+            local objbtns = FullCharSheet.getTable("buttons")
+            for i, v in pairs(objbtns) do
+              prefix = string.sub(i, 1, 12)
+              if prefix == "proficiency_" then
+                if v.label ~= '' then
+                  Baseacc = Baseacc - 1
+                end
+              end
+            end
+          else
+            Baseacc = tonumber(string.match(x, "%d+"))
+          end
+        end
+
+        if x:find("str") then
+
+          if x:find("str%+insanity") then
+            BaseStr = tonumber(getObjectFromGUID(self.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+          elseif x:find("str%+courage") then
+            local objbtns = FullCharSheet.getTable("buttons")
+            for i, v in pairs(objbtns) do
+              prefix = string.sub(i, 1, 8)
+              if prefix == "courage_" then
+                if v.label ~= '' then
+                  BaseStr = BaseStr + 1
+                end
+              end
+            end
+          else
+            BaseStr = tonumber(string.match(x, "%d+"))
+          end
+        end
+
+        if x:find("lck") then
+          Basecrit = tonumber(string.match(x, "%d+"))
+        end
+      end
+
+      weapon["strength"] = BaseStr
+      weapon["speed"] = BaseSpeed
+      weapon["accuracy"] = 10 - Baseacc
+      weapon["luck"] = Basecrit
+      weapon['name'] = WeaponName
+    else
+      FistWeapon()
+    end
+  end
+  diceStats()
+end
+
+--Used by findByDistance
+function findProximity(targetPos, object)
+  local objectPos = object.getPosition()
+  local xDistance = math.abs(targetPos.x - objectPos.x)
+  local zDistance = math.abs(targetPos.z - objectPos.z)
+  local distance = xDistance^2 + zDistance^2
+  return math.sqrt(distance)
+end
+
+function FistWeapon(object, player_color)
+  weapon['strength'] = 0
+  weapon['speed'] = 2
+  weapon['accuracy'] = 2
+  weapon['luck'] = 1
+  weapon['name'] = "FistAndTooth"
+
+  for _, object in ipairs(zonePlayer.getObjects()) do
+
+    if object.getName() == "Monster Claw Style" then
+      weapon['strength'] = weapon['strength'] + 1
+      weapon['accuracy'] = weapon['accuracy'] + 1
+      broadcastToColor("Monster Claw Style ~ (+1) Accuracy ~ (+1) Strength Calculated", player_color, msg_color)
+    end
+
+    if object.getName() == "Brawler Armor" then
+      weapon['accuracy'] = weapon['accuracy'] + 2
+      broadcastToColor("Brawler Armor Set ~ (+2) Accuracy Calculated", player_color, msg_color)
+    end
+
+    if object.getName() == "Death Touch" then
+      weapon['strength'] = weapon['strength'] + 1
+    end
+
+  end
+end
+
+function CleanWeapon()
+  FistWeapon()
+  diceStats()
+end
+
+function get_player_pos(pos_player)
+  for _, object in ipairs(zoneShowdown.getObjects()) do
+    if object.getName() == "Player Three" then
+      pos_player = object.getPosition()
+    end
+  end
+  return pos_player
+end
+
+function buttonClick_SurvDied()
+
+  -- Bone Whisperer
+  local playerZones = {
+    red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+    yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+    green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+    blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+  }
+  for zoneKey, zoneGUIDtable in pairs(playerZones) do
+    local zoneGUID = zoneGUIDtable.guid
+    local zone = getObjectFromGUID(zoneGUID)
+    local objectsInZone = zone.getObjects()
+    for _, object in ipairs(objectsInZone) do
+      if object.getName() == "Bone Whisperer" then
+        local skull_token = getObjectFromGUID("dcdc21")
+        skull_token.clone({position = get_player_pos(pos_player)})
+      end
+    end
+  end -- end Bone Whisperer
+
+  -- When a Survivor Dies - Monster AI Card effects
+  local zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+  for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+    if card.getName() == "Enraged" then
+      broadcastToAll("Enraged ~ Was Discarded for Survivor being Killed", {1, 1, 1})
+      card.setPosition({ - 1.24, 4.31, - 2.48})
+    elseif card.getName() == "Deep Paralysis" then
+      broadcastToAll("Deep Paralysis ~ was Discarded for Survivor being Killed", {1, 1, 1})
+      card.setPosition({ - 1.24, 4.31, - 2.48})
+    elseif card.getName() == "You've Already Lost" then
+      broadcastToAll("You've Already Lost ~ was Discarded for Survivor being Killed", {1, 1, 1})
+      card.setPosition({ - 1.24, 4.31, - 2.48})
+    elseif card.getName() == "Upstage" then
+      broadcastToAll("Upstage ~ was Discarded for Survivor being Killed", {1, 1, 1})
+      card.setPosition({ - 1.24, 4.31, - 2.48})
+    elseif card.getName() == "God Parasites" then
+      broadcastToAll("God Parasites ~ was Discarded for Survivor being Killed", {1, 1, 1})
+      card.setPosition({ - 1.24, 4.31, - 2.48})
+    end
+  end -- end
+
+  --Sets Survivor miniature on survCards
+  local survDiedDeck = getObjectFromGUID('0c040a')
+  survDiedCardMarker = survDiedDeck.takeObject({position = { - 4.33, 8.20, - 53.08}})
+  survDiedCardMarker.setPosition({2.34, 4.34, - 7.21})
+  survDiedCardMarker.setLock(true)
+
+  --Sets Survivor miniature on survCards
+  for _, object in ipairs(zoneShowdown.getObjects()) do
+    if object.getName() == "Player Three" then
+      object.setRotation({0, 0, 0})
+      object.setPosition({2.48, 7.34, - 7.39})
+    end
+  end
+
+  -- Check Death Principle
+  zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+  for _, object in ipairs(zoneInnovations.getObjects()) do
+    if object.getName() == "Cannibalize" then
+      Timer.create({identifier = "cannibalize",
+        function_name = "get_basic_for_cannibalize",
+        function_owner = self,
+      delay = 2})
+    elseif object.getName() == "Graves" then
+      broadcastToAll("Graves Death Principle Triggered", {1, 1, 1})
+    end -- end Death Principle
+  end
+
+  local greenZone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+  hasOrator = false
+  for _, object in ipairs(greenZone.getObjects()) do
+    if object.getName() == "Orator of Death" then
+      hasOrator = true
+    end
+  end
+
+  if hasOrator then
+    for _, object in ipairs(greenZone.getObjects()) do
+      if string.find(object.getDescription(), "SurvivorSheet") then
+        broadcastToAll(object.getName() .. " was the Orator of Death", {1, 1, 1})
+      end
+    end
+  end
+
+  if hasOrator then
+    for _, object in ipairs(zoneShowdown.getObjects()) do
+      if object.getName() == "Player One" and object.getRotation().z > 165 then
+        object.setRotation({0, 0, 0})
+        broadcastToAll("You were Encouraged by their Dying Words", {0.856, 0.1, 0.094})
+      elseif object.getName() == "Player Two" and object.getRotation().z > 165 then
+        object.setRotation({0, 0, 0})
+        broadcastToAll("You were Encouraged by their Dying Words", {0.905, 0.898, 0.172})
+      elseif object.getName() == "Player Four" and object.getRotation().z > 165 then
+        object.setRotation({0, 0, 0})
+        broadcastToAll("You were Encouraged by their Dying Words", {0.118, 0.53, 1})
+      end
+    end
+  end
+
+  -- When a Survivor Dies
+  -- Ruthless
+  -- Vengeance
+  -- Revenge
+  for _, object in ipairs(zoneRed.getObjects()) do
+    if object.getName() == "Ruthless" then
+      broadcastToAll("Player One ~ Ruthless ~ Effect Triggered", {1, 1, 1})
+    elseif object.getName() == "Vengeance" then
+      broadcastToAll("Player One ~ Vengeance ~ Effect Triggered", {1, 1, 1})
+    elseif object.getName() == "Revenge" then
+      broadcastToAll("Player One ~ Revenge ~ Effect Triggered", {1, 1, 1})
+    end
+  end -- end red
+  for _, object in ipairs(zoneYellow.getObjects()) do
+    if object.getName() == "Ruthless" then
+      broadcastToAll("Player Two ~ Ruthless ~ Effect Triggered", {1, 1, 1})
+    elseif object.getName() == "Vengeance" then
+      broadcastToAll("Player Two ~ Vengeance ~ Effect Triggered", {1, 1, 1})
+    elseif object.getName() == "Revenge" then
+      broadcastToAll("Player Two ~ Revenge ~ Effect Triggered", {1, 1, 1})
+    end
+  end -- end yellow
+  for _, object in ipairs(zoneBlue.getObjects()) do
+    if object.getName() == "Ruthless" then
+      broadcastToAll("Player Three ~ Ruthless ~ Effect Triggered", {1, 1, 1})
+    elseif object.getName() == "Vengeance" then
+      broadcastToAll("Player Three ~ Vengeance ~ Effect Triggered", {1, 1, 1})
+    elseif object.getName() == "Revenge" then
+      broadcastToAll("Player Three ~ Revenge ~ Effect Triggered", {1, 1, 1})
+    end
+  end -- end green
+
+  updatePopulation()
+  resetArmor()
+  FullCharSheet.script_state = FullCharSheet.call("forceSave")
+  startLuaCoroutine(self, 'survDied')
+end
+
+function get_basic_for_cannibalize()
+  deckBasicResourcesZone = getObjectFromGUID(Global.getTable('zones').deckBasicResources.guid)
+  for _, obj in ipairs(deckBasicResourcesZone.getObjects()) do
+    if obj.getName() == "Basic Resources Deck" then
+      obj.shuffle()
+      obj.takeObject({top = true, position = {11.60, 4.30, - 24.49}, callback_owner = Global, callback = "flipCard"})
+      broadcastToAll("Cannibalize Death Principle Triggered", {1, 1, 1})
+      break
+    end
+  end
+  Timer.destroy("cannibalize")
+end
+
+function buttonClick_SaveSurv()
+  pos = self.getPosition()
+  local hitList = Physics.cast({origin = {pos.x, pos.y + 2, pos.z - 8}, direction = {0, 1, 0}, type = 2, size = {3, 1, 3}, max_distance = 0})
+  for _, entry in ipairs(hitList) do
+    if next(hitList) ~= nil then
+      broadcastToAll("Move Current saved Survivor First!", {1, 1, 1})
+      return end
+    end
+
+    resetArmor()
+    FullCharSheet.script_state = FullCharSheet.call("forceSave")
+
+    -- Destined
+    local objectsInZone = zonePlayer.getObjects()
+    for _, object in ipairs(objectsInZone) do
+      if object.getName() == "Destined" then
+        broadcastToColor("Destined ~ If you do not Depart, lose all Survival and Insanity", player_color, msg_color)
+      end
+    end
+
+    startLuaCoroutine(self, 'saveSurv')
+  end
+
+  function wait(time)
+    local start = os.time()
+    --each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+    repeat
+      coroutine.yield(0)
+    until os.time() > start + time
+  end
+
+  function saveSurv()
+    pos = self.getPosition()
+    infiBag = getObjectFromGUID(SurvMemBag)
+    bag = infiBag.clone({position = {pos.x, pos.y, pos.z - 8}})
+    setModel(bag)
+    wait(0.3)
+    bag.call('recallZone', {zoneGUID, self.guid})
+
+    return 1
+  end
+
+  function survDied()
+    pos = self.getPosition()
+    --Gets Gravestone Marker
+    local object = getObjectFromGUID("416864")
+    local scale = object.getScale()
+    graveObj = object.clone({position = {pos.x, pos.y, pos.z - 8}, rotation = {0, 0, 0}})
+    graveObj.setScale({1.35, 1.35, 1.35})
+    wait(0.75)
+    graveObj.setLock(true)
+    graveObj.createButton({index = 0, click_function = 'burySurvivor', function_owner = self,
+      label = 'Bury this Survivor', position = {x = 0, y = 0, z = -0.6}, rotation = {x = 0, y = 180, z = 0},
+      scale = {x = 0.5, y = 1, z = 0.5}, width = 2700, height = 400, font_size = 300,
+    color = {0, 0, 0}, font_color = {1, 1, 1}})
+    wait(0.1)
+    --Gets Survivor Storage Bag
+    infiBag = getObjectFromGUID(SurvMemBag)
+    bag = infiBag.clone({position = {pos.x, pos.y, pos.z - 8}})
+    setModel(bag)
+    wait(0.3)
+    bag.call('recallZone', {zoneGUID, self.guid, true})
+    graveObj.setName(bag.getName())
+    return 1
+  end
+
+  function setModel(bag)
+    CharSeet = FullCharSheet.getTable("buttons")
+    if CharSeet["gender_f"].value == 1 then
+      local rand = math.random(#survivorBags.female)
+      bag.setCustomObject({mesh = survivorBags.female[rand].mesh, diffuse = survivorBags.female[rand].diffuse})
+      bag.setColorTint({0.192, 0.701, 0.168})
+    elseif CharSeet["gender_m"].value == 1 then
+      local rand = math.random(#survivorBags.male)
+      bag.setCustomObject({mesh = survivorBags.male[rand].mesh, diffuse = survivorBags.male[rand].diffuse})
+      bag.setColorTint({0.192, 0.701, 0.168})
+    end
+  end
+
+  function burySurvivor()
+    local zoneGraveyard = getObjectFromGUID(Global.getTable('zones').zoneGraveyard.guid)
+    local deadSurvivors = zoneGraveyard.getObjects()
+    graveObj.setPosition({11.20 + #deadSurvivors * 1.64, 4.12, - 53.00})
+    graveObj.removeButton(0)
+    broadcastToAll("Population Updated", {1, 1, 1})
+  end
+
+  function updatePopulation()
+    local zoneSettlement = getObjectFromGUID(Global.getTable('zones').zoneSettlement.guid)
+    for _, object in ipairs(zoneSettlement.getObjects()) do
+      if string.find(object.getDescription(), "SettlementSheet") then
+        object.call("add", {"population", - 1})
+      end
+    end
+  end
+
+  function deleteCard(objGUID)
+    obj = getObjectFromGUID(objGUID[1])
+    removeCard(obj.getDescription())
+    obj.destruct()
+    forceSave()
+  end
+
+  function onCollisionEnter(collision_info)
+    local object = collision_info.collision_object
+    if object.getName() == "Monster Controller" then
+      local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+      local objectsInZone = zone.getObjects()
+      for _, figure in ipairs(objectsInZone) do
+        if figure.getName() == "Player Four" then
+          figure.highlightOn(figure.getColorTint(), 500)
+        end
+      end
+    end
+    if object.getVar("isKdmEffectsObject") then
+      if FullCharSheet ~= nil then
+        -- Function Call > FullCharSheet
+        FullCharSheet.call('resetStat')
+        checkToken()
+      end
+    end
+  end
+
+  function onCollisionExit(collision_info)
+    local object = collision_info.collision_object
+    if object.getName() == "Monster Controller" then
+      local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+      local objectsInZone = zone.getObjects()
+      for _, figure in ipairs(objectsInZone) do
+        if figure.getName() == "Player Four" then
+          figure.highlightOff()
+        end
+      end
+    end
+  end
+
+  -- end InventoryP3]]

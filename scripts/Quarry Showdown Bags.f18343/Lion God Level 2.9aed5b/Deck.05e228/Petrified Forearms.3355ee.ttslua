@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You may spend 4 Survival to gain (+1) Permanent Strength", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Full move The Lion God forward in a straight line ♘", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Cancel all hits out of range", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Survivors passed over suffer grab and gain 1 Bleeding Token", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- forearms

@@ -1,0 +1,36 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "You gain (+1) Survival ~ Persistent Injury ~ Keep In Play", effect = ""}})
+  Global.call('addBroadcast', {"crit", {gear = "Ignore all Lens Effects and instead all Lens flipped to Closed", effect = ""}})
+  flipLens()
+end
+
+function flipLens()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Red Lens" and card.getRotation().z > 165 then
+      card.flip()
+    end
+  end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+      broadcastToAll("Blue Lens Open ~ The Hand perfectly predicts this attack ~ cancel this hit", {1,1,1})
+    end
+  end
+end

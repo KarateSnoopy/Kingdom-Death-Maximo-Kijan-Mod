@@ -1,0 +1,89 @@
+function onLoad()
+	zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+end
+
+zoneEffect_stored = {-28.63, 6.67, -78.63}
+
+function onPickUp(color, obj)
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+		if card.getName() == "Alert" then
+			zoneEffect.setPosition(zoneEffect_stored)
+		end
+		if card.getName() == "Beast's Heel" then
+			broadcastToAll("** Persistent Injury ~ Ruptured Tendon **", {1,1,1})
+		end
+	end
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin       = {pos.x, pos.y, pos.z},
+		direction    = {0, 1, 0},
+		type         = 2,
+		size         = {20, 20, 20},
+		max_distance = 0,
+		debug        = false,
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Ghost Step Smoke Effect" then
+			effect = entry.hit_object
+			print(effect.getName())
+			break
+		end
+	end
+	local hitList = Physics.cast({
+		origin       = {pos.x, pos.y, pos.z},
+		direction    = {0, 1, 0},
+		type         = 2,
+		size         = {20, 20, 20},
+		max_distance = 0,
+		debug        = false,
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Ghost Step Plasma Effect" then
+			effect2 = entry.hit_object
+			print(effect2.getName())
+			break
+		end
+	end
+	if effect ~= nil then
+		local effect_pos = effect.getPosition()
+		effect.AssetBundle.playTriggerEffect(1)
+		effect.setPositionSmooth({effect_pos.x, effect_pos.y + 10, effect_pos.z}, false, false)
+		effect2.AssetBundle.playLoopingEffect(2)
+		startLuaCoroutine(self, "store_effect_coR")
+		startLuaCoroutine(self, "store_effect2_coR")
+	end
+end
+
+function onDropped(player_color)
+	if self.getName() == "White Lion" then
+		pos = self.getPosition()
+		for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+			if card.getName() == "Alert" then
+				zoneEffect.setScale({15.98, 5.10, 15.98})
+				zoneEffect.setPosition({pos.x, pos.y+4, pos.z})
+			end
+		end
+	end
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function store_effect_coR()
+	wait(2.5)
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	gameBox.putObject(effect)
+	return 1
+end
+
+function store_effect2_coR()
+	wait(0.75)
+	effect2.AssetBundle.playLoopingEffect(1)
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	gameBox.putObject(effect2)
+	return 1
+end

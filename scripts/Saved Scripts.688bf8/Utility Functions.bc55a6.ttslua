@@ -1,0 +1,180 @@
+
+
+--_____ SURVIVOR TOKEN SPAWNERS ___________________________________________________________________
+
+function survivor_token_spawner()
+
+   local stats = {color = color, stat = 'XXX', modifier = "XXX", num = 1, phase = nil}
+   Global.setTable('temp', stats)
+   startLuaCoroutine(Global, "spwn_tok")
+
+end
+
+function broadcast_msgs()
+   broadcastTable = {}
+   broadcastToColor("_____________________    _____________________", player_color, msg_color)
+   table.insert(broadcastTable, "")
+   startLuaCoroutine(self, "broadcast_message_coR")
+end
+
+function broadcast_message_coR()
+   if #broadcastTable > 0 then
+      for _, b in pairs(broadcastTable) do
+         broadcastToAll(b, {1, 1, 1})
+         wait(2)
+      end
+   end
+   return 1
+end
+
+-- Coroutine timer
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+   function physicsCast()
+      --[[
+
+		local pos = self.getPosition()
+		local hitList = Physics.cast({
+			origin			= {pos.x, pos.y, pos.z},
+			direction		= {0,1,0},
+			type				= 2,
+			size				= {2,2,2},
+			max_distance 	= 0,
+			debug				= true
+		})
+		for _, entry in ipairs(hitList) do
+			if entry.hit_object.tag == "Card" then
+				table.insert(display_table, entry.hit_object.guid)
+			end
+		end
+
+]]
+   end
+
+   -- Button Removal
+   function removeButton_()
+      local buttons = self.getButtons()
+      for i, v in pairs(buttons) do
+         if v.label == "" then
+            self.removeButton(v.index)
+         end
+      end
+   end
+
+
+   -- Change Survivors Survival and Insanity
+   function changeSurvivors(location, amount, grid)
+      obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+      obj.call("add", {location, amount})
+   end
+
+   -- example >    changeSurvivors("survival", -1, grid)
+   -- example >    changeSurvivors("insanity", -1, grid)
+
+
+   -- Change all survivors Survival and Insanity
+   function changeAllSurvivors(location, amount)
+      grids = Global.getTable("grids")
+      for i, v in pairs(grids) do
+         obj = getObjectFromGUID(getObjectFromGUID(v.guid).getVar("FullCharSheetGUID"))
+         obj.call("add", {location, amount})
+      end
+   end
+
+   -- example >     changeAllSurvivors("survival", 1)
+   -- example >     changeAllSurvivors("insanity", 1)
+
+
+   -- Iterate over all player zones
+   playerZones = {
+      red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+      yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+      green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+      blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+   }
+
+   function check_zonesPlayers()
+      for zoneKey, zoneGUIDtable in pairs(playerZones) do
+         local zoneGUID = zoneGUIDtable.guid
+         local zone = getObjectFromGUID(zoneGUID)
+         local objectsInZone = zone.getObjects()
+         for _, obj in ipairs(objectsInZone) do
+            -- do stuff
+         end
+      end
+   end
+
+	-- Table removal while iterating
+	--[[if next(display_table) ~= nil then
+		local k = 1
+		while k <= #display_table do
+		  local obj = getObjectFromGUID(display_table[k])
+		  if obj.getName() == "Acid-Tooth Dagger" then
+			  table.remove(display_table, k)
+		  elseif obj.getName() == "Mighty Strike" then
+			  table.remove(display_table, k)
+		  else
+			  k = k + 1
+			  if obj ~= nil then
+				  obj.destruct()
+			  end
+		   end
+		end
+	end]]
+
+-- clone gear to card then 'use it now' or 'use it later'
+function whiskerHarp(object, player_color)
+	-- Clone to Player Card
+	for _, object in ipairs(zone.getObjects()) do
+		if object.getName() == "Whisker Harp" then
+			object.setScale({0.32, 1.00, 0.32})
+			object.clone({position = gear_clone_pos})
+			object.setScale({0.69, 1.00, 0.69})
+		end
+	end --end
+	isUsing_WhiskerHarp = true
+	clearMenuButtons()
+	createButton_Use_Yes_No()
+end
+
+-- Whisker Harp
+--[[
+
+if object.getName() == "Whisker Harp" and isUsing_WhiskerHarp then
+diceRoller.getVar("usedWhiskerHarp")
+diceRoller.setVar("usedWhiskerHarp", true)
+diceRoller.call("click_roll")
+isUsing_WhiskerHarp = false
+end
+
+]]
+
+-- Card clone to survCard for dice rolls reference
+-- Standard Cards
+--[[
+
+for _, object in ipairs(zone.getObjects()) do
+if object.getName() == "" then
+object.setScale({0.49, 1.00, 0.49})
+object.setPosition(gained_resource_pos)
+end
+end
+
+]]
+
+
+   function createOffset()
+      local i = 0
+      return function ()
+         i = i + 2
+         return i
+      end
+   end
+
+   offset = createOffset()
+
+	-- (offset())

@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local posX = self.getPosition().x
+	if posX < 0 then
+		broadcastToAll("If you surged to make this attack ~ Your blow is swallowed by smoke", {1,1,1})
+		broadcastToAll("Untouched the Monster Strikes back ~ Perform Blacken", {1,1,1})
+		self.setPositionSmooth({6.16, 4.31, -2.45})
+	end
+end

@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "The Kingsman is knocked down!", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered >>>", {1,1,1})
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "You Gain a (-1) Strength Token", effect = ""}})
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound", {gear = "The Gold Smoke Knight gained (-2) Toughness until the end of your attack", effect = ""}})
+  getStatToken()
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('693899')
+	local desc = object.getDescription()
+	object.setDescription('end of attack')
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+	Global.setTable('tghEndofAttack', tghEndofAttack)
+end

@@ -1,0 +1,4 @@
+function onLoad()
+	settings_P1_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	self.setColorTint(settings_P1_token.getColorTint())
+end

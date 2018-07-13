@@ -1,0 +1,12 @@
+function onLoad()
+	boxLabel = self.getName()
+	self.createButton({click_function  = 'dud', function_owner = self, label = boxLabel, position = {-0.3, 2.6, -0.35}, rotation = {270, 0, 0}, width = 0, height = 0, font_size = 250})
+end
+
+function dud()
+end
+
+function onPickedUp()
+	boxLabel = self.getName()
+	self.editButton({index = 0, label = boxLabel})
+end

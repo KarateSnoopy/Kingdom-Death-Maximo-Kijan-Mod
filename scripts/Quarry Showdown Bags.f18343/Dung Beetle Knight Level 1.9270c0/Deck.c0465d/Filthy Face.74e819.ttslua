@@ -1,0 +1,70 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Dung Beetle Knight gained a (-1) Accuracy Token", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	zone = grid.getVar("zone")
+	hitTool = roller.getVar("hitTool")
+end
+
+function woundEffect()
+	getVars()
+	hasWoundBonus = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if (string.find(gear.getDescription(), "club") and gear.getGUID() == weaponGUID) or (string.find(gear.getDescription(), "shield") and gear.getGUID() == weaponGUID) then
+			hasWoundBonus = true
+			obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+			local var = "endOfattack"
+			obj.getVar("phase")
+			obj.setVar("phase", var)
+			startLuaCoroutine(self, "addStat_coR")
+			Global.call('addBroadcast', {"wound_reaction", {gear = "The Dung Beetle Knight gained (-4) Toughness until the end of your attack", effect = ""}})
+			hitTool.call("reactionsCancelled_endOfAttack")
+			Global.call('addBroadcast', {"wound_reaction", {gear = "Reactions Cancelled until the end of this attack", effect = ""}})
+		end
+	end
+	if not hasWoundBonus then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are not attacking with a Club or Shield", effect = ""}})
+	end
+end
+
+function addStat_coR()
+	for i=1, 4 do
+		obj.call('spawn_token')
+		wait(0.25)
+	end
+	return 1
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

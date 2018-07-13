@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "resolve the Critical Wound effect on this Hit Location", effect = "If you are within 2 spaces and able to Consume then"}})
+     Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Mouth ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

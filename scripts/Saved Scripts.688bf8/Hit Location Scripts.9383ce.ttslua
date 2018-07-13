@@ -1,0 +1,486 @@
+--utf codes
+
+-- sun = ☀
+-- white knight chess piece 	= ♘
+-- skull / crossbones 			= ☠
+-- diamond/gear used 			= ◈
+
+
+-- recycle symbol 				= ♲
+-- black star 						= ★
+
+-- warning sign 					= ⚠
+
+-- ruler 							= ♚
+-- damsel 							= ♛
+-- fool								= ☛     ☚
+-- villian 							= ♆
+
+
+
+function gaining_the_priority_target_token()
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	hasPriority = false
+	cannot_be_removed = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if string.find(tok.getDescription(), "permanent") then
+			cannot_be_removed = true
+		end
+	end
+	if cannot_be_removed then
+		broadcastToAll("A Survivor already has the Priority Target Permanently ~ From a Game Effect", {1,1,1})
+		return
+	end
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			else
+				local obj = getObjectFromGUID('3bc58d')
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone(objPos)
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			end
+		end
+	end
+end
+
+function dud()
+--_____________ CANCEL REACTIONS ~ END OF ROUND  _____________________________________________________________
+hitTool_right = getObjectFromGUID('10e61e')
+hitTool_right.call("reactionsCancelled")
+hitTool_right.call('removeButton_ReactionTriggered')
+hitTool_right.call('createButton_survival_Opportunity')
+
+hitTool_left = getObjectFromGUID('309402')
+hitTool_left.call("reactionsCancelled")
+
+--_____________ CANCEL REACTIONS ~ END OF ATTACK _____________________________________________________________
+local posX = self.getPosition().x
+if posX > 6 then
+	hitTool_right = getObjectFromGUID('10e61e')
+	hitTool_right.call("reactionsCancelled_endOfAttack")
+	hitTool_right.call('removeButton_ReactionTriggered')
+	hitTool_right.call('createButton_survival_Opportunity')
+elseif posX < 4 then
+	hitTool_left = getObjectFromGUID('309402')
+	hitTool_left.call("reactionsCancelled_endOfAttack")
+end
+
+--_____________ CANCEL REACTIONS ~ ON NEXT HIT LOCATION _____________________________________________________________
+hitTool_right = getObjectFromGUID('10e61e')
+hitTool_right.call("reactionsCancelled_nextWoundAttempt")
+hitTool_right.call('removeButton_ReactionTriggered')
+hitTool_right.call('createButton_survival_Opportunity')
+
+hitTool_left = getObjectFromGUID('309402')
+hitTool_left.call("reactionsCancelled_nextWoundAttempt")
+
+end
+
+--_____________ HIT LOCATION FUNCTIONS _____________________________________________________________
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+Global.call('addBroadcast', {"crit", {gear = "", effect = ""}})
+
+Global.call('addBroadcast', {"wound_reaction", {gear = "", effect = ""}})
+
+Global.call('addBroadcast', {"failure", {gear = "", effect = ""}})
+
+Global.call('addBroadcast', {"reflex", {gear = "", effect = ""}})
+
+
+
+--_____________ GET VARS _____________________________________________________________
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+
+	zone = grid.getVar("zonePlayer")
+
+	color = grid.getVar("color")
+	msg_color = grid.getTable("msg_color")
+
+	hitTool = roller.getVar("hitTool")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	frenzyToken = grid.getVar("frenzyToken")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+--_____________ GET RANDOM RESOURCE _____________________________________________________________
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Dung Beetle Knight Resource", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+
+	pos = grid.getTable("gained_resource_pos")
+
+	color = grid.getVar("color")
+	msg_color = grid.getTable("msg_color")
+
+	PlayerName = grid.getVar("PlayerName")
+
+	hitTool = roller.getVar("hitTool")
+	drawn_hitLocations = hitTool.getTable("drawn_hitLocations")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+
+
+--_____________ GET NAMED RESOURCE_____________________________________________________________
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+
+	zone = grid.getVar("zonePlayer")
+
+	color = grid.getVar("color")
+	msg_color = grid.getTable("msg_color")
+
+	PlayerName = grid.getVar("PlayerName")
+
+	hitTool = roller.getVar("hitTool")
+	drawn_hitLocations = hitTool.getTable("drawn_hitLocations")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "XXXXXXXXXXXXXXX", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 XXXXXXXXXXXXXXX", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more XXXXXXXXXXXXXXX", effect = ""}})
+	end
+end
+
+
+--_____ MONSTER TOKEN SPAWNERS ___________________________________________________________________
+function dud()
+	--_____ until end of showdown _____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The XXX gained a (-1) XXX Token", effect = ""}})
+
+	--_____ until end of wound _____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "endOfwound"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ until end of wound attempt _____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ until end of attack _____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "endOfattack"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ until end of round _____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "endOfround"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ until end of monster turn_____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "endOfMonsterTurn"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ until start of monster turn_____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "startOfMonsterTurn"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ until duration ends_____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "duration"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ cocoon _____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "cocoon"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+	--_____ in Fairy Ring_____
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_XXX.guid)
+	local var = "inFairyRing"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+
+end
+
+
+
+--_____ MONSTER TEMPORARY STAT TOKENS ________________________________________________________________
+function addStatModifier()
+	getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(-2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+
+
+
+
+--_____ GET INSANITY VALUE ___________________________________________________________________________
+function check_isInsane(isInsane)
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "isInsane" and (obj.getRotation().z > 165 and obj.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+	return isInsane
+end
+
+--_____ GET UNDERSTANDING VALUE ________________________________________________________________________
+function get_understanding_value(understanding)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	understanding = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 14)
+		if prefix == "understanding_" then
+			if v.label ~= '' then
+				understanding = understanding + 1
+			end
+		end
+	end
+	return understanding
+end
+
+--_____ GET COURAGE VALUE ________________________________________________________________________
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+--_____ GET HUNT XP VALUE ________________________________________________________________________
+function get_huntXP_value(hunt)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	hunt = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 3)
+		if prefix == "xp_" then
+			if v.label ~= '' then
+				hunt = hunt + 1
+			end
+		end
+	end
+	return hunt
+end
+
+--_____ Return isDeaf ________________________________________________________________________
+
+--__________ CHANGE SURVIVORS SURVIVAL AND/OR INSANSITY ____________________________________________________________
+
+function changeAllSurvivors(location, amount)
+	grids = Global.getTable("grids")
+	for i, v in pairs(grids) do
+		obj = getObjectFromGUID(getObjectFromGUID(v.guid).getVar("FullCharSheetGUID"))
+		obj.call("add", {location, amount})
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+-- changeSurvivors("survival", 1, grid)
+
+-- changeSurvivors("insanity", 1, grid)
+
+
+--__________ AI DECK TOOL - DELETE LEFTOVERS AFTER BUILD DECK ____________________________________________________________
+
+function deleteLeftoverAICards()
+	pos = self.getPosition()
+	offsetX = createOffsetX()
+	init_posX = pos.x -2.69
+
+	for i=1, 4 do
+		local hitList = Physics.cast({origin={init_posX - (offsetX()), pos.y, pos.z + 2.15}, direction={0,1,0}, type=2, size={1.5, 1.5, 1.5}, max_distance = 0})
+	   for _, entry in ipairs(hitList) do
+			if entry.hit_object.tag == "Deck" then
+				entry.hit_object.destroy()
+			end
+			if entry.hit_object.tag == "Card" then
+				entry.hit_object.destroy()
+			end
+		end
+	end
+end
+
+function createOffsetX()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 2.53
+		return i
+	 end
+ end
+
+--__________ HIT LOCATION TOUGHNESS MODIFIERS ____________________________________________________________
+function addStatModifier()
+	getVars()
+	token_spawner = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfround"
+	token_spawner.getVar("phase")
+	token_spawner.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	local token_spawner = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	token_spawner.getVar("phase")
+	token_spawner.setVar("phase", var)
+	for i=1, 4 do
+		token_spawner.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+
+-- hit location scripts

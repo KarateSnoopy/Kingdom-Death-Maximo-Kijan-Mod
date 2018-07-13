@@ -1,0 +1,39 @@
+function onLoad()
+	deckInjuries = getObjectFromGUID('40432d')
+	pos = {-0.07, 4.29, -32.04}
+end
+
+function getLeg4()
+	local tbl = {cardName = "Dismembered Leg", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getLeg5()
+	local tbl = {cardName = "Hamstrung", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getLeg6()
+	local tbl = {cardName = "Torn Achilles Tendon", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getLeg7()
+	local tbl = {cardName = "Torn Muscle", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getLeg8()
+	local tbl = {cardName = "Broken Leg", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end

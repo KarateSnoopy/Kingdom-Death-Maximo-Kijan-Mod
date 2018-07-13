@@ -1,0 +1,33 @@
+function criticalWoundEffect()
+	self.setPositionSmooth({3.97, 4.23, -21.44})
+  Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Crippled Vines ~ Keep in Play", effect = "", effect2 = ""}})
+  Global.call('addBroadcast', {"crit", {gear = "You are the Axe King! ~ Gain (+1) Permanent Strength", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Suffer Knockback 7 ~ Gain 1 Bleeding Token", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	broadcastToAll("The Lonely Tree bears fruit in an unoccupied space as close to you as possible", msg_color)
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+end

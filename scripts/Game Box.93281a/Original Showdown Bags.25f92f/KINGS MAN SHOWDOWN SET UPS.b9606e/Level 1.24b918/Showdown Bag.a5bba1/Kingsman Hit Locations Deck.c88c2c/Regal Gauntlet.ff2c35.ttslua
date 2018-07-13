@@ -1,0 +1,31 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "You gain (+1) Survival", effect = "", effect2 = ""}})
+    getStatToken()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "You gain (+1) Survival", effect = "", effect2 = ""}})
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('693899')
+	local desc = object.getDescription()
+	object.setDescription('start of monster turn')
+    	object.setScale({0.43, 1.00, 0.43})
+		local tghStat =	Global.getTable('tghStat')
+        		table.insert(tghStat, object.clone({position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+                Global.call('addBroadcast', {"wound", {gear = "The Kingsman gained (-2) Toughness until the start of its next turn", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	       Global.setTable('tghStat', tghStat)
+end
+
+
+function addStatModifier()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

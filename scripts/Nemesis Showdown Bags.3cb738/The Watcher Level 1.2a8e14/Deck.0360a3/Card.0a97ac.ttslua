@@ -1,0 +1,31 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Turn the Watcher to face the Attacker ♘", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Move 3 spaces directly awa ~ Cancel all hits out of Range", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	broadcastToAll("Lose 2 Survival ~ If you cannot, you die instantly", msg_color)
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+end

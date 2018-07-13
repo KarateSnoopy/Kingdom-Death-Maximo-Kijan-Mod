@@ -1,0 +1,32 @@
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Ruined Liver ~ Keep in Play", effect = "", effect2 = "Use Displacement and Materialize on this card Instead"}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+  broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+  startLuaCoroutine(self, 'broadcastDelay1')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('The Phoenix performs its Basic Action targeting you', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

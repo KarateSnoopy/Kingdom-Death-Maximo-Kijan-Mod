@@ -1,0 +1,27 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The Lion God suffers an Additional Wound and Knockback 3", effect = "Archive any Terrain it passes over"}})
+end
+
+function woundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9480fd')
+	local desc = object.getDescription()
+	object.setDescription('end of attack')
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+                broadcastToAll("The Lion God gained (+3) Toughness until the End of your Attack", Table)
+	Global.setTable('tghEndofAttack', tghEndofAttack)
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

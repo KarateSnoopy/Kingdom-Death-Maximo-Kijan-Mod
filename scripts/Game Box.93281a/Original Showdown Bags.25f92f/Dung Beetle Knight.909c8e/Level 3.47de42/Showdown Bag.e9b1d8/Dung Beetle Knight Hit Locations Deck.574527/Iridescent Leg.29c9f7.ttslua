@@ -1,0 +1,51 @@
+function criticalWoundEffect()
+     getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9a6c93')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local movStat = Global.getTable('movStat')
+        		table.insert(movStat, object.clone({
+				position = {-16.61, 4.42, 0.51 + #movStat * -1}}))
+                Global.call('addBroadcast', {"crit", {gear = "The Dung Beetle Knight gained a (-1) Movement Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('movStat', movStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+    startLuaCoroutine(self, "broadcastDelay2")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('If you are within 3 spaces ~ you are smashed into the Resin Ball ~ Place adjacent to it', {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll('You suffer 5 Damage to \u{02606} Hit Locations', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

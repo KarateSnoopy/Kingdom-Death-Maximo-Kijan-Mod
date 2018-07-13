@@ -1,0 +1,43 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Courage", effect = ""}})
+end
+
+function woundEffect()
+	getVars()
+	if hasFurArmor then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are wearing Fur Armor", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are not wearing any Fur Armor", effect = ""}})
+		Global.call('addBroadcast', {"wound_reaction", {gear = "Gain 1 Bleeding Token and you are knocked down", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	hasFurArmor = false
+	for _, armor in ipairs(zone.getObjects()) do
+		if string.find(armor.getDescription(), "fur") then
+			hasFurArmor = true
+		end
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+ -- gaunt fingers

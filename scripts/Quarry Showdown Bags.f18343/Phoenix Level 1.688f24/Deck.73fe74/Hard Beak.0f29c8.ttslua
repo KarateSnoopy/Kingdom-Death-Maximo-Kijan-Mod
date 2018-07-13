@@ -1,0 +1,64 @@
+
+function criticalWoundEffect()
+	getVars()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Cracked Beak ~ Keep In Play", effect = "", effect2 = ""}})
+	self.setPositionSmooth({-2.12, 4.34, -21.56})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	hitTool = roller.getVar("hitTool")
+	drawn_hitLocations = hitTool.getTable("drawn_hitLocations")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "Turn to face Attacker ~ Roll 1d10", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "You have " .. get_huntXP_value(hunt) .. " Hunt Xp", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+
+end
+
+function get_huntXP_value(hunt)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	hunt = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 3)
+		if prefix == "xp_" then
+			if v.label ~= '' then
+				hunt = hunt + 1
+			end
+		end
+	end
+	return hunt
+end
+
+function addStatModifier()
+end

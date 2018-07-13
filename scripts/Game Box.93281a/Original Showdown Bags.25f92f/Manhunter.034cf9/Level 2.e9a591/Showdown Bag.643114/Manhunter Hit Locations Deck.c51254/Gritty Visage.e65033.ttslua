@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+3) Survival", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "If you have the Prey Disorder ~ Lose it and the Manhunter suffers an Additional Wound", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("First Strike", {1,1,1})
+end

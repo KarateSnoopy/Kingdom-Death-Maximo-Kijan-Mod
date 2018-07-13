@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "The Watcher is Knocked Down ~ You may perform Embolden 3 Times", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	broadcastToAll("You Suffer 3 Brain Damage", {1,1,1})
+end

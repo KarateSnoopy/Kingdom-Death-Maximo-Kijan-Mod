@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_spd.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Screaming Antelope gained a (-1) Speed Token", effect = "", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this card", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "If you are adjacent ~ Spend 1 Survival or Suffer 3 Damage to the Arms", effect = "", effect2 = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

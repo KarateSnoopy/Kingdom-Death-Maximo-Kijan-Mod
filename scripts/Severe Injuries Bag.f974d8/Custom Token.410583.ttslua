@@ -1,0 +1,32 @@
+function onLoad()
+	deckInjuries = getObjectFromGUID('40432d')
+	pos = {-0.07, 4.29, -32.04}
+end
+
+function getHead5()
+	local tbl = {cardName = "Intracranial Hemorrhage", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getHead6()
+	local tbl = {cardName = "Deaf", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getHead7()
+	local tbl = {cardName = "Blind", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function getHead9()
+	local tbl = {cardName = "Shattered Jaw", zone = "", deck = deckInjuries}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end

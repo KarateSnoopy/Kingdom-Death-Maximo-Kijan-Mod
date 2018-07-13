@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Move The Watcher onto the Space the Attacker is currently occupying", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You may perform Embolden", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

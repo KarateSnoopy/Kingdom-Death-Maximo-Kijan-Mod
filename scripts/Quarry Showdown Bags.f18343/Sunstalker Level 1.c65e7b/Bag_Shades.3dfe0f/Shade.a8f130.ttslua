@@ -1,0 +1,40 @@
+function onLoad()
+
+end
+
+function onDrop()
+	local pos = self.getPosition()
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local bag_shade_miasma = getObjectFromGUID('4775dd')
+		shade_miasma = bag_shade_miasma.takeObject({
+			position 		= {pos.x, pos.y - 0.1, pos.z},
+			smooth 			= false,
+			callback_owner = Global,
+			callback 		= "lockShadowToken"
+		})
+		shade_miasma.AssetBundle.playLoopingEffect(3)
+	end
+end
+
+function onPickUp()
+	destroy_miasma()
+end
+
+function destroy_miasma()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {5,5,5},
+		max_distance 	= 0,
+		debug 			= false
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Shade Miasma" then
+			entry.hit_object.destroy()
+		end
+	end
+end

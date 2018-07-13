@@ -1,0 +1,99 @@
+
+
+function buildDeck()
+    getBasicAIcards()
+    getAdvancedAIcards()
+    getLegendaryAIcards()
+    Timer.create({
+        function_owner=self,
+        identifier="shuffleDelay",
+        function_name="shuffle",
+        delay=1.5
+    })
+    Timer.create({
+        function_owner=self,
+        identifier="deleteAIcards",
+        function_name="deleteLeftoverAICards",
+        delay=2.5
+    })
+end
+
+function getBasicAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Basic" then
+            deck = object
+            deck.shuffle()
+				for i=1, 11 do
+					deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+				end
+        end
+    end
+end
+
+function getAdvancedAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Advanced" then
+            deck = object
+            deck.shuffle()
+				for i=1, 8 do
+					deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+				end
+        end
+    end
+end
+
+function getLegendaryAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Legendary" then
+            deck = object
+            deck.shuffle()
+					deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+        end
+    end
+end
+
+function shuffle()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for k, v in pairs(objectsInZone) do
+        if v.tag == 'Deck' then
+            v.shuffle()
+        end
+    end
+end
+
+function deleteLeftoverAICards()
+	pos = self.getPosition()
+	offsetX = createOffsetX()
+	init_posX = pos.x -2.69
+
+	for i=1, 4 do
+		local hitList = Physics.cast({origin={init_posX - (offsetX()), pos.y, pos.z + 2.15}, direction={0,1,0}, type=2, size={1.5, 1.5, 1.5}, max_distance = 0})
+	   for _, entry in ipairs(hitList) do
+			if entry.hit_object.tag == "Deck" then
+				entry.hit_object.destroy()
+			end
+			if entry.hit_object.tag == "Card" then
+				entry.hit_object.destroy()
+			end
+		end
+	end
+end
+
+function createOffsetX()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 2.53
+		return i
+	 end
+ end

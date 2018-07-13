@@ -1,0 +1,60 @@
+
+function criticalWoundEffect()
+	getVars()
+	createButton()
+end
+
+function woundEffect()
+	createButton()
+end
+
+function createButton()
+	self.createButton{index = 0, click_function = 'callClickFunctions', function_owner = self,
+		label = 'Deathblow?', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+		scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+	color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function callClickFunctions()
+	getMonsterResource(deck, name, params)
+	broadcastToAll("Nominate a Survivor to retrieve the Bulb", {1, 1, 1})
+end
+
+function getVars()
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Pure Bulb", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained Gorm's Pure Bulb", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "The Gorm doesn't have a Pure Bulb", effect = ""}})
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

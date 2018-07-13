@@ -1,0 +1,10 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Unbalanced Tail", effect = "Keep in Play"}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Resolve this Hit Location's Wound Effect", effect = ""}})
+end

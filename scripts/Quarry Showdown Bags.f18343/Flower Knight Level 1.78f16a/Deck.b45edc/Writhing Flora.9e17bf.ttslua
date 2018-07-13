@@ -1,0 +1,52 @@
+function criticalWoundEffect()
+	getVars()
+
+	local stats = {color = color, stat = 'lck', modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	Global.call('addBroadcast', {"crit", {gear = "Gain the Priority Target Token ~ You gained a (+1) Luck Token", effect = ""}})
+   Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Bruised Ego ~ Keep in Play", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "~~~ !!! Impervious  !!! ~~~", effect = "Cannot be Wounded"}})
+
+
+	drawn_hitLocations = hitTool.getTable("drawn_hitLocations")
+	   for i, v in ipairs(drawn_hitLocations) do
+	       if v.getGUID() == self.getGUID() then
+	           table.remove(drawn_hitLocations, i)
+	       end
+	   end
+	   hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({2.16, 4.34, -21.56})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "~~~ !!! Impervious  !!! ~~~", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	color = grid.getVar("color")
+	hitTool = roller.getVar("hitTool")
+	print(hitTool.getName())
+
+end
+
+-- writhing flora

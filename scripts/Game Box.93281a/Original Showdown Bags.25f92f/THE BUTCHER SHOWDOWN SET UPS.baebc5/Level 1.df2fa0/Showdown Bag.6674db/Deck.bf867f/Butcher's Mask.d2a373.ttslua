@@ -1,0 +1,52 @@
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "The Butcher gains (-2) Toughness until the end of the round", effect = ""}})
+    getStatToken()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "The Butcher gains (-2) Toughness until the end of the round", effect = ""}})
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('693899')
+	local desc = object.getDescription()
+	object.setDescription('end of round')
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+	Global.setTable('tghEndofAttack', tghEndofAttack)
+end
+
+function failureEffect()
+  broadcastToAll('____________________ ☠ !!! Failure Reaction Triggered !!! ☠ ____________________', {1,1,1})
+  startLuaCoroutine(self, 'broadcastDelay1')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('The Butcher full moves towards you', {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll('If he ends his movement adjacent to you ~ suffer knockback 5', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

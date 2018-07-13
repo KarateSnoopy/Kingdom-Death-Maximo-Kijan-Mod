@@ -1,0 +1,31 @@
+
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local drawHitLocationTool = getObjectFromGUID('10e61e')
+	local Table = drawHitLocationTool.getTable('hitLocation')
+	for k, v in ipairs(Table) do
+		obj = getObjectFromGUID(v)
+		if obj.getName() == "Achilles Tendon" then
+		    getStatToken()
+		end
+	end
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('693899')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {6.79, 6, 0.02}}))
+        broadcastToAll("(-2) Toughness to Wound this location Calculated.", {1,1,1})
+	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

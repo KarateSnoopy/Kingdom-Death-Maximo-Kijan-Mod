@@ -1,0 +1,52 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound", {gear = "The Hand Staggers on purpose ~ Cancel all Reactions for the rest of the attack", effect = ""}})
+  Global.call('addBroadcast', {"wound", {gear = "Ignore all Lens effects ~ All Lens flipped to Closed", effect = ""}})
+  flipLens()
+end
+
+function flipLens()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Red Lens" and card.getRotation().z > 165 then
+      card.flip()
+    end
+  end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local object = getObjectFromGUID('c1cc69')
+  object.setDescription('end of wound')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {-5.39, 4.32, 0.24}}))
+        broadcastToAll("(-4) Toughness to Wound this location Calculated.", {1,1,1})
+  Global.setTable('cleanUpHitLocation', cleanUpList)
+  object.setDescription('')
+  startLuaCoroutine(self, 'broadcastDelay1')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('Spend 1 Survival or cancel this attack', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end

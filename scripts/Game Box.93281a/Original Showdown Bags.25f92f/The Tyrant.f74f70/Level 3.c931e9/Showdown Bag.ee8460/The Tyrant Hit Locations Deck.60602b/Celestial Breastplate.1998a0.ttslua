@@ -1,0 +1,24 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Inverted Chakras ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

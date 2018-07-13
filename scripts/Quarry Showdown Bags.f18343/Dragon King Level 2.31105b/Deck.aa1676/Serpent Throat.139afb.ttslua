@@ -1,0 +1,22 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Ruined Coolants ~ Keep in Play", effect = ""}})
+	 self.setPositionSmooth({0.07, 4.33, -17.97})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"wound", {gear = "The Dragon King gained a (-1) Toughness Token", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

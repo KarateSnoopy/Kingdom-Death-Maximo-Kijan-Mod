@@ -1,0 +1,15 @@
+isKdmEffectsObject = true
+effects = {
+    move = 1
+}
+
+function getEffects()
+
+        effects.move = -2
+
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.move = effects.move * qty
+	end
+    return effects
+end

@@ -1,0 +1,63 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+	getVars()
+	local understanding_value = get_understanding_value(understanding)
+	if understanding_value >=3 then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You have " .. understanding_value .. " Understanding", effect = ""}})
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You may spend 5 Survival to gain (+1) Permanent Evasion", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You do not have 3+ Understanding", effect = ""}})
+	end
+
+	hasKingsStep = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "King's Step" then
+			hasKingsStep = true
+		end
+	end
+	if hasKingsStep then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You have King's Step", effect = ""}})
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You may spend 5 Survival to gain (+1) Permanent Evasion", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You do not have King's Step", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zone")
+end
+
+function get_understanding_value(understanding)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	understanding = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 14)
+		if prefix == "understanding_" then
+			if v.label ~= '' then
+				understanding = understanding + 1
+			end
+		end
+	end
+	return understanding
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

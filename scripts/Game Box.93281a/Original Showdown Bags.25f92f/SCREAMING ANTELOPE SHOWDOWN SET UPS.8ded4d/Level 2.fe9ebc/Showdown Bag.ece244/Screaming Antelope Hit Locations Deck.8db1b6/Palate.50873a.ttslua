@@ -1,0 +1,52 @@
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('846081')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local spdStat = Global.getTable('spdStat')
+        		table.insert(spdStat, object.clone({
+				position = {-15.47, 4.42, 0.51 + #spdStat * -1}}))
+                Global.call('addBroadcast', {"crit", {gear = "The Screaming Antelope gained a (-1) Speed Token", effect = "", effect2 = ""}})
+                Global.call('addBroadcast', {"crit", {gear = "Archive this card", effect = "", effect2 = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('spdStat', spdStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+    startLuaCoroutine(self, "broadcastDelay2")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('The Giant Maw snaps shut', {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(3.5)
+    broadcastToAll('Spend 1 Survival or Suffer 3 Damage to the arms location', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

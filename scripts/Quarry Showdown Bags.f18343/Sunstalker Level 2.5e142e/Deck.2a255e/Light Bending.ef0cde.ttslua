@@ -1,0 +1,56 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+
+end
+
+function addStatModifier()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	redAttacked = roller.getVar("red_attacked")
+	yellowAttacked = roller.getVar("yellow_attacked")
+	greenAttacked = roller.getVar("green_attacked")
+	blueAttacked = roller.getVar("blue_attacked")
+
+	card.call('return_inShadow')
+
+	if redAttacked then
+		bool1 = card.getVar("inDarkness_red")
+		bool2 = card.getVar("inDarkness_always_red")
+		bool3 = card.getVar("inShadow_red")
+	elseif yellowAttacked then
+		bool1 = card.getVar("inDarkness_yellow")
+		bool2 = card.getVar("inDarkness_always_yellow")
+		bool3 = card.getVar("inShadow_yellow")
+	elseif greenAttacked then
+		bool1 = card.getVar("inDarkness_green")
+		bool2 = card.getVar("inDarkness_always_green")
+		bool3 = card.getVar("inShadow_green")
+	elseif blueAttacked then
+		bool1 = card.getVar("inDarkness_blue")
+		bool2 = card.getVar("inDarkness_always_blue")
+		bool3 = card.getVar("inShadow_blue")
+	end
+
+	if not bool1 or bool2 or bool3 then
+		Global.call('addBroadcast', {"failure", {gear = "You are in the Light ~ Suffer ☀ Damage to ★ Hit Locations", effect = ""}})
+		Global.call('addBroadcast', {"failure", {gear = "Move the Sunstalker 1 Space Away from You ~ Cancel all Hits out of Range", effect = ""}})
+	end
+end

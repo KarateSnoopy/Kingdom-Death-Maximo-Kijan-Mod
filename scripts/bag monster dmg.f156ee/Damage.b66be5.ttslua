@@ -1,0 +1,11 @@
+isKdmEffectsObject = true
+effects = {
+	damage = 1
+}
+
+function getEffects()
+
+	effects.damage = 1
+
+	return effects
+end

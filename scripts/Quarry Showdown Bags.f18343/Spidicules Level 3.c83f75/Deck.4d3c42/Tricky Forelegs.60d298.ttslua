@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+	woundEffect()
+end
+
+function woundEffect()
+	 Global.call('addBroadcast', {"wound_reaction", {gear = "You hack off one of the Spidicules Legs!", effect = "", effect2 = "Place under the Twitching Leg Pile"}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "You hack off one of the Spidicules Legs!", effect = "", effect2 = "Place under the Twitching Leg Pile"}})
+
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

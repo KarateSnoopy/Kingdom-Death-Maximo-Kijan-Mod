@@ -1,0 +1,376 @@
+hitList = {}
+
+function onLoad()
+	bag_right = getObjectFromGUID('23b25b')
+	bag_left = getObjectFromGUID('63ed58')
+	bag_up = getObjectFromGUID('a1f16e')
+	bag_down = getObjectFromGUID('d02b2f')
+
+	createButtons()
+
+	zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Sun Dial" then
+			local rotY = card.getRotation().y
+			if rotY > 170 and rotY < 190 then
+				spawnShadow_Right = true
+			elseif rotY > 260 and rotY < 280 then
+				spawnShadow_Down = true
+			elseif rotY < 10 then
+				spawnShadow_Left = true
+			elseif rotY > 80 or rotY < 100 then
+				spawnShadow_Up = true
+			end
+		end
+	end
+end
+
+function createButtons()
+	self.createButton({click_function = "solarFlare", function_owner = self, label = "Solar Flare",
+	position = {0, 0.1, - 0.72}, scale = {0.5, 0.5, 0.5}, width = 1600, height = 225, font_size = 200})
+
+end
+
+function solarFlare(object, player)
+
+	local parameters = {}
+	parameters.position = {0.00, 4.26, 15.01}
+	parameters.pitch = 35
+	parameters.distance = 40
+	parameters.yaw = 0
+	Player[player].lookAt(parameters)
+
+	startLuaCoroutine(self, "solarFlare_coR")
+end
+
+function solarFlare_coR()
+	wait(0.1)
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneSpecialEffects.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "tool lighting") then
+			toolLighting = obj
+		end
+	end
+
+	toolLighting.getVar("time_transLength")
+	toolLighting.setVar("time_transLength", 6)
+	toolLighting.call("setLightingTable_SolarFlare")
+
+	broadcastToAll("All Survivors in the Light Suffer ★ Damage and are Knocked Down", {1,1,1})
+	local obj = getObjectFromGUID('6d1dae') -- persistent card
+	obj.call("return_inShadow")
+	obj.getVar("solarFlareTriggered")
+	obj.setVar("solarFlareTriggered", true)
+
+	local bool1 = obj.getVar("inShadow_red")
+	local bool2 = obj.getVar("inDarkness_red")
+	local bool3 = obj.getVar("inDarkness_always_red")
+
+	local bool4 = obj.getVar("inShadow_yellow")
+	local bool5 = obj.getVar("inDarkness_yellow")
+	local bool6 = obj.getVar("inDarkness_always_yellow")
+
+	local bool7 = obj.getVar("inShadow_green")
+	local bool8 = obj.getVar("inDarkness_green")
+	local bool9 = obj.getVar("inDarkness_always_green")
+
+	local bool10 = obj.getVar("inShadow_blue")
+	local bool11 = obj.getVar("inDarkness_blue")
+	local bool12 = obj.getVar("inDarkness_always_blue")
+
+	wait(3)
+	if bool1 or bool2 or bool3 then
+		broadcastToAll("Player One is in Darkness", {1, 0.14, 0})
+	else
+		broadcastToAll("Player One is in the Light", {1, 0.14, 0})
+	end
+	wait(1)
+	if bool3 or bool4 or bool5 then
+		broadcastToAll("Player Two is in Darkness", {0.905, 0.898, 0.172})
+	else
+		broadcastToAll("Player Two is in the Light", {0.905, 0.898, 0.172})
+	end
+	wait(1)
+	if bool6 or bool7 or bool8 then
+		broadcastToAll("Player Three is in Darkness", {0.192, 0.701, 0.168})
+	else
+		broadcastToAll("Player Three is in the Light", {0.192, 0.701, 0.168})
+	end
+	wait(1)
+	if bool10 or bool11 or bool12 then
+		broadcastToAll("Player Four is in Darkness", {0.118, 0.53, 1})
+	else
+		broadcastToAll("Player Four is in the Light", {0.118, 0.53, 1})
+	end
+
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if string.find(card.getDescription(), "ai") and (card.getPosition().z > 14 and card.getPosition().z < 19) then
+			card.setRotation({0,180,0})
+			card.setPosition({-1.24, 5, -2.48})
+		end
+	end
+
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Verdant Bubble" then
+			card.setPositionSmooth({-1.24, 5, -2.48}, false, false)
+		end
+	end
+	wait(2)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Vermilion Bubble" then
+			card.setPositionSmooth({-1.24, 5, -2.48}, false, false)
+		end
+	end
+	wait(2)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Verdigris Bubble" then
+			card.setPositionSmooth({-1.24, 5, -2.48}, false, false)
+		end
+	end
+	wait(2)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Violet Bubble" then
+			card.setPositionSmooth({-1.24, 5, -2.48}, false, false)
+		end
+	end
+
+	rotateClockwise()
+
+	toolLighting.getVar("time_transLength")
+	toolLighting.setVar("time_transLength", 2)
+	toolLighting.call("setLightingTable_showdown")
+
+	wait(3)
+	obj.getVar("solarFlareTriggered")
+	obj.setVar("solarFlareTriggered", false)
+
+	return 1
+end
+
+function rotateClockwise()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin = {pos.x, pos.y, pos.z + 3.15}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Sun Dial" then
+			local rotX = entry.hit_object.getRotation().x
+			local rotY = entry.hit_object.getRotation().y
+			local rotZ = entry.hit_object.getRotation().z
+			entry.hit_object.setRotationSmooth({rotX, rotY + 90, rotZ}, false, false)
+		end
+	end
+
+	hasShadow_Right = false
+	hasShadow_Down = false
+	hasShadow_Left = false
+	hasShadow_Up = false
+
+	spawnShadow_Right = false
+	spawnShadow_Down = false
+	spawnShadow_Left = false
+	spawnShadow_Up = false
+
+	for _, obj in ipairs(zone.getObjects()) do
+
+		if string.find(obj.getName(), "shadow survivor") then
+			obj.destroy()
+		end
+
+		if obj.getName() == "shadow right" then
+			hasShadow_Right = true
+		end
+
+		if obj.getName() == "shadow down" then
+			hasShadow_Down = true
+		end
+
+		if obj.getName() == "shadow left" then
+			hasShadow_Left = true
+		end
+
+		if obj.getName() == "shadow up" then
+			hasShadow_Up = true
+		end
+	end
+
+	if hasShadow_Right then
+		spawnShadow_Down = true
+		bag_down.call("buttonClick_place")
+
+	elseif hasShadow_Down then
+		spawnShadow_Left = true
+		bag_left.call("buttonClick_place")
+
+	elseif hasShadow_Left then
+		spawnShadow_Up = true
+		bag_up.call("buttonClick_place")
+
+	elseif hasShadow_Up then
+		spawnShadow_Right = true
+		bag_right.call("buttonClick_place")
+	end
+
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getName(), "Player") then
+			local survPos = obj.getPosition()
+			if spawnShadow_Right then
+				local newPos = {survPos.x + 1.6, 4.20, survPos.z}
+				local bagSurv_R = getObjectFromGUID('ef827b')
+				local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+
+			elseif spawnShadow_Down then
+				newPos = {survPos.x, 4.20, survPos.z - 1.6}
+				local bagSurv_R = getObjectFromGUID('ecc2a8')
+				local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+
+			elseif spawnShadow_Left then
+				newPos = {survPos.x - 1.6, 4.20, survPos.z}
+				local bagSurv_R = getObjectFromGUID('204ead')
+				local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+
+			elseif spawnShadow_Up then
+				newPos = {survPos.x, 4.20, survPos.z + 1.6}
+				local bagSurv_R = getObjectFromGUID('9cbe1e')
+				local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+			end
+		end
+	end
+
+end
+
+function onObjectPickedUp(player_color, picked_up_object)
+	if picked_up_object.tag == "Figurine" and not string.find(picked_up_object.getDescription(), "monster") then
+		local pos = picked_up_object.getPosition()
+		local obj = picked_up_object
+
+		--survColor = obj.getColorTint()
+		if obj.getName() == "Player One" then
+			obj.setColorTint({0.92, 0.37, 0.37})
+		elseif obj.getName() == "Player Two" then
+			obj.setColorTint({0.92, 0.78, 0.54})
+		elseif obj.getName() == "Player Three" then
+			obj.setColorTint({0.46, 0.90, 0.36})
+		elseif obj.getName() == "Player Four" then
+			obj.setColorTint({0.26, 0.55, 1.00})
+		end
+
+		if spawnShadow_Down then
+			hitList = Physics.cast({origin = {pos.x, pos.y, pos.z - 1.5}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0, })
+		elseif spawnShadow_Right then
+			hitList = Physics.cast({origin = {pos.x + 1.5, pos.y, pos.z}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0, })
+		elseif spawnShadow_Left then
+			hitList = Physics.cast({origin = {pos.x - 1.5, pos.y, pos.z}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0, })
+		elseif spawnShadow_Up then
+			hitList = Physics.cast({origin = {pos.x, pos.y, pos.z + 1.5}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0, })
+		end
+
+		for _, entry in ipairs(hitList) do
+			if string.find(entry.hit_object.getName(), "shadow survivor") then
+				entry.hit_object.destroy()
+			end
+		end
+
+	end
+end
+
+function onObjectDropped(player_color, dropped_object)
+	if string.find(dropped_object.getName(), "Player") then
+		local survPos = dropped_object.getPosition()
+		local obj = dropped_object
+
+		--survColor = obj.getColorTint()
+		if obj.getName() == "Player One" then
+			local hitList = Physics.cast({origin = {survPos.x, survPos.y, survPos.z}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0})
+			for _, entry in ipairs(hitList) do
+				if string.find(entry.hit_object.getName(), "shadow") then
+					local new_survColor = {obj.getColorTint().r - 0.60, obj.getColorTint().g - 0.20, obj.getColorTint().b - 0.20,}
+					obj.setColorTint(new_survColor)
+				end
+			end
+		end
+
+		--survColor = obj.getColorTint()
+		if obj.getName() == "Player Two" then
+			local hitList = Physics.cast({origin = {survPos.x, survPos.y, survPos.z}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0})
+			for _, entry in ipairs(hitList) do
+				if string.find(entry.hit_object.getName(), "shadow") then
+					local new_survColor = {obj.getColorTint().r - 0.43, obj.getColorTint().g - 0.36, obj.getColorTint().b - 0.25,}
+					obj.setColorTint(new_survColor)
+				end
+			end
+		end
+
+		--survColor = obj.getColorTint()
+		if obj.getName() == "Player Three" then
+			local hitList = Physics.cast({origin = {survPos.x, survPos.y, survPos.z}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0})
+			for _, entry in ipairs(hitList) do
+				if string.find(entry.hit_object.getName(), "shadow") then
+					local new_survColor = {obj.getColorTint().r - 0.60, obj.getColorTint().g - 0.54, obj.getColorTint().b - 0.22,}
+					obj.setColorTint(new_survColor)
+				end
+			end
+		end
+
+		--survColor = obj.getColorTint()
+		if obj.getName() == "Player Four" then
+			local hitList = Physics.cast({origin = {survPos.x, survPos.y, survPos.z}, direction = {0, 1, 0}, type = 3, size = {1.2, 1.2, 1.2}, max_distance = 0})
+			for _, entry in ipairs(hitList) do
+				if string.find(entry.hit_object.getName(), "shadow") then
+					local new_survColor = {obj.getColorTint().r - 0.14, obj.getColorTint().g - 0.30, obj.getColorTint().b - 0.55,}
+					obj.setColorTint(new_survColor)
+				end
+			end
+		end
+
+		spawnShadow_Right = false
+		spawnShadow_Down = false
+		spawnShadow_Left = false
+		spawnShadow_Up = false
+
+		for _, card in ipairs(zone.getObjects()) do
+			if card.getName() == "Sun Dial" then
+				local rotY = card.getRotation().y
+				if rotY > 170 and rotY < 190 then
+					spawnShadow_Right = true
+				elseif rotY > 260 and rotY < 280 then
+					spawnShadow_Down = true
+				elseif rotY < 10 then
+					spawnShadow_Left = true
+				elseif rotY > 80 or rotY < 100 then
+					spawnShadow_Up = true
+				end
+			end
+		end
+		if spawnShadow_Right then
+			local newPos = {survPos.x + 1.6, 4.20, survPos.z}
+			local bagSurv_R = getObjectFromGUID('ef827b')
+			local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+
+		elseif spawnShadow_Down then
+			newPos = {survPos.x, 4.20, survPos.z - 1.6}
+			local bagSurv_R = getObjectFromGUID('ecc2a8')
+			local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+
+		elseif spawnShadow_Left then
+			newPos = {survPos.x - 1.6, 4.20, survPos.z}
+			local bagSurv_R = getObjectFromGUID('204ead')
+			local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+
+		elseif spawnShadow_Up then
+			newPos = {survPos.x, 4.20, survPos.z + 1.6}
+			local bagSurv_R = getObjectFromGUID('9cbe1e')
+			local shadow = bagSurv_R.takeObject({position = newPos, smooth = false, callback = "lockShadowToken", callback_owner = Global})
+		end
+	end
+end
+
+-- Coroutine timer
+function wait(time)
+  local start = os.time()
+  --each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+  repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+-- solar flare tracker

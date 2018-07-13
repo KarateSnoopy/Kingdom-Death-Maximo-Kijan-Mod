@@ -1,0 +1,18 @@
+isKdmEffectsObject = true
+effects = {
+    move = 1
+}
+
+function getEffects()
+    rot = self.getRotation()
+    if rot[3] > 345 or rot[3] < 15 then
+        effects.move = 1
+    else
+        effects.move = -1
+    end
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.move = effects.move * qty
+	end
+    return effects
+end

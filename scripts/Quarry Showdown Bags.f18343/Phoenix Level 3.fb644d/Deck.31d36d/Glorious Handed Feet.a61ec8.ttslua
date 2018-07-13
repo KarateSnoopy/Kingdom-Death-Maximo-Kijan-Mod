@@ -1,0 +1,60 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Phoenix Resource", effect = "", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You may spend 1 Survival to Encourage all knocked down Survivors", effect = "", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Use the Survival Action Menu ~ For 'When you Encourage' Triggers", effect = "", effect2 = ""}})
+	getMonsterResource()
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Phoenix Resource", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "Turn to face Attacker ~ Roll 1d10", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "You have " .. get_huntXP_value(hunt) .. " Hunt Xp", effect = ""}})
+end
+
+function get_huntXP_value(hunt)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	hunt = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 3)
+		if prefix == "xp_" then
+			if v.label ~= '' then
+				hunt = hunt + 1
+			end
+		end
+	end
+	return hunt
+end
+
+function addStatModifier()
+end

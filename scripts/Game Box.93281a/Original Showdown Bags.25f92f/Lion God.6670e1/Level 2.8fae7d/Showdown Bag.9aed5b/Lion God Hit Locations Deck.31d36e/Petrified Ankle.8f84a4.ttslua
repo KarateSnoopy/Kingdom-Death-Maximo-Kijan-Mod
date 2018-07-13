@@ -1,0 +1,29 @@
+
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9a6c93')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local movStat = Global.getTable('movStat')
+        		table.insert(movStat, object.clone({
+				position = {-16.61, 4.42, 0.51 + #movStat * -1}}))
+                Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Movement Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('movStat', movStat)
+end

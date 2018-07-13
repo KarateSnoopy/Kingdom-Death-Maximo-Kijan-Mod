@@ -1,0 +1,76 @@
+function criticalWoundEffect()
+
+	local persistent_card = getObjectFromGUID('6d1dae')
+	roller = persistent_card.getVar("roller")
+	grid = roller.getVar("grid")
+	print(grid.getName())
+	zone = roller.getVar("zone")
+
+	local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, survSetting in ipairs(zone.getObjects()) do
+		if survSetting.getName() == "isInsane" and (survSetting.getRotation().z > 165 and survSetting.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+	print(isInsane)
+	print(insanity_value)
+
+	check_isInsane()
+
+	--Global.call('addBroadcast', {"crit", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+	--getMonsterResource(deck, name, params)
+end
+
+function check_isInsane()
+	if not isInsane then
+		Global.call('addBroadcast', {"crit", {gear = "You are not Insane", effect = ""}})
+		return
+	end
+	if isInsane then
+		Global.call('addBroadcast', {"crit", {gear = "You are Insane ~ You gained a (+1) Strength Token", effect = ""}})
+		local pos = grid.getVar('strToken_pos')
+		print(pos)
+		local bag = getObjectFromGUID(Global.getTable('bags_stats').bag_str.guid)
+		local token = bag.takeObject({position={pos.x, pos.y, pos.z}, smooth=false})
+		token.setDescription("token, plus1str")
+	end
+end
+
+function getMonsterResource(deck, name, params)
+	local zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid)
+  for _, object in ipairs(zone.getObjects()) do
+    local name = object.getName()
+    if name == "White Lion Resources Deck" then
+			deck = object
+			break
+    end
+	end
+  local cardsInDeck = deck.getObjects()
+  for i, card in ipairs(cardsInDeck) do
+    if card.nickname == "Shimmering Mane" then
+			deck.takeObject({guid = card.guid,position={7.60, 4.19, -11.03},callback="flipCard",callback_owner=Global,})
+			Global.call('addBroadcast', {"crit", {gear = "You gained 1 Shimmering Mane", effect = ""}})
+			break
+		end
+    if i == #cardsInDeck then
+      Global.call('addBroadcast', {"crit", {gear = "The White Lion only had 1 Shimmering Mane", effect = ""}})
+    end
+  end
+end
+
+function woundEffect()
+	broadcastToAll("~~~ !!! Impervious  !!! ~~~", {1,1,1})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

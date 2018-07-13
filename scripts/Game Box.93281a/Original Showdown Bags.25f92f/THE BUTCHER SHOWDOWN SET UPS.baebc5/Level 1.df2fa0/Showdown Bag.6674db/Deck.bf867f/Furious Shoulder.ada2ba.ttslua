@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered ~ Zone of Death ~ Suffer Bash and Knockback 5 >>>", {1,1,1})
+end
+
+function addStatModifier()
+end

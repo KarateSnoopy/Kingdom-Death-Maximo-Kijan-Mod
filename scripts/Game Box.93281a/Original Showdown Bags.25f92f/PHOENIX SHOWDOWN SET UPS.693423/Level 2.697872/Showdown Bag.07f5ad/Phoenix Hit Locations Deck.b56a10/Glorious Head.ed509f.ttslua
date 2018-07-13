@@ -1,0 +1,30 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "", effect = "The Phoenix suffered (-2) Toughness until the end of your attack", effect2 = "Cancel Reactions until the end of your attack"}})
+	getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('693899')
+	local desc = object.getDescription()
+	object.setDescription('end of attack')
+    	object.setLock(false)
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+    	object.setLock(true)
+	Global.setTable('tghEndofAttack', tghEndofAttack)
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "If you have any Age Tokens ~ Suffer Rewind", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

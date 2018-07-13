@@ -1,0 +1,30 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "You are showered in a sticky substance ~ Remove 1 Bleeding Token", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+  broadcastToAll("A Survivor adjacent to you may spend 1 Survival to cancel the reaction on this location", msg_color)
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+end

@@ -1,0 +1,98 @@
+function onLoad()
+    isClubShield = false
+end
+
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Horn ~ Keep in Play", effect = ""}})
+    getMonsterResource(deck, name, params)
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Dung Beetle Knight Resources Deck" then
+					deck = object
+					break
+	                print("Dung Beetle Knight Resources Deck Found")
+	            else
+	                print("Dung Beetle Knight Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Beetle Horn" then
+					    print("Beetle Horn found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+                        Global.call('addBroadcast', {"crit", {gear = "You gained 1 Beetle Horn", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+                        Global.call('addBroadcast', {"crit", {gear = "There are no Beetle Horns left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end
+
+function woundEffect()
+    if (isClubShield) then
+        getStatToken()
+    end
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+	object.setDescription('end of attack')
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+            Global.call('addBroadcast', {"wound", {gear = "The Dung Beetle Knight gaine (-4) Toughness until the end of your attack", effect = ""}})
+            Global.call('addBroadcast', {"wound", {gear = "Cancel all Reactions until the end of this attack", effect = ""}})
+    Global.setTable('tghEndofAttack', tghEndofAttack)
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("Are you attacking with a Club or Shield?", {1,1,1})
+    createButton()
+end
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getWeaponModifier', function_owner = self,
+label = 'Club or Shield', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getWeaponModifier()
+        isClubShield = true
+    	local object = getObjectFromGUID('c1cc69')
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, object.clone({position = {-5.39, 4.32, 0.24}}))
+            broadcastToAll("(+4) Strength to Wound this location Calculated.", {1,1,1})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+    end

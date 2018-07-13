@@ -1,0 +1,36 @@
+function criticalWoundEffect()
+	getVars()
+	local stats = {color = color, stat = "str", modifier = "pos", num = 2, phase = nil}
+	Global.setTable('temp', stats)
+	Global.call('addBroadcast', {"crit", {gear = "You gained (+2) Strength Tokens", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You may perform Embolden", effect = ""}})
+	startLuaCoroutine(Global, "spwn_tok")
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	color = grid.getVar("color")
+end
+
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Attacker gains a (-1) Strength Token", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ Turn The Watcher to faces the furthest board edge ~ Full Move Forward ♘", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

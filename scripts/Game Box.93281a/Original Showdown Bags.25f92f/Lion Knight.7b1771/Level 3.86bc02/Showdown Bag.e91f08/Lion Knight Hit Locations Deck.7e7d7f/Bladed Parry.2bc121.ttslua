@@ -1,0 +1,47 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Jitters", effect = "Keep in Play"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "This Wound Attempt fails unless it was a Critical", effect = "~~~ !!! Parry  !!! ~~~"}})
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+    startLuaCoroutine(self, "broadcastDelay2")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('Turn the Lion Knight to Face you', {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    local object = getObjectFromGUID('b66bff')
+	local desc = object.getDescription()
+	object.setDescription('end of attack')
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+                broadcastToAll('The Monster gained (+2) Toughness until the end of your attack', {1,1,1})
+	Global.setTable('tghEndofAttack', tghEndofAttack)
+    return 1
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("If you hit with a Katar, you are knocked down and end your attack", {1,1,1})
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end

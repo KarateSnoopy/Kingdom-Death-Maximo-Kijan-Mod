@@ -1,0 +1,27 @@
+
+function criticalWoundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Accuracy Tokens ", effect = ""}})
+
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "Perform Basic Action Targeting Attacker", effect = ""}})
+	Global.call('addBroadcast', {"wound", {gear = "You suffer 1 Brain Damage", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- brow

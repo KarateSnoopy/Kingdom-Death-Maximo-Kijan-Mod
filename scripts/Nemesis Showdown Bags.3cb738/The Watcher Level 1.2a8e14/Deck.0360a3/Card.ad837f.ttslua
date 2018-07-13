@@ -1,0 +1,31 @@
+function criticalWoundEffect()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Barbaric" then
+			Global.call('addBroadcast', {"crit", {gear = "All Survivors gain (+3) Insanity", effect = ""}})
+		elseif card.getName() == "Romantic" then
+			Global.call('addBroadcast', {"crit", {gear = "All Survivors gain (+2) Survival", effect = ""}})
+		end
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "All Survivors in the Void Nexus ~ Suffer 1 Damage to every Hit Location", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+
+
+Global.call('addBroadcast', {"wound_reaction", {gear = "", effect = ""}})
+
+
+
+Global.call('addBroadcast', {"reflex", {gear = "", effect = ""}})

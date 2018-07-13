@@ -1,0 +1,45 @@
+function criticalWoundEffect()
+	self.setPositionSmooth({0.07, 4.23, -21.32})
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Knee ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	if hasHeavyArmor then
+		broadcastToAll("You are wearing Heavy Armor ~ You are knocked down", msg_color)
+	else
+		broadcastToAll("You are not wearing Heavy Armor", msg_color)
+	end
+	hitTool = getObjectFromGUID('10e61e')
+   hitTool.call("return_battle_pressure")
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	msg_color = grid.getTable("msg_color")
+	hasHeavyArmor = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "heavy") and string.find(gear.getDescription(), "armor") then
+			hasHeavyArmor = true
+		end
+	end
+end

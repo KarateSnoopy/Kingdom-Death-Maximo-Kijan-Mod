@@ -1,0 +1,87 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Blade ~ Keep in Play", effect = ""}})
+	 getMonsterResource(deck, name, params)
+	 getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('3a6d32')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local dmgStat = Global.getTable('dmgStat')
+        		table.insert(dmgStat, object.clone({
+				position = {-13.19, 4.42, 0.51 + #dmgStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The Dung Beetle Knight gained a (-1) Damage Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('dmgStat', dmgStat)
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckRareGear.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Rare Gear Deck" then
+					deck = object
+					break
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Regenerating Blade" then
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Regenerating Blade", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+						Global.call('addBroadcast', {"crit", {gear = "There are no Regenerating Blades left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('The Dung Beetle Knight performs its Basic Action targeting you', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

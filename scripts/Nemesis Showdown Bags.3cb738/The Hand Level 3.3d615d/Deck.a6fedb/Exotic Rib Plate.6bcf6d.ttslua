@@ -1,0 +1,145 @@
+function criticalWoundEffect()
+  getMonsterResource()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	color = grid.getVar("color")
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Iron", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Iron", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Iron", effect = ""}})
+	end
+end
+
+function woundEffect()
+	getVars()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You gained a (+1) Evasion and (+1) Accuracy Token", effect = ""}})
+	startLuaCoroutine(Global, "spawn_tok_coR")
+end
+
+function spawn_tok_coR()
+	wait(0.1)
+	local stats = {color = color, stat = "eva", modifier = "pos", num = 1, phase = nil}
+	if color == "red" then
+		Global.setTable('stats_red', stats)
+		startLuaCoroutine(Global, "spawn_tok_red")
+	elseif color == "yellow" then
+		Global.setTable('stats_yellow', stats)
+		startLuaCoroutine(Global, "spawn_tok_yellow")
+	elseif color == "green" then
+		Global.setTable('stats_green', stats)
+		startLuaCoroutine(Global, "spawn_tok_green")
+	elseif color == "blue" then
+		Global.setTable('stats_blue', stats)
+		startLuaCoroutine(Global, "spawn_tok_blue")
+	end
+
+	-- Wait 1.1 more than Number of Tokens Spawning
+	wait(1.1)
+	local stats = {color = color, stat = "acc", modifier = "pos", num = 1, phase = nil}
+	if color == "red" then
+		Global.setTable('stats_red', stats)
+		startLuaCoroutine(Global, "spawn_tok_red")
+	elseif color == "yellow" then
+		Global.setTable('stats_yellow', stats)
+		startLuaCoroutine(Global, "spawn_tok_yellow")
+	elseif color == "green" then
+		Global.setTable('stats_green', stats)
+		startLuaCoroutine(Global, "spawn_tok_green")
+	elseif color == "blue" then
+		Global.setTable('stats_blue', stats)
+		startLuaCoroutine(Global, "spawn_tok_blue")
+	end
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "All Survivors suffer (-1) Permanent Movement and are Knocked Down", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "Place The Hand in the center of the Showdown Board", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "All Lens flipped to Closed", effect = ""}})
+	flipLens()
+end
+
+function flipLens()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Red Lens" and card.getRotation().z > 165 then
+      card.flip()
+    end
+  end
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  local hitTool = getObjectFromGUID('10e61e')
+  local hitTable = hitTool.getTable('hitLocation')
+  green_open = false
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      green_open = true
+    end
+  end
+  if green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      obj.setDescription(obj.getDescription() .. ", super_dense")
+    end
+    broadcastToAll("Green Lens Open ~ (+4) Toughness to Wound this Location and it gained 'Super Dense'", {1,1,1})
+    startLuaCoroutine(self, "addStat_coR")
+  end
+  if not green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      local desc = obj.getDescription()
+      if string.find(desc, "super_dense") then
+        local new_desc = string.gsub(desc, ", super_dense", "")
+        obj.setDescription(new_desc)
+      end
+    end
+  end
+end -- end function
+
+
+function addStat_coR()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	for i=1, 4 do
+		obj.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end

@@ -1,0 +1,27 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Non-deaf Survivors gain (+3) Insanity", effect = ""}})
+Global.call('addBroadcast', {"crit", {gear = "They may stand if knocked down", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The White Lion full Moves Forward", effect = ""}})
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, injury in ipairs(zone.getObjects()) do
+		if injury.getName() == "Beast's Paw" then
+				Global.call('addBroadcast', {"failure", {gear = "Persistent Injury in Play ~ Ignore the Effects of Grab", effect = ""}})
+			return
+		end
+		if not injury.getName() == "Beast's Paw" then
+			Global.call('addBroadcast', {"failure", {gear = "Survivors passed over suffer grab", effect = ""}})
+		end
+	end
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

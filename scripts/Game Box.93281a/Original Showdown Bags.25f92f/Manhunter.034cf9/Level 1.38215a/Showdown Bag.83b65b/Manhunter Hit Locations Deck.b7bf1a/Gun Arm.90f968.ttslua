@@ -1,0 +1,33 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Ruined Pistol Hand ~ Keep in Play", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "\u{2658} Full move the Manhunter onto the space you occupy \u{2658}", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local drawHitLocationTool = getObjectFromGUID('10e61e')
+	local Table = drawHitLocationTool.getTable('hitLocation')
+	for k, v in ipairs(Table) do
+		obj = getObjectFromGUID(v)
+		if obj.getName() == "Gun Arm" then
+		    getStatToken()
+		end
+	end
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('b66bff')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {6.79, 6, 0.02}}))
+        broadcastToAll("(+2) Toughness to Wound this location Calculated.", {1,1,1})
+	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

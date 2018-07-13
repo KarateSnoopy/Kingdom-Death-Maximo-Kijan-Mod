@@ -1,0 +1,62 @@
+function onPickUp(player_color)
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin       = {pos.x, pos.y, pos.z},
+		direction    = {0, 1, 0},
+		type         = 2,
+		size         = {20, 20, 20},
+		max_distance = 0,
+		debug        = false,
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Ghost Step Smoke Effect" then
+			effect = entry.hit_object
+			print(effect.getName())
+			break
+		end
+	end
+	local hitList = Physics.cast({
+		origin       = {pos.x, pos.y, pos.z},
+		direction    = {0, 1, 0},
+		type         = 2,
+		size         = {20, 20, 20},
+		max_distance = 0,
+		debug        = false,
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Ghost Step Plasma Effect" then
+			effect2 = entry.hit_object
+			print(effect2.getName())
+			break
+		end
+	end
+	if effect ~= nil then
+		local effect_pos = effect.getPosition()
+		effect.AssetBundle.playTriggerEffect(1)
+		effect.setPositionSmooth({effect_pos.x, effect_pos.y + 10, effect_pos.z}, false, false)
+		effect2.AssetBundle.playLoopingEffect(2)
+		startLuaCoroutine(self, "store_effect_coR")
+		startLuaCoroutine(self, "store_effect2_coR")
+	end
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function store_effect_coR()
+	wait(2.5)
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	gameBox.putObject(effect)
+	return 1
+end
+
+function store_effect2_coR()
+	wait(0.75)
+	effect2.AssetBundle.playLoopingEffect(1)
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	gameBox.putObject(effect2)
+	return 1
+end

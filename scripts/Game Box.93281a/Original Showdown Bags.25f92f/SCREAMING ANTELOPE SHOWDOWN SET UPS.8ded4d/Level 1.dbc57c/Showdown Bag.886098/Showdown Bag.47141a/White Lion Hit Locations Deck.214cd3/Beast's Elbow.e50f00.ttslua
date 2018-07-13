@@ -1,0 +1,39 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Non-deaf Survivors gain (+3) Insanity", effect = ""}})
+Global.call('addBroadcast', {"crit", {gear = "They may stand if knocked down", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+    startLuaCoroutine(self, "broadcastDelay2")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll("\u{2658} Full Move the White Lion forward in a straight line \u{2658}", {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll('Any Survivor passed over suffers Grab', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

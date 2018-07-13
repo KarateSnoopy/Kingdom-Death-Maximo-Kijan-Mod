@@ -1,0 +1,62 @@
+function criticalWoundEffect()
+    getStatToken1()
+    getStatToken2()
+    Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function getStatToken1()
+	local object = getObjectFromGUID('9ac8a3')
+	local desc = object.getDescription()
+	   object.setDescription('end of showdown')
+       object.setScale({0.43, 1.00, 0.43})
+	      local accStat = Global.getTable('accStat')
+                table.insert(accStat, object.clone({
+		        position = {-14.31, 4.42, 0.51 + #accStat * -1}}))
+                table.insert(accStat, object.clone({
+		        position = {-14.31, 4.42, 0.51 + #accStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The Manhunter gained (-2) Accuracy Tokens", effect = ""}})
+       object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('accStat', accStat)
+end
+
+function getStatToken2()
+	local object = getObjectFromGUID('eb87ec')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local dmgStat = Global.getTable('dmgStat')
+        		table.insert(dmgStat, object.clone({
+				position = {-13.19, 4.42, 0.51 + #dmgStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The Manhunter gained a (+1) Damage Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('dmgStat', dmgStat)
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Cancel the next Reaction in this Attack", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local drawHitLocationTool = getObjectFromGUID('10e61e')
+	local Table = drawHitLocationTool.getTable('hitLocation')
+	for k, v in ipairs(Table) do
+		obj = getObjectFromGUID(v)
+		if obj.getName() == "Grimacing Jaw" then
+		    getStatToken()
+		end
+	end
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('b66bff')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {6.79, 6, 0.02}}))
+        broadcastToAll("(+2) Toughness to Wound this location Calculated.", {1,1,1})
+	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

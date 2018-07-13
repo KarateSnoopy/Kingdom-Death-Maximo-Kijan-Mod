@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Turn the Lion Knight to face attacker ♘", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Without turning ~ Moves 2 spaces to Left ♘", effect = ""}})
+
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,23 @@
+isKdmEffectsObject = true
+effects = {
+	toughness = 1
+}
+
+value = 1
+
+function getEffects()
+
+	if value == 1 then
+		effects.toughness = 1
+	elseif value == 2 then
+		effects.toughness = 2
+	elseif value == 3 then
+		effects.toughness = 3
+	elseif value == 4 then
+		effects.toughness = 4
+	elseif value == 5 then
+		effects.toughness = 5
+	end
+
+	return effects
+end

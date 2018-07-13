@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Crushed Knee ~ Keep in Play", effect = ""}})
+self.setPosition({0.08, 4.34, -14.16})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+
+end

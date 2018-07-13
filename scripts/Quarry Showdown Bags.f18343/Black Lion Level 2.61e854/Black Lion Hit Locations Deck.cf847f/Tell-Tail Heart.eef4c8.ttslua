@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Keep in Play", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Gain 1 Monster Organ Resource", effect = ""}})
+	self.setPositionSmooth({-2.03, 4.24, -14.25}, false, false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+end

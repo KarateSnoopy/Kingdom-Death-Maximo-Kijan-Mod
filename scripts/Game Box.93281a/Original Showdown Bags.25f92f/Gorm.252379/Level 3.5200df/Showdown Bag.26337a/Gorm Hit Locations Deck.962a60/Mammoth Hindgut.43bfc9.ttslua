@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Survivors in the Vomit Zone may", effect = "Heal all Injury Levels at 1 Hit Location of their choice"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "\u{2620}\u{2620}\u{2620} Perform Retch \u{2620}\u{2620}\u{2620}", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

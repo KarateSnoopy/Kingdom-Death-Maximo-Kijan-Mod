@@ -1,0 +1,389 @@
+--INFO CUBE by MrStump
+
+--[[If you wish to disable any Custom Object types from being displayed,
+    you can do so in function getCustom().
+        Looks for: <COMMENT OUT AS NEEDED>
+        Beneath it is a long series of if statements.
+        Each has a name for the custom object type it adds.
+        Comment out (use -- at the beginning of the line) any you do not want. ]]
+
+--This line is for if you want to add an additional position type.
+--It gives the the X/Y/Z of the relative position to another object
+relativeEntGUID = ""
+--If you aren't sure what that is, leave it as ""
+
+
+--Do not edit below (unless you're scripting)
+
+--Save function, to remember settings
+function onSave()
+    local data_to_save = {rd=roundingDecimal, ioool=infoOnOrOffList}
+    saved_data = JSON.encode(data_to_save)
+    return saved_data
+end
+
+--Runs on load
+function onload(saved_data)
+    if saved_data ~= "" then
+        --Set up information off of loaded_data
+        local loaded_data = JSON.decode(saved_data)
+        roundingDecimal = loaded_data.rd
+        infoOnOrOffList = loaded_data.ioool
+    else
+        --Set up information for if there is no saved
+        --How many decimals we round to (default)
+        roundingDecimal = 3
+        --True means show, false means hide (defaults)
+        infoOnOrOffList = {
+            position=true,
+            rotation=true,
+            scale=false,
+            tint=true,
+            tag=false,
+            custom=false,
+            show_keys=true,
+            double_space=true
+        }
+    end
+
+    --Spawn buttons
+    createAllButtons()
+end
+
+
+
+--Update, watching for change and triggering fetch
+
+
+
+--Runs constantly, watching for GUID to be entered into description
+function update()
+    if self.getDescription() ~= nil then
+        targetEnt = getObjectFromGUID(self.getDescription())
+        --Check if what was entered was a valid GUID or not
+        if targetEnt then
+            self.editButton({index=12, label=targetEnt.getGUID()})
+            targetEnt.highlightOn({1,0,0}, 3)
+            --This sends out to different functions to combine desired elements
+            local noteString = ""
+            if infoOnOrOffList.position==true then
+                noteString = noteString .. getXYZorRGB("Position")
+                if relativeEntGUID~="" and getObjectFromGUID(relativeEntGUID)~= nil then
+                    noteString = noteString .. getRelativeXYZ("Position")
+                end
+                if infoOnOrOffList.double_space==true then noteString = noteString .. "\n" end
+            end
+            if infoOnOrOffList.rotation==true then
+                noteString = noteString .. getXYZorRGB("Rotation")
+                if infoOnOrOffList.double_space==true then noteString = noteString .. "\n" end
+            end
+            if infoOnOrOffList.scale==true then
+                noteString = noteString .. getXYZorRGB("Scale")
+                if infoOnOrOffList.double_space==true then noteString = noteString .. "\n" end
+            end
+            if infoOnOrOffList.tint==true then
+                noteString = noteString .. getXYZorRGB("Tint")
+                noteString = noteString .. getHexofTint()
+                if infoOnOrOffList.double_space==true then noteString = noteString .. "\n" end
+            end
+            if infoOnOrOffList.tag==true then
+                noteString = noteString .. getTag()
+                if infoOnOrOffList.double_space==true then noteString = noteString .. "\n" end
+            end
+            if infoOnOrOffList.custom==true then
+                noteString = noteString .. getCustom()
+                if infoOnOrOffList.double_space==true then noteString = noteString .. "\n" end
+            end
+            --This applies those elements to the notes section
+            --The actual strings themselkves are generated below
+            setNotes(noteString)
+        end
+        --Clears description after anything is submitted into it
+        self.setDescription("")
+    end
+end
+
+
+
+--Fetch strings, returns requested data to above sections
+
+
+
+--Returns strings for Position, Rotation, Scale or Tint
+function getXYZorRGB(type)
+    local key = {}
+    if type=="Position" then
+        key = targetEnt.getPosition()
+    elseif type=="Rotation" then
+        key = targetEnt.getRotation()
+    elseif type=="Scale" then
+        key = targetEnt.getScale()
+    elseif type=="Tint" then
+        key = targetEnt.getColorTint()
+    end
+    local string = "[b]"..type..":[/b]\n{"
+    if infoOnOrOffList.show_keys==true then
+        if type=="Tint" then
+            return string.."r="..round(key.r)..", ".."g="..round(key.g)..", ".."b="..round(key.b).."}\n"
+        else
+            return string.."x="..round(key.x)..", ".."y="..round(key.y)..", ".."z="..round(key.z).."}\n"
+        end
+    else
+        return string..round(key[1])..", "..round(key[2])..", "..round(key[3]).."}\n"
+    end
+end
+
+--Gets Hex (converts color tint into text coloring code)
+function getHexofTint()
+    local rgb = targetEnt.getColorTint()
+    local string = "[b]Hex of Tint:[/b]\n"
+    return string..string.format("%02x%02x%02x", rgb.r*255,rgb.g*255,rgb.b*255).."\n"
+end
+
+--Gets .tag
+function getTag()
+    return "[b]Tag:[/b]\n"..targetEnt.tag.."\n"
+end
+
+--Gets custom object information
+function getCustom()
+    local customObj = targetEnt.getCustomObject()
+    local string = "[b]Custom Object:[/b]\n"
+    --Check for if customObj contains any keys
+    local checkForContents = false
+    for _, _ in pairs(customObj) do
+        checkForContents = true
+        break
+    end
+    if checkForContents==false then
+        --Not a custom object
+        return string.."Not a custom object\n"
+    else
+        --Is a custom object
+
+        local stringResult = {}
+        --This section builds a string for each entry, places them in table
+        for key, val in pairs(customObj) do
+            if type(val)=="table" then
+                stringResult[key] = "[u]"..key..":[/u]\n{" .. tostring(round(val[1])) .. ", " .. tostring(round(val[2])) .. ", " .. tostring(round(val[3])) .. "}\n"
+            elseif type(val) == "number" then
+                stringResult[key] = "[u]"..key..":[/u]\n" .. tostring(round(val)) .. "\n"
+            elseif val ~= "" and val ~= nil then
+                stringResult[key] = "[u]"..key..":[/u]\n" .. tostring(val) .. "\n"
+            end
+        end
+
+        --This section adds those strings to the data that will be printed
+        --<COMMENT OUT AS NEEDED>   (see top of script for explanation)
+        if stringResult.image then string=string..stringResult.image end
+        if stringResult.image_secondary then string=string..stringResult.image_secondary end
+        if stringResult.type then string=string..stringResult.type end
+        if stringResult.thickness then string=string..stringResult.thickness end
+        if stringResult.stackable then string=string..stringResult.stackable end
+        if stringResult.merge_distance then string=string..stringResult.merge_distance end
+        if stringResult.mesh then string=string..stringResult.mesh end
+        if stringResult.diffuse then string=string..stringResult.diffuse end
+        if stringResult.normal then string=string..stringResult.normal end
+        if stringResult.collider then string=string..stringResult.collider end
+        if stringResult.convex then string=string..stringResult.convex end
+        if stringResult.material then string=string..stringResult.material end
+        if stringResult.specular_intensity then string=string..stringResult.specular_intensity end
+        if stringResult.specular_color then string=string..stringResult.specular_color end
+        if stringResult.specular_sharpness then string=string..stringResult.specular_sharpness end
+        if stringResult.fresnel_strength then string=string..stringResult.fresnel_strength end
+        if stringResult.cast_shadows then string=string..stringResult.cast_shadows end
+        if stringResult.assetbundle then string=string..stringResult.assetbundle end
+        if stringResult.assetbundle_secondary then string=string..stringResult.assetbundle_secondary end
+
+        --Returns the big 'ol string
+        return string
+    end
+end
+
+--For use in getting relative position
+function getRelativeXYZ(type)
+    local string = "[b]Relative Pos:[/b]\n{"
+    local key = {}
+    if type=="Position" then
+        tpos = targetEnt.getPosition()
+        rpos = getObjectFromGUID(relativeEntGUID).getPosition()
+        key = {x=tpos.x-rpos.x, y=tpos.y, z=tpos.z-rpos.z}
+    end
+    if infoOnOrOffList.show_keys==true then
+        return string.."x="..round(key.x)..", ".."y="..round(key.y)..", ".."z="..round(key.z).."}\n"
+    else
+        return string..round(key.x)..", "..round(key.y)..", "..round(key.z).."}\n"
+    end
+end
+
+
+
+--Utility functions
+
+
+
+--Used to round numbers to X decimal places
+function round(int)
+    local mult = 10^(roundingDecimal or 0)
+    return math.floor(int * mult + 0.5) / mult
+end
+
+
+
+--Click functions, triggered by button press
+
+
+
+--Triggered by + or - buttons
+function decimalAddOrSub(mathType)
+    if mathType == "add" then
+        roundingDecimal = roundingDecimal + 1
+    else
+        roundingDecimal = roundingDecimal - 1
+    end
+    updateSideDisplays()
+end
+
+--Triggered by clicking a checkbox
+function checkboxClick(index, info)
+    if infoOnOrOffList[info] == true then
+        infoOnOrOffList[info] = false
+    else
+        infoOnOrOffList[info] = true
+    end
+    updateCheckboxDisplay(index, info)
+end
+
+
+
+--Update of display buttons
+
+
+
+--Updates side displays with roundingDecimal
+function updateSideDisplays()
+    for i=0, 3 do
+        self.editButton({index=i, label=tostring(roundingDecimal)})
+    end
+end
+
+--Updates the checkbox displays to be on or off
+function updateCheckboxDisplay(index, info)
+    local label = string.char(9678)
+    if infoOnOrOffList[info] == true then label = string.char(9673) end
+    self.editButton({index=index, label=label})
+end
+
+
+
+--Button creation
+
+
+
+--Creates the displays on the sides, showing the rounding factor
+function createAllButtons()
+    --Side displays (indexes 0-3)
+    local sidePos = {{0,0,0.5},{0.5,0,0},{0,0,-0.5},{-0.5,0,0}}
+    local sideRot = {{-90,0,0},{0,-90,90},{90,180,0},{0,90,-90}}
+    for i=1, 4 do
+        self.createButton({
+            label=tostring(roundingDecimal), click_function="none",
+            function_owner=self, position=sidePos[i], rotation=sideRot[i],
+            height=0, width=0, font_size=300
+        })
+    end
+    --Checkboxe circles (display only) (indexes 4-11)
+    for i=1, 8 do
+        local checkboxData = checkboxDataList[i]
+        local label = string.char(9678)
+        if infoOnOrOffList[checkboxData.info] == true then label = string.char(9673) end
+        local pos = checkboxData.pos
+        self.createButton({
+            label=label, click_function="none", rotation={0,180,0},
+            function_owner=self, position={pos[1],pos[2],pos[3]-0.035},
+            height=0, width=0, font_size=160
+        })
+    end
+    --Creates GUID display
+    self.createButton({
+        label="", click_function="none", function_owner=self,
+        position={0,0.5,-0.42}, rotation={0,180,0}, height=0, width=0, font_size=50
+    })
+    --Display text that goes with GUID display
+    self.createButton({
+        label="Last GUID:", click_function="none", function_owner=self,
+        position={0,0.5,-0.33}, rotation={0,180,0}, height=0, width=0, font_size=25
+    })
+    --Creates buttons that change those circles
+    for i=1, 8 do
+        local checkboxData = checkboxDataList[i]
+        local funcName = "button_"..checkboxData.info
+        local pos = checkboxData.pos
+        self.createButton({
+            label="", click_function=funcName, rotation={0,180,0},
+            function_owner=self, position={pos[1], pos[2]-0.01, pos[3]},
+            height=80, width=80, font_size=150
+        })
+        local func = function()
+            checkboxClick(checkboxData.index, checkboxData.info)
+        end
+        self.setVar(funcName, func)
+    end
+    --Create text labels for the circles
+    for i=1, 8 do
+        local checkboxData = checkboxDataList[i]
+        local pos = checkboxData.pos
+        self.createButton({
+            label=checkboxData.display, click_function="none", rotation={0,180,0},
+            function_owner=self, position={pos[1]-0.235,pos[2],pos[3]},
+            height=0, width=0, font_size=30
+        })
+    end
+    --Words on sides
+    for i=1, 4 do
+        local pos = sidePos[i]
+        pos[2] = pos[2] + 0.348
+        self.createButton({
+            label="Round To", click_function="none",
+            function_owner=self, position=pos, rotation=sideRot[i],
+            height=0, width=0, font_size=60
+        })
+        pos[2] = pos[2] - 0.64
+        self.createButton({
+            label="Decimal Places", click_function="none",
+            function_owner=self, position=pos, rotation=sideRot[i],
+            height=0, width=0, font_size=60
+        })
+    end
+    --Add display for + and -
+    self.createButton({
+        label=string.char(8853), click_function="none", function_owner=self,
+        position={-0.36,0.5,-0.385}, rotation={0,0,0}, height=0, width=0, font_size=100
+    })
+    self.createButton({
+        label=string.char(8854), click_function="none", function_owner=self,
+        position={0.36,0.5,-0.385}, rotation={0,0,0}, height=0, width=0, font_size=100
+    })
+    --Add functional buttons for + and -
+    self.createButton({
+        label="", click_function="addToDecimal", function_owner=self,
+        position={-0.36,0.45,-0.38}, rotation={0,0,0}, height=80, width=80,
+    })
+    self.setVar("addToDecimal", function() decimalAddOrSub("add") end)
+    self.createButton({
+        label="", click_function="subFromDecimal", function_owner=self,
+        position={0.36,0.45,-0.38}, rotation={0,0,0}, height=80, width=80,
+    })
+    self.setVar("subFromDecimal", function() decimalAddOrSub("sub") end)
+end
+
+checkboxDataList = {
+    {index=4, info="position", pos={0.41,0.5,0.38}, display="Position"},
+    {index=5, info="rotation", pos={0.41,0.5,0.19}, display="Rotation"},
+    {index=6, info="scale", pos={0.41,0.5,0}, display="Scale"},
+    {index=7, info="tint", pos={-0.07,0.5,0.38}, display="Tint"},
+    {index=8, info="tag", pos={-0.07,0.5,0.19}, display="Tag"},
+    {index=9, info="custom", pos={-0.07,0.5,0}, display="CustomInfo"},
+    {index=10, info="show_keys", pos={0.41,0.5,-0.19}, display="Show Keys"},
+    {index=11, info="double_space", pos={-0.07,0.5,-0.19}, display="Add Spacer"},
+}

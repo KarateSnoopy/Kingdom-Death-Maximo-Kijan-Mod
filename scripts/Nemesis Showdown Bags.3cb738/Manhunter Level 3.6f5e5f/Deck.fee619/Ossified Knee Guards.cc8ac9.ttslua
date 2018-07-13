@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Roll 1d10 ~ Add your Strength", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "On a 6+ ~ The Manhunter is knocked down!", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "♘ Full move the Manhunter onto the space you occupy ♘", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "All Targets passed over suffer Grab", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

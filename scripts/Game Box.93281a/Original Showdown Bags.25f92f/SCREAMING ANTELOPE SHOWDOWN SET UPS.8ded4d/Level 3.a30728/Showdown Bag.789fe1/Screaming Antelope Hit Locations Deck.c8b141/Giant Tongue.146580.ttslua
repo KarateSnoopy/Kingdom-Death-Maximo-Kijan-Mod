@@ -1,0 +1,50 @@
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+				    obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+				end
+				Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Screaming Antelope Resource", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "If the Wound Result is Even ~ Suffer 1 Brain Damage", effect = "If the Wound Result is Odd ~ Gain (+1) Insanity"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local drawHitLocationTool = getObjectFromGUID('10e61e')
+	local Table = drawHitLocationTool.getTable('hitLocation')
+	for k, v in ipairs(Table) do
+		obj = getObjectFromGUID(v)
+		if obj.getName() == "Giant Tongue" then
+		    clone()
+		end
+	end
+end
+
+function clone()
+	local object = getObjectFromGUID('693899')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {6.79, 6, 0.02}}))
+        broadcastToAll("(-2) Toughness to Wound this location Calculated.", {1,1,1})
+	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

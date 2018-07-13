@@ -1,0 +1,13 @@
+isKdmEffectsObject = true
+effects = {
+    strength = 1
+}
+
+function getEffects()
+        effects.strength = -1
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.strength = effects.strength * qty
+	end
+    return effects
+end

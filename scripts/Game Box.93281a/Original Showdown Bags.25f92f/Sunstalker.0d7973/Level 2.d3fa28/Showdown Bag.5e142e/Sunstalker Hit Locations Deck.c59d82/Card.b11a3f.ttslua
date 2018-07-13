@@ -1,0 +1,53 @@
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+end
+
+--Finds a Deck in a Zone then draws a random resource from it
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+    		for _, obj in ipairs(objectsInZone) do
+					obj.shuffle()
+					obj.takeObject({
+						position={7.60, 4.19, -11.03},
+						top=true,
+						callback="flipCard",
+						callback_owner=Global,
+					})
+					break
+			end
+		Global.call('addBroadcast', {"crit", {gear = "You gained random Sunstalker Resource", effect = ""}})
+		Global.call('addBroadcast', {"crit", {gear = "You are in darkness until the end of the attack", effect = ""}})
+		end
+
+		function woundEffect()
+
+		end
+
+		function addStatModifier(object, player_color)
+			broadcastToColor("First Strike!", player_color, {1,1,1})
+		end
+
+		function reflexEffect()
+		end
+
+		function failureEffect()
+		    broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+		    startLuaCoroutine(self, "broadcastDelay1")
+		end
+
+		function broadcastDelay1()
+		    wait(2)
+		    broadcastToAll("The Sunstalker performs its Basic Action Targeting you ~ This attack gains \u{263c} Damage", {1,1,1})
+		    return 1
+		end
+
+		function wait(time)
+			local start = os.time()
+			--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+			repeat
+				coroutine.yield(0)
+			until os.time() > start + time
+		end

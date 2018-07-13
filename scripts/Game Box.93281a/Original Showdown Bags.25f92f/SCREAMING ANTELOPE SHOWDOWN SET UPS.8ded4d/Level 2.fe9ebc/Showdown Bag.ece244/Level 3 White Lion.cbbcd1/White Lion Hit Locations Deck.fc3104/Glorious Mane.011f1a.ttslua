@@ -1,0 +1,63 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "If you are Insane ~ gain a (+1) Strength Token", effect = ""}})
+	getMonsterResource(deck, name, params)
+	Global.call('addBroadcast', {"crit", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "White Lion Resources Deck" then
+					deck = object
+					break
+	                print("White Lion Resources Deck Found")
+	            else
+	                print("White Lion Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Shimmering Mane" then
+					    print("Shimmering Mane found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Shimmering Mane", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+		                Global.call('addBroadcast', {"crit", {gear = "You already hacked off the White Lion's Mane", effect = ""}})
+		            end
+		        end
+		    end
+		    print("[b]----------------------[/b]")
+		end
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

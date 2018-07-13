@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Survival ~ The Dung Beetle Knight is Knocked Down!", effect = ""}})
+     Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

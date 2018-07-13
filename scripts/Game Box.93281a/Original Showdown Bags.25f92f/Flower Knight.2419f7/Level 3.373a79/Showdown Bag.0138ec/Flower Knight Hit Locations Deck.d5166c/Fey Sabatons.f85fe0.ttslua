@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "If you are adjacent to the Flower Knight", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "You suffer Bash and Knockback 5", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

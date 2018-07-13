@@ -1,0 +1,34 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+
+end
+
+function addStatModifier(object, player_color)
+  broadcastToColor("First Strike! ~ Archive any Soluble gear in your gear grid now", player_color, {1,1,1})
+  startLuaCoroutine(self, 'msgDelay')
+end
+
+function msgDelay()
+  wait(2)
+  broadcastToAll("If you are in the Light, resolve the effects on this card", {1,1,1})
+  return 1
+end
+
+--Coroutine Timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function failureEffect()
+
+end

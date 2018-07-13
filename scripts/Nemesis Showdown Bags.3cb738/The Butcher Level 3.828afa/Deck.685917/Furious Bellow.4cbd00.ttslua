@@ -1,0 +1,64 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+
+	isDeaf = false
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "isDeaf" and obj.getRotation().z < 10 or obj.getRotation().z > 360 then
+			isDeaf = false
+		end
+	end
+
+	if get_courage_value(courage) >= 3 then
+		Global.call('addBroadcast', {"reflex", {gear = "You have (" .. get_courage_value(courage) .. ") Courage", effect = ""}})
+	end
+
+	if isDeaf then
+		Global.call('addBroadcast', {"reflex", {gear = "You are Deaf", effect = ""}})
+	end
+
+	if not isDeaf and get_courage_value(courage) <= 2 then
+		Global.call('addBroadcast', {"reflex", {gear = "Suffer ★ Brain Damage and You are Knocked Down", effect = ""}})
+	end
+
+
+end -- end function
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = roller.getVar("zone")
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+function addStatModifier()
+end

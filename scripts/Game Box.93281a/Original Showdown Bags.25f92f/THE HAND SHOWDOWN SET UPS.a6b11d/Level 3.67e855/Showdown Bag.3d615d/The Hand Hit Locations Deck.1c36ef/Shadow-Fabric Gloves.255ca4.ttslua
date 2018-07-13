@@ -1,0 +1,97 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Ignore all Closed Lens effects and instead flip a Lens of your choice", effect = ""}})
+  getMonsterResource(deck, name, params)
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+  local zone = getObjectFromGUID(Global.getTable('zones').deckBasicResources.guid)
+  for _, object in ipairs(zone.getObjects()) do
+    local name = object.getName()
+    if name == "Basic Resources Deck" then
+			deck = object
+			break
+    end
+	end
+  local cardsInDeck = deck.getObjects()
+  for i, card in ipairs(cardsInDeck) do
+    if card.nickname == "Broken Lantern" then
+  		deck.takeObject({guid = card.guid, position={7.60, 4.19, -11.03}, callback="flipCard", callback_owner=Global})
+  		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Broken Lantern Resource", effect = ""}})
+		  break
+    end
+	end
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+  broadcastToAll('____________________ \u{2620} !!! Failure Reaction Triggered !!! \u{2620} ____________________', {1,1,1})
+  startLuaCoroutine(self, 'broadcastDelay1')
+  startLuaCoroutine(self, 'broadcastDelay2')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('The Hand redirects your hit ~ Select a Survivor within 2 spaces', {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll('They suffer 5 Damage, Knockback 7 and Bash', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  local hitTool = getObjectFromGUID('10e61e')
+  local hitTable = hitTool.getTable('hitLocation')
+  green_open = false
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      green_open = true
+    end
+  end
+  if green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      obj.setDescription(obj.getDescription() .. ", super_dense")
+    end
+    broadcastToAll("Green Lens Open ~ (+4) Toughness to Wound this Location and it gained 'Super Dense'", {1,1,1})
+    getTokenModifier()
+  end
+  if not green_open then
+    for k, v in pairs(hitTable) do
+      obj = getObjectFromGUID(v)
+      local desc = obj.getDescription()
+      if string.find(desc, "super_dense") then
+        local new_desc = string.gsub(desc, "super_dense", "")
+        obj.setDescription(new_desc)
+      end
+    end
+  end
+end -- end function
+
+function getTokenModifier()
+    	local token = getObjectFromGUID('c1cc69')
+      token.setDescription('')
+      token.setRotation({0, 180, 180})
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, token.clone({position = {-5.39, 4.32, 0.24}}))
+      token.setRotation({0, 180, 0})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

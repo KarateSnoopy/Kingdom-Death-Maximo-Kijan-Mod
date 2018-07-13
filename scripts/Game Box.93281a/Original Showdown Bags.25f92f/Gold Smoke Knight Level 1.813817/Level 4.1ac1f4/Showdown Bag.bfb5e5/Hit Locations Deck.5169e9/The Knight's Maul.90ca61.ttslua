@@ -1,0 +1,17 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "The Monster is knocked down!", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

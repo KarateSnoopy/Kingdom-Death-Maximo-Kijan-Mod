@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"wound", {gear = "The Butcher is knocked down!", effect = "All Survivors gain (+1) Courage"}})
+end
+
+function addStatModifier()
+
+end
+
+function woundEffect()
+Global.call('addBroadcast', {"wound", {gear = "The Butcher is knocked down!", effect = "All Survivors gain (+1) Courage"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

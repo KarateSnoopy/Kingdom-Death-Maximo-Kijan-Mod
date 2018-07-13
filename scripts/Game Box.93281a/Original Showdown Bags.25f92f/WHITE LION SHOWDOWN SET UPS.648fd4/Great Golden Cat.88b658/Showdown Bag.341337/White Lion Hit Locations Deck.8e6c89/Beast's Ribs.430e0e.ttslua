@@ -1,0 +1,66 @@
+
+function criticalWoundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local tghStat = Global.getTable('tghStat')
+        		table.insert(tghStat, object.clone({
+				position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Toughness Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('tghStat', tghStat)
+end
+
+function woundEffect()
+	local roller_survAttack = getObjectFromGUID("ff240b")
+	local red_attacked = roller_survAttack.getVar("red_attacked")
+	local yellow_attacked = roller_survAttack.getVar("yellow_attacked")
+	local green_attacked = roller_survAttack.getVar("green_attacked")
+	local blue_attacked = roller_survAttack.getVar("blue_attacked")
+
+	if red_attacked then
+		grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	elseif yellow_attacked then
+		grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	elseif green_attacked then
+		grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	elseif blue_attacked then
+		grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	end
+
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	understanding = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 14)
+		if prefix == "understanding_" then
+			if v.label ~= '' then
+				understanding = understanding + 1
+			end
+		end
+	end
+
+	if understanding >= 3 then
+		Global.call('addBroadcast', {"wound", {gear = "You have (3+) Understanding", effect = "Gain (+1) Survival"}})
+	else
+		Global.call('addBroadcast', {"wound", {gear = "You do not have (3+) Understanding", effect = ""}})
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

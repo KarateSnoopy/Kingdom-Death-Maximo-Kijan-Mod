@@ -1,0 +1,95 @@
+function onLoad()
+
+	self.createButton({
+		click_function = 'callClickFunctions',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 200,
+		font_size = 150
+	})
+
+function callClickFunctions()
+	drawHitLocations()
+	callCleanUp()
+end
+
+function callCleanUp()
+	local object = getObjectFromGUID("ff240b")
+	object.call("cleanUp")
+end
+
+function drawHitLocations()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.deckHitLocations.guid)
+	local objectsInZone = zone.getObjects()
+		for _, obj in ipairs(objectsInZone) do
+                obj.takeObject({
+                position={8.64, 4.39, -2.46},
+                top=true,
+                callback="flipCard",
+                callback_owner=Global,
+                })
+				obj.takeObject({
+					position={11.08, 4.39, -2.45},
+					top=true,
+					callback="flipCard",
+					callback_owner=Global,
+				})
+				obj.takeObject({
+					position={13.54, 4.39, -2.47},
+					top=true,
+					callback="flipCard",
+					callback_owner=Global,
+				})
+				obj.takeObject({
+					position={16.08, 4.39, -2.46},
+					top=true,
+					callback="flipCard",
+					callback_owner=Global,
+				})
+		end
+	end
+end
+
+isKdmEffectsObject = true
+effects = {
+    accuracy = 1
+}
+
+function getEffects()
+	local zoneP1 = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	for _, object in ipairs(zoneP1.getObjects()) do
+		if object.getName() == "Blind" then
+			effects.accuracy = 1
+			broadcastToAll("The Effects of Blind are Ignored", {0.856, 0.1, 0.094})
+			return effects
+		end
+	end
+	local zoneP2 = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	for _, object in ipairs(zoneP2.getObjects()) do
+		if object.getName() == "Blind" then
+			effects.accuracy = 1
+			broadcastToAll("The Effects of Blind are Ignored", {0.905, 0.898, 0.172})
+			return effects
+		end
+	end
+	local zoneP3 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	for _, object in ipairs(zoneP3.getObjects()) do
+		if object.getName() == "Blind" then
+			effects.accuracy = 1
+			broadcastToAll("The Effects of Blind are Ignored", {0.192, 0.701, 0.168})
+			return effects
+		end
+	end
+	local zoneP4 = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	for _, object in ipairs(zoneP4.getObjects()) do
+		if object.getName() == "Blind" then
+			effects.accuracy = 1
+			broadcastToAll("The Effects of Blind are Ignored", {0.118, 0.53, 1})
+			return effects
+		end
+	end
+end

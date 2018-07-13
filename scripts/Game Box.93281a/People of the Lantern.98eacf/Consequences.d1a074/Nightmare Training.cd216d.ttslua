@@ -1,0 +1,74 @@
+
+--------------------------
+--Init
+----------------------------
+function onLoad()
+
+	self.createButton({
+		click_function = 'getConsequences',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 150,
+		font_size = 150
+	})
+
+function getConsequences()
+	getArena()
+	getRoundStoneTraining()
+end
+
+--Finds innovation consequences and adds them to the Innovation deck
+function getArena()
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+	    local objectsInZone = zone.getObjects()
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Consequences" then
+					deck = object
+					break
+	            end
+			end
+		        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+					if card.nickname == "Arena" then
+						deck.takeObject({
+							guid = card.guid,
+							position={-44.15, 4.40, 22.58},
+						})
+						broadcastToAll("Arena added to Innovation Deck", {1,1,1})
+						break
+						end
+					end
+				end
+
+--Finds innovation consequences and adds them to the Innovation deck
+function getRoundStoneTraining()
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+	    local objectsInZone = zone.getObjects()
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Consequences" then
+					deck = object
+					break
+	            end
+			end
+		        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+					if card.nickname == "Round Stone Training" then
+						deck.takeObject({
+							guid = card.guid,
+							position={-44.15, 4.40, 22.58},
+						})
+						broadcastToAll("Round Stone Training added to Innovation Deck", {1,1,1})
+						break
+						end
+					end
+				end
+			end

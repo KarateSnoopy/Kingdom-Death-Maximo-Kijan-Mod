@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "", effect = "You may choose to either", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "", effect = "Gain a (+1) Strength Token", effect2 = "~ or ~"}})
+	Global.call('addBroadcast', {"crit", {gear = "Spend 2 Survival to gain (+1) Permanent Strength", effect = "", effect2 = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Dragon King full moves toward attacker ~ then if adjacent", effect = ""}})
+  Global.call('addBroadcast', {"wound_reaction", {gear = "Place your Survivor in an unoccupied corner of the showdown board", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function woundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+	object.setDescription('end of attack')
+			local tghEndofAttack = Global.getTable('tghEndofAttack')
+        		table.insert(tghEndofAttack, object.clone({
+				position = {2.04 + #tghEndofAttack * - 0.81, 4.32, -0.20}}))
+                Global.call('addBroadcast', {"wound", {gear = "The Slenderman gained (-2) Toughness until the end of your attack", effect = ""}})
+                Global.call('addBroadcast', {"wound", {gear = "Cancel reactions until the end of this attack", effect = ""}})
+    Global.setTable('tghEndofAttack', tghEndofAttack)
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

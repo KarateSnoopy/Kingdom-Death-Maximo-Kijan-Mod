@@ -1,0 +1,60 @@
+
+function criticalWoundEffect()
+	local stats = {color = color, stat = "eva", modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	Global.call('addBroadcast', {"crit", {gear = "You gained a (+1) Evasion Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Full move The Lion God forward in a straight line ♘", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Cancel all hits out of range", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Survivors passed over suffer grab and gain 1 Bleeding Token", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	local courage = get_courage_value(courage)
+	if courage < 5 then
+		broadcastToAll("You do not have 5+ Courage ~ End your attack", msg_color)
+			broadcastToAll("Full move directly away from The Lion God ~ You are knocked down", msg_color)
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+	color = grid.getVar("color")
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+-- face

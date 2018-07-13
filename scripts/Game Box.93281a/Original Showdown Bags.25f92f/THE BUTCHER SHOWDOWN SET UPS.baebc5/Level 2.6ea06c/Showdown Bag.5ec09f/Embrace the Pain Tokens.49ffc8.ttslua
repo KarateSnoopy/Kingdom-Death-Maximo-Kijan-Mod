@@ -1,0 +1,132 @@
+--[[This is how much objects will be offset from one another. Must be a number.
+    Larger offset = more distance betwene items being dropped back into bag.]]--
+offset = 3
+
+--[[Button paramiters for the 4 buttons used.]]--
+setParam = {
+    index=0, label='', click_function='none', function_owner=self,
+    position={-0.1,0.3,2.2}, width=1000, height=600, font_size=200
+}
+resetParam = {
+    index=1, label='Reset', click_function='reset', function_owner=self,
+    position={1.2,0.3,2.2}, rotation={0,90,0}, width=600, height=200, font_size=120
+}
+yesParam = {
+    index=2, label='Yes', click_function='clickYes', function_owner=self,
+    position={1.7,0.3,1.9}, rotation={0,90,0}, width=250, height=200, font_size=120
+}
+noParam = {
+    index=3, label='No', click_function='clickNo', function_owner=self,
+    position={1.7,0.3,2.5}, rotation={0,90,0}, width=250, height=200, font_size=120
+}
+
+--[[Timer paramiter used with the double-click function on the cleanup.]]--
+timerParam = {
+    identifier='timer:'..self.getGUID(), function_name='timeRanOut', delay = 1
+}
+
+function onSave()
+    if objects != nil then
+        local data_to_save = {info = objects}
+        saved_data = JSON.encode(data_to_save)
+        return saved_data
+    else
+        saved_data = nil
+        return saved_data
+    end
+end
+
+--[[Runs on loading the script, or using the undo/redo function.]]
+function onload(saved_data)
+    if saved_data != '' then
+        --print('data exists')
+        local loaded_data = JSON.decode(saved_data)
+        objects = loaded_data.info
+        setParam.label = 'Clean Up'
+        setParam.click_function = 'cleanUp'
+    else
+        --print('data doesnt exist')
+        setParam.label = 'Set Bag\nContents'
+        setParam.click_function = 'setContents'
+    end
+
+    self.createButton(setParam)
+    self.createButton(resetParam)
+    resetCheck = false
+    cleanCheck = false
+end
+
+--[[Runs when the setup button is used to establish what items should go in bag.]]--
+function setContents()
+    if #self.getObjects() > 0 then
+        objects = self.getObjects()
+        setParam.label = 'Clean Up'
+        setParam.click_function = 'cleanUp'
+        self.editButton(setParam)
+    end
+end
+
+--[[Runs when cleanup button is used, places items above bag and lets them drop.]]--
+function cleanUp()
+    if cleanCheck then
+        local bagPos = self.getPosition()
+        bagPos.y = bagPos.y + 4
+        local tableObjects = getAllObjects()
+        for i, v in ipairs(tableObjects) do
+            for j=1, #objects do
+                if v.getGUID() == objects[j].guid then
+                    bagPos.y = bagPos.y + offset
+                    v.setPosition(bagPos)
+                    v.setPositionSmooth(bagPos) --Fixes a bug with setPosition where the pieces freeze
+                    v.unlock()
+                end
+            end
+        end
+        Timer.destroy('timer:'..self.getGUID())
+        cleanCheck = false
+    else
+        cleanCheck = true
+        Timer.create(timerParam)
+    end
+end
+
+--[[Runs when timer runs out. Used for a double click requirement on cleanup.]]--
+function timeRanOut()
+    cleanCheck = false
+end
+
+--[[Runs when reset button is clicked and hasn't already been clicked.]]--
+function reset()
+    if objects != nil then
+        if resetCheck == false then
+            resetParam.label = 'You Sure?'
+            self.editButton(resetParam)
+            self.createButton(yesParam)
+            self.createButton(noParam)
+            resetCheck = true
+        end
+    end
+end
+
+--[[Confirmation button for reset]]--
+function clickYes()
+    setParam.label = 'Set Bag\nContents'
+    setParam.click_function = 'setContents'
+    self.editButton(setParam)
+    objects = nil
+    resetCancel()
+end
+
+--[[Cancelation button for reset]]--
+function clickNo()
+    resetCancel()
+end
+
+--[[Is used in both yes and no click functions to set the reset button back.]]--
+function resetCancel()
+    resetParam.label = 'Reset'
+    self.editButton(resetParam)
+    resetCheck = false
+    self.removeButton(2)
+    self.removeButton(3)
+end

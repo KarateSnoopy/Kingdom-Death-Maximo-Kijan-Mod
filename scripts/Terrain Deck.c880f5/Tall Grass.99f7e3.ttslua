@@ -1,0 +1,95 @@
+-------------------------------
+--KDM terrain card script
+---------------------------------
+
+------------------------------
+--Globals
+---------------------------
+terrainType = ''
+terrainBagGUID = ''
+
+
+--------------------------
+--Init
+----------------------------
+function onLoad()
+
+	self.createButton({
+		click_function = 'spawnTiles',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 150,
+		font_size = 150
+	})
+
+end
+
+---------------------------
+--functions
+----------------------------
+
+function spawnTiles()
+	startLuaCoroutine(self,'spawnCoroutine_1')
+	startLuaCoroutine(self,'spawnCoroutine_2')
+end
+
+function spawnCoroutine_1()
+	terrainType = self.getName()
+	local bagTable = Global.getTable('bags')
+	terrainBagGUID = bagTable.terrain.guid
+	local terrainBag = getObjectFromGUID(terrainBagGUID)
+	local cloneBag = terrainBag.clone({position = {100,100,-100}})
+	coroutine.yield(0)
+	cloneBag.lock()
+	cloneBag.setScale({0,0,0})
+
+	local objects = cloneBag.getObjects()
+	for k, v in pairs(objects) do
+		if v.name == terrainType then
+			local guid = v.guid
+			local params = {}
+			params.guid = guid
+			params.position = {math.random(-12.72, -3.18), 4.33, math.random(6.19, 25.37)}
+			params.position = {params.position[1],params.position[2], params.position[3]}
+			params.rotation = self.getRotation ()
+			local object = cloneBag.takeObject(params)
+			break
+		end
+	end
+	position = {math.random(3.18, 12.72), 4.33, math.random(6.19, 25.37)}
+	broadcastToAll("Randomizing Terrain ~ Make Final Adjustments", {1,1,1})
+	cloneBag.destruct()
+	return 1
+end
+
+function spawnCoroutine_2()
+	terrainType = self.getName()
+	local bagTable = Global.getTable('bags')
+	terrainBagGUID = bagTable.terrain.guid
+	local terrainBag = getObjectFromGUID(terrainBagGUID)
+	local cloneBag = terrainBag.clone({position = {100,100,-100}})
+	coroutine.yield(0)
+	cloneBag.lock()
+	cloneBag.setScale({0,0,0})
+
+	local objects = cloneBag.getObjects()
+	for k, v in pairs(objects) do
+		if v.name == terrainType then
+			local guid = v.guid
+			local params = {}
+			params.guid = guid
+			params.position = {math.random(3.18, 12.72), 4.33, math.random(6.19, 25.37)}
+			params.position = {params.position[1],params.position[2], params.position[3]}
+			params.rotation = self.getRotation ()
+			local object = cloneBag.takeObject(params)
+			break
+		end
+	end
+	position = {math.random(3.18, 12.72), 4.33, math.random(6.19, 25.37)}
+	broadcastToAll("Randomizing Terrain ~ Make Final Adjustments", {1,1,1})
+	cloneBag.destruct()
+	return 1
+end

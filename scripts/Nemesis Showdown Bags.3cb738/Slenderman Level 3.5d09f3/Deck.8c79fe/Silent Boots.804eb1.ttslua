@@ -1,0 +1,50 @@
+function criticalWoundEffect()
+	getVars()
+	local bool = check_isInsane(isInsane)
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You are Insane ~ You gained (+1) Survival", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not Insane", effect = ""}})
+	end
+end
+
+function check_isInsane(isInsane)
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "isInsane" and (obj.getRotation().z > 165 and obj.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+	return isInsane
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	 grid = roller.getVar("grid")
+	 zone = grid.getVar("zonePlayer")
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Ensnare Attacker", effect = ""}})
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

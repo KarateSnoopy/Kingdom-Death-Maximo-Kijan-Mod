@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Draw an Extra Hit Location for this Attack", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

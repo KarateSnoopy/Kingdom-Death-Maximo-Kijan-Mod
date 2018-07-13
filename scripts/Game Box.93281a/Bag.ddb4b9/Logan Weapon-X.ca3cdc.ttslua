@@ -1,0 +1,359 @@
+-- Created By: Kijan
+-- inspired by Memory Bags Created By: MrStump
+
+
+function onload(saved_data)
+  if saved_data ~= "" then
+    local loaded_data = JSON.decode(saved_data)
+    --Set up information off of loaded_data
+    memoryList = loaded_data.ml
+    createCardButtons()
+  else
+    --Set up information for if there is no saved saved data
+    memoryList = {}
+    memoryList.lists = {sfa = {}, fa = {}, dis = {}, abi = {}, inj = {}, stats = {}}
+  end
+  createButtons()
+
+end
+
+function updateSave()
+  local data_to_save = {["ml"] = memoryList}
+  saved_data = JSON.encode(data_to_save)
+  self.script_state = saved_data
+end
+
+
+function createCardButtons()
+  self.createButton({
+    label = self.getName(), click_function = "dud", function_owner = self,
+    position = {0, 0.3, 2.5}, rotation = {0, 180, 0}, height = 0, width = 0,
+    font_size = 600, color = {0, 0, 0}, font_color = {1, 1, 1}
+  })
+  local height = 0
+  local width = 0
+  local font_size = 300
+  local x, y, zl = 5, 0.3, 1
+  local dz = 0.7
+  local zr = zl
+  local buttonformat = {
+    click_function = "dud", function_owner = self,
+    rotation = {0, 180, 0}, height = height, width = width,
+    font_size = font_size, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 255}
+  }
+
+  if #memoryList.lists.sfa + #memoryList.lists.fa > 0 then
+    buttonformat.font_color = {1, 1, 1, 255}
+    buttonformat.label = "[u]Fighting Arts[/u]"
+    buttonformat.position = {x, y, zl}
+    self.createButton(buttonformat)
+    zl = zl - dz
+
+    buttonformat.font_color = {1, 0.3, 0, 255}
+    for _, v in pairs(memoryList.lists.sfa) do
+      buttonformat.label = v
+      buttonformat.position = {x, y, zl}
+      self.createButton(buttonformat)
+      zl = zl - dz
+    end
+    buttonformat.font_color = {0.8, 0.8, 0, 255}
+    for _, v in pairs(memoryList.lists.fa) do
+      buttonformat.label = v
+      buttonformat.position = {x, y, zl}
+      self.createButton(buttonformat)
+      zl = zl - dz
+    end
+    zl = zl - dz / 2
+  end
+  if #memoryList.lists.abi > 0 then
+    buttonformat.font_color = {1, 1, 1, 255}
+    buttonformat.label = "[u]Abilities[/u]"
+    buttonformat.position = {x, y, zl}
+    self.createButton(buttonformat)
+    zl = zl - dz
+
+    buttonformat.font_color = {0, 1, 0, 255}
+    for _, v in pairs(memoryList.lists.abi) do
+      buttonformat.label = v
+      buttonformat.position = {x, y, zl}
+      self.createButton(buttonformat)
+      zl = zl - dz
+    end
+  end
+
+  if #memoryList.lists.dis > 0 then
+    buttonformat.font_color = {1, 1, 1, 255}
+    buttonformat.label = "[u]Disorders[/u]"
+    buttonformat.position = {0 - x, y, zr}
+    self.createButton(buttonformat)
+    zr = zr - dz
+    buttonformat.font_color = {0, 0.5, 1, 255}
+    for _, v in pairs(memoryList.lists.dis) do
+      buttonformat.label = v
+      buttonformat.position = {0 - x, y, zr}
+      self.createButton(buttonformat)
+      zr = zr - dz
+    end
+    zr = zr - dz / 2
+  end
+  if #memoryList.lists.inj > 0 then
+    buttonformat.font_color = {1, 1, 1, 255}
+    buttonformat.label = "[u]Injuries[/u]"
+    buttonformat.position = {0 - x, y, zr}
+    self.createButton(buttonformat)
+    zr = zr - dz
+
+    buttonformat.font_color = {1, 0, 0, 255}
+    for _, v in pairs(memoryList.lists.inj) do
+      buttonformat.label = v
+      buttonformat.position = {0 - x, y, zr}
+      self.createButton(buttonformat)
+      zr = zr - dz
+    end
+  end
+
+  if memoryList.lists.stats == nil then memoryList.lists.stats = {} end
+  zr = -3
+  buttonformat.font_color = {0.6, 0.6, 0.6, 255}
+  for i, v in pairs(memoryList.lists.stats) do
+    buttonformat.label = i .. ": " .. v
+    buttonformat.position = {0, y, zr}
+    self.createButton(buttonformat)
+    zr = zr - dz
+  end
+end
+
+
+--Make setup button
+function createButtons()
+  dx = 1.5
+  height = 500
+  width = 500
+  font_size = 300
+  self.createButton({
+    label = "", click_function = "buttonClick_red", function_owner = self,
+    position = {dx, 0.3, - 2}, rotation = {0, 180, 0}, height = height, width = width,
+    font_size = font_size, color = {1, 0, 0}, font_color = {0, 0, 0}
+  })
+  self.createButton({
+    label = "", click_function = "buttonClick_yellow", function_owner = self,
+    position = {dx - 1, 0.3, - 2}, rotation = {0, 180, 0}, height = height, width = width,
+    font_size = font_size, color = {1, 1, 0}, font_color = {0, 0, 0}
+  })
+  self.createButton({
+    label = "", click_function = "buttonClick_green", function_owner = self,
+    position = {dx - 2, 0.3, - 2}, rotation = {0, 180, 0}, height = height, width = width,
+    font_size = font_size, color = {0, 1, 0}, font_color = {0, 0, 0}
+  })
+  self.createButton({
+    label = "", click_function = "buttonClick_blue", function_owner = self,
+    position = {dx - 3, 0.3, - 2}, rotation = {0, 180, 0}, height = height, width = width,
+    font_size = font_size, color = {0, 0, 1}, font_color = {0, 0, 0}
+  })
+
+end
+
+function recallZone(player)
+  -- playerZoneGUID, gridGUID
+  objects = getObjectFromGUID(player[1]).getObjects()
+  grid = getObjectFromGUID(player[2])
+
+
+  for _, obj in pairs(objects) do
+    if obj.tag == 'Board' then
+      if obj.getDescription() == "SurvivorSheet" then
+        self.setName(obj.getName())
+        self.setDescription(getStats(obj.getTable("buttons")))
+        addToList(obj, grid)
+      end
+    elseif obj.tag == 'Card' then
+      if player[3] then
+        if string.find(obj.getDescription(), 'irreplaceable') then
+          broadcastToAll("[b]" .. obj.getName() .. "[/b] was Irreplaceable and is lost forever.", {1,1,1})
+          grid.call("deleteCard", {obj.getGUID()})
+        else
+          addToList(obj, grid)
+        end
+      else
+        addToList(obj, grid)
+      end
+    end
+  end
+
+  if player[3] then
+    broadcastToAll("[b]" .. self.getName() .. "[/b] is dead.", {1, 1, 1})
+  else
+    broadcastToAll("[b]" .. self.getName() .. "[/b] is resting in the Settlement", {1, 1, 1})
+  end
+
+  buttonClick_recall()
+  updateSave()
+end
+
+function addToList(obj, grid)
+  local desc = obj.getDescription()
+  local cursed = false
+
+  if string.find(desc, 'cursed') then
+    cursed = true
+  end
+  if not string.find(desc, 'gear') or cursed then
+    local pos, rot = obj.getPosition(), obj.getRotation()
+    gridPos = grid.getPosition()
+    memoryList[obj.getGUID()] = {
+      pos = {x = round(gridPos.x - pos.x, 4), y = round(gridPos.y - pos.y, 4), z = round(gridPos.z - pos.z, 4)},
+      rot = {x = round(rot.x, 4), y = round(rot.y, 4), z = round(rot.z, 4)},
+      lock = obj.getLock(), cursed = cursed
+    }
+    if string.find(desc, 'secret fighting art') then
+      memoryList.lists.sfa[#memoryList.lists.sfa + 1] = obj.getName()
+    elseif string.find(desc, 'fighting art') then
+      memoryList.lists.fa[#memoryList.lists.fa + 1] = obj.getName()
+    elseif string.find(desc, 'disorder') then
+      memoryList.lists.dis[#memoryList.lists.dis + 1] = obj.getName()
+    elseif string.find(desc, 'injury') then
+      memoryList.lists.inj[#memoryList.lists.inj + 1] = obj.getName()
+    elseif string.find(desc, 'ability') then
+      memoryList.lists.abi[#memoryList.lists.abi + 1] = obj.getName()
+    end
+  end
+end
+
+function getStats(objbtns)
+  local stats = ""
+  local xp = 0
+  for i, v in pairs(objbtns) do
+    if i == "movement" then
+      memoryList.lists.stats['MOV'] = objbtns[tostring(i)].value
+    elseif i == "accuracy" then
+      memoryList.lists.stats['ACC'] = objbtns[tostring(i)].value
+    elseif i == "strength" then
+      memoryList.lists.stats['STR'] = objbtns[tostring(i)].value
+    elseif i == "evasion" then
+      memoryList.lists.stats['EVA'] = objbtns[tostring(i)].value
+    elseif i == "luck" then
+      memoryList.lists.stats['LCK'] = objbtns[tostring(i)].value
+    elseif i == "speed" then
+      memoryList.lists.stats['SPD'] = objbtns[tostring(i)].value
+    end
+    prefix = string.sub(i, 1, 3)
+    if prefix == "xp_" then
+      if objbtns[tostring(i)].label ~= '' then
+        xp = xp + 1
+      end
+    end
+  end
+
+  memoryList.lists.stats['  XP'] = tostring(xp)
+  return stats
+end
+
+function buttonClick_red()
+  local count = 0
+  for guid, entry in pairs(memoryList) do
+    count = count + 1
+  end
+  if count < 2 then
+    recallZone({Global.getTable("zones").zoneP1.guid, Global.getTable("grids").red.guid})
+  else
+    buttonClick_place(getObjectFromGUID(Global.getTable('grids').red.guid))
+  end
+end
+function buttonClick_yellow()
+  local count = 0
+  for guid, entry in pairs(memoryList) do
+    count = count + 1
+  end
+  if count < 2 then
+    recallZone({Global.getTable("zones").zoneP2.guid, Global.getTable("grids").yellow.guid})
+  else
+    buttonClick_place(getObjectFromGUID(Global.getTable('grids').yellow.guid))
+  end
+end
+function buttonClick_green()
+  local count = 0
+  for guid, entry in pairs(memoryList) do
+    count = count + 1
+  end
+  if count < 2 then
+    recallZone({Global.getTable("zones").zoneP3.guid, Global.getTable("grids").green.guid})
+  else
+    buttonClick_place(getObjectFromGUID(Global.getTable('grids').green.guid))
+  end
+end
+function buttonClick_blue()
+  local count = 0
+  for guid, entry in pairs(memoryList) do
+    count = count + 1
+  end
+  if count < 2 then
+    recallZone({Global.getTable("zones").zoneP4.guid, Global.getTable("grids").blue.guid})
+  else
+    buttonClick_place(getObjectFromGUID(Global.getTable('grids').blue.guid))
+  end
+end
+
+
+--Sends objects from bag/table to their saved position/rotation
+function buttonClick_place(grid)
+  if grid.getVar("FullCharSheetGUID") == '' or grid.getVar("FullCharSheetGUID") == nil then
+
+    gridPos = grid.getPosition()
+    local bagObjList = self.getObjects()
+    for guid, entry in pairs(memoryList) do
+      if guid ~= "lists" then
+        local obj = getObjectFromGUID(guid)
+        --If obj is inside of the bag
+        for _, bagObj in ipairs(bagObjList) do
+          if bagObj.guid == guid then
+            if entry.cursed then
+              local item = self.takeObject({
+                guid = guid, position = {gridPos.x - 3, gridPos.y + 2, gridPos.z}, rotation = entry.rot,
+              })
+              item.setLock(entry.lock)
+            else
+              local item = self.takeObject({
+                guid = guid, position = {gridPos.x - entry.pos.x, gridPos.y - entry.pos.y + 0.5, gridPos.z - entry.pos.z}, rotation = entry.rot,
+              })
+              item.setLock(entry.lock)
+            end
+
+            break
+          end
+        end
+      end
+    end
+
+    broadcastToAll("[b]" .. self.getName() .. "[/b] embarks on the Hunt!", {1, 1, 1})
+    memoryList = {}
+    updateSave()
+    objects = self.getObjects()
+    if #objects > 0 then
+      broadcastToAll("There are still cards in the bag.", {1, 1, 1})
+    else
+      self.destruct()
+    end
+  else
+    broadcastToAll("This Grid already has a Survivor!", {1, 1, 1})
+  end
+end
+
+--Recalls objects to bag from table
+function buttonClick_recall()
+  for guid, entry in pairs(memoryList) do
+    local obj = getObjectFromGUID(guid)
+    if obj ~= nil then self.putObject(obj) end
+  end
+
+  createCardButtons()
+
+end
+--Utility functions
+function dud()
+end
+
+--Round number (num) to the Nth decimal (dec)
+function round(num, dec)
+  local mult = 10^(dec or 0)
+  return math.floor(num * mult + 0.5) / mult
+end

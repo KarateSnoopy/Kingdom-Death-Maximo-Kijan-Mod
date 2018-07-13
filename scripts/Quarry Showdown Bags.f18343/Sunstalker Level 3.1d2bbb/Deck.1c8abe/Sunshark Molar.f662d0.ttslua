@@ -1,0 +1,68 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	get_courage_value(courage)
+	Global.call('addBroadcast', {"crit", {gear = "You have " .. courage .. " Courage", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Roll 1d10 ~ If the Result is equal to or less than " .. courage, effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Permanent Accuracy", effect = ""}})
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Target the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Huge Sunteeth", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Huge Sunteeth", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Huge Sunteeth", effect = ""}})
+	end
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end

@@ -1,0 +1,59 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+	local posX = self.getPosition().x
+	if posX > 6 then
+		hitTool_right = getObjectFromGUID('10e61e')
+		hitTool_right.call("reactionsCancelled_endOfAttack")
+		hitTool_right.call('removeButton_ReactionTriggered')
+		hitTool_right.call('createButton_survival_Opportunity')
+	elseif posX < 4 then
+		hitTool_left = getObjectFromGUID('309402')
+		hitTool_left.call("reactionsCancelled_endOfAttack")
+	end
+  Global.call('addBroadcast', {"wound", {gear = "The Hand Staggers on purpose ~ Reactions Cancelled for the rest of the attack", effect = ""}})
+  Global.call('addBroadcast', {"wound", {gear = "Ignore all Lens effects ~ All Lens flipped to Closed", effect = ""}})
+  flipLens()
+end
+
+function flipLens()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+      card.flip()
+    elseif card.getName() == "Red Lens" and card.getRotation().z > 165 then
+      card.flip()
+    end
+  end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local token_spawner = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfwoundattempt"
+	token_spawner.getVar("phase")
+	token_spawner.setVar("phase", var)
+	broadcastToAll("(-4) Toughness to Wound this location Calculated.", {1,1,1})
+	wait(0.50)
+	broadcastToAll("Spend 1 Survival or Cancel your Attack", {1,1,1})
+	for i=1, 4 do
+		token_spawner.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end

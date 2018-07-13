@@ -1,0 +1,11 @@
+isKdmEffectsObject = true
+effects = {
+	speed = 1
+}
+
+function getEffects()
+
+	effects.speed = -1
+
+	return effects
+end

@@ -1,0 +1,166 @@
+
+function onLoad()
+
+-- When a Survivor is knocked down (rotated on its side) and then dropped, this funcction checks for knockdown effects
+function onDropped(player_color, obj)
+    local object = self.guid
+    local name = self.getName()
+    local rot = self.getRotation().z
+        if self.getName() == "Player Two" then
+            if rot > 269 then
+                broadcastToAll(Player[player_color].steam_name .. " is Knocked Down!", {1,1,1})
+                zonesTable = Global.getTable('zones')
+                local zone = getObjectFromGUID(zonesTable.zoneP2.guid)
+                local objectsInZone = zone.getObjects()
+                for _, object in ipairs(objectsInZone) do
+                    if object.getName() == "Steadfast Potion" then
+                        broadcastToColor("** Steadfast Potion: When you are knocked down, lose all your +1 Strength Tokens **", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Burnt Nerves" then
+                        broadcastToColor("~~~ Burnt Nerves: You are immune to Bash ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Sour Death" then
+                        broadcastToColor("~~~ Sour Death: You may Encourage yourself. If you do, gain +1 Strength Token ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Stalwart" then
+                        broadcastToColor("~~~ Stalwart: Ignore knockdown effects of a Monster's Intimidate Action ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Story of the Forsaker" then
+                        broadcastToColor("~~~ Story of the Forsaker: If this is a Nemesis Encounter, you cannot be knocked down ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Iron Will" then
+                        broadcastToColor("~~~ Iron Will: You cannot be knocked down ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Carapace of Will" then
+                        broadcastToColor("~~~ Carapace of Will: Lose all your Steadfast Tokens ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Propulsion Drive" then
+                        broadcastToColor("~~~ Propulsion Drive: Lose all your Momentum Tokens ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Last Man Standing" then
+                        broadcastToColor("~~~ Last Man Standing: If you are the last Survivor, you cannot be knocked down ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Harvestman" then
+                        broadcastToColor("~~~ Harvestman: Gain (-1) Movement Token ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Dragon Belt" then
+                        local rot = object.getRotation().z
+                        if rot > 179 then
+                        broadcastToColor("~~~ Dragon Belt: You are not knocked down from suffering a Heavy Injury ~~~", player_color, {1,1,1})
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- When Survivor Miniature is picked up, searches that players zone for movement bonuses or penalities
+function onPickUp(player_color, obj)
+            local object = self.guid
+            local name = self.getName()
+                    if self.getName() == "Player Two" then
+                    zonesTable = Global.getTable('zones')
+                    local zone = getObjectFromGUID(zonesTable.zoneP2.guid)
+                    local objectsInZone = zone.getObjects()
+                    for _, object in ipairs(objectsInZone) do
+                        if object.getName() == "Dismembered Leg" then
+                            broadcastToColor("** Dismembered Leg: (-2) Movement **", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Harvestman" then
+                            broadcastToColor("~~~ Harvestman: Gain (+3) Movement ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Broken Leg" then
+                            broadcastToColor("** Broken Leg: (-1) Movement **", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Broken Hip" then
+                            broadcastToColor("** Broken Hip: (-1) Movement **", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Disemboweled" then
+                            broadcastToColor("** Disemboweled: Your Movement is (1) **", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Century Greaves" then
+                            broadcastToColor("~~~ Century Greaves: (-1) Movement ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "White Lion Coat" then
+                            broadcastToColor("~~~ White Lion Coat: Pounce Attack Available ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Prismatic Lantern" then
+                            broadcastToColor("~~~ Prismatic Lantern: (+1) Movement ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Phoenix Greaves" then
+                            broadcastToColor("~~~ Phoenix Greaves: If Insane (+2)  Movement ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Dragon Boots" then
+                            broadcastToColor("~~~ Dragon Boots: (+2) Movement during your act ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Cycloid Scale Jacket" then
+                            broadcastToColor("~~~ Cycloid Scale Jacket: Shadow Walk Available ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Cycloid Scale Sleeves" then
+                            broadcastToColor("~~~ Cycloid Scale Sleeves: Gain (+1) Accuracy and Sharp after Shadow Walking ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Cycloid Scale Hood" then
+                            broadcastToColor("~~~ Cycloid Scale Hood: When you spend (MOVE), gain (+1) Evasion until Next Act~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Calcified Greaves" then
+                            broadcastToColor("** Calcified Greaves: (-1) Movement **", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Steel Shield" then
+                            broadcastToColor("** Steel Shield: (-3) Movement **", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Ancient Lion Claws" then
+                            broadcastToColor("~~~ Ancient Lion Claws: (+2) Movement when you Pounce ~~~", player_color, {1,1,1})
+                        end
+                        if object.getName() == "Silk Boots" then
+                            local rot = object.getRotation().z
+                            if rot > 179 then
+                            broadcastToColor("~~~ Silk Boots: (+1) Movement ~~~", player_color, {1,1,1})
+                        end
+                    end
+                        if object.getName() == "Lantern Greaves" then
+                            local rot = object.getRotation().z
+                            if rot > 179 then
+                            broadcastToColor("~~~ Lantern Greaves: (+2) Movement ~~~", player_color, {1,1,1})
+                        end
+                    end
+                    if object.getName() == "Leather Boots" then
+                        local rot = object.getRotation().z
+                            if rot > 179 then
+                                broadcastToColor("~~~ Leather Boots: At the end of your Act you may move (+1) space ~~~", player_color, {1,1,1})
+                            end
+                        end
+                    if object.getName() == "White Lion Boots" then
+                        local rot = object.getRotation().z
+                            if rot > 179 then
+                                broadcastToColor("~~~ White Lion Boots: (+1) Movement ~~~", player_color, {1,1,1})
+                            end
+                        end
+                    if object.getName() == "Cycloid Scale Shoes" then
+                        local rot = object.getRotation().z
+                            if rot > 179 then
+                                broadcastToColor("~~~ Cycloid Scale Shoes: If you move, you are not a threat until you attack. If you have Priority Target, gain +1 Survival and Remove it. ~~~", player_color, {1,1,1})
+                            end
+                    end
+                    if object.getName() == "Movement Token" then
+                        local rot = object.getRotation().z
+                            if rot < 180 then
+                                broadcastToColor("~~~ Movement Token: (+1) ~~~", player_color, {1,1,1})
+                            end
+                            if rot > 179 then
+                                broadcastToColor("** Movement Token: (-1) **", player_color, {1,1,1})
+                            end
+                        end
+                    if object.getName() == "Screaming Coat" then
+                                broadcastToColor("~~~ Screaming Coat: Slam Attack Available ~~~", player_color, {1,1,1})
+                    end
+                    if object.getName() == "Screaming Bracers" then
+                                broadcastToColor("~~~ Screaming Bracers: When you slam, you may move spaces occupied by other Survivors ~~~", player_color, {1,1,1})
+                            end
+
+                    if object.getName() == "Lantern Cuirass" then
+                                broadcastToColor("** Lantern Cuirass: (-2) Movement", player_color, {1,1,1})
+                            end
+                        end
+                    end
+                end
+            end

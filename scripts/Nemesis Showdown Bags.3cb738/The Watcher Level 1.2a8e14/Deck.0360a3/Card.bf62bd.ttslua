@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Attacker gains a Random Disorder", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

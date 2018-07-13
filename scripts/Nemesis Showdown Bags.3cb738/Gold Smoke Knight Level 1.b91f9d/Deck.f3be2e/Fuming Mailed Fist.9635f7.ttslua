@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Manually Draw another Hit Location and attempt to wound it as normal", effect = ""}})
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+   Global.call('addBroadcast', {"failure", {gear = "Suffer Bash and 2 Damage to the Arms Location", effect = ""}})
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

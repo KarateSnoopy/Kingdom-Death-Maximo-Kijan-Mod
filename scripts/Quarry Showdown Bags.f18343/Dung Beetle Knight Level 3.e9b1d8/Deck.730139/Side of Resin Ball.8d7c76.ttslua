@@ -1,0 +1,64 @@
+function criticalWoundEffect()
+	getVars()
+	changeSurvivors("survival", 1, grid)
+	Global.call('addBroadcast', {"crit", {gear = "You gained (+1) Survival ~ The Dung Beetle Knight is Knocked Down!", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "Resin Dung Ball" then
+			dung_ball = obj
+		end
+	end
+	dung_ball.call("check_adjacent_toDungBall")
+	local bool = dung_ball.getVar("isAdjacent")
+	if not bool then
+		broadcastToAll("ⓧ Separation Anxiety !!", {0.42, 1, 0.47})
+	else
+		broadcastToAll("The Dung Beetle Knight is Adjacent to the Resin Ball", msg_color)
+	end
+	if bool then
+		if not isDeaf then
+			broadcastToAll("You are not Deaf ~ Lost all your Positive Attribute Tokens and ★ Survival", msg_color)
+		else
+			broadcastToAll("You are deaf ~ no effect", {1,1,1})
+		end
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	hitTool = roller.getVar("hitTool")
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+	zone = grid.getVar("zone")
+	isDeaf = false
+	for _, tok in ipairs(zone.getObjects()) do
+		if tok.getName() == "isDeaf" and tok.getRotation().z > 165 and tok.getRotation().z < 195 then
+			isDeaf = true
+		end
+	end
+end

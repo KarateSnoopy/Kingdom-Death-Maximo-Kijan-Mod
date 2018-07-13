@@ -1,0 +1,70 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The White Lion is knocked Down!", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+	getVars()
+	gain_the_priority_target_token()
+	if cannot_be_removed == false then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You gained the Priority Target Token", effect = ""}})
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function gain_the_priority_target_token()
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	hasPriority = false
+	cannot_be_removed = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if string.find(tok.getDescription(), "permanent") then
+			cannot_be_removed = true
+		end
+	end
+	if cannot_be_removed then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "A Survivor already has the Priority Target Permanently ~ From a Game Effect", effect = ""}})
+		return
+	end
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			else
+				local obj = getObjectFromGUID('3bc58d')
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone(objPos)
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			end
+		end
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	PlayerName = grid.getVar("PlayerName")
+end

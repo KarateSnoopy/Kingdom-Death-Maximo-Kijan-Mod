@@ -1,0 +1,39 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Crushed Crown ~ Keep in Play", effect = ""}})
+	self.setPosition({0.03, 4.34, -21.56})
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Screaming Antelope Resource", effect = ""}})
+	getMonsterResource(deck, name, params)
+end
+
+function getMonsterResource(deck, name, params)
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zone")
+	pos = grid.getTable("gained_resource_pos")
+
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "If you are adjacent ~ Suffer Knockback 5", effect = "", effect2 = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

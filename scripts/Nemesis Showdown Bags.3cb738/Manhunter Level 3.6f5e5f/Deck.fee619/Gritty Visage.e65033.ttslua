@@ -1,0 +1,44 @@
+function criticalWoundEffect()
+	getVars()
+	Global.call('addBroadcast', {"crit", {gear = "Gain (+3) Survival", effect = ""}})
+	hasPrey = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Prey" then
+			hasPrey = true
+		end
+	end
+	if hasPrey then
+		Global.call('addBroadcast', {"crit", {gear = "You have the Prey Disorder ~ Lose it and the Manhunter suffers an Additional Wound", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You do not have the Prey Disorder", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Full Move towards the Attacker ♘", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Then ~ if adjacent ~ suffer a Severe Body Injury with a +2 to the Result", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- gritty visage

@@ -1,0 +1,17 @@
+function onLoad()
+
+    function onPickUp(color, obj)
+            local object = self.guid
+            local name = self.getName()
+                    if self.getName() == "White Lion" then
+                    zonesTable = Global.getTable('zones')
+                    local zone = getObjectFromGUID(zonesTable.zoneInjuryBoard.guid)
+                    local objectsInZone = zone.getObjects()
+                    for _, object in ipairs(objectsInZone) do
+                        if object.getName() == "Beast's Heel" then
+                            broadcastToAll("** Persistent Injury ~ Ruptured Tendon: When the monster starts its move, roll 1d10, on a 1 the monster is knocked down.**", {1,1,1})
+                        end
+                    end
+                end
+            end
+        end

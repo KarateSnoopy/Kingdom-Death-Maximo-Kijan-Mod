@@ -1,0 +1,72 @@
+function onLoad()
+	createButtons()
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+end
+
+function createButtons()
+	self.createButton({
+		click_function = "ghost_step",
+		function_owner = self,
+		label 			= "Ghost Step",
+		position 		= {0, 0.2, -2.7},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 2000,
+		height 			= 400,
+		font_size 		= 400,
+		color 			= {0,0,0,0},
+		font_color 		= {1,1,1,100}
+	})
+end
+
+function ghost_step(object, player_color)
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "The Hand" then
+			pos = obj.getPosition()
+		end
+	end
+	Player[player_color].lookAt({
+		position = pos,
+		pitch    = 60,
+		yaw      = 0,
+	})
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		for _, obj in ipairs(gameBox.getObjects()) do
+			if obj.name == "Ghost Step Smoke Effect" then
+				effect = gameBox.takeObject({
+					position       = {pos.x, pos.y - 7, pos.z - 4},
+					callback       = "lock_callback",
+					callback_owner = Global,
+					smooth         = false,
+					guid           = obj.guid,
+				})
+				effect.setScale({0.15, 0.15, 0.15})
+			end
+			if obj.name == "Ghost Step Plasma Effect" then
+				effect2 = gameBox.takeObject({
+					position       = {pos.x, pos.y + 4.5, pos.z - 3},
+					callback       = "lock_callback",
+					callback_owner = Global,
+					smooth         = false,
+					guid           = obj.guid,
+				})
+				effect2.setScale({0.15, 0.15, 0.15})
+			end
+		end
+	end
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function store_effects_wipe_coR()
+	wait(1.75)
+	--effect.AssetBundle.playLoopingEffect(1)
+	gameBox.putObject(effect)
+	return 1
+end

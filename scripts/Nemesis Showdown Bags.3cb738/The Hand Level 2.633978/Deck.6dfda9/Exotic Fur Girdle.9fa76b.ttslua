@@ -1,0 +1,81 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_spd.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Hand gained a (-1) Speed Token", effect = ""}})
+end
+
+function woundEffect()
+	token_spawner = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfround"
+	token_spawner.getVar("phase")
+	token_spawner.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+  Global.call('addBroadcast', {"wound_reaction", {gear = "The Hand staggers and gains (-4) Toughness until the end of the round", effect = ""}})
+
+  hitTool_right = getObjectFromGUID('10e61e')
+  hitTool_right.call("reactionsCancelled")
+  hitTool_right.call('removeButton_ReactionTriggered')
+  hitTool_right.call('createButton_survival_Opportunity')
+
+  hitTool_left = getObjectFromGUID('309402')
+  hitTool_left.call("reactionsCancelled")
+  Global.call('addBroadcast', {"wound_reaction", {gear = "Reactions Cancelled until the end of the turn", effect = ""}})
+end
+
+
+function addStat_coR()
+	for i=1, 4 do
+		token_spawner.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+  local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+  green_open = false
+  blue_open = false
+  red_open = false
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+      green_open = true
+      green = card
+    end
+    if card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+      blue_open = true
+      blue = card
+    end
+    if card.getName() == "Red Lens" and card.getRotation().z > 165 then
+      red_open = true
+      red = card
+    end
+  end
+  if green_open and blue_open and red_open then
+    broadcastToAll("The Hands sees too much! ~ All Lens flipped to Closed", {1,1,1})
+    green.flip()
+    blue.flip()
+    red.flip()
+  end
+  if not green_open or not blue_open or not red_open then
+	  self.setPositionSmooth({6.16, 5, -2.45})
+    broadcastToAll("This hit is Cancelled ~ The Hand performs its basic action targeting you", {1,1,1})
+  end
+
+end

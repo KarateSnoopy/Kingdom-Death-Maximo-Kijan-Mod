@@ -1,0 +1,39 @@
+function onLoad()
+
+	self.createButton({
+		click_function = 'drawHitLocations3',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 200,
+		font_size = 150
+	})
+
+function drawHitLocations3()
+	zonesTable = Global.getTable('zones')
+	local zone = getObjectFromGUID(zonesTable.deckHitLocations.guid)
+	local objectsInZone = zone.getObjects()
+		for _, obj in ipairs(objectsInZone) do
+				obj.takeObject({
+					position={11.08, 4.39, -2.45},
+					top=true,
+					callback="flipCard",
+					callback_owner=Global,
+				})
+				obj.takeObject({
+					position={13.54, 4.39, -2.47},
+					top=true,
+					callback="flipCard",
+					callback_owner=Global,
+				})
+				obj.takeObject({
+					position={16.08, 4.39, -2.46},
+					top=true,
+					callback="flipCard",
+					callback_owner=Global,
+				})
+		end
+	end
+end

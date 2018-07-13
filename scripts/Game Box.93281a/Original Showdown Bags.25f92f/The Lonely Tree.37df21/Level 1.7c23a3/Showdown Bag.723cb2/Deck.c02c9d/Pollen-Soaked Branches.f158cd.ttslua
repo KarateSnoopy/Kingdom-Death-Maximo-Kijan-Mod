@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Blood Pollen ~ Keep in Play", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Lame ~ Keep in Play", effect = ""}})
+	self.setPositionSmooth({-4.18, 4.34, -14.16})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "☠☠☠ Perform Retch ☠☠☠", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

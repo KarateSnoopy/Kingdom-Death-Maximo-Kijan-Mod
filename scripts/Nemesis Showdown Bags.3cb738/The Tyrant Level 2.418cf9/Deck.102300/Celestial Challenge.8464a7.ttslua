@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound_reaction", {gear = "Gain the Noble Surname. Gain (+1) Courage. Suffer \u{2605} Brain Damage", effect = "Archive This Card"}})
+end
+
+function failureEffect()
+   Global.call('addBroadcast', {"failure", {gear = "You are knocked down", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	broadcastToAll("You suffer (-1) Strength to Wound for each Dragon Trait you have (up to -4)", {1,1,1})
+	broadcastToAll("You must Manually adjust this", {1,1,1})
+end

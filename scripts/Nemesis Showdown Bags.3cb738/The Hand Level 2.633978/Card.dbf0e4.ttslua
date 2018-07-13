@@ -1,0 +1,188 @@
+function onLoad()
+	createButtons()
+	grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+	affinity_red = getObjectFromGUID('122760')
+	affinity_green = getObjectFromGUID('77acf4')
+	affinity_blue = getObjectFromGUID('f12b7f')
+	msg_color = grid.getTable("msg_color")
+end
+
+function createButtons()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 2000,
+		height 			= 400,
+		font_size 		= 300,
+		color 			= {0, 0, 0, 1},
+		font_color 		= {1, 1, 1, 1}
+	}
+
+	btn_params.click_function = "set_auras"
+	btn_params.position = {0, 0.2, -1.35}
+	btn_params.label = "Set Aura"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_white"
+	btn_params.position = {0, 0.2, -0.9}
+	btn_params.label = "White"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_red"
+	btn_params.position = {0, 0.2, -0.45}
+	btn_params.label = "Red"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_green"
+	btn_params.position = {0, 0.2, 0}
+	btn_params.label = "Green"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_blue"
+	btn_params.position = {0, 0.2, 0.45}
+	btn_params.label = "Blue"
+	self.createButton(btn_params)
+end
+
+function set_auras()
+	self.clearButtons()
+
+	hasWhite = false
+	hasRed = false
+	hasGreen = false
+	hasBlue = false
+
+	local count_red = tonumber(affinity_red.call("getCount"))
+	local count_green = tonumber(affinity_green.call("getCount"))
+	local count_blue = tonumber(affinity_blue.call("getCount"))
+
+
+	if count_red > count_green and count_red > count_blue then
+		hasRed = true
+		broadcastToAll("You have a Red Aura", {1, 0.14, 0})
+	end
+
+	if count_green > count_red and count_green > count_blue then
+		hasGreen = true
+		broadcastToAll("You have a Green Aura", {0.192, 0.701, 0.168})
+	end
+
+	if count_blue > count_green and count_blue > count_red then
+		hasBlue = true
+		broadcastToAll("You have a Blue Aura", {0.118, 0.53, 1})
+	end
+
+	btn_params.click_function = "set_auras"
+	btn_params.position = {0, 0.2, -1.35}
+	btn_params.label = "Set Aura"
+	btn_params.color 	= {0, 0, 0, 1}
+	btn_params.font_color = {1, 1, 1, 1}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_white"
+	btn_params.position = {0, 0.2, -0.9}
+	btn_params.label = "White"
+	btn_params.color = {0,0,0}
+	btn_params.font_color = {1,1,1}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.2, -0.45}
+	btn_params.label = "Red " .. count_red .. ""
+	if hasRed then
+		btn_params.color = {1, 0.14, 0}
+	else
+		btn_params.color = {0,0,0}
+	end
+	self.createButton(btn_params)
+
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.2, 0}
+	btn_params.label = "Green " .. count_green .. ""
+	if hasGreen then
+		btn_params.color = {0.192, 0.701, 0.168}
+	else
+		btn_params.color = {0,0,0}
+	end
+	self.createButton(btn_params)
+
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.2, 0.45}
+	btn_params.label = "Blue " .. count_blue .. ""
+	if hasBlue then
+		btn_params.color = {0.118, 0.53, 1}
+	else
+		btn_params.color = {0,0,0}
+	end
+	self.createButton(btn_params)
+
+	if (count_red == count_green) or (count_green == count_blue) or (count_red == count_blue) then
+		hasWhite = true
+		set_white()
+	end
+	set_Description()
+end
+
+function set_white()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "White" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+	btn_params.click_function = "set_black"
+	btn_params.position = {0, 0.2, -0.9}
+	btn_params.label = "White"
+	btn_params.color = {1,1,1}
+	btn_params.font_color = {0,0,0}
+	self.createButton(btn_params)
+	broadcastToAll("You have a White Aura", {1,1,1})
+end
+
+function set_black()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "White" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+	btn_params.click_function = "set_white"
+	btn_params.position = {0, 0.2, -0.9}
+	btn_params.label = "White"
+	btn_params.color = {0,0,0}
+	btn_params.font_color = {1,1,1}
+	self.createButton(btn_params)
+	broadcastToAll("White Aura removed", {1,1,1})
+end
+
+function set_Description()
+	if hasRed then
+		self.setDescription("red aura")
+	end
+	if hasGreen then
+		self.setDescription("green aura")
+	end
+	if hasBlue then
+		self.setDescription("blue aura")
+	end
+	if hasRed and hasWhite then
+		self.setDescription("red aura, white aura")
+	end
+	if hasGreen and hasWhite then
+		self.setDescription("green aura, white aura")
+	end
+	if hasBlue and hasWhite then
+		self.setDescription("blue aura, white aura")
+	end
+end
+
+function dud() end
+
+-- red

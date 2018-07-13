@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "All Survivors gain (+3) Insanity", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You may perform Embolden", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Move The Watcher onto the Space the Attacker is currently occupying", effect = ""}})
+end
+
+function addStatModifier()
+end

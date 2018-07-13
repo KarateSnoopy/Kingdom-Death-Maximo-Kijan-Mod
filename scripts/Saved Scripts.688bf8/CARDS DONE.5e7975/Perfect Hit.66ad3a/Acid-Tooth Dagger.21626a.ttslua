@@ -1,0 +1,19 @@
+
+function createButtons()
+	self.createButton({click_function = "use_special", function_owner = self, label = "Use",
+	position = {0, 0.3, 0}, scale = {1, 0.5, 1.5}, width = 1100, height = 200, font_size = 150, font_color = {1,1,1}, color = {0,0,0, 1}})
+
+	self.createButton({click_function = "do_not_use_special", function_owner = self, label = "Do Not Use",
+	position = {0, 0.3, 0.6}, scale = {1, 0.5, 1.5}, width = 1100, height = 200, font_size = 150, color = {1, 0.0017, 0.0017, 1}})
+end
+
+function use_special()
+	roller = getObjectFromGUID('ff240b')
+	roller.call("call_wound_results")
+	self.destruct()
+end
+
+function do_not_use_special()
+	roller = getObjectFromGUID('ff240b')
+	roller.call("call_failure_results")
+end

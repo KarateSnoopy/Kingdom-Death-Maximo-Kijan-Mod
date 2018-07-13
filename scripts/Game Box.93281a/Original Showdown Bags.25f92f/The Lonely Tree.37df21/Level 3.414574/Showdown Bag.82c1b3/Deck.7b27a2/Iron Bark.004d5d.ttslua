@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "If you are not Deaf ~ Gain a (+1) Strength Token", effect = ""}})
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound", {gear = "The Lonely Tree performs its Basic Action Targeting you", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

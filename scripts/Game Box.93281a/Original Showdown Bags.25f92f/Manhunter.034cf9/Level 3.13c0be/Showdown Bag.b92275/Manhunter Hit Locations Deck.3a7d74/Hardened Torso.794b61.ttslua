@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You gain a (+1) Strength Token", effect = "~ or ~"}})
+    Global.call('addBroadcast', {"crit", {gear = "You may spend 4 Survival to gain (+1) Permanent Strength", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "If you are adjacent ~ you may spend \u{02606} Survival", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "If you do not, suffer a Severe Body Injury with a (+2) to the Result", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

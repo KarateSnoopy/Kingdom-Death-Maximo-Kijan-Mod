@@ -1,0 +1,34 @@
+
+function criticalWoundEffect()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Archive this card and gain (+1) Survival", effect = "Instead of Wounding the Monster"}})
+    Global.call('addBroadcast', {"wound", {gear = "If you attacked with a Pickaxe", effect = "Gain an additional (+3) Survival"}})
+    Global.call('addBroadcast', {"wound", {gear = "", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	local drawHitLocationTool = getObjectFromGUID('10e61e')
+	local Table = drawHitLocationTool.getTable('hitLocation')
+	for k, v in ipairs(Table) do
+		obj = getObjectFromGUID(v)
+		if obj.getName() == "Century Carapace" then
+		    getStatToken()
+		end
+	end
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('a4decc')
+    local cleanUpList = Global.getTable('cleanUpHitLocation')
+    table.insert(cleanUpList, object.clone({position = {6.79, 6, 0.02}}))
+        broadcastToAll("(+6) Toughness to Wound this location Calculated.", {1,1,1})
+	Global.setTable('cleanUpHitLocation', cleanUpList)
+end

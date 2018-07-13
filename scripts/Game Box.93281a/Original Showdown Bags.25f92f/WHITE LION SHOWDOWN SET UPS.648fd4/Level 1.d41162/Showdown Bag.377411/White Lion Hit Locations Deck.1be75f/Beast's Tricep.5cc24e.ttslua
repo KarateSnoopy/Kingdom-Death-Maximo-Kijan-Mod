@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+  for _, mood in ipairs(zone.getObjects()) do
+    if string.find(mood.getDescription(), "mood") then
+      Global.call('addBroadcast', {"crit", {gear = "Discard 1 Mood in Play ~ The White Lion is knocked down!", effect = ""}})
+      return
+    end
+    if not string.find(mood.getDescription(), "mood") then
+      Global.call('addBroadcast', {"crit", {gear = "There are no Moods in play ~ The White Lion is knocked down!", effect = ""}})
+    end
+  end
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+  Global.call('addBroadcast', {"failure", {gear = "Perform Basic Action ~ Targeting Attacker", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

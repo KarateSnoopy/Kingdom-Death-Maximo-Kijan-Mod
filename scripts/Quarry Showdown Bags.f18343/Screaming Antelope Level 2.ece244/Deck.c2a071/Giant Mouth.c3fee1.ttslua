@@ -1,0 +1,55 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Vomit Blood ~ Keep in Play", effect = ""}})
+	self.setPosition({4.18, 4.34, -17.97})
+	getMonsterResource(deck, name, params)
+end
+
+function getVars()
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Screaming Antelope Resource", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	for _, gear in ipairs(zone.getObjects()) do
+		if (string.find(gear.getDescription(), "melee") and gear.getGUID() == weaponGUID) then
+			Global.call('addBroadcast', {"reflex", {gear = "You are attacking with a Melee Weapon", effect = ""}})
+			Global.call('addBroadcast', {"reflex", {gear = "If you rolled a 1 or 2 ~ Archive it", effect = ""}})
+		else
+			Global.call('addBroadcast', {"reflex", {gear = "If you are attacking with Fist & Tooth ~ Suffer Dislocated Shoulder", effect = ""}})
+			break
+		end
+	end
+end
+
+function addStatModifier()
+end

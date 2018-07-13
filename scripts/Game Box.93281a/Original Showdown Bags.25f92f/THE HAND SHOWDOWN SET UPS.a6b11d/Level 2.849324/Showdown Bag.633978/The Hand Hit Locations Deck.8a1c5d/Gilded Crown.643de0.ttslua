@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "You may Spend 3 Survival to impress The Hand", effect = ""}})
+  Global.call('addBroadcast', {"crit", {gear = "If you do ~ You are Knocked Down ~ Heal 'Broken' Injuries and gain (+1) Permanent Speed", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered ~ Perform Ghost Step >>>", {1,1,1})
+end
+
+function addStatModifier()
+end

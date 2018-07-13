@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("You gain (+1) Insanity", {1,1,1})
+end

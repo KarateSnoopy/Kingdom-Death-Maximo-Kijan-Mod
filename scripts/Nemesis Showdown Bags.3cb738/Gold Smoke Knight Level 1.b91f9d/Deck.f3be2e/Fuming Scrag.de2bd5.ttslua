@@ -1,0 +1,80 @@
+function criticalWoundEffect()
+	gaining_the_priority_target_token()
+  Global.call('addBroadcast', {"crit", {gear = "You gained the Priority Target Token", effect = ""}})
+end
+
+function gaining_the_priority_target_token()
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	hasPriority = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			else
+				local obj = getObjectFromGUID('3bc58d')
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone(objPos)
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			end
+		end
+	end
+end
+
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	PlayerName = grid.getVar("PlayerName")
+end
+
+function get_understanding_value(understanding)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	understanding = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 14)
+		if prefix == "understanding_" then
+			if v.label ~= '' then
+				understanding = understanding + 1
+			end
+		end
+	end
+	return understanding
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+	getVars()
+	local understanding = get_understanding_value(understanding)
+	if understanding < 6 then
+		Global.call('addBroadcast', {"reflex", {gear = "Your Understanding is less than 6", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "Roll 1d10 ~ On a 3+ ~ Suffer the New Perspective Brain Trauma", effect = ""}})
+	elseif understanding >= 6 then
+		Global.call('addBroadcast', {"reflex", {gear = "You have 6+ Understanding", effect = ""}})
+	end
+end
+
+function addStatModifier()
+end

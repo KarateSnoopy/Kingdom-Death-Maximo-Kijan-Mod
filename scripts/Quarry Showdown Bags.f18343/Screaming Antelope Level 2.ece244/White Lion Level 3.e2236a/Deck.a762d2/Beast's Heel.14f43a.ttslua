@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Ruptured Tendon ~ Keep in Play", effect = ""}})
+Global.call('addBroadcast', {"crit", {gear = "The White Lion is knocked down!", effect = ""}})
+self.setPositionSmooth({-2.11, 4.34, -14.15}, false, false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

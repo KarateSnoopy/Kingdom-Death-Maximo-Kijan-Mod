@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "You gain the Priority Target ~ Gain a (+1) Luck Token", effect = ""}})
+     Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Bruised Ego ~ Keep in Play", effect = ""}})
+     Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

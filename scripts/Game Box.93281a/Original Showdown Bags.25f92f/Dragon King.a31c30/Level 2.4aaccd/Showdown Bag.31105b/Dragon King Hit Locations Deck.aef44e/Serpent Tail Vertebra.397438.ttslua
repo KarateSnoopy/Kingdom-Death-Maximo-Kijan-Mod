@@ -1,0 +1,11 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Cancel Reactions until the end of your attack", effect = "If you are attacking from the Blind Spot", effect2 = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "All Survivors within 2 spaces of the monster suffer [b]Knockback 5[/b]", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+
+end

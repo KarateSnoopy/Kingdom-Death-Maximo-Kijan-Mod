@@ -1,0 +1,47 @@
+
+function criticalWoundEffect()
+    getStatToken()
+     Global.call('addBroadcast', {"crit", {gear = "You gain the Mammoth Hunting Fighting Art", effect = ""}})
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('eb87ec')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local dmgStat = Global.getTable('dmgStat')
+        		table.insert(dmgStat, object.clone({
+				position = {-13.19, 4.42, 0.51 + #dmgStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The Gorm is enraged and gained a (+1) Damage Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('dmgStat', dmgStat)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("Are you attacking from the Gorm's Flank?", {1,1,1})
+    createButton()
+end
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getWeaponModifier', function_owner = self,
+label = 'Attack from Flank', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getWeaponModifier()
+    	local object = getObjectFromGUID('693899')
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, object.clone({position = {6.79, 4.32, 0.02}}))
+            broadcastToAll("(+2) Strength to Wound this location Calculated.", {1,1,1})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+    end

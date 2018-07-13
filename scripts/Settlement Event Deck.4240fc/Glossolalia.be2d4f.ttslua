@@ -1,0 +1,33 @@
+function onLoad()
+
+    self.createButton{index = 0, click_function = 'getCard1', function_owner = self,
+    label = '+', position = {x = -0.341, y = 0.3, z = 0.9}, rotation = {x = 0, y = 0, z = 0},
+    scale = {x = 0.5, y = 1, z = 0.5}, width = 110, height = 80, font_size = 100,
+    color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+
+    function getCard1(deck, name, params)
+            print("[b]---Items In Zone---[/b]")
+            zonesTable = Global.getTable('zones')
+            local zone = getObjectFromGUID(zonesTable.deckFightingArts.guid)
+            local objectsInZone = zone.getObjects()
+                for _, object in ipairs(objectsInZone) do
+                    local name = object.getName()
+                    if name == "Fighting Art Deck" then
+                        deck = object
+                        break
+                    end
+                end
+                    local cardsInDeck = deck.getObjects()
+                    for i, card in ipairs(cardsInDeck) do
+                        if card.nickname == "Crazed" then
+                            deck.takeObject({
+                                guid = card.guid,
+                                position={-50.58, 4.54, 28.90},
+                                callback="flipCard",
+                                callback_owner=Global,})
+                break
+            end
+        end
+    end
+
+end

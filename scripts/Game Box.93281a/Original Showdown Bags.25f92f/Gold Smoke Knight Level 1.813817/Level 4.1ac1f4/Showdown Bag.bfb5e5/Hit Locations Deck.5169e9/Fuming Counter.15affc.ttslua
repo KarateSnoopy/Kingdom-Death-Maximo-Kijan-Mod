@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll('____________________  !!! First Strike !!!  ____________________', {1,1,1})
+    startLuaCoroutine(self, 'broadcastDelay1')
+    startLuaCoroutine(self, 'broadcastDelay2')
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll("If you surged to make this attack ~ Your rush kicks up a burning cloud of embers", {1,1,1})
+    return 1
+end
+
+function broadcastDelay2()
+    wait(4)
+    broadcastToAll("Untouched the Monster Strikes back performing its Basic Action targeting you", {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end

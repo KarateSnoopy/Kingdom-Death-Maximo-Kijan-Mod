@@ -1,0 +1,30 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    broadcastToAll("Replace the Egg Sac closest to Spidicules with a Spiderling", {1,1,1})
+    startLuaCoroutine(self, "broadcastDelay1")
+end
+
+function broadcastDelay1()
+    wait(2)
+    broadcastToAll('\u{2658} Full Move Spidicules away from all threats \u{2658}', {1,1,1})
+    return 1
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat
+		coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

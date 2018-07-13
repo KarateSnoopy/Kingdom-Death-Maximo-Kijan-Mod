@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "You may spend \u{02606} to gain (+1) Permanent Accuracy", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

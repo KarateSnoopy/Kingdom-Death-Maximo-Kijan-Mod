@@ -1,0 +1,96 @@
+function onLoad()
+	self.createButton({click_function = "spawn_spiderling", function_owner = self, label = "", position = {0, 1.1, 0}, rotation = {-45, 0, 0}, scale = {0.5, 0.5, 0.5}, width = 800, height = 800, font_size = 800, color = {0, 0, 0, 0}, font_color = {1, 0.8475, 0, 100}, tooltip = "Click to Spawn a Spiderling"})
+end
+
+function onDrop()
+	local pos = self.getPosition()
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local bag_egg_sac_miasma = getObjectFromGUID('a93d3b')
+		egg_sac_miasma = bag_egg_sac_miasma.takeObject({
+			position 		= {pos.x, pos.y + 1.22, pos.z},
+			smooth 			= false,
+			callback_owner = Global,
+			callback 		= "lockShadowToken"
+		})
+		egg_sac_miasma.AssetBundle.playLoopingEffect(2)
+	end
+end
+
+function onPickUp()
+	destroy_miasma()
+end
+
+function onDestroy()
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		-- Explosion Effect
+		local pos = self.getPosition()
+		local bag_egg_sac_effect = getObjectFromGUID('dff02a')
+		egg_sac_effect = bag_egg_sac_effect.takeObject({
+			position 		= {pos.x, pos.y + 1.22, pos.z},
+			smooth 			= false,
+			callback_owner = Global,
+			callback 		= "lockShadowToken"
+		})
+		egg_sac_effect.AssetBundle.playLoopingEffect(2)
+		startLuaCoroutine(self, "destroy_egg_sac_effect")
+	end
+end
+
+function spawn_spiderling()
+	local gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	local pos = gameBox.getPosition()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Spiderling" then
+			spiderling = gameBox.takeObject({
+				guid 		= obj.guid,
+				position = {pos.x, pos.y + 10, pos.z},
+				smooth 	= false,
+				rotation = {0, 180, 0}
+			})
+		end
+	end
+	local pos_to_spawn = self.getPosition()
+
+	-- Get Spiderling
+	local pos_to_clone = spiderling.getPosition()
+	local clone = spiderling.clone(pos_to_clone)
+	clone.setPosition({pos_to_spawn.x, pos_to_spawn.y + 0.5, pos_to_spawn.z})
+	gameBox.putObject(spiderling)
+
+	destroy_miasma()
+	self.destruct()
+end
+
+-- Delay on destroy for trigger effect to play
+function destroy_egg_sac_effect()
+	wait(1)
+	egg_sac_effect.destroy()
+	return 1
+end
+
+function destroy_miasma()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {5,5,5},
+		max_distance 	= 0,
+		debug 			= false
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Egg Sac Miasma" then
+			entry.hit_object.destroy()
+		end
+	end
+end
+
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end

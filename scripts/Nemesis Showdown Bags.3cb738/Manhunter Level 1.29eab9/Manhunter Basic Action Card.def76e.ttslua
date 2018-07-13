@@ -1,0 +1,54 @@
+function onLoad()
+	createButtons()
+end
+
+function createButtons()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position			= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 2000,
+		height 			= 400,
+		font_size 		= 300,
+		color 			= {0,0,0,0},
+		font_color 		= {1,1,1,100}
+	}
+
+	btn_params.position = {0, 0.1, -2.15}
+	btn_params.label = "Impatience"
+	btn_params.click_function = "impatience"
+	self.createButton(btn_params)
+end
+
+function impatience()
+	Global.call("returnIsDeaf")
+	local isDeafRed = Global.getVar("isDeafRed")
+	local isDeafYellow = Global.getVar("isDeafYellow")
+	local isDeafGreen = Global.getVar("isDeafGreen")
+	local isDeafBlue = Global.getVar("isDeafBlue")
+
+	local grid_red = getObjectFromGUID(Global.getTable('grids').red.guid)
+	local grid_yellow = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+	local grid_green = getObjectFromGUID(Global.getTable('grids').green.guid)
+	local grid_blue = getObjectFromGUID(Global.getTable('grids').blue.guid)
+
+	local msg_red = grid_red.getTable("msg_color")
+	local msg_yellow = grid_yellow.getTable("msg_color")
+	local msg_green = grid_green.getTable("msg_color")
+	local msg_blue = grid_blue.getTable("msg_color")
+
+	if isDeafRed then
+		broadcastToAll("Player One is Deaf", msg_red)
+	end
+	if isDeafYellow then
+		broadcastToAll("Player Two is Deaf", msg_yellow)
+	end
+	if isDeafGreen then
+		broadcastToAll("Player Three is Deaf", msg_green)
+	end
+	if isDeafBlue then
+		broadcastToAll("Player Four is Deaf", msg_blue)
+	end
+end

@@ -1,0 +1,60 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Place the Mangled Groin Hit Location on top of the deck", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function woundEffect()
+	getVars()
+	getMonsterResource()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, surv in ipairs(zone.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			-- Priority Target Token
+			local obj = getObjectFromGUID('3bc58d')
+			local objPos = obj.getPosition()
+			local priority_target = obj.clone(objPos)
+			surv.translate({0,1,0})
+			priority_target.setPosition(pos)
+		end
+	end
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You gained the Priority Target Token", effect = ""}})
+
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	PlayerName = grid.getVar("PlayerName")
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Red Vial", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Red Vial", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Red Vials", effect = ""}})
+	end
+end

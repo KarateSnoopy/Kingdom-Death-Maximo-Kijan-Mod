@@ -1,0 +1,13 @@
+isKdmEffectsObject = true
+effects = {
+    evasion = 1
+}
+
+function getEffects()
+        effects.evasion = -1
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.evasion = effects.evasion * qty
+	end
+    return effects
+end

@@ -1,0 +1,15 @@
+isKdmEffectsObject = true
+effects = {
+    luck = 1
+}
+
+function getEffects()
+
+        effects.luck = -1
+
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.luck = effects.luck * qty
+	end
+    return effects
+end

@@ -1,0 +1,33 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You hear a bone crack ~ cancel Reactions until the end of the attack", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+    broadcastToAll("Are you attacking with a Whip?", {1,1,1})
+    createButton()
+end
+
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getWeaponModifier', function_owner = self,
+label = 'Attack with a Whip', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getWeaponModifier()
+    	local object = getObjectFromGUID('87ed9c')
+        local cleanUpList = Global.getTable('cleanUpHitLocation')
+        table.insert(cleanUpList, object.clone({position = {-5.39, 4.32, 0.24}}))
+            broadcastToAll("(+3) Strength to Wound this location Calculated.", {1,1,1})
+    	Global.setTable('cleanUpHitLocation', cleanUpList)
+    end

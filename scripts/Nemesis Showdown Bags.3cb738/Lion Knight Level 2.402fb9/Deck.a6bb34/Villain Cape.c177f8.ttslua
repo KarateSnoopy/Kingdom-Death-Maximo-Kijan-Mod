@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+	self.setPositionSmooth({-1.02, 4.23, -21.27})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Torn Cape ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Turn the Lion Knight opposite its current facing ♘", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "If the attacker is adjacent ~ Suffer Bash", effect = ""}})
+end
+
+
+
+function addStatModifier()
+end

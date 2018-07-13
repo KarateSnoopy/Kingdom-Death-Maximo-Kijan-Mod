@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "The next Wound attempt this attack automatically results in a Wound", effect = "Cancel all Reactions until the end of the attack"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Turn the Monster to face its Blind Spot", effect = "All adjacent Survivors suffer Bash"}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

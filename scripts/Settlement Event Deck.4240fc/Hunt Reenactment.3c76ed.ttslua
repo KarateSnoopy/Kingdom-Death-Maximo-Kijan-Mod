@@ -1,0 +1,66 @@
+function onLoad()
+
+    self.createButton{index = 2, click_function = 'getCard2', function_owner = self,
+    label = '+', position = {x = 0.024, y = 0.3, z = 0.322}, rotation = {x = 0, y = 0, z = 0},
+    scale = {x = 0.5, y = 1, z = 0.5}, width = 90, height = 70, font_size = 100,
+    color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+
+    self.createButton{index = 1, click_function = 'getCard1', function_owner = self,
+    label = '+', position = {x = -0.182, y = 0.3, z = -0.495}, rotation = {x = 0, y = 0, z = 0},
+    scale = {x = 0.5, y = 1, z = 0.5}, width = 90, height = 70, font_size = 100,
+    color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+
+    function getCard1(deck, name, params)
+            print("[b]---Items In Zone---[/b]")
+            zonesTable = Global.getTable('zones')
+            local zone = getObjectFromGUID(zonesTable.deckFightingArts.guid)
+            local objectsInZone = zone.getObjects()
+                for _, object in ipairs(objectsInZone) do
+                    local name = object.getName()
+                    if name == "Fighting Art Deck" then
+                        deck = object
+                        break
+                    end
+                end
+                    local cardsInDeck = deck.getObjects()
+                    for i, card in ipairs(cardsInDeck) do
+                        if card.nickname == "Monster Claw Style" then
+                            deck.takeObject({
+                                guid = card.guid,
+                                position={-50.58, 4.54, 28.90},
+                                callback="flipCard",
+                                callback_owner=Global,})
+                break
+            end
+        end
+    end
+
+    function getCard2(deck, name, params)
+    	    print("[b]---Items In Zone---[/b]")
+    		zonesTable = Global.getTable('zones')
+    		local zone = getObjectFromGUID(zonesTable.deckAbilities.guid)
+    	    local objectsInZone = zone.getObjects()
+    	        for _, object in ipairs(objectsInZone) do
+    	            local name = object.getName()
+    	            if name == "Ability Deck" then
+    					deck = object
+    					break
+    	            end
+    			end
+    		        local cardsInDeck = deck.getObjects()
+    		        for i, card in ipairs(cardsInDeck) do
+    		            if card.nickname == "Fated Battle" then
+    						deck.takeObject({
+    							guid = card.guid,
+    							position={-50.58, 4.54, 28.90},
+    							callback="flipCard",
+    							callback_owner=Global,})
+    			break
+    		end
+    	end
+    end
+
+
+
+
+end

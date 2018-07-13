@@ -1,0 +1,36 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Manually Draw an Extra Hit Location for this Attack", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	if role == "Villian" then
+		Global.call('addBroadcast', {"reflex", {gear = "You are the ♆ Villian ♆ ~ End your Act ~ End the Survivor's Turn", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "You are not the ♆ Villian ♆", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	grid.call("return_role")
+	role = grid.getVar("role")
+	color = grid.getVar("color")
+end
+
+function addStatModifier()
+end

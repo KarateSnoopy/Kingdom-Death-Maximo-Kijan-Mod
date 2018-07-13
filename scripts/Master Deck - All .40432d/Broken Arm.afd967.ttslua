@@ -1,0 +1,11 @@
+isKdmEffectsObject = true
+effects = {
+    strength = 1,
+    accuracy = 1
+}
+
+function getEffects()
+  effects.accuracy = -1
+  effects.strength = -1
+    return effects
+end

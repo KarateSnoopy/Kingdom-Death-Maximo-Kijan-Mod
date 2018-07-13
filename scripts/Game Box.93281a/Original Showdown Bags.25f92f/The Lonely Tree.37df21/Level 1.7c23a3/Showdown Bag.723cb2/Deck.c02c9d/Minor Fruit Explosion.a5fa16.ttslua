@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Hack Fever! ~ Gain a (+1) Speed Token", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

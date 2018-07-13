@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "If adjacent you may spend 5 Survival to gain (+1) Permanent Accuracy and Archive this Card", effect = ""}})
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+    Global.call('addBroadcast', {"failure", {gear = "All Survivors within 5 Spaces ~ Suffer 1 Damage and Knockback 3", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

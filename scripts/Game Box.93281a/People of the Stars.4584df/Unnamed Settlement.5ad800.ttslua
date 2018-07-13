@@ -1,0 +1,466 @@
+--KDM Settlement Sheet (Slate v3)
+--by Eskander and Curnil
+--Script adapted from soulburner's dnd sheets and Mr. Stumps Universal Counter Tokens
+--Additional modifications by Kijan
+
+toggleSymbol = '\u{25a0}'
+hideButtonBack = true
+
+-------------------------------------------------------------
+--Customizable Buttons EDIT BELOW
+-------------------------------------------------------------
+function initCustomButtons()
+	thick = 0.14
+
+	--header
+	dx = -2; dy = -11.8
+	createTextField('Unnamed Settlement', 'txtbig', dx, dy)
+
+	--timeline
+	dx = -8.32; dy = -9.58; py = 0.542;
+	setupButton('year_1', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_2', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_3', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_4', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_5', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_6', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_7', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_8', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_9', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_10', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_11', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_12', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_13', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_14', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_15', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_16', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_17', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_18', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_19', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_20', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_21', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_22', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_23', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_24', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_25', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_26', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_27', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_28', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_29', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_30', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_31', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_32', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_33', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_34', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_35', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_36', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_37', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_38', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_39', "toggleA", dx, dy); dy = dy + py;
+	setupButton('year_40', "toggleA", dx, dy)
+
+	dx = -3; dy = -9.48; py = 0.542; mx = -1
+	createTextField('year_1_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_2_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_3_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_4_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_5_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_6_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_7_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_8_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_9_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_10_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_11_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_12_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_13_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_14_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_15_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_16_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_17_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_18_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_19_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_20_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_21_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_22_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_23_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_24_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_25_txt', 'txttimeline2', mx, dy); dy = dy + py;
+	createTextField('year_26_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_27_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_28_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_29_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_30_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_31_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_32_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_33_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_34_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_35_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_36_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_37_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_38_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_39_txt', 'txttimeline', dx, dy); dy = dy + py;
+	createTextField('year_40_txt', 'txttimeline', dx, dy)
+
+	--stats
+	dx = 4.04; dy = -9.58; px = 3.1;
+	setupButton('survival_limit', 'counter', dx, dy); dx = dx + px;
+	setupButton('population', 'counter', dx, dy)
+
+	dx = 2.68; dy = -8.1; px = 0.31; py = 0.31; rx = dx
+	setupButton('death_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_3', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_4', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_5', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_6', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_7', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_8', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_9', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_10', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_11', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_12', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_13', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_14', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_15', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_16', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_17', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_18', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_19', "toggleA", dx, dy); dx = rx; dy = dy + py
+	setupButton('death_20', "toggleA", dx, dy); dx = dx + px
+	setupButton('death_21', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_22', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_23', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_24', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_25', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_26', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_27', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_28', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_29', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_30', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_31', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_32', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_33', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_34', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_35', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_36', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_37', "toggleA", dx, dy); dx = dx + px;
+	setupButton('death_38', "toggleA", dx, dy); dx = dx + px;
+
+	dx = 2.68; dy = -6.71; px = 0.31; py = 0.31; rx = dx
+	setupButton('lost_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_3', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_4', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_5', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_6', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_7', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_8', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_9', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_10', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_11', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_12', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_13', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_14', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_15', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_16', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_17', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_18', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_19', "toggleA", dx, dy); dx = dx + px;
+	setupButton('lost_20', "toggleA", dx, dy); dx = dx + px;
+
+	--milestone
+	dx = 2.82; dy = -4.56; py = 0.576;
+	setupButton('milestone_1', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_2', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_3', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_4', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_5', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_6', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_7', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_8', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_9', "toggleA", dx, dy); dy = dy + py;
+	setupButton('milestone_10', "toggleA", dx, dy); dy = dy + py;
+
+	dx = 5.75; dy = -2.096; py = 0.576;
+	createTextField('milestone_txt1', 'txtmile', dx, dy); dy = dy + py;
+	createTextField('milestone_txt2', 'txtmile', dx, dy); dy = dy + py;
+	createTextField('milestone_txt3', 'txtmile', dx, dy); dy = dy + py;
+	createTextField('milestone_txt4', 'txtmile', dx, dy); dy = dy + py;
+	createTextField('milestone_txt5', 'txtmile', dx, dy); dy = dy + py;
+
+	--quarry
+	dx = 5.5; dy = 2.6; py = 0.542;
+	createTextField('quarry_1', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_2', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_3', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_4', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_5', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_6', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_7', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_8', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_9', 'txtquarry', dx, dy); dy = dy + py;
+	createTextField('quarry_10', 'txtquarry', dx, dy); dy = dy + py;
+
+	--nemesis
+	dx = 5.105; dy = 9.48; py = 0.542;
+	createTextField('nemesis_1', 'txtnem', dx, dy); dy = dy + py;
+	createTextField('nemesis_2', 'txtnem', dx, dy); dy = dy + py;
+	createTextField('nemesis_3', 'txtnem', dx, dy); dy = dy + py;
+	createTextField('nemesis_4', 'txtnem', dx, dy); dy = dy + py;
+	createTextField('nemesis_5', 'txtnem', dx, dy); dy = dy + py;
+
+	dx = 7.38; dy = 9.38; px = 0.51; rx = dx
+	setupButton('nemesis_1_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_1_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_1_3', "toggleA", dx, dy); dx = rx; dy = dy + py;
+	setupButton('nemesis_2_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_2_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_2_3', "toggleA", dx, dy); dx = rx; dy = dy + py;
+	setupButton('nemesis_3_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_3_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_3_3', "toggleA", dx, dy); dx = rx; dy = dy + py;
+	setupButton('nemesis_4_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_4_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_4_3', "toggleA", dx, dy); dx = rx; dy = dy + py;
+	setupButton('nemesis_5_1', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_5_2', "toggleA", dx, dy); dx = dx + px;
+	setupButton('nemesis_5_3', "toggleA", dx, dy); dx = rx; dy = dy + py;
+
+
+end
+
+----------------------------------------------------
+--DO NO EDIT BELOW unless you know what you're doing
+--SAVE
+function initButtonsTable()
+	buttons = {}
+	inputs = {}
+	token = {}
+	buttons.count = 0
+	scaleButtons = {1, 1, 1}
+
+	buttons.counter = {
+		width = 0, height = 0, font = 500,
+		ox = 0.4, oz = -0.5, ow = 200, oh = 200
+	}
+	buttons.counters = {
+		width = 0, height = 0, font = 500,
+		ox = 0.28, oz = 0.76, ow = 300, oh = 300
+	}
+	buttons.toggleA = {
+		width = 100, height = 100, font = 200, toggleSymbol = '\u{25a0}'
+	}
+	buttons.toggleB = {
+		width = 200, height = 200, font = 250, toggleSymbol = '\u{25a0}'
+	}
+	buttons.toggleC = {
+		width = 200, height = 200, font = 250, toggleSymbol = '\u{25cf}'
+	}
+	buttons.txtbig = {
+		width = 5000, height = 500, font = 400, alignment = 3
+	}
+	buttons.txtnem = {
+		width = 2000, height = 250, font = 200, alignment = 3
+	}
+	buttons.txttimeline2 = {
+		width = 3000, height = 250, font = 150, alignment = 3
+	}
+	buttons.txttimeline = {
+		width = 5000, height = 250, font = 150, alignment = 3
+	}
+	buttons.txtmile = {
+		width = 2700, height = 250, font = 200, alignment = 3
+	}
+	buttons.txtquarry = {
+		width = 3000, height = 250, font = 200, alignment = 3
+	}
+end
+
+----------------------------------------------------
+--DO NO EDIT BELOW unless you know what you're doing
+--SAVE
+----------------------------------------------------
+
+function forceSave()
+	local data_to_save = {buttons = {}, inputs = {}}
+	for i, v in pairs(buttons) do
+		if i ~= "count" then
+			data_to_save.buttons[i] = v.value
+		end
+	end
+	local inputs = self.getInputs()
+	for _, v in pairs(inputs) do
+		data_to_save.inputs[v.input_function] = v.value
+	end
+	saved_data = JSON.encode_pretty(data_to_save)
+	if Global.getVar("clearSavedData") then
+		saved_data = ""
+	end
+	self.script_state = saved_data
+	return saved_data
+end
+
+function onDropped(player_color)
+	forceSave()
+end
+
+function onload(saved_data)
+	initButtonsTable()
+
+	if not Global.getVar("bypassSavedLoad") then
+		loaded_data = JSON.decode(saved_data)
+		if loaded_data ~= nil then
+			if loaded_data.buttons ~= nil then
+				for i, v in pairs(loaded_data.buttons) do
+					buttons[i] = {value = v}
+				end
+			end
+			if loaded_data.inputs ~= nil then
+				for i, v in pairs(loaded_data.inputs) do
+					inputs[i] = v
+				end
+			end
+		end
+	end
+
+	initCustomButtons()
+end
+
+
+function dud()
+end
+
+function clickedToggle(index, symbol)
+	if buttons[index].value == 0 then
+		buttons[index].label = symbol
+		buttons[index].value = 1
+	else
+		buttons[index].label = ""
+		buttons[index].value = 0
+	end
+	self.editButton(buttons[index])
+	forceSave()
+end
+
+function createTextField(name, type, x, z)
+	local input_parameters = {}
+	input_parameters.height = buttons[type].height
+	input_parameters.width = buttons[type].width
+	input_parameters.font_size = buttons[type].font
+	input_parameters.alignment = buttons[type].alignment
+
+	if name == 'Unnamed Settlement' then
+		self.setVar(name, function (obj, color, txt, writing) if writing == false then self.setName(txt) end end)
+		input_parameters.label = name
+	else
+		input_parameters.label = ""
+		self.setVar(name, function () end)
+	end
+	input_parameters.input_function = name
+	input_parameters.function_owner = self
+	input_parameters.scale = scaleButtons
+	input_parameters.position = {x, thick, z}
+	if hideButtonBack then
+		input_parameters.color = {1, 1, 1, 0}
+		input_parameters.font_color = {0, 0, 0, 100}
+	end
+
+	if inputs[name] ~= nil then
+		input_parameters.value = inputs[name]
+	end
+	-- input_parameters.tooltip = string tooltip \u{2013}Optional
+	-- input_parameters.value = string input_value \u{2013}Optional
+	-- input_parameters.validation = int (1 = None, 2 = Integer, 3 = Float, 4 = Alphanumeric, 5 = Username, 6 = Name) \u{2013}Optional
+	self.createInput(input_parameters)
+end
+
+-- function setName(obj, color, txt, writing) if writing == false then self.setName(txt) end
+-- end
+
+function setupButton(name, type, x, z)
+	local button_parameters = {}
+	button_parameters.index = buttons.count
+	button_parameters.height = buttons[type].height
+	button_parameters.width = buttons[type].width
+	button_parameters.font_size = buttons[type].font
+
+	if buttons[name] ~= nil then
+		button_parameters.value = buttons[name].value
+	else
+		button_parameters.value = 0
+	end
+
+	if type == "counter" or type == "counters" then
+		button_parameters.click_function = "dud"
+		button_parameters.label = button_parameters.value
+		createpm(name, type, x, z)
+		button_parameters.index = buttons.count
+	elseif type == "toggleA" or type == "toggleB" or type == "toggleC" then
+		self.setVar("toggleClick_" .. name, function () clickedToggle(name, buttons[type].toggleSymbol) end)
+		button_parameters.click_function = "toggleClick_" .. name
+		if button_parameters.value == 0 then
+			button_parameters.label = ""
+		else
+			button_parameters.label = buttons[type].toggleSymbol
+		end
+
+	else
+		button_parameters.click_function = "dud"
+		button_parameters.label = button_parameters.value
+	end
+
+	if hideButtonBack then
+		button_parameters.color = {1, 1, 1, 0}
+		button_parameters.font_color = {0, 0, 0, 100}
+	end
+	button_parameters.scale = scaleButtons
+	button_parameters.position = {x, thick, z}
+	button_parameters.function_owner = self
+
+	self.createButton(button_parameters)
+	buttons[name] = button_parameters
+	buttons.count = buttons.count + 1
+end
+
+function createpm(name, type, x, z)
+	local button_parameters = {}
+	button_parameters.index = buttons.count
+	button_parameters.height = buttons[type].oh
+	button_parameters.width = buttons[type].ow
+	button_parameters.font_size = buttons[type].font * 0.7
+	self.setVar("add_" .. name, function () add({name, 1}) end)
+	button_parameters.click_function = "add_" .. name
+	button_parameters.label = "+"
+	button_parameters.function_owner = self
+	button_parameters.scale = scaleButtons
+	if hideButtonBack then
+		button_parameters.color = {1, 1, 1, 0}
+		button_parameters.font_color = {0, 0, 0, 100}
+	end
+
+	button_parameters.position = {x + buttons[type].ox, thick, z + buttons[type].oz}
+	self.createButton(button_parameters)
+	buttons["p_" .. name] = button_parameters
+	buttons.count = buttons.count + 1
+
+	button_parameters.index = buttons.count
+	self.setVar("sub_" .. name, function () add({name, - 1}) end)
+	button_parameters.click_function = "sub_" .. name
+	button_parameters.label = "-"
+	button_parameters.position = {x - buttons[type].ox, thick, z + buttons[type].oz}
+	self.createButton(button_parameters)
+	buttons["m_" .. name] = button_parameters
+	buttons.count = buttons.count + 1
+end
+
+function add(params)
+	local name = params[1]
+	local amount = params[2]
+	buttons[name].label = buttons[name].label + amount
+	if tonumber(buttons[name].label) < 0 then
+		buttons[name].label = 0
+	end
+	buttons[name].value = buttons[name].label
+	self.editButton(buttons[name])
+	forceSave()
+end

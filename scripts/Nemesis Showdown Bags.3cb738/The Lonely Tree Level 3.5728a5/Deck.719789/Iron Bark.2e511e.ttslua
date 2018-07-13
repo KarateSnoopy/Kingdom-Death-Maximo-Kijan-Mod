@@ -1,0 +1,45 @@
+function criticalWoundEffect()
+	getVars()
+	if not isDeaf then
+		local stats = {color = color, stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('temp', stats)
+		startLuaCoroutine(Global, "spwn_tok")
+		Global.call('addBroadcast', {"crit", {gear = "You gained a (+1) Strength Token", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are Deaf", effect = ""}})
+	end
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	color = grid.getVar('color')
+	zone = grid.getVar("zonePlayer")
+	isDeaf = false
+	for _, obj in ipairs(zone.getObjects()) do
+		local rotZ = obj.getRotation().z
+		if obj.getName() == "isDeaf" and rotZ > 165 and rotZ < 195 then
+			isDeaf = true
+		end
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

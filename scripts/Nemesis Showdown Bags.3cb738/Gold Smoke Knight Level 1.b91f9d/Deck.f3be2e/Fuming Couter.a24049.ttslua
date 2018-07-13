@@ -1,0 +1,60 @@
+function criticalWoundEffect()
+	getVars()
+	local stats = {color = color, stat = "str", modifier = "neg", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	Global.call('addBroadcast', {"crit", {gear = "You gained a (-1) Strength Token", effect = ""}})
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	color = grid.getVar("color")
+
+end
+
+function addStatModifier()
+end
+
+function addStat()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfattack"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	for i=1, 2 do
+		obj.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0) until os.time() > start + time
+	end
+
+function woundEffect()
+	addStat()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Gold Smoke Knight gained (-2) Toughness until the end of your attack", effect = ""}})
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

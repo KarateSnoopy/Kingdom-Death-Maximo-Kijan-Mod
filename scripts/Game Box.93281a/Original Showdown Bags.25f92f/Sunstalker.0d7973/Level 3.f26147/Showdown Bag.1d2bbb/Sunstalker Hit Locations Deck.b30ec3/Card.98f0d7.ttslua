@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+
+end
+
+function addStatModifier()
+
+end
+
+function reflexEffect()
+end
+
+function failureEffect()
+
+end

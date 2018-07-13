@@ -1,0 +1,100 @@
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+	addStatToken()
+	Global.call('addBroadcast', {"crit", {gear = "The Dragon King gained (-1) Toughness Tokens until it has (-4)", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound", {gear = "Resolve the Wound Effect on this Hit Location", effect = ""}})
+end
+
+function addStatToken()
+	local object = getObjectFromGUID('9dff6c')
+	local desc = object.getDescription()
+		object.setDescription('end of showdown')
+		object.setScale({0.43, 1.00, 0.43})
+	local tbl = Global.getTable('tghStat')
+	local count = 0
+		for k,v in pairs(tbl) do
+  		count = count + 1
+		if #tbl == 0 then
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			Global.setTable('tghStat', tghStat)
+		elseif #tbl == 1 then
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			Global.setTable('tghStat', tghStat)
+		elseif #tbl == 2 then
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			Global.setTable('tghStat', tghStat)
+		elseif #tbl == 3 then
+			table.insert(tghStat, object.clone({
+			position = {-12.06, 4.42, 0.51 + #tghStat * -1}}))
+			Global.setTable('tghStat', tghStat)
+		end
+		object.setScale({0.32, 1.00, 0.32})
+	end
+end
+
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Dragon King Resources Deck" then
+					deck = object
+					break
+	                print("Dragon King Resources Deck Found")
+	            else
+	                print("Dragon King Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Kings Claws" then
+					    print("Kings Claws found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						Global.call('addBroadcast', {"crit", {gear = "You gained 1 Kings Claws", effect = ""}})
+						break
+				end
+		            if i == #cardsInDeck then
+						Global.call('addBroadcast', {"crit", {gear = "There are no Kings Claws left", effect = ""}})
+		            end
+				end
+		    print("[b]----------------------[/b]")
+		end
+	end
+end

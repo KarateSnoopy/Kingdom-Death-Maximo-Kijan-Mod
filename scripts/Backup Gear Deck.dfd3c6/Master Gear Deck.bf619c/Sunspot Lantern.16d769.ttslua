@@ -1,0 +1,18 @@
+isKdmEffectsObject = true
+effects = {
+    accuracy = 1
+}
+
+function getEffects()
+    rot = self.getRotation()
+    if rot[3] > 345 or rot[3] < 15 then
+        effects.accuracy = 1
+    else
+        effects.accuracy = 1
+    end
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.accuracy = effects.accuracy * qty
+	end
+    return effects
+end

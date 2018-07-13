@@ -1,0 +1,11 @@
+isKdmEffectsObject = true
+effects = {
+	toughness = 1
+}
+
+function getEffects()
+
+	effects.toughness = -1
+
+	return effects
+end

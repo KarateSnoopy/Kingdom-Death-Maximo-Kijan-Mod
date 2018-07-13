@@ -1,0 +1,41 @@
+
+function criticalWoundEffect()
+    getStatToken()
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('9ac8a3')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    object.setScale({0.43, 1.00, 0.43})
+	local accStat = Global.getTable('accStat')
+        table.insert(accStat, object.clone({
+		position = {-14.31, 4.42, 0.51 + #accStat * -1}}))
+        Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Accuracy Tokens ", effect = ""}})
+    object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('accStat', accStat)
+end
+
+function woundEffect()
+end
+
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The White Lion full Moves Forward", effect = ""}})
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, injury in ipairs(zone.getObjects()) do
+		if injury.getName() == "Beast's Paw" then
+				Global.call('addBroadcast', {"failure", {gear = "Persistent Injury in Play ~ Ignore the Effects of Grab", effect = ""}})
+			return
+		end
+		if not injury.getName() == "Beast's Paw" then
+			Global.call('addBroadcast', {"failure", {gear = "Survivors passed over suffer grab", effect = ""}})
+		end
+	end
+end
+
+function addStatModifier()
+end
+
+function reflexEffect()
+end

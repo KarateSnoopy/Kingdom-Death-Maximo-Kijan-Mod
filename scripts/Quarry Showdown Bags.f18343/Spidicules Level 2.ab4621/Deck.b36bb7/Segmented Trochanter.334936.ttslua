@@ -1,0 +1,47 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Spidicules lifts its body high into the air", effect = ""}})
+	getVars()
+	for _, gear in ipairs(zone.getObjects()) do
+	  if string.find(gear.getDescription(), "spear") and gear.getGUID() == weaponGUID then
+		  Global.call('addBroadcast', {"wound_reaction", {gear = "You are not Attacking with a Spear ~  End your Attack", effect = ""}})
+	  end
+	end
+	Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Perform Spawn ~ Move all Spiderlings towards you ♘", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Spidicules lifts its body high into the air", effect = ""}})
+	getVars()
+	for _, gear in ipairs(zone.getObjects()) do
+	  if string.find(gear.getDescription(), "spear") and gear.getGUID() == weaponGUID then
+		  Global.call('addBroadcast', {"wound_reaction", {gear = "You are not Attacking with a Spear ~  End your Attack", effect = ""}})
+	  end
+	end
+	Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Perform Spawn ~ Move all Spiderlings towards you ♘", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+end

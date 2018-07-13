@@ -1,0 +1,91 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	get_courage_value(courage)
+
+	Global.call('addBroadcast', {"crit", {gear = "You have " .. courage .. " Courage", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Roll 1d10 ~ If the Result is equal to or less than " .. courage, effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Cancel all Reactions until the end of your attack", effect = ""}})
+
+	self.createButton({click_function = "cancelReactions", function_owner = self, label = "Cancel Reactions > Yes",
+	position = {0, 0.2, 1.2}, scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 200})
+end
+
+function cancelReactions()
+	local hitToolR = getObjectFromGUID('10e61e')
+	hitToolR.call('reactionsCancelled')
+	hitToolR.call("removeButton_ReactionTriggered")
+	hitToolR.call("removeButton_FinishReaction")
+	hitToolR.call("removeButton_survival_opportunity")
+	local hitToolL = getObjectFromGUID('309402')
+	hitToolL.call('reactionsCancelled')
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	msg_color = grid.getTable("msg_color")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+function getMonsterResource()
+
+	local tbl = {cardName = "Fertility Tentacle", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Fertility Tentacle", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Fertility Tentacles", effect = ""}})
+	end
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+
+end
+
+function addStatModifier()
+
+end

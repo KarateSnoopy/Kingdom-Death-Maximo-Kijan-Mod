@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "Roll 1d10 ~ Resolve the effects on this card", effect = ""}})
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound", {gear = "The Sunstalker turns to face you ~ Suffer the Frenzy Brain Trauma", effect = ""}})
+
+end
+
+function addStatModifier()
+
+end
+
+function reflexEffect()
+end
+
+function failureEffect()
+
+end

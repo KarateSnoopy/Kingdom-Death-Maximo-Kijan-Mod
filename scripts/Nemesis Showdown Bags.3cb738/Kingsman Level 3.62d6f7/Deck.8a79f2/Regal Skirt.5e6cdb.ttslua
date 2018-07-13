@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Adjacent Survivors may ~ Spend 1 Survival to gain 1 Courage", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  hitTool = getObjectFromGUID('10e61e')
+  hitTool.call("return_battle_pressure")
+  Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+end

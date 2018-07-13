@@ -1,0 +1,382 @@
+zoneEffect_stored = {-55.04, 8.26, -70.92}
+
+function onLoad()
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	createButton_base()
+
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+		if card.getName() == "Posturing Piss" then
+			overlay_posturingPiss()
+		elseif card.getName() == "Thunderfoot" then
+			overlay_thunderfoot()
+		end
+	end
+end
+
+function createButton_base()
+	self.createButton({click_function = "dud", function_owner = self, label = "■", position = {0.5, 0.2, -0.5}, rotation = {0, 45, 0},
+	scale = {12.3, 1, 11.9}, width = 0, height = 0, font_size = 800, font_color = {0.25, 0.25, 0.25, 0.8}})
+end
+
+function dud() end
+
+function onPickUp(color, obj)
+	if self.getName() == "Gorm" then
+		for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+			if card.getName() == "Thunder Foot" then
+				zoneEffect.setPosition(zoneEffect_stored)
+			end
+		end
+	end
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		bag_gorm_bulb = getObjectFromGUID('dd454e')
+		bag_posturing_piss_miasma = getObjectFromGUID('e749a4')
+
+		local pos = self.getPosition()
+		local hitList = Physics.cast({
+			origin			= {pos.x, pos.y, pos.z},
+			direction		= {0,1,0},
+			type				= 2,
+			size				= {11, 11, 11},
+			max_distance 	= 0,
+			debug 			= false
+		})
+		for _, entry in ipairs(hitList) do
+			if entry.hit_object.getName() == "Posturing Piss Miasma"
+			or entry.hit_object.getName() == "Gorm Bulb" then
+				entry.hit_object.destroy()
+			end
+		end
+
+	end
+end
+
+function onDropped(player_color)
+	if self.getName() == "Gorm" then
+		pos = self.getPosition()
+		for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+			if card.getName() == "Thunder Foot" then
+				zoneEffect.setScale({13.6, 5.10, 13.6})
+				zoneEffect.setPosition({pos.x, pos.y, pos.z})
+			end
+		end
+		local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+		local rotZ = set_Visual.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+
+			has_posturing_piss = false
+			for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+				if card.getName() == "Posturing Piss" then
+					has_posturing_piss = true
+				end
+			end
+
+			local rotY = self.getRotation().y
+			--bulb_offsetY = 1.72
+			if rotY > 35 and rotY < 55 then
+				bulb_offsetX = 3.96
+				bulb_offsetZ = 0.37
+
+				if has_posturing_piss then
+					piss_offsetX = - 1.76
+					piss_offsetZ = - 0.08
+				end
+			end
+
+			if rotY > 125 and rotY < 145 then
+				bulb_offsetX = 0.37
+				bulb_offsetZ = -3.96
+
+				if has_posturing_piss then
+					piss_offsetX = - 0.08
+					piss_offsetZ = 1.76
+				end
+			end
+
+			if rotY > 215 and rotY < 235 then
+				bulb_offsetX = - 3.96
+				bulb_offsetZ = - 0.37
+
+				if has_posturing_piss then
+					piss_offsetX = 1.76
+					piss_offsetZ = - 0.08
+				end
+			end
+
+			if rotY > 305 and rotY < 325 then
+				bulb_offsetX = - 0.37
+				bulb_offsetZ = 3.96
+
+				if has_posturing_piss then
+					piss_offsetX = - 0.08
+					piss_offsetZ = - 1.76
+				end
+			end
+
+			gorm_bulb = bag_gorm_bulb.takeObject({
+				position 		= {pos.x + bulb_offsetX, 5.87, pos.z + bulb_offsetZ},
+				smooth 			= false,
+				callback 		= "lock_callback",
+				callback_owner = Global,
+			})
+			gorm_bulb.AssetBundle.playLoopingEffect(2)
+
+			if has_posturing_piss then
+				posturing_piss_miasma = bag_posturing_piss_miasma.takeObject({
+					position 		= {pos.x + piss_offsetX, 5.82, pos.z + piss_offsetZ},
+					smooth 			= false,
+					callback 		= "lock_callback",
+					callback_owner = Global,
+				})
+				posturing_piss_miasma.AssetBundle.playLoopingEffect(2)
+			end
+
+		end
+	end
+end
+
+function overlay_posturingPiss()
+	local btn_params = {
+		click_function = "overlay_posturingPiss",
+		function_owner = self,
+		label = "■",
+
+		rotation = {0, 45, 0},
+		scale = {3.6, 1, 3.6},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {1.0, 0.67, 0.0, 0.6}
+	}
+
+
+	init_posX = 0.174-- > -12.784, -14.926
+	offsetY = 0
+	init_posZ = -8.692 -- > -0.2, 1.942
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 3 do
+		btn_params.position = {init_posX + (offsetX()), offsetY, init_posZ + (offsetZ())}
+		self.createButton(btn_params)
+	end
+end
+
+function remove_overlay_posturingPiss()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_posturingPiss" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function overlay_retch()
+
+	local btn_params = {
+		click_function = "overlay_retch",
+		function_owner = self,
+		label = "■",
+
+		rotation = {0, 45, 0},
+		scale = {3.6, 1, 3.6},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.0, 1.0, 0.03, 0.4}
+	}
+
+
+	init_posX = -10.642 -- > -12.784, -14.926
+	offsetY = 0.52
+	init_posZ = -2.342 -- > -0.2, 1.942
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 5 do
+		btn_params.position = {init_posX + (offsetX()), offsetY, init_posZ + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 5 do
+		btn_params.position = {init_posX - 2.142 + (offsetX()), offsetY, init_posZ + 2.142 + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 5 do
+		btn_params.position = {init_posX - 4.284 + (offsetX()), offsetY, init_posZ + 4.284 + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 5 do
+		btn_params.position = {init_posX - 6.426 + (offsetX()), offsetY, init_posZ + 6.426 + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	-- Visual Effect
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		for _, obj in ipairs(gameBox.getObjects()) do
+			if obj.name == "Visual Effect - Gorm Retch" then
+				local effect = gameBox.takeObject({position = {0.80, 3.30, 14.18}, smooth = false, guid = obj.guid, callback = "lockShadowToken", callback_owner = Global})
+				effect.AssetBundle.playLoopingEffect(2)
+			end
+		end
+	end
+end
+
+function remove_overlay_retch()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_retch" then
+			self.removeButton(v.index)
+		end
+	end
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Visual Effect - Gorm Retch" then
+			gameBox.putObject(obj)
+		end
+	end
+end
+
+function overlay_thunderfoot()
+
+	local btn_params = {
+		click_function = "overlay_thunderfoot",
+		function_owner = self,
+		label = "■",
+
+		rotation = {0, 45, 0},
+		scale = {3.6, 1, 3.6},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.3}
+	}
+
+	init_posX = -19.06 -- > -12.784, -14.926
+	offsetY = 0.52
+	init_posZ = -2.342 -- > -0.2, 1.942
+	multiplier = 2.142
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (offsetX()), offsetY, init_posZ + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + multiplier + (offsetX()), offsetY, init_posZ - multiplier + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 2) + (offsetX()), offsetY, init_posZ - (multiplier * 2) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 3) + (offsetX()), offsetY, init_posZ - (multiplier * 3) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 4) + (offsetX()), offsetY, init_posZ - (multiplier * 4) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 5) + (offsetX()), offsetY, init_posZ - (multiplier * 5) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 6) + (offsetX()), offsetY, init_posZ - (multiplier * 6) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 7) + (offsetX()), offsetY, init_posZ - (multiplier * 7) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+	offsetX = createOffsetX()
+	offsetZ = createOffsetZ()
+
+	for i=1, 9 do
+		btn_params.position = {init_posX + (multiplier * 8) + (offsetX()), offsetY, init_posZ - (multiplier * 8) + (offsetZ())}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_thunderfoot()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_thunderfoot" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function createOffsetX()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 2.142
+		return i
+	end
+end
+
+function createOffsetZ()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 2.142
+		return i
+	end
+end
+
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end

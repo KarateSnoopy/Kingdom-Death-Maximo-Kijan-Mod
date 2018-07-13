@@ -1,0 +1,183 @@
+
+--------------------------
+--Init
+----------------------------
+function onLoad()
+
+	self.createButton({
+		click_function = 'getConsequences',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 150,
+		font_size = 150
+	})
+
+function getConsequences()
+	getSettlementWatch()
+    getShadowDancing()
+    getFamily()
+    getPartnership()
+    getBed()
+    getBloodline()
+end
+
+--Finds innovation consequences and adds them to the Innovation deck
+function getSettlementWatch()
+		    print("[b]---Items In Zone---[/b]")
+			zonesTable = Global.getTable('zones')
+			local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+		    local objectsInZone = zone.getObjects()
+		        for _, object in ipairs(objectsInZone) do
+		            local name = object.getName()
+		            if name == "Consequences" then
+						deck = object
+						break
+		            end
+				end
+			        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+			            if card.nickname == "Settlement Watch" then
+						    print("Settlement Watch found")
+							deck.takeObject({
+								guid = card.guid,
+								position={-44.15, 4.40, 22.58},
+							})
+							broadcastToAll("Settlement Watch added to the Innovation Deck.", {1,1,1})
+							break
+							end
+						end
+					end
+--Finds innovation consequences and adds them to the Innovation deck
+function getShadowDancing()
+                    		    print("[b]---Items In Zone---[/b]")
+                    			zonesTable = Global.getTable('zones')
+                    			local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+                    		    local objectsInZone = zone.getObjects()
+                    		        for _, object in ipairs(objectsInZone) do
+                    		            local name = object.getName()
+                    		            if name == "Consequences" then
+                    						deck = object
+                    						break
+                    		            end
+                    				end
+                    			        local cardsInDeck = deck.getObjects()
+                    					for i, card in ipairs(cardsInDeck) do
+                    			            if card.nickname == "Shadow Dancing" then
+                    						    print("Settlement Watch found")
+                    							deck.takeObject({
+                    								guid = card.guid,
+                    								position={-44.15, 4.40, 22.58},
+                    							})
+                    							broadcastToAll("Shadow Dancing added to the Innovation Deck.", {1,1,1})
+                    							break
+                    							end
+end
+--Finds innovation consequences and adds them to the Innovation deck
+function getFamily()
+            print("[b]---Items In Zone---[/b]")
+            zonesTable = Global.getTable('zones')
+            local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+            local objectsInZone = zone.getObjects()
+                for _, object in ipairs(objectsInZone) do
+                    local name = object.getName()
+                    if name == "Consequences" then
+                        deck = object
+                        break
+                    end
+                end
+                    local cardsInDeck = deck.getObjects()
+                    for i, card in ipairs(cardsInDeck) do
+                        if card.nickname == "Family" then
+                            print("Settlement Watch found")
+                            deck.takeObject({
+                                guid = card.guid,
+                                position={-44.15, 4.40, 22.58},
+                            })
+                            broadcastToAll("Family added to the Innovation Deck.", {1,1,1})
+                            break
+                            end
+                        end
+end
+--Finds innovation consequences and adds them to the Innovation deck
+function getPartnership()
+		    print("[b]---Items In Zone---[/b]")
+			zonesTable = Global.getTable('zones')
+			local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+		    local objectsInZone = zone.getObjects()
+		        for _, object in ipairs(objectsInZone) do
+		            local name = object.getName()
+		            if name == "Consequences" then
+						deck = object
+						break
+		            end
+				end
+			        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+			            if card.nickname == "Partnership" then
+						    print("Settlement Watch found")
+							deck.takeObject({
+								guid = card.guid,
+								position={-44.15, 4.40, 22.58},
+							})
+							broadcastToAll("Partnership added to the Innovation Deck.", {1,1,1})
+							break
+							end
+						end
+end
+--Finds innovation consequences and adds them to the Innovation deck
+function getBed()
+		    print("[b]---Items In Zone---[/b]")
+			zonesTable = Global.getTable('zones')
+			local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+		    local objectsInZone = zone.getObjects()
+		        for _, object in ipairs(objectsInZone) do
+		            local name = object.getName()
+		            if name == "Consequences" then
+						deck = object
+						break
+		            end
+				end
+			        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+			            if card.nickname == "Bed" then
+						    print("Settlement Watch found")
+							deck.takeObject({
+								guid = card.guid,
+								position={-44.15, 4.40, 22.58},
+							})
+							broadcastToAll("Bed added to the Innovation Deck.", {1,1,1})
+							break
+							end
+						end
+end
+--Finds innovation consequences and adds them to the Innovation deck
+function getBloodline()
+		    print("[b]---Items In Zone---[/b]")
+			zonesTable = Global.getTable('zones')
+			local zone = getObjectFromGUID(zonesTable.deckConsequences.guid)
+		    local objectsInZone = zone.getObjects()
+		        for _, object in ipairs(objectsInZone) do
+		            local name = object.getName()
+		            if name == "Consequences" then
+						deck = object
+						break
+		            end
+				end
+			        local cardsInDeck = deck.getObjects()
+					for i, card in ipairs(cardsInDeck) do
+			            if card.nickname == "Bloodline" then
+						    print("Settlement Watch found")
+							deck.takeObject({
+								guid = card.guid,
+								position={-44.15, 4.40, 22.58},
+							})
+							broadcastToAll("Bloodline added to the Innovation Deck.", {1,1,1})
+							break
+							end
+						end
+end
+end
+end

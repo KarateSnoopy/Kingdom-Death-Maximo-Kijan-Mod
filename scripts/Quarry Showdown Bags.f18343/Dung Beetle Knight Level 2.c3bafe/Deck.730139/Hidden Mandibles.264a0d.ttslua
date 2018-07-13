@@ -1,0 +1,46 @@
+function criticalWoundEffect()
+	self.setPositionSmooth({0.07, 4.33, -21.57})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Mouth ~ Keep in Play", effect = ""}})
+
+	getVars()
+	if canConsume then
+		Global.call('addBroadcast', {"crit", {gear = "If you are within 2 Spaces ~ You may spend 2 Survival to gain (+1) Permanent Evasion", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "Shattered Jaw ~ You cannot consume", effect = ""}})
+	end
+
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	zone = grid.getVar("zonePlayer")
+	canConsume = true
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Shattered Jaw" then
+			canConsume = false
+		end
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Ground Pound", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- mandible

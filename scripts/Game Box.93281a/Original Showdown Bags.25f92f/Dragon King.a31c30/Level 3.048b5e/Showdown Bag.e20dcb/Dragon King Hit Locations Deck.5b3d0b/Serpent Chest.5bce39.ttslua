@@ -1,0 +1,10 @@
+function criticalWoundEffect()
+Global.call('addBroadcast', {"crit", {gear = "You may spend 2 Survival to gain (+1) Permanent Strength instead", effect = "Gain a (+1) Strength Token or", effect2 = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Resolve the Wound Effect on this Hit Location ", effect = ""}})
+end

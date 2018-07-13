@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+  Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Inverted Chakras ~ Keep in Play", effect = ""}})
+  self.setPositionSmooth({4.01, 4.24, -17.91})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Crooked Step", effect = ""}})
+end
+
+function addStatModifier()
+end

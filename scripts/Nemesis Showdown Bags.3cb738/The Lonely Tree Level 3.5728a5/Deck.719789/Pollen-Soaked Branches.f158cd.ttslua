@@ -1,0 +1,19 @@
+
+function criticalWoundEffect()
+	self.setPositionSmooth({0.06, 4.23, -21.44})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Blood Pollen ~ Keep in Play", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Gain the Flower Funnel Survivor Status", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "If you already have it, the closest Survivor to use get it instead", effect = ""}})
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,45 @@
+function criticalWoundEffect()
+	getVars()
+	hasFencing = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Fencing" then
+			hasFencing = true
+		end
+	end
+	if hasFencing then
+		Global.call('addBroadcast', {"crit", {gear = "You already have Fencing", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You do not have Fencing ~ You may ⇨ Breakthrough", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "This Wound Attempt fails unless it was a Critical", effect = "~~~ !!! Parry  !!! ~~~"}})
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- furious riposte

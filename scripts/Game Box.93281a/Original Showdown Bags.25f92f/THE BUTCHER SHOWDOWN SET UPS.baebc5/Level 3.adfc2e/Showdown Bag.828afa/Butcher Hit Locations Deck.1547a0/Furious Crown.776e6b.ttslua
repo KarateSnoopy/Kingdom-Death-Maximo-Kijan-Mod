@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered ~ All Survivors Adjacent suffer Bash ~ Full move towards furthest Survivor >>>", {1,1,1})
+end
+
+function addStatModifier()
+end

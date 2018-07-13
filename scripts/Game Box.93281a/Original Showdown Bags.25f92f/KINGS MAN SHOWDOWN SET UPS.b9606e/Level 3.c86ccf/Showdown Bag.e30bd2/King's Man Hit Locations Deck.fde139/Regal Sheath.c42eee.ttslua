@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Lost Sword ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect ()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  broadcastToAll("<<< Reflex Triggered ~ Return Battle Pressure Cards ~ Perform Basic Action", {1,1,1})
+end
+
+function addStatModifier()
+end

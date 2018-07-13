@@ -1,0 +1,47 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "You gain (+1) Permanent Accuracy", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The Dragon King turns to face the attacker", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "If attacker is within 3 spaces ~ Suffer Knockback 7", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+end
+
+function getMonsterResource()
+
+	local tbl = {cardName = "Kings Claws", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Kings Claws", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Kings Claws", effect = ""}})
+	end
+end

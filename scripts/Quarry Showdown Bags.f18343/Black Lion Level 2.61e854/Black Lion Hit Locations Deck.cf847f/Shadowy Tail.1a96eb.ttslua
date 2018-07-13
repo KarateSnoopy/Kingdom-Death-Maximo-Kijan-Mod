@@ -1,0 +1,24 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Keep in Play", effect = ""}})
+
+	local card_toGet = {cardName = "Lion Tail", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", card_toGet)
+	local pos_toSpawn = {52.29, 4.34, 10.76}
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "Archive the Black Lion Tail from the Monster Resource Deck", effect = ""}})
+	self.setPositionSmooth({-2.04, 4.24, -21.37}, false, false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Grab ~ Targeting the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+end

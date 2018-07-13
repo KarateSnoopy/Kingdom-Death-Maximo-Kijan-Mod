@@ -1,0 +1,171 @@
+
+msg_color_red = {0.856, 0.1, 0.094}
+msg_color_yellow = {0.905, 0.898, 0.172}
+msg_color_green = {0.192, 0.701, 0.168}
+msg_color_blue = {0.118, 0.53, 1}
+
+function onLoad()
+
+    self.createButton({
+            label="Build AI Deck", click_function="buildDeck",
+            function_owner=self, position={0,0,-1.5},
+            height=250, width=2300, font_size=400, color={0,0,0}, font_color={1,1,1}
+            })
+
+    self.createButton({click_function = "irradiate", function_owner = self, label = "Irradiate", position = {0, 0.1, -0.3},
+    width = 2300, height = 250, font_size = 400, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+    self.createButton({click_function = "meltdown", function_owner = self, label = "Meltdown", position = {0, 0.1, 1.3},
+    width = 2300, height = 250, font_size = 400, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+    self.createButton({click_function = "unseenAgony", function_owner = self, label = "Unseen Agony", position = {0, 0.1, 0.5},
+    width = 2300, height = 250, font_size = 400, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function irradiate()
+  local token_tgh = getObjectFromGUID("9dff6c")
+  local desc = token_tgh.getDescription()
+  token_tgh.setDescription("irradiate")
+
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+  count = 0
+  for _, token in ipairs(zone.getObjects()) do
+    if string.find(token.getDescription(), 'irradiate') then
+      count = count + 1
+    end
+  end
+  if count == 0 then
+    token_tgh.clone({position = {-17.17, 4.27, -2.53}})
+  elseif count == 1 then
+    token_tgh.clone({position = {-16.06, 4.27, -2.53}})
+  elseif count == 2 then
+    token_tgh.clone({position = {-14.92, 4.24, -2.53}})
+  elseif count == 3 then
+    token_tgh.clone({position = {-13.78, 4.24, -2.53}})
+  elseif count == 4 then
+    token_tgh.clone({position = {-12.62, 4.24, -2.53}})
+  end
+  token_tgh.setDescription(desc)
+end
+
+function meltdown()
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+  for _, token in ipairs(zone.getObjects()) do
+    if token.getName() == "Toughness" then
+      token.destruct()
+    end
+  end
+  broadcastToAll("The Dragon King's (-1) Toughness Tokens were removed", {1,1,1})
+end
+
+function unseenAgony()
+  local zoneAIBoard = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+  count = 0
+  for _, token in ipairs(zoneAIBoard.getObjects()) do
+    if string.find(token.getName(), "Toughness") then
+      count = count + 1
+    end
+  end
+
+  local zone = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+  for _, surv in ipairs(zone.getObjects()) do
+    if surv.getName() == "Player One" then
+      broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_red)
+    elseif surv.getName() == "Player Two" then
+      broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_yellow)
+    elseif surv.getName() == "Player Three" then
+      broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_green)
+    elseif surv.getName() == "Player Four" then
+      broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_blue)
+    end
+  end
+end
+
+function buildDeck()
+    getBasicAIcards()
+    getAdvancedAIcards()
+    Timer.create({
+        function_owner=self,
+        identifier="shuffleDelay",
+        function_name="shuffle",
+        delay=1.5
+    })
+    Timer.create({
+        function_owner=self,
+        identifier="deleteAIcards",
+        function_name="deleteLeftoverAICards",
+        delay=2.5
+    })
+
+    local buttons = self.getButtons()
+    for i, v in pairs(buttons) do
+      if v.label == "Build AI Deck" then
+        self.removeButton(v.index)
+      end
+    end
+end
+
+function getBasicAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Basic" then
+            deck = object
+            deck.shuffle()
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+        end
+    end
+end
+
+function getAdvancedAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Advanced" then
+            deck = object
+            deck.shuffle()
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+            deck.takeObject({top=true, position={-3.67, 4.41, -2.50}})
+        end
+    end
+end
+
+
+function shuffle()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for k, v in pairs(objectsInZone) do
+        if v.tag == 'Deck' then
+            v.shuffle()
+        end
+    end
+end
+
+function deleteLeftoverAICards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Basic" then
+            object.destroy()
+        elseif object.getName() == "Advanced" then
+            object.destroy()
+        elseif object.getName() == "Legendary" then
+            object.destroy()
+        elseif object.getName() == "Special" then
+            object.destroy()
+            end
+        end
+    end

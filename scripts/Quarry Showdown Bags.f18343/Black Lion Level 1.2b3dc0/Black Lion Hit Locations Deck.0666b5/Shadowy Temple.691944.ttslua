@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "The Black Lion is dazed ~ On its next turn 'Do not draw AI'", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Perform Basic Action Instead", effect = ""}})
+	local clone = self.clone({-3.67, 4.46, -2.50})
+	clone.setRotation(0, 180, 0)
+	clone.setLock(false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,23 @@
+
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Gain (+3) Courage ~ Gain (+3) Understanding ", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You may perform Embolden", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+
+
+
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Attacker gains a (-1) Strength Token", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ Turn The Watcher to faces the furthest board edge ~ Full Move Forward ♘", effect = ""}})
+end

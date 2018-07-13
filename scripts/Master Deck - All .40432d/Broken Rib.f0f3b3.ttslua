@@ -1,0 +1,15 @@
+isKdmEffectsObject = true
+effects = {
+    speed = 1
+}
+
+function getEffects()
+
+        effects.speed = -1
+
+	local qty = self.getQuantity()
+	if qty >= 2 then
+		effects.speed = effects.speed * qty
+	end
+    return effects
+end

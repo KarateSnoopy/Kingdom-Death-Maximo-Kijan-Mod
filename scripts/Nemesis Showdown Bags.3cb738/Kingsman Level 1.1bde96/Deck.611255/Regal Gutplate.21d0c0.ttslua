@@ -1,0 +1,49 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "The Kingsman is knocked down!", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Turn to face Attacker ~ Then without Turning Move 2 Spaces Away ♘", effect = ""}})
+	if hasKingsStep then
+		Global.call('addBroadcast', {"reflex", {gear = "♘ You have King's Step ~ You may follow the King's Man ♘", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "You do not have King's Step ~ Cancel all hits now out of range", effect = ""}})
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	hasKingsStep = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "King's Step" then
+			hasKingsStep = true
+		end
+	end
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "All non-deaf Survivors Gain (+3) Insanity", effect = ""}})
+Global.call('addBroadcast', {"crit", {gear = "Spidicules suffers an additional Wound", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

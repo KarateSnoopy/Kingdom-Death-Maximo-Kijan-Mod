@@ -1,0 +1,43 @@
+function criticalWoundEffect()
+
+end
+
+function woundEffect()
+
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+
+end
+
+function addStatModifier()
+	getVars()
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "soluble") then
+			broadcastToAll("You have Soluble Gear in your Grid ~ Archive It", {1,1,1})
+		else
+			broadcastToAll("You do not have Soluble Gear in your Grid", {1,1,1})
+			break
+		end
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+end

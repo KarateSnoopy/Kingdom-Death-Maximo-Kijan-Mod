@@ -1,0 +1,82 @@
+
+function criticalWoundEffect()
+end
+
+function woundEffect()
+	getVars()
+	changeSurvivors("survival", 1, grid)
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You gained (+1) Survival", effect = ""}})
+	hasPickaxe = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "pickaxe") and gear.getGUID() == weaponGUID then
+			hasPickaxe = true
+		end
+	end
+	if hasPickaxe then
+		changeSurvivors("survival", 3, grid)
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You attacked with a Pickaxe ~ You gained (+3) Additional Survival", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are not attacking with a Pickaxe", effect = ""}})
+	end
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Instead of Wounding ~ Archive this Card", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "You feel Hopeless ~ Lose 1 Survival", effect = ""}})
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Burrow" then
+			Global.call('addBroadcast', {"failure", {gear = "Perform Burrow", effect = ""}})
+		end
+	end
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	--[[getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(+6) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")]]
+end
+
+function addStat_coR()
+	for i=1, 6 do
+		obj.call('spawn_token')
+		wait(0.25)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	msg_color = grid.getTable("msg_color")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	zone = grid.getVar("zone")
+end

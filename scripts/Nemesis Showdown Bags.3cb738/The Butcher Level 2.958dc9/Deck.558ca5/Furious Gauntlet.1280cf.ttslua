@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Roll 1d10 ~ On a 5+ ~ You suffer \u{02606} Brain Damage", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

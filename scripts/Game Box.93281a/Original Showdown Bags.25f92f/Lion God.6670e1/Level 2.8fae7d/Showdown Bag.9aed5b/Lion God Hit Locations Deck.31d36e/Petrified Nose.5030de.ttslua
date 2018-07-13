@@ -1,0 +1,43 @@
+function criticalWoundEffect()
+    getStatToken1()
+    getStatToken2()
+end
+
+function getStatToken1()
+	local object = getObjectFromGUID('3a6d32')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local dmgStat = Global.getTable('dmgStat')
+        		table.insert(dmgStat, object.clone({
+				position = {-13.19, 4.42, 0.51 + #dmgStat * -1}}))
+				Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Damage Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('dmgStat', dmgStat)
+end
+
+function getStatToken2()
+	local object = getObjectFromGUID('846081')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local spdStat = Global.getTable('spdStat')
+        		table.insert(spdStat, object.clone({
+				position = {-15.47, 4.42, 0.51 + #spdStat * -1}}))
+			Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Speed Token", effect = ""}})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('spdStat', spdStat)
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "Resolve the effects on this Hit Location", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

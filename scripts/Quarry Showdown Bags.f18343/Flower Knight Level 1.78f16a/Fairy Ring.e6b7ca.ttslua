@@ -1,0 +1,42 @@
+function onObjectDropped(player_color, dropped_object)
+	inFairyRing = false
+	if string.find(dropped_object.getName(), "Player") then
+		pos = dropped_object.getPosition()
+	   local hitList = Physics.cast({origin={pos.x, pos.y, pos.z}, direction={0,1,0}, type=2, size={1.3, 1.3, 1.3},max_distance = 0})
+	   for _, entry in ipairs(hitList) do
+			if entry.hit_object.getName() == "Fairy Ring" then
+				inFairyRing = true
+			end
+		end
+		if inFairyRing then
+			local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+			local var = "inFairyRing"
+			obj.getVar("phase")
+			obj.setVar("phase", var)
+			obj.call("spawn_token")
+		end
+	end
+end
+
+function onObjectPickedUp(player_color, picked_up_object)
+	inFairyRing = false
+	if string.find(picked_up_object.getName(), "Player") then
+		pos = picked_up_object.getPosition()
+	   local hitList = Physics.cast({origin={pos.x, pos.y, pos.z}, direction={0,1,0}, type=2, size={1.3, 1.3, 1.3},max_distance = 0})
+	   for _, entry in ipairs(hitList) do
+			if entry.hit_object.getName() == "Fairy Ring" then
+				inFairyRing = true
+			end
+		end
+
+		if inFairyRing then
+			local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+			for _, tok in ipairs(zone.getObjects()) do
+				if string.find(tok.getDescription(), "plus1dmg per survivor fairy ring") then
+					tok.destroy()
+					break
+				end
+			end
+		end
+	end
+end

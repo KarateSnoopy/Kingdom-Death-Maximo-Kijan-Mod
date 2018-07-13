@@ -1,0 +1,73 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  local roller_survAttack = getObjectFromGUID("ff240b")
+  local red_attacked = roller_survAttack.getVar("red_attacked")
+  local yellow_attacked = roller_survAttack.getVar("yellow_attacked")
+  local green_attacked = roller_survAttack.getVar("green_attacked")
+  local blue_attacked = roller_survAttack.getVar("blue_attacked")
+
+  if red_attacked then
+    grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+    zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+  elseif yellow_attacked then
+    grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+    zone = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+  elseif green_attacked then
+    grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+    zone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+  elseif blue_attacked then
+    grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+    zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+  end
+
+  FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+  courage = 0
+  for i, v in pairs(objbtns) do
+    prefix = string.sub(i, 1, 8)
+    if prefix == "courage_" then
+      if v.label ~= '' then
+        courage = courage + 1
+      end
+    end
+  end
+  hasDeaf = false
+  for _, card in ipairs(zone.getObjects()) do
+    if card.getName() == "Deaf" then
+      hasDeaf = true
+    end
+  end
+
+  if courage >= 3  or hasDeaf then
+    broadcastToAll("<<< Reflex NOT Triggered ~ You are either Deaf or have 3+ Courage >>>", {1,1,1})
+  else
+    broadcastToAll("<<< Reflex Triggered ~ You suffer ★ Brain Damage and are Knocked Down >>>", {1,1,1})
+  end
+
+end -- end function
+
+function get_weapon_prof_level(weapon_prof_level)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	weapon_prof_level = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 12)
+		if prefix == "proficiency_" then
+			if v.label ~= '' then
+				weapon_prof_level = weapon_prof_level + 1
+			end
+		end
+	end
+	return weapon_prof_level
+end
+
+function addStatModifier()
+end

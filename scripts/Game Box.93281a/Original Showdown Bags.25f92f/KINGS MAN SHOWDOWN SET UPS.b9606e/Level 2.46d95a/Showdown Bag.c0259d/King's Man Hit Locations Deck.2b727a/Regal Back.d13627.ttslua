@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "If you have 3+ Understanding or King's Step", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "You may spend 5 Survival to gain (+1) permanent Evasion", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound", {gear = "If you have 3+ Understanding or King's Step", effect = ""}})
+    Global.call('addBroadcast', {"wound", {gear = "You may spend 5 Survival to gain (+1) permanent Evasion", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

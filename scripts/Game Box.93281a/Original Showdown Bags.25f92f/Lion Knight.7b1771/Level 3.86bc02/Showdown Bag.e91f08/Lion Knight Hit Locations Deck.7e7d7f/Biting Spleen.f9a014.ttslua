@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You gain the Priority Target Token", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "If you are the Fool ~ use button on Hit Location ", effect = ""}})
+    createButton()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function createButton()
+    self.createButton{index = 0, click_function = 'getStatToken', function_owner = self,
+label = 'Attacker was the Fool', position = {x = 0, y = 2, z = -1.2}, rotation = {x = 0, y = 0, z = 0},
+scale = {x = 0.5, y = 1, z = 0.5}, width = 2000, height = 400, font_size = 200,
+color = {r = 1, g = 1, b = 1, a = 1}, font_color = {r = 0, g = 0, b = 0, a = 1}}
+end
+
+function getStatToken()
+	local object = getObjectFromGUID('eb87ec')
+	local desc = object.getDescription()
+	object.setDescription('end of showdown')
+    	object.setScale({0.43, 1.00, 0.43})
+			local dmgStat = Global.getTable('dmgStat')
+        		table.insert(dmgStat, object.clone({
+				position = {-13.19, 4.42, 0.51 + #dmgStat * -1}}))
+                broadcastToAll("The Lion Knight gained a (+1) Damage Token", {1,1,1})
+    	object.setScale({0.32, 1.00, 0.32})
+	Global.setTable('dmgStat', dmgStat)
+end
