@@ -268,6 +268,7 @@ user_settings = {
 	hunt_phase_soundtrack = {guid = 'cbfd14'},
 	showdown_phase_soundtrack = {guid = '06b681'},
 	settlement_phase_soundtrack = {guid = 'a82278'},
+	current_edition = {guid = '36292c'},
 }
 
 --[[ example: lighting and sound Functions
@@ -383,6 +384,7 @@ zones = {
 	zoneCrafting = {guid = 'b6059d'},
 	zoneGearStation = {guid = 'ce5217'},
 	zoneTrophy = {guid = '442fa5'},
+	zoneGearDeck = {guid = 'b1ed8f'},
 
 	-- Area of effects
 	zoneEffect = {guid = 'c8093f'},
@@ -461,7 +463,6 @@ zones = {
 	--zoneMonsterBoard = {guid = '4b6961'},
 	--zoneSurvivors = {guid = 'a5ff30'},
 	--zoneCurrentShowdownBag = {'6604b4'},
-	--zoneGearDeack = {guid = 'b1ed8f'},
 	--discardStrangeResources = {guid = '0acd8e'},
 	--discardSevereInjuries = {guid = 'dd32b9'},
 	--discardDisorders = {guid = 'e5b4c6'},

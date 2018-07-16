@@ -196,7 +196,7 @@ function close_armor_locations()
   end
 end
 
-function display_head()
+--[[function display_head()
   storeResources()
 
   for _, object in ipairs(zone.getObjects()) do
@@ -220,7 +220,36 @@ function display_head()
       end
     end
   print(count .. " cards found for Head Armor")
+end]]--
+
+function display_head()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "head"
+	search_string_omit_1 = "body"
+	get_cards()
 end
+
+-------------------------------------------------------------------------------
+function get_cards()
+	gear_Table = {}
+   local count = 0
+   for _, object in ipairs(zone_gearDeck.getObjects()) do
+     if object.tag == "Deck" then
+       gearDeck = object
+     end
+   end
+   for _, card in ipairs(gearDeck.getObjects()) do
+   local desc = card.description
+     if string.find(desc, search_string_add_1) and not string.find(desc, search_string_omit_1) then
+       count = count + 1
+       table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
+       end
+     end
+   print(count .. " cards found for " .. search_string_add_1)
+end
+
+-------------------------------------------------------------------------------
 
 function display_arms()
   storeResources()
@@ -2947,6 +2976,33 @@ end
 -------------------------------------------------------------------------------
 -- Utility Functions
 -------------------------------------------------------------------------------
+function destroy_copy()
+	for _, object in ipairs(zone.getObjects()) do
+	  local desc = object.getDescription()
+	  if string.find(desc, "copy") then
+		 object.destroy()
+	  end
+	end
+end
+
+function get_cards()
+	gear_Table = {}
+   local count = 0
+   for _, object in ipairs(zone_gearDeck.getObjects()) do
+     if object.tag == "Deck" then
+       gearDeck = object
+     end
+   end
+   for _, card in ipairs(gearDeck.getObjects()) do
+   local desc = card.description
+     if string.find(desc, search_string_add_1) and not string.find(desc, search_string_omit_1) then
+       count = count + 1
+       table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
+       end
+     end
+   print(count .. " cards found for " .. search_string_add_1)
+end
+
 function onObjectLeaveScriptingZone(zone, leave_object)
   if zone == getObjectFromGUID(Global.getTable('zones').zoneGearStation.guid) then
     for k, obj in pairs(gear_Table) do

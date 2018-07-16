@@ -116,10 +116,10 @@ rot_neg = {0, 180, 180}
 function onLoad()
 	createButtons()
 	spawnedDice = {}
-    bag_luck = getObjectFromGUID('6a1312')
-    bag_speed = getObjectFromGUID('922010')
-    bag_str = getObjectFromGUID('4c2300')
-    bag_accuracy = getObjectFromGUID('08250f')
+	bag_luck = getObjectFromGUID('6a1312')
+	bag_speed = getObjectFromGUID('922010')
+	bag_str = getObjectFromGUID('4c2300')
+	bag_accuracy = getObjectFromGUID('08250f')
 	token_knockdown_monster = getObjectFromGUID("a61816")
 	hitTool = getObjectFromGUID('10e61e')
 	hitTool_left = getObjectFromGUID('309402')
@@ -151,6 +151,9 @@ function onLoad()
 	clone_scale_gear = {0.47, 1.00, 0.47}
 	clone_scale_standard = {0.67, 1.00, 0.67}
 	clone_rot = {20, 180, 0.00}
+
+	-- Decks
+	deck_gear_broken = getObjectFromGUID('36db08')
 
 	for _, object in ipairs(zone_drawnHit.getObjects()) do
 		if string.find(object.getDescription(), "survivor dice") then
@@ -610,8 +613,8 @@ function ClickedRoll(color)
 	-- Resets Display Tables and removes any that need to be added to wound queue display
 	--cleanUp()
 	reset_display_stack_queue()
-
 	Global.call("clearBroadcast")
+	check_edition_loaded()
 
 	hasSpinningHalberd = false
 	red_lens_open = false
@@ -689,7 +692,6 @@ function ClickedRoll(color)
 			local desc = v.getDescription()
 			-------------------------- start body for loop ----------------------
 
-
 			-- ARMOR SETS
 
 			-- Warlord Armor
@@ -703,14 +705,9 @@ function ClickedRoll(color)
 				hasLionArmor = true
 			end
 
-
 			-- Fighting Arts
 
-
-
-
 			-- WEAPON KEYWORDS
-
 			if string.find(desc, 'devastating1') and v.getGUID() == weaponGUID then
 				hasDevastating_1 = true
 			end
@@ -1213,7 +1210,11 @@ function ClickedRoll(color)
 		end -- end if equipedWeapon ~= "" / else
 
 		if hasFrail then
-			broadcastToAll("Your " .. equipedWeapon.getName() .. " has 'Frail' and is archived after this Wound Attempt", msg_color)
+			if off_edit then
+				broadcastToAll("Your " .. equipedWeapon.getName() .. " has 'Frail' and is archived after this Wound Attempt", msg_color)
+			elseif comm_edit then
+				broadcastToAll("Your " .. equipedWeapon.getName() .. " has 'Frail' and is broken after this Wound Attempt", msg_color)
+			end
 		end
 
 		if hasDevastating_1 then
@@ -1575,6 +1576,7 @@ function CheckResults()
 							resetHitLocationTable()
 							when_monster_suffers_wound()
 							when_monster_suffers_critical_wound()
+							check_frail()
 							hasFailure_Reaction = false
 							hasReflex_Reaction = false
 							hasWound_Reaction = false
@@ -1728,6 +1730,41 @@ function when_monster_suffers_critical_wound()
 			Global.call('addBroadcast', {"perfecthit", {gear = "Discard Cudgel for Survivor scoring a Critical Wound", effect = ""}})
 		end
 	end
+end
+
+function check_frail()
+	if hasFrail then
+		if comm_edit then
+			for _, v in pairs(zone.getObjects()) do
+				if v.getName() == "Bone Axe" and v.getGUID() == weaponGUID then
+					replace_pos = v.getPosition()
+					gear_replaced = v.getName()
+					broken_gear = "Bone Axe (broken)"
+					v.destroy()
+				elseif v.getName() == "Bone Darts" and v.getGUID() == weaponGUID then
+					replace_pos = v.getPosition()
+					gear_replaced = v.getName()
+					broken_gear = "Bone Darts (broken)"
+					v.destroy()
+				end
+			end
+		end
+	end
+	get_broken_gear()
+end
+
+function get_broken_gear()
+	for _, card in ipairs(deck_gear_broken.getObjects()) do
+		if card.name == broken_gear then
+			deck_gear_broken.takeObject({
+				position          = replace_pos,
+				rotation          = {0, 180, 0},
+				smooth            = false,
+				guid              = card.guid,
+			})
+		end
+	end
+	broadcastToAll("Your " .. gear_replaced .. " is broken and must be repaired", msg_color)
 end
 
 function reRoll_Misses()
@@ -2774,7 +2811,7 @@ function checkCancelled(hasCancelled)
 	return hasCancelled
 end
 
--- Utility Functions
+-- Utility Functions -----------------------------------------------------------
 function wait(time)
 	local start = os.time()
 	repeat
@@ -2852,7 +2889,6 @@ function reset_display_stack_queue()
 	end
 end
 
-
 function changeMonster(stats)
 	local monsterBoard = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
 	local buttons = monsterBoard.getTable("buttons")
@@ -2869,8 +2905,20 @@ function changeSurvivors(location, amount, grid)
 	obj.call("add", {location, amount})
 end
 
--- Buttons
+function check_edition_loaded()
+	current_edition_loaded = getObjectFromGUID(Global.getTable('user_settings').current_edition.guid)
+	if current_edition_loaded.getDescription() == "community edition" then
+		comm_edit = true
+		off_edit = false
+	else
+		if current_edition_loaded.getDescription() == "official edition" then
+			off_edit = true
+			comm_edit = false
+		end
+	end
+end
 
+-- Buttons ---------------------------------------------------------------------
 function createButtons()
 	self.createButton({label = "", click_function = "dud", function_owner = self,
 		position = { - 7, 0.1, 1}, rotation = {0, 180, 0}, width = 2000,

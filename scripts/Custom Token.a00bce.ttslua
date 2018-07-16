@@ -1,6 +1,3 @@
-
-
-
 -- TABLE OF Contents
   -- Main Menu
   -- Armor Location Functions
@@ -44,17 +41,17 @@ function onLoad()
   zone_gearDeck = getObjectFromGUID('b1ed8f')
   zoneCrafting = getObjectFromGUID(Global.getTable('zones').zoneCrafting.guid)
 
--- Resource zones
-resource = {
-  {zone = getObjectFromGUID('5d45a3'), pos = {x = 54.25, y = 4.19, z = -11.15, offset = -1.61}},
-  {zone = getObjectFromGUID('a53c83'), pos = {x = 64.32, y = 4.19, z = -11.15, offset = 1.61}},
-  {zone = getObjectFromGUID('92493d'), pos = {x = 54.25, y = 4.19, z = -14.82, offset = -1.61}},
-  {zone = getObjectFromGUID('9a2cd2'), pos = {x = 64.32, y = 4.19, z = -14.82, offset = 1.61}},
-  {zone = getObjectFromGUID('dfcc12'), pos = {x = 54.25, y = 4.19, z = -18.52, offset = -1.61}},
-  {zone = getObjectFromGUID('a7fe4d'), pos = {x = 64.32, y = 4.19, z = -18.52, offset = 1.61}},
-  {zone = getObjectFromGUID('093b86'), pos = {x = 54.23, y = 4.19, z = -22.11, offset = -1.61}},
-  {zone = getObjectFromGUID('2d1f97'), pos = {x = 64.35, y = 4.19, z = -22.14, offset = 1.61}}
-}
+	-- Resource zones
+	resource = {
+	  {zone = getObjectFromGUID('5d45a3'), pos = {x = 54.25, y = 4.19, z = -11.15, offset = -1.61}},
+	  {zone = getObjectFromGUID('a53c83'), pos = {x = 64.32, y = 4.19, z = -11.15, offset = 1.61}},
+	  {zone = getObjectFromGUID('92493d'), pos = {x = 54.25, y = 4.19, z = -14.82, offset = -1.61}},
+	  {zone = getObjectFromGUID('9a2cd2'), pos = {x = 64.32, y = 4.19, z = -14.82, offset = 1.61}},
+	  {zone = getObjectFromGUID('dfcc12'), pos = {x = 54.25, y = 4.19, z = -18.52, offset = -1.61}},
+	  {zone = getObjectFromGUID('a7fe4d'), pos = {x = 64.32, y = 4.19, z = -18.52, offset = 1.61}},
+	  {zone = getObjectFromGUID('093b86'), pos = {x = 54.23, y = 4.19, z = -22.11, offset = -1.61}},
+	  {zone = getObjectFromGUID('2d1f97'), pos = {x = 64.35, y = 4.19, z = -22.14, offset = 1.61}}
+	}
 
   zoneBone = getObjectFromGUID('ff4209')
   zoneHide = getObjectFromGUID('ed37f6')
@@ -106,39 +103,74 @@ end --]]
 
 function main_menuButtons()
 
-  self.createButton({click_function = "close_main_menu", function_owner = self, label = "Close Menu", position = {0, 0.3, 2.5},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 500, font_size = 300, color={0,0,0}, font_color={1,1,1}})
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {0,0,0},
+		scale          = {0.5, 0.5, 0.5},
+		width          = 3000,
+		height         = 500,
+		font_size      = 400,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
 
-  self.createButton({click_function = "armor_location_buttons", function_owner = self, label = "[u]Armor Location[/u]", position = {-4.5, 0.1, -1.4},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, -1.4}
+	btn_params.label = "[u]Armor Location[/u]"
+	btn_params.click_function = "armor_location_buttons"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "display_tools", function_owner = self, label = "Tools", position = {-9, 0.1, -1.4},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-9, 0.1, -1.4}
+	btn_params.label = "Tools"
+	btn_params.click_function = "display_tools"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "material_buttons", function_owner = self, label = "[u]Material[/u]", position = {4.5, 0.1, -1.4},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, -1.4}
+	btn_params.label = "[u]Material[/u]"
+	btn_params.click_function = "material_buttons"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "property_buttons", function_owner = self, label = "[u]Properties[/u]", position = {9, 0.1, -1.4},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, -1.4}
+	btn_params.label = "[u]Properties[/u]"
+	btn_params.click_function = "property_buttons"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "settlement_location_buttons", function_owner = self, label = "Settlement Locations", position = {9, 0.1, -2.2},
-  scale = {0.5, 0.5, 0.5}, width = 4000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, -2.2}
+	btn_params.label = "Rare Gear"
+	btn_params.click_function = "rare_gear_display"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "rare_gear_display", function_owner = self, label = "Rare Gear", position = {4.5, 0.1, -2.2},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-9, 0.1, -2.2}
+	btn_params.label = "Weapon Type"
+	btn_params.click_function = "wpn_type_buttons"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "wpn_type_buttons", function_owner = self, label = "Weapon Type", position = {-9, 0.1, -2.2},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, -2.2}
+	btn_params.label = "Weapon Ability"
+	btn_params.click_function = "wpn_ability_buttons"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "wpn_ability_buttons", function_owner = self, label = "Weapon Ability", position = {-4.5, 0.1, -2.2},
-  scale = {0.5, 0.5, 0.5}, width = 3000, height = 500, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.width = 4000
+	btn_params.position = {9, 0.1, -2.2}
+	btn_params.label = "Settlement Locations"
+	btn_params.click_function = "settlement_location_buttons"
+	self.createButton(btn_params)
 
-  local btns = self.getButtons()
-  for i, v in pairs(btns) do
-  	if v.label == "Open Menu" then
-  		self.removeButton(v.index)
-  	end
-  end
+	btn_params.width = 2000
+	btn_params.font_size = 300
+	btn_params.position = {0, 0.3, 2.5}
+	btn_params.label = "Close Menu"
+	btn_params.click_function = "close_main_menu"
+	self.createButton(btn_params)
+
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Open Menu" then
+			self.removeButton(v.index)
+		end
+	end
 
   --self.createButton({click_function = "view_gear_storage", function_owner = self, label = "View Gear Storage", position = {0, 0.5, 1.6}, scale = {0.5, 0.5, 0.5}, width = 2000, height = 500, font_size = 300, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 100}})
 
@@ -146,13 +178,7 @@ end
 
 function close_main_menu()
   storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
+  destroy_copy()
   gear_Table = {}
     self.clearButtons()
 	 createButtons()
@@ -164,29 +190,59 @@ function close_main_menu()
 
 function armor_location_buttons()
 
-  self.createButton({click_function = "display_head", function_owner = self, label = "Head", position = {-4.5, 0.1, -0.7},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {0,0,0},
+		scale          = {0.5, 0.5, 0.5},
+		width          = 2000,
+		height         = 400,
+		font_size      = 400,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
 
-  self.createButton({click_function = "display_arms", function_owner = self, label = "Arms", position = {-4.5, 0.1, -0.2},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, -0.7}
+	btn_params.label = "Head"
+	btn_params.click_function = "display_head"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "display_body", function_owner = self, label = "Body", position = {-4.5, 0.1, 0.3},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, -0.2}
+	btn_params.label = "Arms"
+	btn_params.click_function = "display_arms"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "display_waist", function_owner = self, label = "Waist", position = {-4.5, 0.1, 0.8},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, 0.3}
+	btn_params.label = "Body"
+	btn_params.click_function = "display_body"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "display_legs", function_owner = self, label = "Legs", position = {-4.5, 0.1, 1.3},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, 0.8}
+	btn_params.label = "Waist"
+	btn_params.click_function = "display_waist"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "display_accessory", function_owner = self, label = "Accessories", position = {-4.5, 0.1, 1.8},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, 1.3}
+	btn_params.label = "Legs"
+	btn_params.click_function = "display_legs"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "display_jewelry", function_owner = self, label = "Jewelry", position = {-4.5, 0.1, 2.3},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, 1.8}
+	btn_params.label = "Accessories"
+	btn_params.click_function = "display_accessory"
+	self.createButton(btn_params)
 
-  self.createButton({click_function = "close_armor_locations", function_owner = self, label = "[u]Close Armor[/u]", position = {-4.5, 0.1, 3.3},
-  scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {-4.5, 0.1, 2.3}
+	btn_params.label = "Jewelry"
+	btn_params.click_function = "display_jewelry"
+	self.createButton(btn_params)
+
+	btn_params.position = {-4.5, 0.1, 3.3}
+	btn_params.label = "[u]Close Armor[/u]"
+	btn_params.click_function = "close_armor_locations"
+	self.createButton(btn_params)
 
 end
 
@@ -200,185 +256,66 @@ function close_armor_locations()
 end
 
 function display_head()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-    if object.tag == "Deck" then
-      gearDeck = object
-    end
-  end
-  for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "head") and not string.find(desc, "body") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found for Head Armor")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "head"
+	search_string_omit_1 = "body"
+	display_chat_msg = "Head Armor"
+	get_cards()
 end
 
 function display_arms()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "arms") and not string.find(desc, "head") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found for Arm Armor")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "arms"
+	search_string_omit_1 = "head"
+	display_chat_msg = "Arm Armor"
+	get_cards()
 end
 
 function display_body()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "body") and not string.find(desc, "head") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found for Body Armor")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "body"
+	search_string_omit_1 = "head"
+	display_chat_msg = "Body Armor"
+	get_cards()
 end
 
 function display_waist()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "waist") and not string.find(desc, "head") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found for Waist Armor")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "waist"
+	search_string_omit_1 = "head"
+	display_chat_msg = "Waist Armor"
+	get_cards()
 end
 
 function display_legs()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "legs") and not string.find(desc, "head") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found for legs Armor")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "legs"
+	search_string_omit_1 = "head"
+	display_chat_msg = "Leg Armor"
+	get_cards()
 end
 
 function display_accessory()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "accessory") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Accessory Cards Found")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "accessory"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Accessories Found"
+	get_cards()
 end
 
 function display_jewelry()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "jewelry") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Jewelry Cards Found")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "jewelry"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Jewelry Found"
+	get_cards()
 end
 
 -------------------------------------------------------------------------------
@@ -386,29 +323,59 @@ end
 -------------------------------------------------------------------------------
 
 function material_buttons()
-self.createButton({click_function = "display_amber", function_owner = self, label = "Amber", position = {4.5, 0.1, -0.7},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {0,0,0},
+		scale          = {0.5, 0.5, 0.5},
+		width          = 2000,
+		height         = 400,
+		font_size      = 400,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
 
-self.createButton({click_function = "display_bone", function_owner = self, label = "Bone", position = {4.5, 0.1, -0.2},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, -0.7}
+	btn_params.label = "Amber"
+	btn_params.click_function = "display_amber"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_fur", function_owner = self, label = "Fur", position = {4.5, 0.1, 0.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, -0.2}
+	btn_params.label = "Bone"
+	btn_params.click_function = "display_bone"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_leather", function_owner = self, label = "Leather", position = {4.5, 0.1, 0.8},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, 0.3}
+	btn_params.label = "Fur"
+	btn_params.click_function = "display_fur"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_metal", function_owner = self, label = "Metal", position = {4.5, 0.1, 1.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, 0.8}
+	btn_params.label = "Leather"
+	btn_params.click_function = "display_leather"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_scale", function_owner = self, label = "Scale", position = {4.5, 0.1, 1.8},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, 1.3}
+	btn_params.label = "Metal"
+	btn_params.click_function = "display_metal"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_silk", function_owner = self, label = "Silk", position = {4.5, 0.1, 2.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, 1.8}
+	btn_params.label = "Scale"
+	btn_params.click_function = "display_scale"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "close_material_menu", function_owner = self, label = "[u]Close Materials[/u]", position = {4.5, 0.1, 3.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {4.5, 0.1, 2.3}
+	btn_params.label = "Silk"
+	btn_params.click_function = "display_silk"
+	self.createButton(btn_params)
+
+	btn_params.position = {4.5, 0.1, 3.3}
+	btn_params.label = "[u]Close Materials[/u]"
+	btn_params.click_function = "close_material_menu"
+	self.createButton(btn_params)
 end
 
 function close_material_menu()
@@ -421,246 +388,154 @@ function close_material_menu()
 end
 
 function display_tools()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "tool"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Tools Found"
+	get_cards()
 end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "tool") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'tool' keyword")
+
+function display_tools()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "tool"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Tools Found"
+	get_cards()
 end
 
 function display_bone()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "bone") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'bone' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "bone"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Bone"
+	get_cards()
 end
 
 function display_amber()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "amber") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'amber' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "amber"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Amber"
+	get_cards()
 end
 
 function display_leather()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "leather") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'leather' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "leather"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Leather"
+	get_cards()
 end
 
 function display_metal()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "metal") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'metal' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "metal"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Metal"
+	get_cards()
 end
 
 function display_scale()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "scale") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'scale' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "scale"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Scale"
+	get_cards()
 end
 
 function display_fur()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "fur") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'fur' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "fur"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Fur"
+	get_cards()
 end
 
 function display_silk()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "silk") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'silk' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "silk"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Silk"
+	get_cards()
 end
 
 -------------------------------------------------------------------------------
 -- Properties Functions
 -------------------------------------------------------------------------------
 function property_buttons()
-self.createButton({click_function = "display_consumable", function_owner = self, label = "Consumable", position = {9, 0.1, -0.7},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
 
-self.createButton({click_function = "display_finesse", function_owner = self, label = "Finesse", position = {9, 0.1, -0.2},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {0,0,0},
+		scale          = {0.5, 0.5, 0.5},
+		width          = 2000,
+		height         = 400,
+		font_size      = 400,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
 
-self.createButton({click_function = "display_flammable", function_owner = self, label = "Flammable", position = {9, 0.1, 0.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, -0.7}
+	btn_params.label = "Consumable"
+	btn_params.click_function = "display_consumable"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_fragile", function_owner = self, label = "Fragile", position = {9, 0.1, 0.8},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, -0.2}
+	btn_params.label = "Finesse"
+	btn_params.click_function = "display_finesse"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_lantern", function_owner = self, label = "Lantern", position = {9, 0.1, 1.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, 0.3}
+	btn_params.label = "Flammable"
+	btn_params.click_function = "display_flammable"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_soluble", function_owner = self, label = "Soluble", position = {9, 0.1, 1.8},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, 0.8}
+	btn_params.label = "Fragile"
+	btn_params.click_function = "display_fragile"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_stinky", function_owner = self, label = "Stinky", position = {9, 0.1, 2.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, 1.3}
+	btn_params.label = "Lantern"
+	btn_params.click_function = "display_lantern"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_other", function_owner = self, label = "Other", position = {9, 0.1, 2.8},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, 1.8}
+	btn_params.label = "Soluble"
+	btn_params.click_function = "display_soluble"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "display_oxidized", function_owner = self, label = "Oxidized", position = {9, 0.1, 3.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, 2.3}
+	btn_params.label = "Stinky"
+	btn_params.click_function = "display_stinky"
+	self.createButton(btn_params)
 
-self.createButton({click_function = "close_property_menu", function_owner = self, label = "[u]Close Properties[/u]", position = {9, 0.1, 4.3},
-scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
+	btn_params.position = {9, 0.1, 2.8}
+	btn_params.label = "Other"
+	btn_params.click_function = "display_other"
+	self.createButton(btn_params)
+
+	btn_params.position = {9, 0.1, 3.3}
+	btn_params.label = "Oxidized"
+	btn_params.click_function = "display_oxidized"
+	self.createButton(btn_params)
+
+	btn_params.position = {9, 0.1, 4.3}
+	btn_params.label = "[u]Close Properties[/u]"
+	btn_params.click_function = "close_property_menu"
+	self.createButton(btn_params)
 end
 
 function close_property_menu()
@@ -674,238 +549,94 @@ function close_property_menu()
 end
 
 function display_consumable()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "consumable") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'consumable' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "consumable"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Consumable"
+	get_cards()
 end
 
 function display_finesse()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "finesse") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'finesse' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "finesse"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Finesse"
+	get_cards()
 end
 
 function display_fragile()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "fragile") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'fragile' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "fragile"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Fragile"
+	get_cards()
 end
 
 function display_flammable()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "flammable") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'flammable' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "flammable"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Flammable"
+	get_cards()
 end
 
 function display_lantern()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "lantern") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'lantern' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "lantern"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Lantern"
+	get_cards()
 end
 
 function display_soluble()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "soluble") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'soluble' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "soluble"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Soluble"
+	get_cards()
 end
 
 function display_stinky()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "stinky") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'stinky' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "stinky"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Stinky"
+	get_cards()
 end
 
 function display_other()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "other") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'other' keyword")
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "other"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Other"
+	get_cards()
 end
 
 function display_oxidized()
-  local bag = getObjectFromGUID('93bbbd')
-    bag.call('buttonClick_place')
-  storeResources()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, "resource") then
-      object.destroy()
-    end
-  end
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "oxidized"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Oxidized"
+	get_cards()
 
   location_armor_Table = {}
-  oxidized_pos = {x = 53.00, y = 4.19, z = -25.72}
+  oxidized_pos = {x = 53.00, y = 4.19, z = -26.44}
 
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "oxidized")  then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={oxidized_pos.x + #location_armor_Table  * 2.45, oxidized_pos.y, oxidized_pos.z} }))
-    end
-  end
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "oxidized")  then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={oxidized_pos.x + #location_armor_Table  * 2.45, oxidized_pos.y, oxidized_pos.z} }))
+		end
+	end
 end
 
 -------------------------------------------------------------------------------
@@ -1007,32 +738,1134 @@ function settlement_location_buttons()
   end
 end
 
-function getResources()
+function display_organ_grinder()
+	destroy_copy()
+	settlement_location = "Organ Grinder"
+	set_settlement_location_variables()
+	set_master_gear_deck()
+	organ_grinder_pos = {x = 54.44, y = 4.19, z = -25.72}
 
-  for _, res in pairs(resource) do
-  	for k, v in pairs(res.zone.getObjects()) do
-  		if string.find(v.tag,'Deck') then
-  			getCards(v, true, res.pos.x, res.pos.z, res.pos.offset)
-  		elseif string.find(v.tag, 'Card') then
-  			getCards(v, false, res.pos.x, res.pos.z, res.pos.offset)
-  		end
-  	end
-  end
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "organ grinder") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+			table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={organ_grinder_pos.x + #location_other_Table  * 2.45, organ_grinder_pos.y, organ_grinder_pos.z} }))
+		end
+	end
+
+	broadcastToAll("Organ Grinder", {1,1,1})
+	getResources()
 end
 
-function getCards(card, deck, x, z, offset)
-	if not deck then
-		card.setPosition({x, 4.19, z})
-    card.setScale({0.80, 1.00, 0.80})
-	else
-		for i, v in ipairs(card.getObjects()) do
-		  local moved_card = card.takeObject({position={x +(i-1) * offset, 4.19, z}})
-      moved_card.setScale({0.80, 1.00, 0.80})
+function display_bone_smith()
+	destroy_copy()
+	settlement_location = "Bone Smith"
+	set_settlement_location_variables()
+	set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	bonesmth_arm_pos = {x = 59.09, y = 4.19, z = -25.32}
+	bonesmth_wpn_pos = {x = 52.93, y = 4.19, z = -27.83}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+	  local desc = card.description
+	    if string.find(desc, "bonesmith") and string.find(desc, "armor") then
+	      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={bonesmth_arm_pos.x + #location_armor_Table  * 2.45, bonesmth_arm_pos.y, bonesmth_arm_pos.z } }))
+
+	    elseif string.find(desc, "bonesmith") and string.find(desc, "weapon") then
+	      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={bonesmth_wpn_pos.x + #location_weapon_Table  * 2.45, bonesmth_wpn_pos.y, bonesmth_wpn_pos.z} }))
+
+		end
+	end
+
+  broadcastToAll("BoneSmith", {1,1,1})
+  getResources()
+end
+
+function display_stone_circle()
+	destroy_copy()
+   settlement_location = "Stone Circle"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	stonecirc_armor_pos = {x =54.56, y = 4.19, z = -25.32}
+	stonecirc_weapon_pos = {x = 58.32, y = 4.19, z = -27.73}
+	stonecirc_other_pos = {x = 53.51, y = 4.19, z = -30.16}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+	  local desc = card.description
+	    if string.find(desc, "stone circle") and string.find(desc, "armor") then
+	      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={stonecirc_armor_pos.x + #location_armor_Table  * 2.45, stonecirc_armor_pos.y, stonecirc_armor_pos.z } }))
+
+	    elseif string.find(desc, "stone circle") and string.find(desc, "weapon") then
+	      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={stonecirc_weapon_pos.x + #location_weapon_Table  * 2.45, stonecirc_weapon_pos.y, stonecirc_weapon_pos.z} }))
+
+	    elseif string.find(desc, "stone circle") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+	      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={stonecirc_other_pos.x + #location_other_Table  * 2.45, stonecirc_other_pos.y, stonecirc_other_pos.z} }))
+	    end
+	 end
+  broadcastToAll("Stone Circle", {1,1,1})
+  getResources()
+end
+
+function display_skinnery()
+	destroy_copy()
+   settlement_location = "Skinnery"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	skinnery_armor_pos = {x = 54.46, y = 4.19, z = -25.35}
+	skinnery_other_pos = {x = 55.80, y = 4.19, z = -27.90}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+	  local desc = card.description
+	    if string.find(desc, "skinnery") and string.find(desc, "armor") then
+	      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={skinnery_armor_pos.x + #location_armor_Table  * 2.45, skinnery_armor_pos.y, skinnery_armor_pos.z } }))
+
+	    elseif string.find(desc, "skinnery") then
+	      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={skinnery_other_pos.x + #location_weapon_Table  * 2.45, skinnery_other_pos.y, skinnery_other_pos.z} }))
+	    end
+	end
+  broadcastToAll("Skinnery", {1,1,1})
+  getResources()
+end
+
+function display_catarium()
+	destroy_copy()
+   settlement_location = "Catarium"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	catarium_armor_pos = {x = 51.97, y = 4.19, z = -25.30}
+	catarium_weapon_pos = {x = 53.29, y = 4.19, z = -27.85}
+	catarium_other_pos = {x = 56.87, y = 4.19, z = -30.30}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+	  local desc = card.description
+	    if string.find(desc, "catarium") and string.find(desc, "armor") and not string.find(desc, "dark") then
+	      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_armor_pos.x + #location_armor_Table  * 2.45, catarium_armor_pos.y, catarium_armor_pos.z } }))
+
+	    elseif string.find(desc, "catarium") and string.find(desc, "weapon") and not string.find(desc, "dark") then
+	      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_weapon_pos.x + #location_weapon_Table  * 2.45, catarium_weapon_pos.y, catarium_weapon_pos.z} }))
+
+	    elseif string.find(desc, "catarium")
+			 and not string.find(desc, "weapon")
+			 and not string.find(desc, "armor")
+			 and not string.find(desc, "dark") then
+	      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_other_pos.x + #location_other_Table  * 2.45, catarium_other_pos.y, catarium_other_pos.z} }))
+	    end
+	end
+	broadcastToAll("Catarium", {1,1,1})
+	getResources()
+end
+
+function display_dark_catarium()
+	destroy_copy()
+   settlement_location = "Dark Catarium"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+   local cloned_location = location.clone({position = cloned_location})
+   cloned_location.setScale({7, 1.00, 7})
+   cloned_location.setDescription("copy")
+
+   catarium_armor_pos = {x = 51.97, y = 4.19, z = -25.30}
+   catarium_weapon_pos = {x = 53.29, y = 4.19, z = -27.85}
+   catarium_other_pos = {x = 56.87, y = 4.19, z = -30.30}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+	local desc = card.description
+		if string.find(desc, "dark catarium") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_armor_pos.x + #location_armor_Table  * 2.45, catarium_armor_pos.y, catarium_armor_pos.z } }))
+
+		elseif string.find(desc, "dark catarium") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_weapon_pos.x + #location_weapon_Table  * 2.45, catarium_weapon_pos.y, catarium_weapon_pos.z} }))
+
+		elseif string.find(desc, "dark catarium") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_other_pos.x + #location_other_Table  * 2.45, catarium_other_pos.y, catarium_other_pos.z} }))
+		end
+	end
+   broadcastToAll("Dark Catarium", {1,1,1})
+   getResources()
+end
+
+function display_plumery()
+	destroy_copy()
+   settlement_location = "Plumery"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	plumery_armor_pos = {x = 54.39, y = 4.19, z = -25.36}
+	plumery_weapon_pos = {x = 54.39, y = 4.19, z = -27.91}
+	plumery_other_pos = {x = 54.39, y = 4.19, z = -30.36}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "plumery") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={plumery_armor_pos.x + #location_armor_Table  * 2.45, plumery_armor_pos.y, plumery_armor_pos.z } }))
+
+		elseif string.find(desc, "plumery") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={plumery_weapon_pos.x + #location_weapon_Table  * 2.45, plumery_weapon_pos.y, plumery_weapon_pos.z} }))
+
+		elseif string.find(desc, "plumery") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={plumery_other_pos.x + #location_other_Table  * 2.45, plumery_other_pos.y, plumery_other_pos.z} }))
+		end
+	end
+  broadcastToAll("Plumery", {1,1,1})
+  getResources()
+end
+
+function display_weapon_crafter()
+	destroy_copy()
+   settlement_location = "Weapon Crafter"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	weaponcraf_weapon_pos = {x = 49.35, y = 4.19, z = -25.59}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "weapon crafter") then
+			table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={weaponcraf_weapon_pos.x + #location_armor_Table  * 2.45, weaponcraf_weapon_pos.y, weaponcraf_weapon_pos.z } }))
+		end
+	end
+	broadcastToAll("Weapon Crafter", {1,1,1})
+	getResources()
+end
+
+function display_leather_worker()
+	destroy_copy()
+   settlement_location = "Leather Worker"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	lther_arm_pos = {x = 54.47, y = 4.19, z = -25.33}
+	lther_wpn_pos = {x = 58.10, y = 4.19, z = -27.90}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "leather worker") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={lther_arm_pos.x + #location_armor_Table  * 2.45, lther_arm_pos.y, lther_arm_pos.z } }))
+
+		elseif string.find(desc, "leather worker") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={lther_wpn_pos.x + #location_weapon_Table  * 2.45, lther_wpn_pos.y, lther_wpn_pos.z} }))
+
+		elseif string.find(desc, "leather worker") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={other_Table_pos.x + #location_other_Table  * 2.45, other_Table_pos.y, other_Table_pos.z} }))
+		end
+	end
+	broadcastToAll("Leather Worker", {1,1,1})
+	getResources()
+end
+
+function display_blacksmith()
+	destroy_copy()
+   settlement_location = "Blacksmith"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	blacksmth_wpn_pos = {x= 50.69, y = 4.19, z = -27.76}
+	blacksmth_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "blacksmith") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={blacksmth_arm_pos.x + #location_armor_Table  * 2.45, blacksmth_arm_pos.y, blacksmth_arm_pos.z } }))
+
+		elseif string.find(desc, "blacksmith") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={blacksmth_wpn_pos.x + #location_weapon_Table  * 2.45, blacksmth_wpn_pos.y, blacksmth_wpn_pos.z} }))
+
+		elseif string.find(desc, "blacksmith") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={other_Table_pos.x + #location_other_Table  * 2.45, other_Table_pos.y, other_Table_pos.z} }))
+		end
+	end
+	broadcastToAll("Blacksmith", {1,1,1})
+	getResources()
+end
+
+function display_dragon_armory()
+	destroy_copy()
+   settlement_location = "Dragon Armory"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	drgn_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
+	drgn_wpn_pos = {x = 51.91, y = 4.19, z = -27.73}
+	drgn_other_pos = {x = 56.77, y = 4.19, z = -30.10}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "dragon armory") and string.find(desc, "set") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={drgn_arm_pos.x + #location_armor_Table  * 2.45, drgn_arm_pos.y, drgn_arm_pos.z } }))
+
+		elseif string.find(desc, "dragon armory") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={drgn_wpn_pos.x + #location_weapon_Table  * 2.45, drgn_wpn_pos.y, drgn_wpn_pos.z} }))
+
+		elseif string.find(desc, "dragon armory") and not string.find(desc, "weapon") and not string.find(desc, "set") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={drgn_other_pos.x + #location_other_Table  * 2.45, drgn_other_pos.y, drgn_other_pos.z} }))
+		end
+	end
+	broadcastToAll("Dragon Armory", {1,1,1})
+	getResources()
+end
+
+function display_skyreef()
+	destroy_copy()
+   settlement_location = "Skyreef Sanctuary"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	sky_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
+	sky_wpn_pos = {x = 50.85, y = 4.19, z = -27.69}
+	sky_other_pos = {x = 55.79, y = 4.19, z = -30.10}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "skyreef sanctuary") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={sky_arm_pos.x + #location_armor_Table  * 2.45, sky_arm_pos.y, sky_arm_pos.z } }))
+
+		elseif string.find(desc, "skyreef sanctuary") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={sky_wpn_pos.x + #location_weapon_Table  * 2.45, sky_wpn_pos.y, sky_wpn_pos.z} }))
+
+		elseif string.find(desc, "skyreef sanctuary") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={sky_other_pos.x + #location_other_Table  * 2.45, sky_other_pos.y, sky_other_pos.z} }))
+		end
+	end
+	broadcastToAll("Skyreef Sanctuary", {1,1,1})
+	getResources()
+end
+
+function display_wet_resin()
+	destroy_copy()
+   settlement_location = "Wet Resin Crafter"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	wet_arm_pos = {x= 58.41, y = 4.19, z = -25.26}
+	wet_wpn_pos = {x = 57.25, y = 4.19, z = -27.63}
+	wet_other_pos = {x = 54.94, y = 4.19, z = -30.04}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "wet resin crafter") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={wet_arm_pos.x + #location_armor_Table  * 2.45, wet_arm_pos.y, wet_arm_pos.z } }))
+
+		elseif string.find(desc, "wet resin crafter") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={wet_wpn_pos.x + #location_weapon_Table  * 2.45, wet_wpn_pos.y, wet_wpn_pos.z} }))
+
+		elseif string.find(desc, "wet resin crafter") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={wet_other_pos.x + #location_other_Table  * 2.45, wet_other_pos.y, wet_other_pos.z} }))
+		end
+	end
+	broadcastToAll("Wet Resin Crafter", {1,1,1})
+	getResources()
+end
+
+function display_gormery()
+	destroy_copy()
+   settlement_location = "Gormery"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	gorm_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
+	gorm_wpn_pos = {x = 51.95, y = 4.19, z = -27.67}
+	gorm_other_pos = {x = 56.82, y = 4.19, z = -30.09}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "gormery") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gorm_arm_pos.x + #location_armor_Table  * 2.45, gorm_arm_pos.y, gorm_arm_pos.z } }))
+
+		elseif string.find(desc, "gormery") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gorm_wpn_pos.x + #location_weapon_Table  * 2.45, gorm_wpn_pos.y, gorm_wpn_pos.z} }))
+
+		elseif string.find(desc, "gormery") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gorm_other_pos.x + #location_other_Table  * 2.45, gorm_other_pos.y, gorm_other_pos.z} }))
+		end
+	end
+	broadcastToAll("Gormery", {1,1,1})
+	getResources()
+end
+
+function display_gormchymist()
+	destroy_copy()
+   settlement_location = "Gormchymist"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	gormchym_pos = {x = 54.45, y = 4.19, z = -25.66}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "gormchymist") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gormchym_pos.x + #location_armor_Table  * 2.45, gormchym_pos.y, gormchym_pos.z } }))
+		end
+	end
+	broadcastToAll("Gormchymist", {1,1,1})
+	getResources()
+end
+
+function display_silk_mill()
+	destroy_copy()
+   settlement_location = "Silk Mill"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	silk_arm_pos = {x = 50.93, y = 4.19, z = -25.26}
+	silk_wpn_pos = {x = 54.55, y = 4.19, z = -27.67}
+	silk_other_pos = {x = 58.34, y = 4.19, z = -30.08}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "silk mill") and string.find(desc, "armor") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={silk_arm_pos.x + #location_armor_Table  * 2.45, silk_arm_pos.y, silk_arm_pos.z } }))
+
+		elseif string.find(desc, "silk mill") and string.find(desc, "weapon") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={silk_wpn_pos.x + #location_weapon_Table  * 2.45, silk_wpn_pos.y, silk_wpn_pos.z} }))
+
+		elseif string.find(desc, "silk mill") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
+		table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={silk_other_pos.x + #location_other_Table  * 2.45, silk_other_pos.y, silk_other_pos.z} }))
+		end
+	end
+	broadcastToAll("Silk Mill", {1,1,1})
+	getResources()
+end
+
+function display_green_knight()
+	destroy_copy()
+   settlement_location = "Green Knight"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	green_arm_pos = {x = 54.56, y = 4.19, z = -25.88}
+	green_wpn_pos = {x = 59.46, y = 4.19, z = -28.29}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "green knight") and string.find(desc, "armor") and not string.find(desc, "shield") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={green_arm_pos.x + #location_armor_Table  * 2.45, green_arm_pos.y, green_arm_pos.z } }))
+
+		elseif string.find(desc, "green knight") and string.find(desc, "shield") then
+		table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={green_wpn_pos.x + #location_weapon_Table  * 2.45, green_wpn_pos.y, green_wpn_pos.z} }))
+		end
+	end
+	broadcastToAll("Song of the Green Knight", {1,1,1})
+	getResources()
+end
+
+function display_barber_surgeon()
+	destroy_copy()
+   settlement_location = "Barber Surgeon"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	barb_pos = {x = 50.59, y = 4.19, z = -25.49}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "barber surgeon") then
+		table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={barb_pos.x + #location_armor_Table  * 2.45, barb_pos.y, barb_pos.z } }))
+		end
+	end
+	broadcastToAll("Barber Surgeon", {1,1,1})
+	getResources()
+end
+
+function display_mask_maker()
+	destroy_copy()
+   settlement_location = "Mask Maker"
+   set_settlement_location_variables()
+   set_master_gear_deck()
+	local cloned_location = location.clone({position = cloned_location})
+	cloned_location.setScale({4.51, 1.00, 4.51})
+	cloned_location.setDescription("copy")
+
+	mask_pos_Table = {}
+	mask_pos = {x = 53.41, y = 4.19, z = -25.41}
+
+	for _, card in ipairs(gearDeck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, "mask maker") then
+		table.insert(mask_pos_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={mask_pos.x + #mask_pos_Table  * 2.45, mask_pos.y, mask_pos.z } }))
+		end
+	end
+	broadcastToAll("Mask Maker", {1,1,1})
+	getResources()
+end
+
+-------------------------------------------------------------------------------
+-- Rare Gear
+-------------------------------------------------------------------------------
+
+function rare_gear_display()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "rare"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Rare"
+	get_cards()
+end
+
+-------------------------------------------------------------------------------
+-- Weapon Type Functions
+-------------------------------------------------------------------------------
+
+function wpn_type_buttons()
+
+  local buttons = self.getButtons()
+  for i, v in pairs(buttons) do
+    if v.index >= 10 then
+        self.removeButton(v.index)
+    end
+  end
+
+  local btn_params = {
+	  click_function = "",
+	  function_owner = self,
+	  label          = "",
+	  position       = {},
+	  rotation       = {0,0,0},
+	  scale          = {0.5, 0.5, 0.5},
+	  width          = 2900,
+	  height         = 500,
+	  font_size      = 400,
+	  color          = {0,0,0},
+	  font_color     = {1,1,1},
+  }
+
+  btn_params.position = {-7.5, 0.1, -4.2}
+  btn_params.label = "Axe"
+  btn_params.click_function = "display_axe"
+  self.createButton(btn_params)
+
+  btn_params.position = {-4.5, 0.1, -4.2}
+  btn_params.label = "Bow"
+  btn_params.click_function = "display_bow"
+  self.createButton(btn_params)
+
+  btn_params.position = {-1.5, 0.1, -4.2}
+  btn_params.label = "Club"
+  btn_params.click_function = "display_club"
+  self.createButton(btn_params)
+
+  btn_params.position = {1.5, 0.1, -4.2}
+  btn_params.label = "Dagger"
+  btn_params.click_function = "display_dagger"
+  self.createButton(btn_params)
+
+  btn_params.position = {4.5, 0.1, -4.2}
+  btn_params.label = "Grand Weapon"
+  btn_params.click_function = "display_grandweapon"
+  self.createButton(btn_params)
+
+  btn_params.position = {7.5, 0.1, -4.2}
+  btn_params.label = "Katana"
+  btn_params.click_function = "display_katana"
+  self.createButton(btn_params)
+
+  btn_params.position = {-7.5, 0.1, -3.6}
+  btn_params.label = "Katar"
+  btn_params.click_function = "display_katar"
+  self.createButton(btn_params)
+
+  btn_params.position = {-4.5, 0.1, -3.6}
+  btn_params.label = "Scythe"
+  btn_params.click_function = "display_scythe"
+  self.createButton(btn_params)
+
+  btn_params.position = {-1.5, 0.1, -3.6}
+  btn_params.label = "Shield"
+  btn_params.click_function = "display_shield"
+  self.createButton(btn_params)
+
+  btn_params.position = {1.5, 0.1, -3.6}
+  btn_params.label = "Spear"
+  btn_params.click_function = "display_spear"
+  self.createButton(btn_params)
+
+  btn_params.position = {4.5, 0.1, -3.6}
+  btn_params.label = "Sword"
+  btn_params.click_function = "display_sword"
+  self.createButton(btn_params)
+
+  btn_params.position = {7.5, 0.1, -3.6}
+  btn_params.label = "Whip"
+  btn_params.click_function = "display_whip"
+  self.createButton(btn_params)
+end
+
+function display_axe()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "axe"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Axe"
+	get_cards()
+end
+
+function display_bow()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "bow"
+	search_string_add_2 = "arrow"
+	search_string_add_3 = "quiver"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Bows, Arrows and Quivers"
+	get_cards()
+end
+
+function display_club()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "club"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Club"
+	get_cards()
+end
+
+function display_dagger()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "dagger"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Dagger"
+	get_cards()
+end
+
+function display_grandweapon()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "grand weapon"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Grand Weapon"
+	get_cards()
+end
+
+function display_katana()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "katana"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Katana"
+	get_cards()
+end
+
+function display_katar()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "katar"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Katar"
+	get_cards()
+end
+
+function display_scythe()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "scythe"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Scythe"
+	get_cards()
+end
+
+function display_shield()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "shield"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Shield"
+	get_cards()
+end
+
+function display_sword()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "sword"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Sword"
+	get_cards()
+end
+
+function display_spear()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "spear"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Spear"
+	get_cards()
+end
+
+function display_whip()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "whip"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Whip"
+	get_cards()
+end
+
+
+-------------------------------------------------------------------------------
+-- Weapon Ability Functions
+-------------------------------------------------------------------------------
+
+function wpn_ability_buttons()
+
+  local buttons = self.getButtons()
+  for i, v in pairs(buttons) do
+    if v.index >= 10 then
+        self.removeButton(v.index)
+    end
+  end
+
+  local btn_params = {
+	  click_function = "",
+	  function_owner = self,
+	  label          = "",
+	  position       = {},
+	  rotation       = {0,0,0},
+	  scale          = {0.5, 0.5, 0.5},
+	  width          = 2900,
+	  height         = 500,
+	  font_size      = 400,
+	  color          = {0,0,0},
+	  font_color     = {1,1,1},
+  }
+
+  btn_params.position = {-4.5, 0.1, -4.2}
+  btn_params.label = "Deadly"
+  btn_params.click_function = "display_deadly"
+  self.createButton(btn_params)
+
+  btn_params.position = {-1.5, 0.1, -4.2}
+  btn_params.label = "Devastating"
+  btn_params.click_function = "display_devastating"
+  self.createButton(btn_params)
+
+  btn_params.position = {1.5, 0.1, -4.2}
+  btn_params.label = "Paired"
+  btn_params.click_function = "display_paired"
+  self.createButton(btn_params)
+
+  btn_params.position = {4.5, 0.1, -4.2}
+  btn_params.label = "Perfect Hit"
+  btn_params.click_function = "display_perfectHit"
+  self.createButton(btn_params)
+
+  btn_params.position = {7.5, 0.1, -4.2}
+  btn_params.label = "Range"
+  btn_params.click_function = "display_range"
+  self.createButton(btn_params)
+
+  btn_params.position = {-7.5, 0.1, -3.6}
+  btn_params.label = "Reach"
+  btn_params.click_function = "display_reach"
+  self.createButton(btn_params)
+
+  btn_params.position = {-4.5, 0.1, -3.6}
+  btn_params.label = "Savage"
+  btn_params.click_function = "display_savage"
+  self.createButton(btn_params)
+
+  btn_params.position = {-1.5, 0.1, -3.6}
+  btn_params.label = "Sentient"
+  btn_params.click_function = "display_sentient"
+  self.createButton(btn_params)
+
+  btn_params.position = {1.5, 0.1, -3.6}
+  btn_params.label = "Sharp"
+  btn_params.click_function = "display_sharp"
+  self.createButton(btn_params)
+
+  btn_params.position = {4.5, 0.1, -3.6}
+  btn_params.label = "Slow"
+  btn_params.click_function = "display_slow"
+  self.createButton(btn_params)
+
+  btn_params.position = {7.5, 0.1, -3.6}
+  btn_params.label = "Unique"
+  btn_params.click_function = "display_unique"
+  self.createButton(btn_params)
+end
+
+function display_deadly()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "deadly"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Deadly"
+	get_cards()
+end
+
+function display_devastating()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "devastating"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Devastating"
+	get_cards()
+end
+
+function display_paired()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "paired"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Paired"
+	get_cards()
+end
+
+function display_perfectHit()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "perfectHit"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Perfect Hit"
+	get_cards()
+end
+
+function display_range()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "range"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Range"
+	get_cards()
+end
+
+function display_reach()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "reach"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Reach"
+	get_cards()
+end
+
+function display_savage()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "savage"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Savage"
+	get_cards()
+end
+
+function display_sentient()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "sentient"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Sentient"
+	get_cards()
+end
+
+function display_sharp()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "sharp"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Sharp"
+	get_cards()
+end
+
+function display_slow()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "slow"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Slow"
+	get_cards()
+end
+
+function display_unique()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "unique"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Unique"
+	get_cards()
+end
+
+
+
+-------------------------------------------------------------------------------
+-- Affinity Functions
+-------------------------------------------------------------------------------
+
+function red_perm()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "red_perm"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Permanent Red Affinity"
+	get_cards()
+end
+
+function green_perm()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "green_perm"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Permanent Green Affinity"
+	get_cards()
+end
+
+function blue_perm()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "blue_perm"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Permanent Blue Affinity"
+	get_cards()
+end
+
+function red_up()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "red_up"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Red Up Affinity"
+	get_cards()
+end -- end function
+
+function red_down()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "red_down"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Red Down Affinity"
+	get_cards()
+end
+
+function red_left()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "red_left"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Red Left Affinity"
+	get_cards()
+end
+
+function red_right()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "red_right"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Red Right Affinity"
+	get_cards()
+end
+
+function green_up()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "green_up"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Green Up Affinity"
+	get_cards()
+end
+
+function green_down()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "green_down"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Green Down Affinity"
+	get_cards()
+end
+
+function green_left()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "green_left"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Green Left Affinity"
+	get_cards()
+end
+
+function green_right()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "green_right"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Green Right Affinity"
+	get_cards()
+end
+
+function blue_up()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "blue_up"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Blue Up Affinity"
+	get_cards()
+end
+
+function blue_down()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "blue_down"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Blue Down Affinity"
+	get_cards()
+end
+
+function blue_left()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "blue_left"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Blue Left Affinity"
+	get_cards()
+end
+
+function blue_right()
+	storeResources()
+	destroy_copy()
+	search_string_add_1 = "blue_right"
+	search_string_omit_1 = "nil"
+	display_chat_msg = "Blue Right Affinity"
+	get_cards()
+end
+
+-------------------------------------------------------------------------------
+-- Utility Functions
+-------------------------------------------------------------------------------
+function destroy_copy()
+	for _, object in ipairs(zone.getObjects()) do
+	  local desc = object.getDescription()
+	  if string.find(desc, "copy") then
+		 object.destroy()
+	  end
+	end
+end
+
+function set_settlement_location_variables()
+	for _, card in ipairs(zoneCrafting.getObjects()) do
+		if card.getName() == settlement_location then
+			location = card
+			break
+		end
+	end
+	location_armor_Table = {}
+	location_weapon_Table = {}
+	location_other_Table = {}
+end
+
+function set_master_gear_deck()
+	for _, object in ipairs(zone_gearDeck.getObjects()) do
+		if object.tag == "Deck" then
+			gearDeck = object
+			break
 		end
 	end
 end
 
+-- Gets the Gear Cards from the Master Gear Deck
+function get_cards()
+	gear_Table = {}
+   local count = 0
+   for _, object in ipairs(zone_gearDeck.getObjects()) do
+     if object.tag == "Deck" then
+       gearDeck = object
+     end
+   end
+   for _, card in ipairs(gearDeck.getObjects()) do
+   local desc = card.description
+     if string.find(desc, search_string_add_1) and not string.find(desc, search_string_omit_1) then
+       count = count + 1
+       table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
+       end
+     end
+   print(count .. " cards found for " .. display_chat_msg)
+end
 
+function onObjectLeaveScriptingZone(zone, leave_object)
+  if zone == getObjectFromGUID(Global.getTable('zones').zoneGearStation.guid) then
+    for k, obj in pairs(gear_Table) do
+      if obj == leave_object then
+          table.remove(gear_Table, k)
+          break
+      end
+    end
+  end
+end
+
+function getResources()
+	for _, res in pairs(resource) do
+		for k, v in pairs(res.zone.getObjects()) do
+			if string.find(v.tag,'Deck') then
+				getCards(v, true, res.pos.x, res.pos.z, res.pos.offset)
+			elseif string.find(v.tag, 'Card') then
+				getCards(v, false, res.pos.x, res.pos.z, res.pos.offset)
+			end
+		end
+	end
+end
+
+-- Gets the Resource Cards from the Settlement Storage
+function getCards(card, deck, x, z, offset)
+	if not deck then
+		card.setPosition({x, 4.19, z})
+	 	card.setScale({0.80, 1.00, 0.80})
+	else
+		for i, v in ipairs(card.getObjects()) do
+		  local moved_card = card.takeObject({position={x +(i-1) * offset, 4.19, z}})
+	   	moved_card.setScale({0.80, 1.00, 0.80})
+		end
+	end
+end
+
+-- Returns Resources to Settlement Storage
 function storeResources()
   for k, v in pairs(zoneBone.getObjects()) do
     local desc = v.getDescription()
@@ -1092,1882 +1925,12 @@ function storeResources()
   end
 end -- end function
 
-function display_organ_grinder()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('619711')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  organ_grinder_pos = {x = 54.44, y = 4.19, z = -25.72}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "organ grinder") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={organ_grinder_pos.x + #location_other_Table  * 2.45, organ_grinder_pos.y, organ_grinder_pos.z} }))
-    end
-  end
-  broadcastToAll("Organ Grinder", {1,1,1})
-  getResources()
-end
-
-function display_bone_smith()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('6ec9a9')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  bonesmth_arm_pos = {x = 59.09, y = 4.19, z = -25.32}
-  bonesmth_wpn_pos = {x = 52.93, y = 4.19, z = -27.83}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "bonesmith") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={bonesmth_arm_pos.x + #location_armor_Table  * 2.45, bonesmth_arm_pos.y, bonesmth_arm_pos.z } }))
-
-    elseif string.find(desc, "bonesmith") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={bonesmth_wpn_pos.x + #location_weapon_Table  * 2.45, bonesmth_wpn_pos.y, bonesmth_wpn_pos.z} }))
-
-    end
-  end
-
-  broadcastToAll("BoneSmith", {1,1,1})
-  getResources()
-end
-
-function display_stone_circle()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('7b0a17')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  stonecirc_armor_pos = {x =54.56, y = 4.19, z = -25.32}
-  stonecirc_weapon_pos = {x = 58.32, y = 4.19, z = -27.73}
-  stonecirc_other_pos = {x = 53.51, y = 4.19, z = -30.16}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "stone circle") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={stonecirc_armor_pos.x + #location_armor_Table  * 2.45, stonecirc_armor_pos.y, stonecirc_armor_pos.z } }))
-
-    elseif string.find(desc, "stone circle") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={stonecirc_weapon_pos.x + #location_weapon_Table  * 2.45, stonecirc_weapon_pos.y, stonecirc_weapon_pos.z} }))
-
-    elseif string.find(desc, "stone circle") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={stonecirc_other_pos.x + #location_other_Table  * 2.45, stonecirc_other_pos.y, stonecirc_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Stone Circle", {1,1,1})
-  getResources()
-end
-
-function display_skinnery()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('39685b')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  skinnery_armor_pos = {x = 54.46, y = 4.19, z = -25.35}
-  skinnery_other_pos = {x = 55.80, y = 4.19, z = -27.90}
-
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "skinnery") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={skinnery_armor_pos.x + #location_armor_Table  * 2.45, skinnery_armor_pos.y, skinnery_armor_pos.z } }))
-
-    elseif string.find(desc, "skinnery") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={skinnery_other_pos.x + #location_weapon_Table  * 2.45, skinnery_other_pos.y, skinnery_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Skinnery", {1,1,1})
-  getResources()
-end
-
-function display_catarium()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('9c0c56')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  catarium_armor_pos = {x = 51.97, y = 4.19, z = -25.30}
-  catarium_weapon_pos = {x = 53.29, y = 4.19, z = -27.85}
-  catarium_other_pos = {x = 56.87, y = 4.19, z = -30.30}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "catarium") and string.find(desc, "armor") and not string.find(desc, "dark") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_armor_pos.x + #location_armor_Table  * 2.45, catarium_armor_pos.y, catarium_armor_pos.z } }))
-
-    elseif string.find(desc, "catarium") and string.find(desc, "weapon") and not string.find(desc, "dark") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_weapon_pos.x + #location_weapon_Table  * 2.45, catarium_weapon_pos.y, catarium_weapon_pos.z} }))
-
-    elseif string.find(desc, "catarium")
-		 and not string.find(desc, "weapon")
-		 and not string.find(desc, "armor")
-		 and not string.find(desc, "dark") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_other_pos.x + #location_other_Table  * 2.45, catarium_other_pos.y, catarium_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Catarium", {1,1,1})
-  getResources()
-end
-
-function display_dark_catarium()
-	for _, object in ipairs(zone.getObjects()) do
-     local desc = object.getDescription()
-     if string.find(desc, "copy") and not string.find(desc, 'resource') then
-       object.destroy()
-     end
-   end
-
-   local location = getObjectFromGUID('73aac2')
-   local cloned_location = location.clone({position = cloned_location})
-   cloned_location.setScale({4.51, 1.00, 4.51})
-   cloned_location.setDescription("copy")
-
-   location_armor_Table = {}
-   location_weapon_Table = {}
-   location_other_Table = {}
-   catarium_armor_pos = {x = 51.97, y = 4.19, z = -25.30}
-   catarium_weapon_pos = {x = 53.29, y = 4.19, z = -27.85}
-   catarium_other_pos = {x = 56.87, y = 4.19, z = -30.30}
-
-   for _, object in ipairs(zone_gearDeck.getObjects()) do
-   if object.tag == "Deck" then
-     gearDeck = object
-   end
- end
- for _, card in ipairs(gearDeck.getObjects()) do
-   local desc = card.description
-     if string.find(desc, "dark catarium") and string.find(desc, "armor") then
-       table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_armor_pos.x + #location_armor_Table  * 2.45, catarium_armor_pos.y, catarium_armor_pos.z } }))
-
-     elseif string.find(desc, "dark catarium") and string.find(desc, "weapon") then
-       table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_weapon_pos.x + #location_weapon_Table  * 2.45, catarium_weapon_pos.y, catarium_weapon_pos.z} }))
-
-     elseif string.find(desc, "dark catarium") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-       table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={catarium_other_pos.x + #location_other_Table  * 2.45, catarium_other_pos.y, catarium_other_pos.z} }))
-     end
-   end
-   broadcastToAll("Dark Catarium", {1,1,1})
-   getResources()
-end
-
-function display_plumery()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('4d3baf')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  plumery_armor_pos = {x = 54.39, y = 4.19, z = -25.36}
-  plumery_weapon_pos = {x = 54.39, y = 4.19, z = -27.91}
-  plumery_other_pos = {x = 54.39, y = 4.19, z = -30.36}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "plumery") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={plumery_armor_pos.x + #location_armor_Table  * 2.45, plumery_armor_pos.y, plumery_armor_pos.z } }))
-
-    elseif string.find(desc, "plumery") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={plumery_weapon_pos.x + #location_weapon_Table  * 2.45, plumery_weapon_pos.y, plumery_weapon_pos.z} }))
-
-    elseif string.find(desc, "plumery") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={plumery_other_pos.x + #location_other_Table  * 2.45, plumery_other_pos.y, plumery_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Plumery", {1,1,1})
-  getResources()
-end
-
-function display_weapon_crafter()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('efd635')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  weaponcraf_weapon_pos = {x = 49.35, y = 4.19, z = -25.59}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "weapon crafter") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={weaponcraf_weapon_pos.x + #location_armor_Table  * 2.45, weaponcraf_weapon_pos.y, weaponcraf_weapon_pos.z } }))
-    end
-  end
-  broadcastToAll("Weapon Crafter", {1,1,1})
-  getResources()
-end
-
-function display_leather_worker()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('271d46')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  lther_arm_pos = {x = 54.47, y = 4.19, z = -25.33}
-  lther_wpn_pos = {x = 58.10, y = 4.19, z = -27.90}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "leather worker") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={lther_arm_pos.x + #location_armor_Table  * 2.45, lther_arm_pos.y, lther_arm_pos.z } }))
-
-    elseif string.find(desc, "leather worker") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={lther_wpn_pos.x + #location_weapon_Table  * 2.45, lther_wpn_pos.y, lther_wpn_pos.z} }))
-
-    elseif string.find(desc, "leather worker") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={other_Table_pos.x + #location_other_Table  * 2.45, other_Table_pos.y, other_Table_pos.z} }))
-    end
-  end
-  broadcastToAll("Leather Worker", {1,1,1})
-  getResources()
-end
-
-function display_blacksmith()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('8efeba')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  blacksmth_wpn_pos = {x= 50.69, y = 4.19, z = -27.76}
-  blacksmth_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "blacksmith") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={blacksmth_arm_pos.x + #location_armor_Table  * 2.45, blacksmth_arm_pos.y, blacksmth_arm_pos.z } }))
-
-    elseif string.find(desc, "blacksmith") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={blacksmth_wpn_pos.x + #location_weapon_Table  * 2.45, blacksmth_wpn_pos.y, blacksmth_wpn_pos.z} }))
-
-    elseif string.find(desc, "blacksmith") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={other_Table_pos.x + #location_other_Table  * 2.45, other_Table_pos.y, other_Table_pos.z} }))
-    end
-  end
-  broadcastToAll("Blacksmith", {1,1,1})
-  getResources()
-end
-
-function display_dragon_armory()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('d37625')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  drgn_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
-  drgn_wpn_pos = {x = 51.91, y = 4.19, z = -27.73}
-  drgn_other_pos = {x = 56.77, y = 4.19, z = -30.10}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "dragon armory") and string.find(desc, "set") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={drgn_arm_pos.x + #location_armor_Table  * 2.45, drgn_arm_pos.y, drgn_arm_pos.z } }))
-
-    elseif string.find(desc, "dragon armory") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={drgn_wpn_pos.x + #location_weapon_Table  * 2.45, drgn_wpn_pos.y, drgn_wpn_pos.z} }))
-
-    elseif string.find(desc, "dragon armory") and not string.find(desc, "weapon") and not string.find(desc, "set") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={drgn_other_pos.x + #location_other_Table  * 2.45, drgn_other_pos.y, drgn_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Dragon Armory", {1,1,1})
-  getResources()
-end
-
-function display_skyreef()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('8dc1dd')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  sky_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
-  sky_wpn_pos = {x = 50.85, y = 4.19, z = -27.69}
-  sky_other_pos = {x = 55.79, y = 4.19, z = -30.10}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "skyreef sanctuary") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={sky_arm_pos.x + #location_armor_Table  * 2.45, sky_arm_pos.y, sky_arm_pos.z } }))
-
-    elseif string.find(desc, "skyreef sanctuary") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={sky_wpn_pos.x + #location_weapon_Table  * 2.45, sky_wpn_pos.y, sky_wpn_pos.z} }))
-
-    elseif string.find(desc, "skyreef sanctuary") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={sky_other_pos.x + #location_other_Table  * 2.45, sky_other_pos.y, sky_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Skyreef Sanctuary", {1,1,1})
-  getResources()
-end
-
-function display_wet_resin()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('637eae')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  wet_arm_pos = {x= 58.41, y = 4.19, z = -25.26}
-  wet_wpn_pos = {x = 57.25, y = 4.19, z = -27.63}
-  wet_other_pos = {x = 54.94, y = 4.19, z = -30.04}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "wet resin crafter") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={wet_arm_pos.x + #location_armor_Table  * 2.45, wet_arm_pos.y, wet_arm_pos.z } }))
-
-    elseif string.find(desc, "wet resin crafter") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={wet_wpn_pos.x + #location_weapon_Table  * 2.45, wet_wpn_pos.y, wet_wpn_pos.z} }))
-
-    elseif string.find(desc, "wet resin crafter") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={wet_other_pos.x + #location_other_Table  * 2.45, wet_other_pos.y, wet_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Wet Resin Crafter", {1,1,1})
-  getResources()
-end
-
-function display_gormery()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('8dc1f1')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  gorm_arm_pos = {x = 54.37, y = 4.19, z = -25.32}
-  gorm_wpn_pos = {x = 51.95, y = 4.19, z = -27.67}
-  gorm_other_pos = {x = 56.82, y = 4.19, z = -30.09}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "gormery") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gorm_arm_pos.x + #location_armor_Table  * 2.45, gorm_arm_pos.y, gorm_arm_pos.z } }))
-
-    elseif string.find(desc, "gormery") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gorm_wpn_pos.x + #location_weapon_Table  * 2.45, gorm_wpn_pos.y, gorm_wpn_pos.z} }))
-
-    elseif string.find(desc, "gormery") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gorm_other_pos.x + #location_other_Table  * 2.45, gorm_other_pos.y, gorm_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Gormery", {1,1,1})
-  getResources()
-end
-
-function display_gormchymist()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('012e7c')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  gormchym_pos = {x = 54.45, y = 4.19, z = -25.66}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "gormchymist") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={gormchym_pos.x + #location_armor_Table  * 2.45, gormchym_pos.y, gormchym_pos.z } }))
-    end
-  end
-  broadcastToAll("Gormchymist", {1,1,1})
-  getResources()
-end
-
-function display_silk_mill()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('5060c8')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  silk_arm_pos = {x = 50.93, y = 4.19, z = -25.26}
-  silk_wpn_pos = {x = 54.55, y = 4.19, z = -27.67}
-  silk_other_pos = {x = 58.34, y = 4.19, z = -30.08}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "silk mill") and string.find(desc, "armor") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={silk_arm_pos.x + #location_armor_Table  * 2.45, silk_arm_pos.y, silk_arm_pos.z } }))
-
-    elseif string.find(desc, "silk mill") and string.find(desc, "weapon") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={silk_wpn_pos.x + #location_weapon_Table  * 2.45, silk_wpn_pos.y, silk_wpn_pos.z} }))
-
-    elseif string.find(desc, "silk mill") and not string.find(desc, "weapon") and not string.find(desc, "armor") then
-      table.insert(location_other_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={silk_other_pos.x + #location_other_Table  * 2.45, silk_other_pos.y, silk_other_pos.z} }))
-    end
-  end
-  broadcastToAll("Silk Mill", {1,1,1})
-  getResources()
-end
-
-function display_green_knight()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('8fa232')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  location_weapon_Table = {}
-  location_other_Table = {}
-  green_arm_pos = {x = 54.56, y = 4.19, z = -25.88}
-  green_wpn_pos = {x = 59.46, y = 4.19, z = -28.29}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "green knight") and string.find(desc, "armor") and not string.find(desc, "shield") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={green_arm_pos.x + #location_armor_Table  * 2.45, green_arm_pos.y, green_arm_pos.z } }))
-
-    elseif string.find(desc, "green knight") and string.find(desc, "shield") then
-      table.insert(location_weapon_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={green_wpn_pos.x + #location_weapon_Table  * 2.45, green_wpn_pos.y, green_wpn_pos.z} }))
-    end
-  end
-  broadcastToAll("Song of the Green Knight", {1,1,1})
-  getResources()
-end
-
-function display_barber_surgeon()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('458271')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  location_armor_Table = {}
-  barb_pos = {x = 50.59, y = 4.19, z = -25.49}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "barber surgeon") then
-      table.insert(location_armor_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={barb_pos.x + #location_armor_Table  * 2.45, barb_pos.y, barb_pos.z } }))
-    end
-  end
-  broadcastToAll("Barber Surgeon", {1,1,1})
-  getResources()
-end
-
-function display_mask_maker()
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") and not string.find(desc, 'resource') then
-      object.destroy()
-    end
-  end
-
-  local location = getObjectFromGUID('50de46')
-  local cloned_location = location.clone({position = cloned_location})
-  cloned_location.setScale({4.51, 1.00, 4.51})
-  cloned_location.setDescription("copy")
-
-  mask_pos_Table = {}
-  mask_pos = {x = 53.41, y = 4.19, z = -25.41}
-
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "mask maker") then
-      table.insert(mask_pos_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position={mask_pos.x + #mask_pos_Table  * 2.45, mask_pos.y, mask_pos.z } }))
-    end
-  end
-  broadcastToAll("Mask Maker", {1,1,1})
-  getResources()
-end
-
--------------------------------------------------------------------------------
--- Rare Gear
--------------------------------------------------------------------------------
-
-function rare_gear_display()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "rare") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with the 'rare' keyword")
-end
-
--------------------------------------------------------------------------------
--- Weapon Type Functions
--------------------------------------------------------------------------------
-
-function wpn_type_buttons()
-
-  local buttons = self.getButtons()
-  for i, v in pairs(buttons) do
-    if v.index >= 10 then
-        self.removeButton(v.index)
-    end
-  end
-
-self.createButton({click_function = "display_axe", function_owner = self, label = "Axe", position = {-7.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_bow", function_owner = self, label = "Bow", position = {-4.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_club", function_owner = self, label = "Club", position = {-1.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_dagger", function_owner = self, label = "Dagger", position = {1.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_grandweapon", function_owner = self, label = "Grand Weapon", position = {4.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_katana", function_owner = self, label = "Katana", position = {7.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_katar", function_owner = self, label = "Katar", position = {-7.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_scythe", function_owner = self, label = "Scythe", position = {-4.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_shield", function_owner = self, label = "Shield", position = {-1.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_spear", function_owner = self, label = "Spear", position = {1.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_sword", function_owner = self, label = "Sword", position = {4.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_whip", function_owner = self, label = "Whip", position = {7.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-end
-
-function display_axe()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "axe") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Axes Found")
-  end
-
-function display_bow()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "bow") or string.find(desc, "arrow") or string.find(desc, "quiver") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Bows, Arrows and Quivers Found")
-end
-
-function display_club()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "club") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Clubs Found")
-end
-
-function display_dagger()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "dagger") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Daggers Found")
-end
-
-function display_grandweapon()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "grand weapon") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Grand Weapons Found")
-end
-
-function display_katana()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "katana") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Katanas Found")
-end
-
-function display_katar()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "katar") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Katars Found")
-end
-
-function display_scythe()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "scythe") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Scythe Found")
-end
-
-function display_shield()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "shield") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Shields Found")
-end
-
-function display_sword()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "sword") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Swords Found")
-end
-
-function display_spear()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "spear") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Spears Found")
-end
-
-function display_whip()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "whip") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Whips Found")
-end
-
-
--------------------------------------------------------------------------------
--- Weapon Ability Functions
--------------------------------------------------------------------------------
-
-function wpn_ability_buttons()
-
-  local buttons = self.getButtons()
-  for i, v in pairs(buttons) do
-    if v.index >= 10 then
-        self.removeButton(v.index)
-    end
-  end
-
-self.createButton({click_function = "display_deadly", function_owner = self, label = "Deadly", position = {-4.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_devastating", function_owner = self, label = "Devastating", position = {-1.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_paired", function_owner = self, label = "Paired", position = {1.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_perfectHit", function_owner = self, label = "Perfect Hit", position = {4.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_range", function_owner = self, label = "Range", position = {7.5, 0.1, -4.2},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_reach", function_owner = self, label = "Reach", position = {-7.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_savage", function_owner = self, label = "Savage", position = {-4.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_sentient", function_owner = self, label = "Sentient", position = {-1.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_sharp", function_owner = self, label = "Sharp", position = {1.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_slow", function_owner = self, label = "Slow", position = {4.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-
-self.createButton({click_function = "display_unique", function_owner = self, label = "Unique", position = {7.5, 0.1, -3.6},
-scale = {0.5, 0.5, 0.5}, width = 2900, height = 400, font_size = 400, color={0,0,0}, font_color={1,1,1}})
-end
-
-function display_deadly()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "deadly") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'deadly' keyword found")
-end
-
-function display_devastating()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "devastating") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'devastating' keyword found")
-end
-
-function display_paired()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "paired") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'paired' keyword found")
-end
-
-function display_perfectHit()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "perfectHit") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'perfect hit' keyword found")
-end
-
-function display_range()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "range") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'range' keyword found")
-end
-
-function display_reach()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "reach") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'reach' keyword found")
-end
-
-function display_savage()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "savage") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'savage' keyword found")
-end
-
-function display_sentient()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "sentient") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'sentient' keyword found")
-end
-
-function display_sharp()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "sharp") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'sharp' keyword found")
-end
-
-function display_slow()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "slow") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'slow' keyword found")
-end
-
-function display_unique()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "unique") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " Gear with the 'unique' keyword found")
-end
-
-
-
--------------------------------------------------------------------------------
--- Affinity Functions
--------------------------------------------------------------------------------
-
-function red_perm()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "red_perm") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Permanent Red Affinity")
-end
-
-function green_perm()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "green_perm") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Permanent Green Affinity")
-end
-
-function blue_perm()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "blue_perm") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Permanent Blue Affinity")
-end
-
-function red_up()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "red_up") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Red Up Affinity")
-end -- end function
-
-function red_down()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "red_down") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Red Down Affinity")
-end
-
-function red_left()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "red_left") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Red Left Affinity")
-end
-
-function red_right()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "red_right") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Red Right Affinity")
-end
-
-function green_up()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "green_up") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Green Up Affinity")
-end
-
-function green_down()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "green_down") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Green Down Affinity")
-end
-
-function green_left()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "green_left") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Green Left Affinity")
-end
-
-function green_right()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "green_right") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Green Right Affinity")
-end
-
-function blue_up()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "blue_up") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Blue Up Affinity")
-end
-
-function blue_down()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "blue_down") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Blue Up Affinity")
-end
-
-function blue_left()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "blue_left") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Blue Left Affinity")
-end
-
-function blue_right()
-  storeResources()
-
-  for _, object in ipairs(zone.getObjects()) do
-    local desc = object.getDescription()
-    if string.find(desc, "copy") then
-      object.destroy()
-    end
-  end
-  gear_Table = {}
-  local count = 0
-  for _, object in ipairs(zone_gearDeck.getObjects()) do
-  if object.tag == "Deck" then
-    gearDeck = object
-  end
-end
-for _, card in ipairs(gearDeck.getObjects()) do
-  local desc = card.description
-    if string.find(desc, "blue_right") then
-      count = count + 1
-      table.insert(gear_Table, gearDeck.takeObject({guid=card.guid, smooth=false, position = CardPosition(count)}))
-      end
-    end
-  print(count .. " cards found with Blue Right Affinity")
-end
-
-
-
--------------------------------------------------------------------------------
--- Utility Functions
--------------------------------------------------------------------------------
-function onObjectLeaveScriptingZone(zone, leave_object)
-  if zone == getObjectFromGUID(Global.getTable('zones').zoneGearStation.guid) then
-    for k, obj in pairs(gear_Table) do
-      if obj == leave_object then
-          table.remove(gear_Table, k)
-          break
-      end
-    end
-  end
-end
-
 -- How much space should be between cards
 local spacing = {x = 2.45, z = 2.45}
 -- How many cards in a row
 local rowNum = 10
 -- Initial position
 local initPos = {46.61, 4.19, -30.11}
-
 
 -- Get the position of Nth card, starting at 1
 function CardPosition(count)
@@ -2976,20 +1939,21 @@ function CardPosition(count)
   return { initPos[1] + spacing.x*col, initPos[2], initPos[3] + spacing.z*row }
 end
 
+--//TODO: DEPRECATE
 -- only used for renaming decks if needed
 function resetgear()
-  local deck = getObjectFromGUID('c45dc9')
-  for _, card in ipairs(deck.getObjects()) do
-    local desc = card.description
-    if string.find(desc, ", copy") then
-
-      local new_card = deck.takeObject({guid = card.guid})
-      local new_desc = string.gsub(new_card.getDescription(), ", copy", ", archive")
-      new_card.setDescription(new_desc)
-    end
-  end
+	local deck = getObjectFromGUID('c45dc9')
+	for _, card in ipairs(deck.getObjects()) do
+		local desc = card.description
+		if string.find(desc, ", copy") then
+			local new_card = deck.takeObject({guid = card.guid})
+			local new_desc = string.gsub(new_card.getDescription(), ", copy", ", archive")
+			new_card.setDescription(new_desc)
+		end
+	end
 end
 
+--//TODO; NEEDS TESTING
 function view_gear_storage()
 	local btns = self.getButtons()
 	if btns ~= nil then

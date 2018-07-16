@@ -712,6 +712,19 @@ function onObjectEnterScriptingZone(zone, enter_object)
 				enter_object.call("createButtons")
 			end
 
+			-- Heavy Gear while using People of the Sun
+			if string.find(descript, "heavy") then
+				local zoneNewSurvivors = getObjectFromGUID(Global.getTable('zones').zoneNewSurvivors.guid)
+				for _, obj in ipairs(zoneNewSurvivors.getObjects()) do
+					if string.find(obj.getDescription(), "sun") then
+						sunCampaign_loaded = true
+					end
+				end
+				if sunCampaign_loaded then
+					broadcastToAll("People of the Sun cannot use 'Heavy' Gear", {1,1,1})
+				end
+			end
+
 			-- Darkness Awareness
 			if string.find(descript, "disorder") then
 				playerZones = {

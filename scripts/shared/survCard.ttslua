@@ -152,10 +152,10 @@ end
 
 -- Start Act -------------------------------------------------------------------
 function startAct(object, player_color)
-	if isCampaignLoaded() == false then
+	--[[if isCampaignLoaded() == false then
 		goToCampaignStartButton()
 		return
-	end
+	end--]]
 
 	if grid == nil or getObjectFromGUID(grid.getVar("FullCharSheetGUID")) == nil then
 		broadcastToColor("No survivor sheet", player_color, msg_color)

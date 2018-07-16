@@ -50,17 +50,18 @@
 
 -- End Showdown ----------------------------------------------------------------
 	-- function endShowdown
-	-- function get_run_away_story_event
-	-- function end_run_away
+	-- function destroy_cloned_cards_AI
 	-- function resetSurvFigurines
 	-- function storeSurvDiedMarkers
 	-- function deleteAIdeck
 	-- function reset_gear
 	-- function resetFrenzy
 	-- function reset_zoneEffects
-	-- function deleteTagMonster
 	-- function store_effects
-
+	-- function check_cooking_innovation
+	-- function get_run_away_story_event
+	-- function end_run_away
+	-- function deleteTagMonster
 
 -- Utility Function ------------------------------------------------------------
 	-- function wait
@@ -143,6 +144,7 @@ function onLoad()
 	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
 	zoneAIBoard = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
 	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
 
 	playerZones = {
 		red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
@@ -1660,7 +1662,6 @@ function reset_fist_and_tooth_buttons()
 		end
 	end
 	--Sets Fist and Tooth Button if Master is in the Settlement
-	local zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
 	for _, object in ipairs(zoneInnovations.getObjects()) do
 		if object.getName() == "Fist & Tooth" then
 			redSurvCard.call("create_Fist_and_Tooth_Button")
@@ -1905,6 +1906,7 @@ function endShowdown()
 	reset_zoneEffects()
 	play_music_track()
 	store_effects()
+	check_cooking_innovation()
 
 	--storeResources() -- moved to reset_gear()
 
@@ -2188,6 +2190,20 @@ function store_effects()
 	end
 end
 
+function check_cooking_innovation()
+	for _, card in ipairs(zoneInnovations.getObjects()) do
+		if card.getName() == "Cooking" then
+			local bagEndeavor = getObjectFromGUID('5dffd3')
+			local pos = bagEndeavor.getPosition()
+			local tok = bagEndeavor.takeObject({
+				position          = {pos.x - 3, pos.y, pos.z},
+				rotation          = {0, 45, 0},
+				smooth            = false,
+			})
+			tok.setName("+1 Endeavor: Cooking")
+		end
+	end
+end
 
 
 

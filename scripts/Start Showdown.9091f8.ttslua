@@ -10,6 +10,7 @@
 	-- function startShowdownChecks
 	-- function build_deckAI
 	-- function checkSongOfTheBrave
+	-- function check_crimson_candy
 	-- function checkSunstalker_spawnStartingShadows
 	-- function randomize_role_cards_Lion_Knight
 	-- function update_avatar_display_stats
@@ -36,6 +37,7 @@ function onLoad()
 	createButtons()
 	nextRoundTool = getObjectFromGUID('b94669')
 	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
 end
 
 
@@ -47,7 +49,7 @@ function callStartShowdown_Functions()
 		goToCampaignStartButton()
 		return
 	end
-	
+
 	self.clearButtons()
 	self.setPosition({ - 0.16, 0, - 5.33})
 	if self.getDescription() == "prologue" then
@@ -193,6 +195,7 @@ function startShowdownChecks(grid, zone, name)
 		-- Flower Knight Badge [DONE]
 		elseif object.getName() == "Flower Knight Badge" then
 			table.insert(broadcastTable, "[b]Flower Knight Badge[/b]: Draw 1 Tactics Card")
+			tokSpawn_eva.call("spawn_token")
 
 		-- DBK Errant Badge [DONE]
 		elseif object.getName() == "DBK Errant Badge" then
@@ -297,11 +300,20 @@ function build_deckAI()
 end
 
 function checkSongOfTheBrave()
-	local zone = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
-	local objectsInZone = zone.getObjects()
+	local objectsInZone = zoneInnovations.getObjects()
 	for _, object in ipairs(objectsInZone) do
 		if object.getName() == "Song of the Brave" then
 			broadcastToAll("Song of the Brave ~ All non-deaf Survivors may remove one Negative Stat Token", {1, 1, 1})
+		end
+	end
+end
+
+function check_crimson_candy()
+	local objectsInZone = zoneInnovations.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		if object.getName() == "Crimson Candy" then
+			broadcastToAll("Crimson Candy ~ ALL Survivors gain survival equal to ★", {1, 1, 1})
+			broadcastToAll("> Manually adjust this now <", {1,1,1})
 		end
 	end
 end
