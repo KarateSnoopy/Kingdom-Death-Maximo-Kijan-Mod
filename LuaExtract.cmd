@@ -1,0 +1,1 @@
+bin\TTSLuaExtractor.exe extract latest scripts

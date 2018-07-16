@@ -791,7 +791,7 @@ end
 
 --[[ ------------------------------custom get obj fcn, searches for obj(s) through custom searches
 types of search and params
-tag = search for objs by tags, includes/excludes, params = {conditional = 'and' or 'or', criteria = string looked for, exclude = strings to exclude obj if found}
+tag = search for objs by tags, searchIncludes/excludes, params = {conditional = 'and' or 'or', criteria = string looked for, exclude = strings to exclude obj if found}
 name = search for objs by name, with varying strings, params = {conditional = 'contains' or 'matches', criteria = string looked for, exclude = strings to exclude obj if found}
 --]]
 function getObj(searchType, container, params) --params = {conditional = '', criteria = {}, exclude = {}}
@@ -802,7 +802,7 @@ function getObj(searchType, container, params) --params = {conditional = '', cri
 		local objGUIDs = {}
 		local text = {}
 		local excludes = params.exclude
-		local includes = params.criteria
+		local searchIncludes = params.criteria
 		local objAdded = false
 		local isFound = false
 		local foundCount = 0
@@ -812,13 +812,13 @@ function getObj(searchType, container, params) --params = {conditional = '', cri
 				isFound = false
 				foundCount = 0
 				text = v.getDescription()
-				for i = 1, #includes do
-					if string.find(string.lower(text), string.lower(includes[i])) then
+				for i = 1, #searchIncludes do
+					if string.find(string.lower(text), string.lower(searchIncludes[i])) then
 						foundCount = foundCount + 1
 					end
 				end
 				if params.conditional == 'and' then
-					if foundCount == #includes then
+					if foundCount == #searchIncludes then
 						isFound = true
 					end
 				elseif params.conditional == 'or' then
@@ -853,14 +853,14 @@ function getObj(searchType, container, params) --params = {conditional = '', cri
 				else
 					text = v.getName()
 				end
-				for i = 1, #includes do
+				for i = 1, #searchIncludes do
 					if params.conditional == 'matches' then
-						if text == includes[i] then
+						if text == searchIncludes[i] then
 							isFound = true
 						end
 
 					elseif params.conditional == 'contains' then
-						if string.find(text, includes[i]) then
+						if string.find(text, searchIncludes[i]) then
 							isFound = true
 						end
 					end
