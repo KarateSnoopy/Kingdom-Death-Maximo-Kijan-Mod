@@ -85,5 +85,6 @@ After you're done with the pull request, you should go back to master branch, so
 ```
 cd c:\git\kdm
 git checkout master
+git pull
 ```
 
