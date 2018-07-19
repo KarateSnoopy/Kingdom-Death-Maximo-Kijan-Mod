@@ -1,0 +1,49 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "You gain the Priority Target Token", effect = "All Survivors ignore First Strike until the end of the attack"}})
+	  gain_priority_target()
+end
+
+#include ../gain_priority
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "All Survivors in the Light Suffer ★ +1 Brain Damage", effect = ""}})
+
+	local obj = getObjectFromGUID('6d1dae') -- persistent card
+	obj.call("return_inShadow")
+
+	local bool1 = obj.getVar("inShadow_red")
+	local bool2 = obj.getVar("inDarkness_red")
+	local bool3 = obj.getVar("inDarkness_always_red")
+
+	local bool4 = obj.getVar("inShadow_yellow")
+	local bool5 = obj.getVar("inDarkness_yellow")
+	local bool6 = obj.getVar("inDarkness_always_yellow")
+
+	local bool7 = obj.getVar("inShadow_green")
+	local bool8 = obj.getVar("inDarkness_green")
+	local bool9 = obj.getVar("inDarkness_always_green")
+
+	local bool10 = obj.getVar("inShadow_blue")
+	local bool11 = obj.getVar("inDarkness_blue")
+	local bool12 = obj.getVar("inDarkness_always_blue")
+
+	if not bool1 or bool2 or bool3 then
+		Global.call('addBroadcast', {"failure", {gear = "Player One is in the Light", effect = ""}})
+	elseif not bool3 or bool4 or bool5 then
+		Global.call('addBroadcast', {"failure", {gear = "Player Two is in the Light", effect = ""}})
+	elseif not bool6 or bool7 or bool8 then
+		Global.call('addBroadcast', {"failure", {gear = "Player Three is in the Light", effect = ""}})
+	elseif not bool10 or bool11 or bool12 then
+		Global.call('addBroadcast', {"failure", {gear = "Player Four is in the Light", effect = ""}})
+	end
+end
+
+function reflexEffect()
+
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,29 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({-2.02, 4.24, -21.32})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Lost Sword ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect ()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  hitTool = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+  hitTool.call("return_battle_pressure")
+  Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+
+function addStatModifier()
+end
+
+#include ../get_vars

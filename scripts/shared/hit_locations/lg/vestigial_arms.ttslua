@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Toughness Token", effect = ""}})
+end
+
+
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "You must either gain a (-1) Accuracy Token or End your Attack", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+
+-- vestigial

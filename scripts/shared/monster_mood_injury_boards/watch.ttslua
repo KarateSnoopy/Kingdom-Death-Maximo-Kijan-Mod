@@ -1,0 +1,91 @@
+function onLoad()
+	createButtons()
+end
+
+function createButtons()
+	deck_toSearch = getObjectFromGUID(Global.getTable('decks_toSearch').deckSURV_STATUS.guid)
+	local gridRed = getObjectFromGUID(Global.getTable('grids').red.guid)
+	local gridYellow = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+	local gridGreen = getObjectFromGUID(Global.getTable('grids').green.guid)
+	local gridBlue = getObjectFromGUID(Global.getTable('grids').blue.guid)
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "Stolen Dreams",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 3300,
+		height 			= 400,
+		font_size		= 450,
+		font_color		= {},
+		color 			= {0,0,0}
+	}
+
+	btn_params.position = {-6, 0.7, -5.85}
+	btn_params.click_function = "stolen_dreams_red"
+	btn_params.font_color = gridRed.getTable("msg_color")
+	self.createButton(btn_params)
+
+	btn_params.position = {-2, 0.7, -5.85}
+	btn_params.click_function = "stolen_dreams_yellow"
+	btn_params.font_color = gridYellow.getTable("msg_color")
+	self.createButton(btn_params)
+
+	btn_params.position = {2, 0.7, -5.85}
+	btn_params.click_function = "stolen_dreams_green"
+	btn_params.font_color = gridGreen.getTable("msg_color")
+	self.createButton(btn_params)
+
+	btn_params.position = {6, 0.7, -5.85}
+	btn_params.click_function = "stolen_dreams_blue"
+	btn_params.font_color = gridBlue.getTable("msg_color")
+	self.createButton(btn_params)
+
+end
+
+function stolen_dreams_red()
+	setVars_red()
+	get_survStatus()
+end
+
+function stolen_dreams_yellow()
+	setVars_yellow()
+	get_survStatus()
+end
+
+function stolen_dreams_green()
+	setVars_green()
+	get_survStatus()
+end
+
+function stolen_dreams_blue()
+	setVars_blue()
+	get_survStatus()
+end
+
+
+function get_survStatus()
+	local card_toGet = {cardName = "Stolen Dreams", zone = "", deck = deck_toSearch}
+	Global.setTable("card", card_toGet)
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+end
+
+function setVars_red()
+	pos_toSpawn = Global.getTable('surv_status_card_p1')
+end
+
+function setVars_yellow()
+	pos_toSpawn = Global.getTable('surv_status_card_p2')
+end
+
+function setVars_green()
+	pos_toSpawn = Global.getTable('surv_status_card_p3')
+end
+
+function setVars_blue()
+	pos_toSpawn = Global.getTable('surv_status_card_p4')
+end
+
+-- injury board

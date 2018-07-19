@@ -1,0 +1,50 @@
+function onLoad()
+	createButtons()
+end
+
+phase = ""
+
+function spawn_token()
+	local bag = getObjectFromGUID('76cd55')
+	pos = self.getPosition()
+
+	token_pos = {pos.x, pos.y + 1.5, pos.z - 0.54}
+	token = bag.takeObject({position = token_pos, smooth = true})
+
+	if phase == "endOfround" then
+		token.setDescription('monster, temp, end of round')
+
+	elseif phase == "endOfattack" then
+		token.setDescription('monster, temp, end of attack')
+
+	elseif phase == "endOfwoundattempt" then
+		token.setDescription('monster, temp, end of wound attempt')
+
+	elseif phase == "endOfwound" then
+		token.setDescription('monster, temp, end of wound')
+
+	elseif phase == "endOfMonsterTurn" then
+		token.setDescription('monster, temp, end of monster turn')
+
+	elseif phase == "duration" then
+		token.setDescription('monster, temp, duration')
+
+	elseif phase == "startOfMonsterTurn" then
+		token.setDescription('monster, temp, start of monster turn')
+
+	elseif phase == "Lantern Mirage" then
+		token.setDescription('monster, temp, lantern mirage')
+
+	elseif phase == "Grass Whistle" then
+		token.setDescription('monster, temp, grass whistle')
+
+	elseif phase == "" then
+		token.setDescription('monster, token, end of showdown')
+	end
+end
+
+
+function createButtons()
+	self.createButton({click_function = "spawn_token", function_owner = self, label = "", position = {0, 0.18, 0.07}, width = 800, height = 800, font_size = 650,
+	color = {1, 1, 1, 0}, font_color = {0, 0, 0, 100}})
+end

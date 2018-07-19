@@ -1,0 +1,40 @@
+function onLoad()
+	self.createButton({click_function = "starward", function_owner = self, label = "Gain Starward",
+	position = {0, 0.4, -1.9}, scale = {0.5, 0.5, 0.5}, width = 2100, height = 400, font_size = 300,
+	color = {0,0,0}, font_color = {1,1,1}})
+end
+
+function starward()
+	getVars()
+	deck_toSearch = getObjectFromGUID(Global.getTable('decks_toSearch').deckSURV_STATUS.guid)
+	local card_toGet = {cardName = "Starward", zone = "", deck = deck_toSearch}
+	Global.setTable("card", card_toGet)
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			surv.setPosition(pos_toSpawn)
+			surv.setScale({0.25, 0.25, 0.25})
+			broadcastToAll("You are transported to an unfamiliar and terrifying world without sound or direction", msg_color)
+		end
+	end
+end
+
+#include ../get_vars
+
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

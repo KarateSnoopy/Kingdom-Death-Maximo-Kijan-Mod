@@ -1,0 +1,46 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+	   if v.getGUID() == self.getGUID() then
+			 table.remove(drawn_hitLocations, i)
+	   end
+	end
+	self.setPositionSmooth({2.16, 4.34, -21.56})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Time Leak ~ Keep in Play", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "All Survivors gain 'Age Eater'", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(-2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+  local start = os.time()
+  repeat coroutine.yield(0) until os.time() > start + time
+end
+
+#include get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

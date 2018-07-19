@@ -1,0 +1,2389 @@
+--------------------------------------------------------------------------------
+--                           TABLE OF CONTENTS                                --
+--                   Scripts created by Maximo and Kijan                      --
+--------------------------------------------------------------------------------
+
+-- Buttons ---------------------------------------------------------------------
+	-- function createButtons
+	-- function createButtons_Campaign
+	-- function createButtons_Expansions
+	-- function createButtons_Promos_Fanmade
+	-- function createButtons_Admin_Panel
+	-- function createButtons_Settings
+	-- function main_menu
+	-- function clearButtons
+
+
+-- Set Campaign and Expansions to Load -----------------------------------------
+
+
+-- Load Campaign and Expansions ------------------------------------------------
+	-- function execute_load
+	-- function destroy_bag
+
+
+-- Load Promos / Fanmade -------------------------------------------------------
+	-- function get_fanmade_hunt_events
+	-- function get_promo_hunt_events
+	-- function get_fanmade_settlement_events
+	-- function get_promo_settlement_events
+	-- function load_to_game
+	-- function return_cards_to_box
+
+
+-- Admin Panel -----------------------------------------------------------------
+	-- function disable_interactable
+	-- function enable_interactable
+	-- function disable_clone
+	-- function enable_clone
+	-- Get Table Building Tools
+
+
+-- User Settings ---------------------------------------------------------------
+	-- Turn On/Off Effects
+	-- Turn On/Off Move Cameras
+	-- Set Camera Pitch
+	-- Load Avatar Themes
+	-- Sigil Functions
+	-- Music Functions
+	-- Editions
+
+-- Utility Functions -----------------------------------------------------------
+	-- function wait(time)
+	-- function get_effects()
+	-- function store_effects_wipe_coR
+	-- function get_effects_xpak
+	-- function delay_destroy_coR
+
+-- END TABLE OF CONTENTS -------------------------------------------------------
+
+
+
+function onLoad()
+	-- zones
+	zoneCrafting = getObjectFromGUID(Global.getTable('zones').zoneCrafting.guid)
+	zoneGearDeck = getObjectFromGUID(Global.getTable('zones').zoneGearDeck.guid)
+
+	has_chain_effect = true
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	bag_admin = getObjectFromGUID('0433cb')
+	zone_setUp = getObjectFromGUID(Global.getTable('zonesDestruct').showdownBagZone.guid)
+
+	set_Lighting = getObjectFromGUID(Global.getTable('user_settings').set_Lighting.guid)
+	set_Sound = getObjectFromGUID(Global.getTable('user_settings').set_Sound.guid)
+	set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	music_player = getObjectFromGUID(Global.getTable('user_settings').music_player.guid)
+	set_current_track_obj = getObjectFromGUID('afdd4d')
+
+	settings_P1_pos = {-3.67, 4.19, -17.24}
+	settings_P1_pos_stored = {-31.71, 4.15, -31.10}
+
+	settings_P2_pos = {-1.29, 4.19, -17.24}
+	settings_P2_pos_stored = {-15.15, 4.15, -31.10}
+
+	settings_P3_pos = {1.10, 4.19, -17.24}
+	settings_P3_pos_stored = {15.11, 4.15, -31.10}
+
+	settings_P4_pos = {3.50, 4.19, -17.24}
+	settings_P4_pos_stored = {31.72, 4.15, -31.10}
+
+	settings_P1_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	settings_P3_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	settings_P4_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+
+	current_edition_loaded = getObjectFromGUID(Global.getTable('user_settings').current_edition.guid)
+
+	position = {24.79, 4.12, 5.24}
+	effects_wipe = getObjectFromGUID('c3321c')
+	createButtons()
+
+end
+
+
+
+-- Buttons ---------------------------------------------------------------------
+function createButtons()
+	has_chain_effect = true
+	music_player.AssetBundle.playLoopingEffect(0)
+	clearButtons()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 7500,
+		height 			= 800,
+		font_size 		= 800,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+
+	btn_params.click_function = "createButtons_Campaign"
+	btn_params.position = {0, 0.7, -4.635}
+	btn_params.label = "~ Choose Campaign ~"
+	btn_params.font_size = 800
+	self.createButton(btn_params)
+
+	btn_params.click_function = "createButtons_Expansions"
+	btn_params.position = {0, 0.7, -2.635}
+	btn_params.label = "~ Choose Expansions ~"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "createButtons_Promos_Fanmade"
+	btn_params.position = {0, 0.7, -0.635}
+	btn_params.label = "~ Choose Promos / Fanmade ~"
+	btn_params.font_size = 600
+	self.createButton(btn_params)
+
+	btn_params.click_function = "createButtons_Game_Components"
+	btn_params.position = {0, 0.7, 1.365}
+	btn_params.label = "~ Modify Game Components ~"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "createButtons_Settings"
+	btn_params.position = {0, 0.7, 3.365}
+	btn_params.label = "~ User Settings ~"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "createButtons_Admin_Panel"
+	btn_params.position = {0, 0.7, 5.365}
+	btn_params.label = "~ Admin Panel ~"
+	self.createButton(btn_params)
+end
+
+function createButtons_Campaign()
+	local desc = self.getDescription()
+	if string.find(desc, "campaign loaded") then
+		broadcastToAll("A Campaign is already Loaded", {1,1,1}) return end
+
+	menu_pos = {0.00, 4.65, -13.13}
+	has_chain_effect = true
+	startLuaCoroutine(self, "get_effects")
+	--get_effects()
+
+	clearButtons()
+
+	btn_params.click_function = "load_Lantern"
+	btn_params.position = {0, 0.7, -5}
+	btn_params.label = "People of the Lantern"
+	btn_params.font_size = 800
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_Stars"
+	btn_params.position = {0, 0.7, -3.5}
+	btn_params.label = "People of the Stars"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_Sun"
+	btn_params.position = {0, 0.7, -2}
+	btn_params.label = "People of the Sun"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_Skull"
+	btn_params.position = {0, 0.7, 1}
+	btn_params.label = "People of the Skull"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_Bloom"
+	btn_params.position = {0, 0.7, -0.5}
+	btn_params.label = "People of the Bloom"
+	self.createButton(btn_params)
+
+	main_menu()
+end
+
+function createButtons_Expansions()
+	menu_pos = {0.00, 4.65, -14.64}
+	has_chain_effect = true
+	startLuaCoroutine(self, "get_effects")
+	--get_effects()
+
+	clearButtons()
+	main_menu()
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 7500,
+		height 			= 800,
+		font_size 		= 600,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+
+	btn_params.click_function = "load_DK"
+	btn_params.position = {0, 0.7, -5.5}
+	btn_params.label = "Dragon King"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_DBK"
+	btn_params.position = {0, 0.7, -4.5}
+	btn_params.label = "Dung Beetle Knight"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_FK"
+	btn_params.position = {0, 0.7, -3.5}
+	btn_params.label = "Flower Knight"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_GRM"
+	btn_params.position = {0, 0.7, -2.5}
+	btn_params.label = "Gorm"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_LG"
+	btn_params.position = {0, 0.7, -1.5}
+	btn_params.label = "Lion God"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_LK"
+	btn_params.position = {0, 0.7, -0.5}
+	btn_params.label = "Lion Knight"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_LT"
+	btn_params.position = {0, 0.7, 0.5}
+	btn_params.label = "Lonely Tree"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_MH"
+	btn_params.position = {0, 0.7, 1.5}
+	btn_params.label = "Manhunter"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_SM"
+	btn_params.position = {0, 0.7, 2.5}
+	btn_params.label = "Slenderman"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_SPID"
+	btn_params.position = {0, 0.7, 3.5}
+	btn_params.label = "Spidicules"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "load_SS"
+	btn_params.position = {0, 0.7, 4.5}
+	btn_params.label = "Sunstalker"
+	self.createButton(btn_params)
+end
+
+function createButtons_Promos_Fanmade()
+	menu_pos = {0.00, 4.65, -16.08}
+	has_chain_effect = true
+	startLuaCoroutine(self, "get_effects")
+	--get_effects()
+	clearButtons()
+	main_menu()
+
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 7500,
+		height 			= 600,
+		font_size 		= 550,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100},
+		tooltip 			= ""
+	}
+
+	btn_params.label = "Fanmade"
+	btn_params.click_function = "get_fanmade_hunt_events"
+	btn_params.position = {5.6, 0.8, 3.07}
+	self.createButton(btn_params)
+
+	btn_params.label = "Promo"
+	btn_params.click_function = "get_promo_hunt_events"
+	btn_params.position = {-5.6, 0.8, 3.07}
+	self.createButton(btn_params)
+
+	btn_params.label = "Fanmade"
+	btn_params.click_function = "get_fanmade_settlement_events"
+	btn_params.position = {5.6, 0.8, 3.87}
+	self.createButton(btn_params)
+
+	btn_params.label = "Promo"
+	btn_params.click_function = "get_promo_settlement_events"
+	btn_params.position = {-5.6, 0.8, 3.87}
+	self.createButton(btn_params)
+
+	btn_params.label = "<        Hunt Events        >"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.8, 3.07}
+	btn_params.font_size = 600
+	self.createButton(btn_params)
+
+	btn_params.label = "Load to Game"
+	btn_params.click_function = "load_to_game"
+	btn_params.position = {4.7, 0.8, 1.87}
+	self.createButton(btn_params)
+
+	btn_params.label = "Return to Box"
+	btn_params.click_function = "return_cards_to_box"
+	btn_params.position = {-4.7, 0.8, 1.87}
+	self.createButton(btn_params)
+
+	btn_params.label = "<   Settlement Events   >"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, 3.87}
+	self.createButton(btn_params)
+
+	btn_params.label = "____________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {4.6, 0.8, -5.93}
+	tooltip = "Place Between these Lines to Load to Game"
+	self.createButton(btn_params)
+
+	btn_params.label = "____________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {4.6, 0.8, 1.07}
+	self.createButton(btn_params)
+
+	btn_params.label = "____________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {-4.5, 0.8, -5.93}
+	tooltip = "Place Between these Lines to Return to Box"
+	self.createButton(btn_params)
+
+	btn_params.label = "____________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {-4.5, 0.8, 1.07}
+	self.createButton(btn_params)
+
+	btn_params.label = "Choose Promos ~ Fanmade"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, 4.87}
+	btn_params.font_size = 800
+	tooltip = ""
+	self.createButton(btn_params)
+end
+
+function createButtons_Admin_Panel()
+	menu_pos = {0.00, 4.65, -20.46}
+	has_chain_effect = true
+	startLuaCoroutine(self, "get_effects")
+	--get_effects()
+	clearButtons()
+	main_menu()
+
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 7500,
+		height 			= 600,
+		font_size 		= 500,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+
+	btn_params.label = "Disable Interactable"
+	btn_params.click_function = "disable_interactable"
+	btn_params.position = {5.4, 0.7, 5.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Enable Interactable"
+	btn_params.click_function = "enable_interactable"
+	btn_params.position = {-5.6, 0.7, 5.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Disable Clone"
+	btn_params.click_function = "disable_clone"
+	btn_params.position = {5.4, 0.7, 4.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Enable Clone"
+	btn_params.click_function = "enable_clone"
+	btn_params.position = {-5.6, 0.7, 4.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Better Notecards"
+	btn_params.click_function = "set_better_notecards"
+	btn_params.position = {0, 0.7, -4.66}
+	btn_params.font_size = 600
+	self.createButton(btn_params)
+
+	btn_params.label = "Deck GUID Fixer"
+	btn_params.click_function = "set_deck_fixer"
+	btn_params.position = {0, 0.7, -3.66}
+	self.createButton(btn_params)
+
+	btn_params.label = "Light Saver Tool"
+	btn_params.click_function = "set_light_saver"
+	btn_params.position = {0, 0.7, -2.66}
+	self.createButton(btn_params)
+
+	btn_params.label = "Camera Placement Tool"
+	btn_params.click_function = "set_camera_placement"
+	btn_params.position = {0, 0.7, -1.66}
+	self.createButton(btn_params)
+
+	btn_params.label = "Rotation  Copy Tool"
+	btn_params.click_function = "set_rotation_tool"
+	btn_params.position = {0, 0.7, 3.33}
+	self.createButton(btn_params)
+
+	btn_params.label = "Scale Copy Tool"
+	btn_params.click_function = "set_scale_tool"
+	btn_params.position = {0, 0.7, 2.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Deck Layout Tool"
+	btn_params.click_function = "set_deck_layout_tool"
+	btn_params.position = {0, 0.7, 1.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Info Cube"
+	btn_params.click_function = "set_info_cube"
+	btn_params.position = {0, 0.7, 0.34}
+	self.createButton(btn_params)
+
+	btn_params.label = "Button Visualizer"
+	btn_params.click_function = "set_button_visualizer"
+	btn_params.position = {0, 0.7, -0.66}
+	self.createButton(btn_params)
+
+	btn_params.label = "Admin Panel"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, 4.87}
+	btn_params.font_size = 800
+	self.createButton(btn_params)
+end
+
+function createButtons_Game_Components()
+	broadcastToAll("Not Done Yet ~ Future Update Plans", {1,1,1})
+end
+
+function createButtons_Settings()
+	menu_pos = {0.00, 4.65, -18.89}
+	has_chain_effect = false
+	startLuaCoroutine(self, "get_effects")
+	--get_effects()
+	clearButtons()
+	main_menu()
+
+	settings_P1_token.setPosition(settings_P1_pos)
+	settings_P2_token.setPosition(settings_P2_pos)
+	settings_P3_token.setPosition(settings_P3_pos)
+	settings_P4_token.setPosition(settings_P4_pos)
+
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 4000,
+		height 			= 550,
+		font_size 		= 500,
+		color 			= {0, 0, 0},
+		font_color 		= {1, 1, 1},
+		tooltip 			= "",
+	}
+
+	-- Categories -------------------------------
+	btn_params.label = "______________________ Avatar Themes ______________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, -5.8}
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.label = "______________________ Special Effects ______________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, -3.2}
+	btn_params.tooltip = "If you are having Performance Issues, set these to Off."
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.label = "______________________ Change Color ______________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, -0.2}
+	btn_params.tooltip = "Change the Color Tint of the Token then Click Apply. Save and Load to apply Settings."
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.width = 0
+	btn_params.height = 0
+
+	btn_params.label = "______________________ Move Camera ______________________"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, 3.1}
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.font_size = 450
+
+	btn_params.label = "Visual Effects"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, -2.4}
+	btn_params.tooltip = "While turned on, Visual Effects such as fire, smoke, etc, will spawn at certain times."
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.label = "Sound Effects"
+	btn_params.click_function = "dud"
+	btn_params.position = {-5.4, 0.7, -2.4}
+	btn_params.tooltip = "While turned on, music and/or sound effects will play from Asset Bundles."
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.label = "Lighting Effects"
+	btn_params.click_function = "dud"
+	btn_params.position = {5.1, 0.7, -2.4}
+	btn_params.tooltip = "While turned on, Light Settings will change at certain times."
+	self.createButton(btn_params)
+	---------------------------------------
+	btn_params.width = 4000
+	btn_params.height = 850
+	btn_params.font_size = 800
+	btn_params.tooltip = ""
+
+	btn_params.label = "User Settings"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, 5.17}
+	self.createButton(btn_params)
+
+	btn_params.font_size = 500
+	btn_params.width = 3500
+	btn_params.height = 550
+	btn_params.label = "Switch to Official Edition"
+	btn_params.click_function = "load_official_edition"
+	btn_params.position = {-5, 0.7, 5.87}
+	self.createButton(btn_params)
+
+	btn_params.label = "Switch to Community Edition"
+	btn_params.click_function = "load_community_edition"
+	btn_params.position = {5, 0.7, 5.87}
+	self.createButton(btn_params)
+
+	---------------------------------------
+	btn_params.font_size = 350
+	btn_params.width = 3500
+	btn_params.height = 450
+
+	btn_params.label = "Fantasy RPG"
+	btn_params.click_function = "set_fantasy_avatars"
+	btn_params.position = {-4.7, 0.7, -5.2}
+	self.createButton(btn_params)
+
+	btn_params.label = "People of the Skull"
+	btn_params.click_function = "set_PotS_avatars"
+	btn_params.position = {-4.7, 0.7, -4.7}
+	self.createButton(btn_params)
+
+	btn_params.label = "DC Comics"
+	btn_params.click_function = "set_DC"
+	btn_params.position = {-4.7, 0.7, -4.2}
+	self.createButton(btn_params)
+
+	btn_params.label = "Vampires"
+	btn_params.click_function = "set_vampires"
+	btn_params.position = {-4.7, 0.7, -3.7}
+	self.createButton(btn_params)
+
+	btn_params.label = "Game of Thrones"
+	btn_params.click_function = "set_GOT"
+	btn_params.position = {4.7, 0.7, -5.2}
+	self.createButton(btn_params)
+
+	btn_params.label = "Western"
+	btn_params.click_function = "set_western"
+	btn_params.position = {4.7, 0.7, -4.7}
+	self.createButton(btn_params)
+
+	btn_params.label = "Marvel Comics"
+	btn_params.click_function = "set_marvel"
+	btn_params.position = {4.7, 0.7, -4.2}
+	self.createButton(btn_params)
+
+
+	-- View / Load Themes -------------------------
+	btn_params.font_size = 350
+	btn_params.width = 800
+	btn_params.height = 350
+	btn_params.tooltip = ""
+
+	btn_params.label = "View"
+	btn_params.click_function = "view_avatars"
+	btn_params.position = {0, 0.7, -5.12}
+	self.createButton(btn_params)
+
+	btn_params.label = "Load"
+	btn_params.click_function = "load_avatars"
+	btn_params.position = {0, 0.7, -4.57}
+	self.createButton(btn_params)
+
+	btn_params.label = "Return"
+	btn_params.click_function = "return_avatars"
+	btn_params.position = {0, 0.7, -3.97}
+	self.createButton(btn_params)
+
+
+	-- On / Off Buttons -----------------------------
+	btn_params.font_size = 350
+	btn_params.width = 450
+	btn_params.height = 400
+
+	-- Visual Effects -------------------------------
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_visual"
+	btn_params.position = {-1.9, 0.7, -2.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_visual"
+	btn_params.position = {1.9, 0.7, -2.4}
+	self.createButton(btn_params)
+
+	-- Sound Effects --------------------------------
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_sound"
+	btn_params.position = {-7.3, 0.7, -2.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_sound"
+	btn_params.position = {-3.4, 0.7, -2.4}
+	self.createButton(btn_params)
+
+	-- Lighting Effects ------------------------------
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_lighting"
+	btn_params.position = {3.1, 0.7, -2.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_lighting"
+	btn_params.position = {7.1, 0.7, -2.4}
+	self.createButton(btn_params)
+
+	-- Music -----------------------------------------
+	btn_params.font_size = 450
+	btn_params.width = 0
+	btn_params.height = 0
+
+	btn_params.label = "Preview Music"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, -0.86}
+	self.createButton(btn_params)
+
+	btn_params.font_size = 375
+	btn_params.width = 400
+	btn_params.height = 400
+
+	btn_params.label = "Prev"
+	btn_params.click_function = "prev_music_track"
+	btn_params.position = {-2.6, 0.7, -0.86}
+	self.createButton(btn_params)
+
+	btn_params.label = "Next"
+	btn_params.click_function = "next_music_track"
+	btn_params.position = {2.6, 0.7, -0.86}
+	self.createButton(btn_params)
+
+	btn_params.font_size = 400
+	btn_params.width = 0
+	btn_params.height = 0
+
+	btn_params.label = "Hunt Phase Music"
+	btn_params.click_function = "dud"
+	btn_params.position = {-5.4, 0.7, -1.7}
+	self.createButton(btn_params)
+
+	btn_params.label = "Showdown Phase Music"
+	btn_params.click_function = "dud"
+	btn_params.position = {0, 0.7, -1.7}
+	self.createButton(btn_params)
+
+	btn_params.label = "Settlement Phase Music"
+	btn_params.click_function = "dud"
+	btn_params.position = {5.1, 0.7, -1.7}
+	self.createButton(btn_params)
+
+	btn_params.font_size = 275
+	btn_params.width = 2000
+	btn_params.height = 375
+
+	btn_params.click_function = "set_hunt_music"
+	btn_params.label = "Set Current"
+	btn_params.position = {-5.5, 0.7, -1.4}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_showdown_music"
+	btn_params.label = "Set Current"
+	btn_params.position = {0, 0.7, -1.4}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "set_settlement_music"
+	btn_params.label = "Set Current"
+	btn_params.position = {5.1, 0.7, -1.4}
+	self.createButton(btn_params)
+
+	-- Move Camera -----------------------------------
+	btn_params.font_size = 350
+	btn_params.width = 300
+	btn_params.height = 400
+
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_move_P1"
+	btn_params.position = {-6.85, 0.7, 4.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_move_P1"
+	btn_params.position = {-5.15, 0.7, 4.4}
+	self.createButton(btn_params)
+	----------------------------------------------------
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_move_P2"
+	btn_params.position = {-2.8, 0.7, 4.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_move_P2"
+	btn_params.position = {-1.2, 0.7, 4.4}
+	self.createButton(btn_params)
+	----------------------------------------------------
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_move_P3"
+	btn_params.position = {1.2, 0.7, 4.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_move_P3"
+	btn_params.position = {2.85, 0.7, 4.4}
+	self.createButton(btn_params)
+	----------------------------------------------------
+	btn_params.label = "On"
+	btn_params.click_function = "turn_on_move_P4"
+	btn_params.position = {5.2, 0.7, 4.4}
+	self.createButton(btn_params)
+
+	btn_params.label = "Off"
+	btn_params.click_function = "turn_off_move_P4"
+	btn_params.position = {6.85, 0.7, 4.4}
+	self.createButton(btn_params)
+
+
+		-- Pitch -----------------------------------------------------------------
+		btn_params.width = 600
+		btn_params.height = 400
+		btn_params.font_size = 400
+
+		btn_params.label = "Pitch (P1)"
+		btn_params.click_function = "dud"
+		btn_params.position = {-6, 0.7, 3.65}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.label = "Pitch (P2)"
+		btn_params.click_function = "dud"
+		btn_params.position = {-2, 0.7, 3.65}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.label = "Pitch (P3)"
+		btn_params.click_function = "dud"
+		btn_params.position = {2, 0.7, 3.65}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.label = "Pitch (P4)"
+		btn_params.click_function = "dud"
+		btn_params.position = {6, 0.7, 3.65}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.toolip = "Type Number in Input Field, then Click 'Set'"
+
+		btn_params.label = "Set"
+		btn_params.click_function = "set_pitch_P1"
+		btn_params.position = {-6, 0.7, 4.4}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.label = "Set"
+		btn_params.click_function = "set_pitch_P2"
+		btn_params.position = {-2, 0.7, 4.4}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.label = "Set"
+		btn_params.click_function = "set_pitch_P3"
+		btn_params.position = {2, 0.7, 4.4}
+		self.createButton(btn_params)
+		----------------------------------------------------
+		btn_params.label = "Set"
+		btn_params.click_function = "set_pitch_P4"
+		btn_params.position = {6, 0.7, 4.4}
+		self.createButton(btn_params)
+
+		-- Camera Pitch Input Fields ---------------------------------------------
+		local input_params = {
+			input_function = "dud",
+			function_owner = self,
+			label 			= "",
+			position 		= {2, 0.6, 0.18},
+			scale 			= {0.5, 0.5, 0.5},
+			width 			= 2200,
+			height 			= 350,
+			font_size 		= 300,
+			alignment 		= 3,
+			value				= "Number Value",
+			font_color 		= {0.6, 0.6, 0.6},
+			color 			= {1,1,1}
+		}
+
+		input_params.position = {-6, 0.7, 4}
+		input_params.label = "P1"
+		self.createInput(input_params)
+
+		input_params.position = {-2, 0.7, 4}
+		input_params.label = "P2"
+		self.createInput(input_params)
+
+		input_params.position = {2, 0.7, 4}
+		input_params.label = "P3"
+		self.createInput(input_params)
+
+		input_params.position = {6, 0.7, 4}
+		input_params.label = "P4"
+		self.createInput(input_params)
+
+		-- Sigils ----------------------------------------------------------------
+		btn_params.font_size = 300
+
+		btn_params.label = "Choose Sigil"
+		btn_params.click_function = "set_player_1_choose_sigil"
+		btn_params.position = {-6.13, 0.7, 2.35}
+		self.createButton(btn_params)
+
+		btn_params.label = "Choose Sigil"
+		btn_params.click_function = "set_player_2_choose_sigil"
+		btn_params.position = {-2.18, 0.7, 2.35}
+		self.createButton(btn_params)
+
+		btn_params.label = "Choose Sigil"
+		btn_params.click_function = "set_player_3_choose_sigil"
+		btn_params.position = {1.82, 0.7, 2.35}
+		self.createButton(btn_params)
+
+		btn_params.label = "Choose Sigil"
+		btn_params.click_function = "set_player_4_choose_sigil"
+		btn_params.position = {5.88, 0.7, 2.35}
+		self.createButton(btn_params)
+
+end
+
+function set_player_1_choose_sigil()
+	player = "player_1"
+	font_color_sigil = settings_P1_token.getColorTint()
+	createButtons_Sigils()
+end
+
+function set_player_2_choose_sigil()
+	player = "player_2"
+	font_color_sigil = settings_P2_token.getColorTint()
+	createButtons_Sigils()
+end
+
+function set_player_3_choose_sigil()
+	player = "player_3"
+	font_color_sigil = settings_P3_token.getColorTint()
+	createButtons_Sigils()
+end
+
+function set_player_4_choose_sigil()
+	player = "player_4"
+	font_color_sigil = settings_P4_token.getColorTint()
+	createButtons_Sigils()
+end
+
+function createButtons_Sigils()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if string.find(v.click_function, "set_sigil_") then
+			self.removeButton(v.index)
+		end
+	end
+
+	sigil_params = {
+		click_function = "dud",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {1, 0.5, 1},
+		width 			= 400,
+		height 			= 400,
+		font_size 		= 400,
+		color 			= {0, 0, 0},
+		font_color 		= {},
+		tooltip			= ""
+	}
+
+	sigil_params.font_color = font_color_sigil
+
+	-- Left Side Sigils ---------------------------------------------------------
+	-- Left Column ----------------------------
+	-- Signs of the Zodiac
+	sigil_params.position = {-13.18, 0.7, 12.35}
+	sigil_params.label = " \u{2652} "
+	sigil_params.click_function = "set_sigil_aquarius"
+	sigil_params.tooltip = "Aquarius"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, 10.35}
+	sigil_params.label = " \u{2651} "
+	sigil_params.click_function = "set_sigil_capricorn"
+	sigil_params.tooltip = "Capricorn"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, 8.35}
+	sigil_params.label = " \u{2650} "
+	sigil_params.click_function = "set_sigil_sagittarius"
+	sigil_params.tooltip = "Sagittarius"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, 6.35}
+	sigil_params.label = " \u{264F} "
+	sigil_params.click_function = "set_sigil_scorpio"
+	sigil_params.tooltip = "Scorpio"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, 4.35}
+	sigil_params.label = " \u{264E} "
+	sigil_params.click_function = "set_sigil_libra"
+	sigil_params.tooltip = "Libra"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, 2.35}
+	sigil_params.label = " \u{264D} "
+	sigil_params.click_function = "set_sigil_virgo"
+	sigil_params.tooltip = "Virgo"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, 0.35}
+	sigil_params.label = " \u{264C} "
+	sigil_params.click_function = "set_sigil_leo"
+	sigil_params.tooltip = "Leo"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, -1.65}
+	sigil_params.label = " \u{264B} "
+	sigil_params.click_function = "set_sigil_cancer"
+	sigil_params.tooltip = "Cancer"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, -3.65}
+	sigil_params.label = " \u{264a} "
+	sigil_params.click_function = "set_sigil_gemini"
+	sigil_params.tooltip = "Gemini"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, -5.65}
+	sigil_params.label = " \u{2649} "
+	sigil_params.click_function = "set_sigil_taurus"
+	sigil_params.tooltip = "Taurus"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, -7.65}
+	sigil_params.label = " \u{2648} "
+	sigil_params.click_function = "set_sigil_aries"
+	sigil_params.tooltip = "Aries"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-13.18, 0.7, -9.65}
+	sigil_params.label = " \u{2653} "
+	sigil_params.click_function = "set_sigil_pisces"
+	sigil_params.tooltip = "Pisces"
+	self.createButton(sigil_params)
+
+	-- Right Column ----------------------------
+	sigil_params.position = {-11.18, 0.7, 8.35}
+	sigil_params.label = " \u{2726} "
+	sigil_params.click_function = "set_sigil_four_star"
+	sigil_params.tooltip  = "Four Pointed Star"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, 6.35}
+	sigil_params.label = " \u{2720} "
+	sigil_params.click_function = "set_sigil_maltese"
+	sigil_params.tooltip = "Maltese Cross"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, 4.35}
+	sigil_params.label = " \u{2125} "
+	sigil_params.click_function = "set_sigil_ounce"
+	sigil_params.tooltip = "Ounce Sign"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, 2.35}
+	sigil_params.label = " \u{03E2} "
+	sigil_params.click_function = "set_sigil_shei"
+	sigil_params.tooltip = "Shei"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, 0.35}
+	sigil_params.label = " \u{2646} "
+	sigil_params.click_function = "set_sigil_neptune"
+	sigil_params.tooltip = "Neptune"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, -1.65}
+	sigil_params.label = " \u{03EE} "
+	sigil_params.click_function = "set_sigil_dei"
+	sigil_params.tooltip = "Coptic Letter Dei"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, -3.65}
+	sigil_params.label = " \u{2756} "
+	sigil_params.click_function = "set_sigil_black_diamond_x"
+	sigil_params.tooltip = "Black Diamond minus white X"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, -5.65}
+	sigil_params.label = " \u{2127} "
+	sigil_params.click_function = "set_sigil_ohm"
+	sigil_params.tooltip = "Inverted Ohm Symbol"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {-11.18, 0.7, -7.65}
+	sigil_params.label = " \u{038F} "
+	sigil_params.click_function = "set_sigil_omega"
+	sigil_params.tooltip = "Greek Letter Omega"
+	self.createButton(sigil_params)
+
+
+
+	-- Right Side Sigils --------------------------------------------------------
+	-- Left Column ----------------------------
+	sigil_params.position = {11.18, 0.7, 8.35}
+	sigil_params.label = " \u{06F5} "
+	sigil_params.click_function = "set_sigil_arabic_five"
+	sigil_params.tooltip = "Arabic Digit Five"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, 6.35}
+	sigil_params.label = " \u{262A} "
+	sigil_params.click_function = "set_sigil_star_crescent"
+	sigil_params.tooltip = "Star and Crescent"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, 4.35}
+	sigil_params.label = " \u{2725} "
+	sigil_params.click_function = "set_sigil_four_club"
+	sigil_params.tooltip = "Four Club-spoked Asterisk"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, 2.35}
+	sigil_params.label = " \u{045F} "
+	sigil_params.click_function = "set_sigil_dzhe"
+	sigil_params.tooltip = "Cyrillic Letter Dzhe"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, 0.35}
+	sigil_params.label = " \u{0383} "
+	sigil_params.click_function = "set_sigil_sigma"
+	sigil_params.tooltip = "Greek Letter Sigma"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, -1.65}
+	sigil_params.label = " \u{10D3} "
+	sigil_params.click_function = "set_sigil_omega2"
+	sigil_params.tooltip = "Greek Letter Omega"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, -3.65}
+	sigil_params.label = " \u{265A} "
+	sigil_params.click_function = "set_sigil_king"
+	sigil_params.tooltip = "Chess King"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, -5.65}
+	sigil_params.label = " \u{03A6} "
+	sigil_params.click_function = "set_sigil_phi"
+	sigil_params.tooltip = "Greek Letter Phi"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {11.18, 0.7, -7.65}
+	sigil_params.label = " \u{263F} "
+	sigil_params.click_function = "set_sigil_mercury"
+	sigil_params.tooltip = "Mercury"
+	self.createButton(sigil_params)
+
+	-- Right Column -----------------------------
+	sigil_params.position = {13.18, 0.7, 12.35}
+	sigil_params.label = " \u{269c} "
+	sigil_params.click_function = "set_sigil_fleur"
+	sigil_params.tooltip = "Fleur-di-Lis"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, 10.35}
+	sigil_params.label = " \u{2666} "
+	sigil_params.click_function = "set_sigil_diamonds"
+	sigil_params.tooltip = "Diamonds"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, 8.35}
+	sigil_params.label = " \u{2665} "
+	sigil_params.click_function = "set_sigil_hearts"
+	sigil_params.tooltip = "Hearts"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, 6.35}
+	sigil_params.label = " \u{2663} "
+	sigil_params.click_function = "set_sigil_clubs"
+	sigil_params.tooltip = "Clubs"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, 4.35}
+	sigil_params.label = " \u{2660} "
+	sigil_params.click_function = "set_sigil_spades"
+	sigil_params.tooltip = "Spades"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, 2.35}
+	sigil_params.label = " \u{2645} "
+	sigil_params.click_function = "set_sigil_uranus"
+	sigil_params.tooltip = "Uranus"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, 0.35}
+	sigil_params.label = " \u{2623} "
+	sigil_params.click_function = "set_sigil_biohazard"
+	sigil_params.tooltip = "Biohazard"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, -1.65}
+	sigil_params.label = " \u{2644} "
+	sigil_params.click_function = "set_sigil_saturn"
+	sigil_params.tooltip = "Saturn"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, -3.65}
+	sigil_params.label = " \u{2766} "
+	sigil_params.click_function = "set_sigil_floral_heart"
+	sigil_params.tooltip = "Floral Heart"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, -5.65}
+	sigil_params.label = " \u{2123} "
+	sigil_params.click_function = "set_sigil_versicle"
+	sigil_params.tooltip = "Versicle"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, -7.65}
+	sigil_params.label = " \u{2108} "
+	sigil_params.click_function = "set_sigil_scruple"
+	sigil_params.tooltip = "Scruple"
+	self.createButton(sigil_params)
+
+	sigil_params.position = {13.18, 0.7, -9.65}
+	sigil_params.label = " \u{2114} "
+	sigil_params.click_function = "set_sigil_barsymbol"
+	sigil_params.tooltip = "L B Bar Symbol"
+	self.createButton(sigil_params)
+
+end
+
+function return_settings_token()
+	if player == "player_1" then
+		settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	elseif player == "player_2" then
+		settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	elseif player == "player_3" then
+		settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	elseif player == "player_4" then
+		settings_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+	end
+end
+
+-- Sigil Functions -------------------------------------------------------------
+function set_sigil_four_star()
+	return_settings_token()
+	settings_token.setName("\u{2726}")
+	broadcastToAll("\u{2726} Sigil Set", {1,1,1})
+end
+
+function set_sigil_maltese()
+	return_settings_token()
+	settings_token.setName("\u{2720}")
+	broadcastToAll("\u{2720} Sigil Set", {1,1,1})
+end
+
+function set_sigil_ounce()
+	return_settings_token()
+	settings_token.setName("\u{2125}")
+	broadcastToAll("\u{2125} Sigil Set", {1,1,1})
+end
+
+function set_sigil_shei()
+	return_settings_token()
+	settings_token.setName("\u{03E2}")
+	broadcastToAll("\u{03E2} Sigil Set", {1,1,1})
+end
+
+function set_sigil_neptune()
+	return_settings_token()
+	settings_token.setName("\u{2646}")
+	broadcastToAll("\u{2646} Sigil Set", {1,1,1})
+end
+
+function set_sigil_dei()
+	return_settings_token()
+	settings_token.setName("\u{03EE}")
+	broadcastToAll("\u{03EE} Sigil Set", {1,1,1})
+end
+
+function set_sigil_black_diamond_x()
+	return_settings_token()
+	settings_token.setName("\u{2756}")
+	broadcastToAll("\u{2756} Sigil Set", {1,1,1})
+end
+
+function set_sigil_ohm()
+	return_settings_token()
+	settings_token.setName("\u{2127}")
+	broadcastToAll("\u{2127} Sigil Set", {1,1,1})
+end
+
+function set_sigil_omega()
+	return_settings_token()
+	settings_token.setName("\u{038F}")
+	broadcastToAll("\u{038F} Sigil Set", {1,1,1})
+end
+
+function set_sigil_omega()
+	return_settings_token()
+	settings_token.setName("\u{038F}")
+	broadcastToAll("\u{038F} Sigil Set", {1,1,1})
+end
+
+function set_sigil_arabic_five()
+	return_settings_token()
+	settings_token.setName("\u{06F5}")
+	broadcastToAll("\u{06F5} Sigil Set", {1,1,1})
+end
+
+function set_sigil_star_crescent()
+	return_settings_token()
+	settings_token.setName("\u{262A}")
+	broadcastToAll("\u{262A} Sigil Set", {1,1,1})
+end
+
+function set_sigil_four_club()
+	return_settings_token()
+	settings_token.setName("\u{2725}")
+	broadcastToAll("\u{2725} Sigil Set", {1,1,1})
+end
+
+function set_sigil_dzhe()
+	return_settings_token()
+	settings_token.setName("\u{045F}")
+	broadcastToAll("\u{045F} Sigil Set", {1,1,1})
+end
+
+function set_sigil_sigma()
+	return_settings_token()
+	settings_token.setName("\u{0383}")
+	broadcastToAll("\u{0383} Sigil Set", {1,1,1})
+end
+
+function set_sigil_omega2()
+	return_settings_token()
+	settings_token.setName("\u{10D3}")
+	broadcastToAll("\u{10D3} Sigil Set", {1,1,1})
+end
+
+function set_sigil_king()
+	return_settings_token()
+	settings_token.setName("\u{265A}")
+	broadcastToAll("\u{265A} Sigil Set", {1,1,1})
+end
+
+function set_sigil_16()
+	return_settings_token()
+	settings_token.setName("\u{265A}")
+	broadcastToAll("\u{265A} Sigil Set", {1,1,1})
+end
+
+function set_sigil_phi()
+	return_settings_token()
+	settings_token.setName("\u{03A6}")
+	broadcastToAll("\u{03A6} Sigil Set", {1,1,1})
+end
+
+function set_sigil_mercury()
+	return_settings_token()
+	settings_token.setName("\u{263F}")
+	broadcastToAll("\u{263F} Sigil Set", {1,1,1})
+end
+
+function set_sigil_fleur()
+	return_settings_token()
+	settings_token.setName("\u{269c}")
+	broadcastToAll("\u{269c} Sigil Set", {1,1,1})
+end
+
+function set_sigil_diamonds()
+	return_settings_token()
+	settings_token.setName("\u{2666}")
+	broadcastToAll("\u{2666} Sigil Set", {1,1,1})
+end
+
+function set_sigil_hearts()
+	return_settings_token()
+	settings_token.setName("\u{2665}")
+	broadcastToAll("\u{2665} Sigil Set", {1,1,1})
+end
+
+function set_sigil_clubs()
+	return_settings_token()
+	settings_token.setName("\u{2663}")
+	broadcastToAll("\u{2663} Sigil Set", {1,1,1})
+end
+
+function set_sigil_spades()
+	return_settings_token()
+	settings_token.setName("\u{2660}")
+	broadcastToAll("\u{2660} Sigil Set", {1,1,1})
+end
+
+function set_sigil_uranus()
+	return_settings_token()
+	settings_token.setName("\u{2645}")
+	broadcastToAll("\u{2645} Sigil Set", {1,1,1})
+end
+
+function set_sigil_biohazard()
+	return_settings_token()
+	settings_token.setName("\u{2623}")
+	broadcastToAll("\u{2623} Sigil Set", {1,1,1})
+end
+
+function set_sigil_saturn()
+	return_settings_token()
+	settings_token.setName("\u{2644}")
+	broadcastToAll("\u{2644} Sigil Set", {1,1,1})
+end
+
+function set_sigil_floral_heart()
+	return_settings_token()
+	settings_token.setName("\u{2766}")
+	broadcastToAll("\u{2766} Sigil Set", {1,1,1})
+end
+
+function set_sigil_versicle()
+	return_settings_token()
+	settings_token.setName("\u{2123}")
+	broadcastToAll("\u{2123} Sigil Set", {1,1,1})
+end
+
+function set_sigil_scruple()
+	return_settings_token()
+	settings_token.setName("\u{2108}")
+	broadcastToAll("\u{2108} Sigil Set", {1,1,1})
+end
+
+function set_sigil_barsymbol()
+	return_settings_token()
+	settings_token.setName("\u{2144}")
+	broadcastToAll("\u{2144} Sigil Set", {1,1,1})
+end
+
+function set_sigil_aquarius()
+	return_settings_token()
+	settings_token.setName("\u{2652}")
+	broadcastToAll("\u{2652} Sigil Set", {1,1,1})
+end
+
+function set_sigil_capricorn()
+	return_settings_token()
+	settings_token.setName("\u{2651}")
+	broadcastToAll("\u{2651} Sigil Set", {1,1,1})
+end
+
+function set_sigil_sagittarius()
+	return_settings_token()
+	settings_token.setName("\u{2650}")
+	broadcastToAll("\u{2650} Sigil Set", {1,1,1})
+end
+
+function set_sigil_scorpio()
+	return_settings_token()
+	settings_token.setName("\u{264F}")
+	broadcastToAll("\u{264F} Sigil Set", {1,1,1})
+end
+
+function set_sigil_libra()
+	return_settings_token()
+	settings_token.setName("\u{264E}")
+	broadcastToAll("\u{264E} Sigil Set", {1,1,1})
+end
+
+function set_sigil_virgo()
+	return_settings_token()
+	settings_token.setName("\u{264D}")
+	broadcastToAll("\u{264D} Sigil Set", {1,1,1})
+end
+
+function set_sigil_leo()
+	return_settings_token()
+	settings_token.setName("\u{264C}")
+	broadcastToAll("\u{264C} Sigil Set", {1,1,1})
+end
+
+function set_sigil_cancer()
+	return_settings_token()
+	settings_token.setName("\u{264B}")
+	broadcastToAll("\u{264B} Sigil Set", {1,1,1})
+end
+
+function set_sigil_gemini()
+	return_settings_token()
+	settings_token.setName("\u{264a}")
+	broadcastToAll("\u{264a} Sigil Set", {1,1,1})
+end
+
+function set_sigil_taurus()
+	return_settings_token()
+	settings_token.setName("\u{2649}")
+	broadcastToAll("\u{2649} Sigil Set", {1,1,1})
+end
+
+function set_sigil_aries()
+	return_settings_token()
+	settings_token.setName("\u{2648}")
+	broadcastToAll("\u{2648} Sigil Set", {1,1,1})
+end
+
+function set_sigil_pisces()
+	return_settings_token()
+	settings_token.setName("\u{2653}")
+	broadcastToAll("\u{2653} Sigil Set", {1,1,1})
+end
+
+
+
+
+
+
+
+
+
+
+-- Music Functions -------------------------------------------------------------
+function prev_music_track()
+	local desc = set_current_track_obj.getDescription()
+	if desc == "21" then
+		music_player.AssetBundle.playLoopingEffect(20)
+		set_current_track_obj.setDescription("20")
+	elseif desc == "20" then
+		music_player.AssetBundle.playLoopingEffect(19)
+		set_current_track_obj.setDescription("19")
+	elseif desc == "19" then
+		music_player.AssetBundle.playLoopingEffect(18)
+		set_current_track_obj.setDescription("18")
+	elseif desc == "18" then
+		music_player.AssetBundle.playLoopingEffect(17)
+		set_current_track_obj.setDescription("17")
+	elseif desc == "17" then
+		music_player.AssetBundle.playLoopingEffect(16)
+		set_current_track_obj.setDescription("16")
+	elseif desc == "16" then
+		music_player.AssetBundle.playLoopingEffect(15)
+		set_current_track_obj.setDescription("15")
+	elseif desc == "15" then
+		music_player.AssetBundle.playLoopingEffect(14)
+		set_current_track_obj.setDescription("14")
+	elseif desc == "14" then
+		music_player.AssetBundle.playLoopingEffect(13)
+		set_current_track_obj.setDescription("13")
+	elseif desc == "13" then
+		music_player.AssetBundle.playLoopingEffect(12)
+		set_current_track_obj.setDescription("12")
+	elseif desc == "12" then
+		music_player.AssetBundle.playLoopingEffect(11)
+		set_current_track_obj.setDescription("11")
+	elseif desc == "11" then
+		music_player.AssetBundle.playLoopingEffect(10)
+		set_current_track_obj.setDescription("10")
+	elseif desc == "10" then
+		music_player.AssetBundle.playLoopingEffect(9)
+		set_current_track_obj.setDescription("9")
+	elseif desc == "9" then
+		music_player.AssetBundle.playLoopingEffect(8)
+		set_current_track_obj.setDescription("8")
+	elseif desc == "8" then
+		music_player.AssetBundle.playLoopingEffect(7)
+		set_current_track_obj.setDescription("7")
+	elseif desc == "7" then
+		music_player.AssetBundle.playLoopingEffect(6)
+		set_current_track_obj.setDescription("6")
+	elseif desc == "6" then
+		music_player.AssetBundle.playLoopingEffect(5)
+		set_current_track_obj.setDescription("5")
+	elseif desc == "5" then
+		music_player.AssetBundle.playLoopingEffect(4)
+		set_current_track_obj.setDescription("4")
+	elseif desc == "4" then
+		music_player.AssetBundle.playLoopingEffect(3)
+		set_current_track_obj.setDescription("3")
+	elseif desc == "3" then
+		music_player.AssetBundle.playLoopingEffect(2)
+		set_current_track_obj.setDescription("2")
+	elseif desc == "2" then
+		music_player.AssetBundle.playLoopingEffect(1)
+		set_current_track_obj.setDescription("1")
+	elseif desc == "1" then
+		music_player.AssetBundle.playLoopingEffect(0)
+		set_current_track_obj.setDescription("0")
+	end
+end
+
+function next_music_track()
+	local desc = set_current_track_obj.getDescription()
+	if desc == "0" then
+		music_player.AssetBundle.playLoopingEffect(1)
+		set_current_track_obj.setDescription("1")
+	elseif desc == "1" then
+		music_player.AssetBundle.playLoopingEffect(2)
+		set_current_track_obj.setDescription("2")
+	elseif desc == "2" then
+		music_player.AssetBundle.playLoopingEffect(3)
+		set_current_track_obj.setDescription("3")
+	elseif desc == "3" then
+		music_player.AssetBundle.playLoopingEffect(4)
+		set_current_track_obj.setDescription("4")
+	elseif desc == "4" then
+		music_player.AssetBundle.playLoopingEffect(5)
+		set_current_track_obj.setDescription("5")
+	elseif desc == "5" then
+		music_player.AssetBundle.playLoopingEffect(6)
+		set_current_track_obj.setDescription("6")
+	elseif desc == "6" then
+		music_player.AssetBundle.playLoopingEffect(7)
+		set_current_track_obj.setDescription("7")
+	elseif desc == "7" then
+		music_player.AssetBundle.playLoopingEffect(8)
+		set_current_track_obj.setDescription("8")
+	elseif desc == "8" then
+		music_player.AssetBundle.playLoopingEffect(9)
+		set_current_track_obj.setDescription("9")
+	elseif desc == "9" then
+		music_player.AssetBundle.playLoopingEffect(10)
+		set_current_track_obj.setDescription("10")
+	elseif desc == "10" then
+		music_player.AssetBundle.playLoopingEffect(11)
+		set_current_track_obj.setDescription("11")
+	elseif desc == "11" then
+		music_player.AssetBundle.playLoopingEffect(12)
+		set_current_track_obj.setDescription("12")
+	elseif desc == "12" then
+		music_player.AssetBundle.playLoopingEffect(13)
+		set_current_track_obj.setDescription("13")
+	elseif desc == "13" then
+		music_player.AssetBundle.playLoopingEffect(14)
+		set_current_track_obj.setDescription("14")
+	elseif desc == "14" then
+		music_player.AssetBundle.playLoopingEffect(15)
+		set_current_track_obj.setDescription("15")
+	elseif desc == "15" then
+		music_player.AssetBundle.playLoopingEffect(16)
+		set_current_track_obj.setDescription("16")
+	elseif desc == "16" then
+		music_player.AssetBundle.playLoopingEffect(17)
+		set_current_track_obj.setDescription("17")
+	elseif desc == "17" then
+		music_player.AssetBundle.playLoopingEffect(18)
+		set_current_track_obj.setDescription("18")
+	elseif desc == "18" then
+		music_player.AssetBundle.playLoopingEffect(19)
+		set_current_track_obj.setDescription("19")
+	elseif desc == "19" then
+		music_player.AssetBundle.playLoopingEffect(20)
+		set_current_track_obj.setDescription("20")
+	elseif desc == "20" then
+		music_player.AssetBundle.playLoopingEffect(21)
+		set_current_track_obj.setDescription("21")
+	end
+end
+
+function set_hunt_music()
+	local track = set_current_track_obj.getDescription()
+	local hunt_phase_soundtrack = getObjectFromGUID('cbfd14')
+	hunt_phase_soundtrack.setDescription(track)
+	broadcastToAll("Hunt Phase Soundtrack Set", {1,1,1})
+end
+
+function set_showdown_music()
+	local track = set_current_track_obj.getDescription()
+	local showdown_phase_soundtrack = getObjectFromGUID('06b681')
+	showdown_phase_soundtrack.setDescription(track)
+	broadcastToAll("Showdown Phase Soundtrack Set", {1,1,1})
+end
+
+function set_settlement_music()
+	local track = set_current_track_obj.getDescription()
+	local settlement_phase_soundtrack = getObjectFromGUID('a82278')
+	settlement_phase_soundtrack.setDescription(track)
+	broadcastToAll("Settlement Phase Soundtrack Set", {1,1,1})
+end
+
+
+
+
+
+
+
+
+
+
+-- Editions --------------------------------------------------------------------
+function load_community_edition()
+	local desc = current_edition_loaded.getDescription()
+	if desc == "community edition" then
+		broadcastToAll("Community Edition is already loaded!", {1,1,1})
+		return
+	end
+	for _, obj in ipairs(zoneCrafting.getObjects()) do
+		local desc = obj.getDescription()
+		if string.find(desc, "settlement_location") then
+			obj.setState(2)
+		end
+	end
+	for _, obj in ipairs(zoneGearDeck.getObjects()) do
+		if obj.getName() == "Master Gear Deck (Official Edition)" then
+			gearDeck = obj
+			break
+		end
+	end
+	gameBox.putObject(gearDeck)
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Master Gear Deck (Community Edition)" then
+			gameBox.takeObject({
+				position          = {5.55, 3, -96.95},
+				rotation          = {0, 180, 0},
+				smooth            = false,
+				guid              = obj.guid,
+			})
+		end
+	end
+	broadcastToAll("Community Edition Loaded", {1,1,1})
+	local desc = "community edition"
+	current_edition_loaded.setDescription(desc)
+end
+
+function load_official_edition()
+	local desc = current_edition_loaded.getDescription()
+	if desc == "official edition" then
+		broadcastToAll("Official Edition is already loaded!", {1,1,1})
+		return
+	end
+	for _, obj in ipairs(zoneCrafting.getObjects()) do
+		if string.find(obj.getDescription(), "settlement_location") then
+			obj.setState(1)
+		end
+	end
+	for _, obj in ipairs(zoneGearDeck.getObjects()) do
+		if obj.getName() == "Master Gear Deck (Community Edition)" then
+			gearDeck = obj
+			break
+		end
+	end
+	gameBox.putObject(gearDeck)
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Master Gear Deck (Official Edition)" then
+			gameBox.takeObject({
+				position          = {5.55, 3, -96.95},
+				rotation          = {0, 180, 0},
+				smooth            = false,
+				guid              = obj.guid,
+			})
+		end
+	end
+	broadcastToAll("Official Edition Loaded", {1,1,1})
+	local desc = "official edition"
+	current_edition_loaded.setDescription(desc)
+end
+
+
+
+
+
+
+
+
+
+function main_menu()
+	self.createButton({
+		click_function = "createButtons",
+		function_owner = self,
+		label 			= "Main Menu",
+		position 		= {0, 0.7, 5.9},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 7500,
+		height 			= 800,
+		font_size 		= 450,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	})
+end
+
+function clearButtons()
+	self.clearButtons()
+	self.clearInputs()
+	settings_P1_token.setPosition(settings_P1_pos_stored)
+	settings_P2_token.setPosition(settings_P2_pos_stored)
+	settings_P3_token.setPosition(settings_P3_pos_stored)
+	settings_P4_token.setPosition(settings_P4_pos_stored)
+end
+
+
+-- Set Campaign and Expansions to Load -----------------------------------------
+function load_Lantern()
+	name_toLoad = "People of the Lantern"
+	execute_load()
+end
+
+function load_Stars()
+	name_toLoad = "People of the Stars"
+	execute_load()
+end
+
+function load_Sun()
+	name_toLoad = "People of the Sun"
+	execute_load()
+end
+
+function load_Skull()
+	name_toLoad = "People of the Skull"
+	execute_load()
+end
+
+function load_Bloom()
+	name_toLoad = "People of the Bloom"
+	execute_load()
+end
+
+function load_DK()
+	name_toLoad = "Dragon King"
+	execute_load()
+	effects_pos_xpak = {-1.60, 2.16, -12.50}
+	--get_effects_xpak()
+end
+
+function load_DBK()
+	name_toLoad = "Dung Beetle Knight"
+	effects_pos_xpak = {0.00, 2.16, -13.16}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_FK()
+	name_toLoad = "Flower Knight"
+	effects_pos_xpak = {-1.60, 2.16, -13.92}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_GRM()
+	name_toLoad = "Gorm"
+	effects_pos_xpak = {-1.60, 2.16, -14.65}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_LG()
+	name_toLoad = "Lion God"
+	effects_pos_xpak = {-1.60, 2.16, -15.39}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_LK()
+	name_toLoad = "Lion Knight"
+	effects_pos_xpak = {-1.60, 2.16, -16.18}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_LT()
+	name_toLoad = "Lonely Tree"
+	effects_pos_xpak = {-1.60, 2.16, -16.95}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_MH()
+	name_toLoad = "Manhunter"
+	effects_pos_xpak = {-1.60, 2.16, -17.76}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_SM()
+	name_toLoad = "Slenderman"
+	effects_pos_xpak = {-1.60, 2.16, -18.48}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_SPID()
+	name_toLoad = "Spidicules"
+	effects_pos_xpak = {-1.60, 2.16, -19.24}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+function load_SS()
+	name_toLoad = "Sunstalker"
+	effects_pos_xpak = {-1.60, 2.16, -20.02}
+	-- get_effects_xpak()
+	execute_load()
+end
+
+
+
+-- Load Campaign and Expansions ------------------------------------------------
+
+function execute_load()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == name_toLoad then
+			gameBox.takeObject({position = position, smooth = false, guid = obj.guid})
+		end
+	end
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneNewSurvivors.guid)
+	if name_toLoad == "People of the Lantern" then
+		for _, obj in ipairs(zone.getObjects()) do
+			if string.find(obj.getDescription(), "people of the stars")
+			or string.find(obj.getDescription(), "people of the sun") then
+				obj.destroy()
+			end
+		end
+	elseif name_toLoad == "People of the Stars" then
+		for _, obj in ipairs(zone.getObjects()) do
+			if string.find(obj.getDescription(), "people of the sun")
+			or string.find(obj.getDescription(), "people of the lantern") then
+				obj.destroy()
+			end
+			if string.find(obj.getDescription(), "people of the stars") then
+				obj.setPosition({0.00, 5.26, -72.85})
+			end
+		end
+	elseif name_toLoad == "People of the Sun" then
+		for _, obj in ipairs(zone.getObjects()) do
+			if string.find(obj.getDescription(), "people of the stars")
+			or string.find(obj.getDescription(), "people of the lantern") then
+				obj.destroy()
+			end
+			if string.find(obj.getDescription(), "people of the sun") then
+				obj.setPosition({0.00, 5.26, -72.85})
+			end
+		end
+	end
+	if string.find(name_toLoad, "People") then
+		self.setDescription("board, campaign loaded")
+		createButtons()
+	end
+	startLuaCoroutine(self, "destroy_bag")
+end
+
+function destroy_bag()
+	wait(2)
+	for _, obj in ipairs(zone_setUp.getObjects()) do
+		if obj.tag == "Bag" then
+			obj.destroy()
+		end
+	end
+	return 1
+end
+
+
+-- Load Promos / Fanmade -------------------------------------------------------
+
+function get_fanmade_hunt_events()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Random Event" then
+			gameBox.takeObject({position = {-2.81, 4.5, -13.45}, rotation = {0.00, 180.00, 0.00}, guid = obj.guid, smooth = false})
+		end
+		if obj.name == "Random Promo Event: Draw when instructed to" then
+			gameBox.takeObject({position = {-2.82, 4.5, -16.28}, rotation = {0.00, 180.00, 0.00}, guid = obj.guid, smooth = false})
+		end
+	end
+end
+
+function get_promo_hunt_events()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Promo Hunt Events" then
+			gameBox.takeObject({position = {-2.78, 4.5, -15.07}, rotation = {0.00, 180.00, 0.00}, guid = obj.guid, smooth = false})
+		end
+	end
+end
+
+function get_fanmade_settlement_events()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Fan Made Settlement Events" then
+			gameBox.takeObject({position = {-2.78, 4.5, -15.07}, rotation = {0.00, 180.00, 0.00}, guid = obj.guid, smooth = false})
+		end
+	end
+end
+
+function get_promo_settlement_events()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Promo Settlement Events" then
+			gameBox.takeObject({position = {-2.78, 4.5, -15.07}, rotation = {0.00, 180.00, 0.00}, guid = obj.guid, smooth = false})
+		end
+	end
+end
+
+function load_to_game()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x + 2.80, pos.y + 1, pos.z + 1.48},
+		direction		= {0,1,0},
+		type				= 3,
+		size				= {3,2,6},
+		max_distance 	= 0,
+	})
+	for _, entry in ipairs(hitList) do
+		local name = entry.hit_object.getName()
+		local scaleZ = entry.hit_object.getScale().z
+		if scaleZ > 1.25 and (entry.hit_object.tag == "Card" or entry.hit_object.tag == "Deck") then
+			entry.hit_object.setPosition({-61.26, 4.7, 28.83})
+			entry.hit_object.setRotation({0.00, 180.00, 180.00})
+		end
+		if name == "Promo Hunt Events" or name == "Baby and the Sword" or name == "Dead Warrior" then
+			entry.hit_object.setPosition({3.26, 1.8, -102.44})
+			entry.hit_object.setRotation({0, 180, 180})
+		end
+	end
+	broadcastToAll("Cards Loaded", {1,1,1})
+end
+
+function return_cards_to_box()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x - 2.78, pos.y + 1, pos.z + 1.48},
+		direction		= {0,1,0},
+		type				= 3,
+		size				= {3,2,6},
+		max_distance 	= 0,
+	})
+	for _, entry in ipairs(hitList) do
+		if (entry.hit_object.tag == "Card" or entry.hit_object.tag == "Deck") then
+			gameBox.putObject(entry.hit_object)
+		end
+	end
+	broadcastToAll("Cards Returned", {1,1,1})
+end
+
+
+-- Admin Panel -----------------------------------------------------------------
+
+function disable_interactable()
+	objectTable = { "c40d11", "26f63c", "daa5cf", "567941", "1e2c86", "516c7e", "b56bb5", "cdb758", "463cb7", "1b5c7a", "fd8b97", "86e4fd", "f7c730", "9eaa8a", "d5b02b", "27e3f2", "36b956", "bcaedd", "a3cdcc"}
+
+	for i=1, #objectTable, 1 do
+		obj = getObjectFromGUID(objectTable[i])
+		if obj ~= nil then
+			obj.interactable = false
+		end
+	end
+	broadcastToAll("Objects are NOT interactable", {1,1,1})
+end
+
+function enable_interactable()
+	objectTable = { "c40d11", "26f63c", "daa5cf", "567941", "1e2c86", "516c7e", "b56bb5", "cdb758", "463cb7", "1b5c7a", "fd8b97", "86e4fd", "f7c730", "9eaa8a", "d5b02b", "27e3f2", "36b956", "bcaedd", "a3cdcc"}
+
+	-- Settlement Event Board = 'a519ba'
+	for i=1, #objectTable, 1 do
+		obj = getObjectFromGUID(objectTable[i])
+		if obj ~= nil then
+			obj.interactable = true
+		end
+	end
+	broadcastToAll("Objects are interactable", {1,1,1})
+end
+
+function disable_clone()
+	broadcastToAll("Objects will NOT clone on leave container", {1,1,1})
+	Global.setVar("onLeaveClone", false)
+end
+
+function enable_clone()
+	broadcastToAll("Objects will clone on leave container", {1,1,1})
+	Global.setVar("onLeaveClone", true)
+end
+
+-- Get Table Building Tools
+function set_better_notecards()
+	tool_toGet = "Better Notecards"
+	get_admin_tool()
+end
+
+function set_deck_fixer()
+	tool_toGet = "Deck GUID Fixer"
+	get_admin_tool()
+end
+
+function set_light_saver()
+	tool_toGet = "Light Saver Tool"
+	get_admin_tool()
+end
+
+function set_camera_placement()
+	tool_toGet = "Camera Placement Tool"
+	get_admin_tool()
+end
+
+function set_rotation_tool()
+	tool_toGet = "Rotation Copy Tool"
+	get_admin_tool()
+end
+
+function set_scale_tool()
+	tool_toGet = "Scale Copy Tool"
+	get_admin_tool()
+end
+
+function set_deck_layout_tool()
+	tool_toGet = "Deck Layout Tool"
+	get_admin_tool()
+end
+
+function set_info_cube()
+	tool_toGet = "Info Cube by MrStump"
+	get_admin_tool()
+end
+
+function set_button_visualizer()
+	tool_toGet = "Button Visualizer"
+	get_admin_tool()
+end
+
+function get_admin_tool()
+	local pos = bag_admin.getPosition()
+	for _, obj in ipairs(bag_admin.getObjects()) do
+		if obj.name == tool_toGet then
+			local master = bag_admin.takeObject({position = {pos.x, pos.y + 10, pos.z}, smooth = false, guid = obj.guid})
+			local pos_toClone = master.getPosition()
+			local clone = master.clone(pos_toClone)
+			clone.setPosition({0.02, 7, -16.20})
+			clone.setLock(true)
+			bag_admin.putObject(master)
+		end
+	end
+end
+
+
+
+-- User Settings ---------------------------------------------------------------
+
+-- Turn On/Off Effects ---------------------------------------------------------
+function turn_on_visual()
+	set_Visual.setRotation({0,180,0})
+	broadcastToAll("Visual Effects turned On", {1,1,1})
+end
+
+function turn_off_visual()
+	set_Visual.setRotation({0,180,180})
+	broadcastToAll("Visual Effects turned Off", {1,1,1})
+end
+
+function turn_on_sound()
+	set_Sound.setRotation({0,180,0})
+	broadcastToAll("Sound Effects turned On", {1,1,1})
+end
+
+function turn_off_sound()
+	set_Sound.setRotation({0,180,180})
+	broadcastToAll("Sound Effects turned Off", {1,1,1})
+end
+
+function turn_on_lighting()
+	set_Lighting.setRotation({0,180,0})
+	broadcastToAll("Lighting Effects turned On", {1,1,1})
+end
+
+function turn_off_lighting()
+	set_Lighting.setRotation({0,180,180})
+	broadcastToAll("Lighting Effects turned Off", {1,1,1})
+end
+
+-- Turn On/Off Move Cameras ----------------------------------------------------
+function turn_on_move_P1()
+	settings_P1_token.setRotation({0,180,0})
+	broadcastToAll("Move Camera On for P1", {1,1,1})
+end
+
+function turn_off_move_P1()
+	settings_P1_token.setRotation({0,180,180})
+	broadcastToAll("Move Camera Off for P1", {1,1,1})
+end
+
+function turn_on_move_P2()
+	settings_P2_token.setRotation({0,180,0})
+	broadcastToAll("Move Camera On for P2", {1,1,1})
+end
+
+function turn_off_move_P2()
+	settings_P2_token.setRotation({0,180,180})
+	broadcastToAll("Move Camera Off for P2", {1,1,1})
+end
+
+function turn_on_move_P3()
+	settings_P3_token.setRotation({0,180,0})
+	broadcastToAll("Move Camera On for P3", {1,1,1})
+end
+
+function turn_off_move_P3()
+	settings_P3_token.setRotation({0,180,180})
+	broadcastToAll("Move Camera Off for P3", {1,1,1})
+end
+
+function turn_on_move_P4()
+	settings_P4_token.setRotation({0,180,0})
+	broadcastToAll("Move Camera On for P4", {1,1,1})
+end
+
+function turn_off_move_P4()
+	settings_P4_token.setRotation({0,180,180})
+	broadcastToAll("Move Camera Off for P4", {1,1,1})
+end
+
+-- Set Camera Pitch ------------------------------------------------------------
+function set_pitch_P1(object, player_color)
+	local inputs = self.getInputs()
+	for i, v in ipairs(inputs) do
+		if v.label == "P1" then
+			pitch_value = v.value
+		end
+	end
+	settings_P1_token.setDescription(pitch_value)
+	broadcastToColor("Camera Pitch Set", player_color, {1,1,1})
+end
+
+function set_pitch_P2(object, player_color)
+	local inputs = self.getInputs()
+	for i, v in ipairs(inputs) do
+		if v.label == "P2" then
+			pitch_value = v.value
+		end
+	end
+	settings_P2_token.setDescription(pitch_value)
+	broadcastToColor("Camera Pitch Set", player_color, {1,1,1})
+end
+
+function set_pitch_P3(object, player_color)
+	local inputs = self.getInputs()
+	for i, v in ipairs(inputs) do
+		if v.label == "P3" then
+			pitch_value = v.value
+		end
+	end
+	settings_P3_token.setDescription(pitch_value)
+	broadcastToColor("Camera Pitch Set", player_color, {1,1,1})
+end
+
+function set_pitch_P4(object, player_color)
+	local inputs = self.getInputs()
+	for i, v in ipairs(inputs) do
+		if v.label == "P4" then
+			pitch_value = v.value
+		end
+	end
+	settings_P4_token.setDescription(pitch_value)
+	broadcastToColor("Camera Pitch Set", player_color, {1,1,1})
+end
+
+-- Load Avatar Themes ----------------------------------------------------------
+pos_male_view = {-2.75, 4.16, -11.15}
+pos_female_view = {2.75, 4.16, -11.15}
+pos_male_load = {-12.92, 4.95, -34.85}
+pos_female_load = {12.66, 4.95, -34.85}
+
+function set_GOT()
+	bag_to_get_male = "Game of Thrones - Males"
+	bag_to_get_female = "Game of Thrones - Females"
+	broadcastToAll("Game of Thrones Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function set_western()
+	bag_to_get_male = "Western - Males"
+	bag_to_get_female = "Western - Females"
+	broadcastToAll("Western Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function set_fantasy_avatars()
+	bag_to_get_male = "Fantasy RPG - Males"
+	bag_to_get_female = "Fantasy RPG - Females"
+	broadcastToAll("Fantasy RPG Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function set_PotS_avatars()
+	bag_to_get_male = "People of the Skull - Males"
+	bag_to_get_female = "People of the Skull - Females"
+	broadcastToAll("People of the Skull Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function set_DC()
+	bag_to_get_male = "DC Comics - Males"
+	bag_to_get_female = "DC Comics - Females"
+	broadcastToAll("DC Comics Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function set_marvel()
+	bag_to_get_male = "Marvel Comics - Males"
+	bag_to_get_female = "Marvel Comics - Females"
+	broadcastToAll("Marvel Comics Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function set_vampires()
+	bag_to_get_male = "Vampires - Males"
+	bag_to_get_female = "Vampires - Females"
+	broadcastToAll("Vampires Selected ~ Use View, Load and Return Buttons", {1,1,1})
+end
+
+function view_avatars()
+	if bag_male ~= nil then
+		broadcastToAll("Return Current viewing to box first!", {1,1,1})
+	end
+	if bag_male == nil then
+		for _, obj in ipairs(gameBox.getObjects()) do
+			if obj.name == bag_to_get_male then
+				bag_male = gameBox.takeObject({position = pos_male_view, smooth = false, rotation = {0, 0, 0}, guid = obj.guid})
+			end
+			if obj.name == bag_to_get_female then
+				bag_female = gameBox.takeObject({position = pos_female_view, smooth = false, rotation = {0, 0, 0}, guid = obj.guid})
+			end
+		end
+	else
+		bag_male.setPosition(pos_male_view)
+		bag_female.setPosition(pos_female_view)
+	end
+end
+
+function load_avatars()
+	if bag_male ~= nil then
+		broadcastToAll("Return Current loaded to box first!", {1,1,1})
+	end
+	if bag_male == nil then
+		for _, obj in ipairs(gameBox.getObjects()) do
+			if obj.name == bag_to_get_male then
+				bag_male = gameBox.takeObject({position = pos_male_load, smooth = false, rotation = {0, 0, 0}, guid = obj.guid})
+			end
+			if obj.name == bag_to_get_female then
+				bag_female = gameBox.takeObject({position = pos_female_load, smooth = false, rotation = {0, 0, 0}, guid = obj.guid})
+			end
+		end
+	else
+		bag_male.setPosition(pos_male_load)
+		bag_female.setPosition(pos_female_load)
+	end
+	broadcastToAll("Avatars Loaded next to 'Add New Survivors'", {1,1,1})
+end
+
+function return_avatars()
+	if bag_male ~= nil then
+		gameBox.putObject(bag_male)
+		gameBox.putObject(bag_female)
+		broadcastToAll("Avatars returned to box", {1,1,1})
+		bag_male = nil
+	end
+end
+
+
+-- Utility Functions -----------------------------------------------------------
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function get_effects()
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+
+		--[[bag_effects_wipe = getObjectFromGUID('d02e2e')
+		local pos_toSpawn = bag_effects_wipe.getPosition()
+		effects_wipe = bag_effects_wipe.takeObject({
+			position       = {pos_toSpawn.x, pos_toSpawn.y + 2, pos_toSpawn.z},
+			smooth         = false,
+			callback			= "lock_callback",
+			callback_owner = Global
+		})
+		wait(0.2)
+		effects_wipe.setPosition(menu_pos)
+		effects_wipe.AssetBundle.playLoopingEffect(2)--]]
+
+		if has_chain_effect then
+			bag_chain_effect = getObjectFromGUID('bce2c2')
+			local pos = bag_chain_effect.getPosition()
+			chain_effect = bag_chain_effect.takeObject({
+				position       = {pos.x, pos.y + 4, pos.z},
+				smooth         = false,
+				callback			= "lock_callback",
+				callback_owner = Global
+			})
+			chain_effect.AssetBundle.playLoopingEffect(9)
+		end
+
+		--startLuaCoroutine(self, "store_effects_wipe_coR")
+		if has_chain_effect then
+			wait(0.10)
+			chain_effect.setPosition({-0.04, 4.40, -16.01})
+		end
+		wait(1.75)
+		--effects_wipe.destroy()
+		wait(1)
+		if has_chain_effect then
+			chain_effect.destroy()
+		end
+	end
+	return 1
+end
+
+function store_effects_wipe_coR()
+	if has_chain_effect then
+		wait(0.10)
+		chain_effect.setPosition({-0.04, 4.40, -16.01})
+	end
+	wait(1.75)
+	effects_wipe.destroy()
+	wait(1)
+	if has_chain_effect then
+		chain_effect.destroy()
+	end
+	return 1
+end
+
+function get_effects_xpak()
+	local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+	local rotZ = set_Visual.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local pos = self.getPosition()
+		local bag_effect = getObjectFromGUID('96674b')
+		effect = bag_effect.takeObject({
+			position 		= effects_pos_xpak,
+			smooth 			= false,
+			callback 		= "lock_callback",
+			callback_owner = Global
+		})
+		effect.AssetBundle.playLoopingEffect(2)
+		startLuaCoroutine(self, "delay_destroy_coR")
+	end
+end
+
+function delay_destroy_coR()
+	wait(0.1)
+	local pos = effect.getPosition()
+	effect.setPositionSmooth({pos.x + 3, pos.y + 3, pos.z})
+	wait(0.35)
+	local pos = effect.getPosition()
+	effect.setPositionSmooth({pos.x, pos.y - 3, pos.z})
+	wait(0.3)
+	effect.destroy()
+	return 1
+end
+
+function dud() end
+
+-- MAIN MENU SETUP GAME TOOL ---------------------------------------------------

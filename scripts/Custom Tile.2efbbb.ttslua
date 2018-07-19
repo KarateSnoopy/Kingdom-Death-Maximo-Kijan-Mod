@@ -4,7 +4,6 @@ function onLoad()
   createButton()
 end
 
-
 function createButton()
 
   self.createButton({click_function = "craftGear", function_owner = self, label = "[ Back to Crafting ]",

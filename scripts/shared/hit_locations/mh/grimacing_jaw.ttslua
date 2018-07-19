@@ -1,0 +1,71 @@
+function criticalWoundEffect()
+	obj1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+	local var = ""
+	obj1.getVar("phase")
+	obj1.setVar("phase", var)
+
+	obj2 = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+	local var = ""
+	obj2.getVar("phase")
+	obj2.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR_crit")
+end
+
+function addStat_coR_crit()
+	Global.call('addBroadcast', {"crit", {gear = "The Manhunter gained a (-2) Accuracy Token", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "The Manhunter gained a (+1) Damage Token", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+	obj1.call("spawn_token")
+	for i=1, 2 do
+		obj2.call("spawn_token")
+		wait(0.25)
+	end
+	return 1
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Cancel the next Reaction in this Attack", effect = ""}})
+	 local posX = self.getPosition().x
+	 if posX > 6.0 then
+	 	hitTool_right = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+	 	hitTool_right.call("reactionsCancelled_nextWoundAttempt")
+	 	hitTool_right.call('removeButton_ReactionTriggered')
+	 elseif posX < 4.0 then
+	 	hitTool_left = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_L.guid)
+	 	hitTool_left.call("reactionsCancelled_nextWoundAttempt")
+	 	hitTool_left.call('removeButton_ReactionTriggered')
+	 end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(+2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+#include ../get_vars
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end

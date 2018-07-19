@@ -1,0 +1,68 @@
+function onLoad()
+	createButton()
+end
+
+function createButton()
+	self.createButton({click_function = "onFlip", function_owner = self, label = "Dodge",
+	position = {0, 0.5, 0}, rotation = {-5, 0 , 0}, scale = {0.5, 0.5, 0.5}, width = 5000, height = 1600, font_size = 0,
+	color = {0,0,0}, font_color = {1,1,1}, font_size=800})
+end
+
+function onFlip(object, player_color)
+	cannotDodge = false
+	local desc = self.getDescription()
+	if string.find(desc, "P1") then
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+		grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+		msg_color = grid.getTable("msg_color")
+	elseif string.find(desc, "P2") then
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+		grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+		msg_color = grid.getTable("msg_color")
+	elseif string.find(desc, "P3") then
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+		grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+		msg_color = grid.getTable("msg_color")
+	elseif string.find(desc, "P4") then
+		zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+		grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+		msg_color = grid.getTable("msg_color")
+	end
+
+	for _, object in ipairs(zone.getObjects()) do
+		-- Replica Flower Sword
+		if object.getName() == "Replica Flower Sword" then
+			cannotDodge = true
+			broadcastToColor("Replica Flower Sword ~ You cannot Dodge", player_color, msg_color)
+			return
+
+		-- Extra Sense
+		elseif object.getName() == "Extra Sense" and object.getRotation().z < 165 then
+			broadcastToColor("Extra Sense ~ You may dodge an additional time", player_color, msg_color)
+
+		-- Hyper Sensitivity
+		elseif object.getName() == "Hyper Sensitivity" then
+			broadcastToColor("Hyper Sensitivity ~ You may dodge an additional time", player_color, msg_color)
+
+		-- Sun Drunk
+		elseif (object.getName() == "Sun Drunk" and object.getRotation().z < 165) and object.getName() == "Strength" then
+			broadcastToColor("Sun Drunk ~ You cannot Dodge, Dash or Runaway while you have any (+1) Strength Tokens", player_color, msg_color)
+
+		-- King of a Thousand Battles
+		elseif object.getName() == "King of a Thousand Battles" and object.getRotation().z < 165 then
+			broadcastToColor("King of a Thousand Battles ~ You may Dodge any number of times in a round", player_color, msg_color)
+			cannotDodge = true -- can dodge but this line disables dodge token from flipping
+		end
+	end
+	if cannotDodge == false then
+		self.setRotation({self.getRotation().x, self.getRotation().y, self.getRotation().z+180})
+		changeSurvivors("survival", -1, grid)
+	elseif cannotDodge == true then
+		return
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

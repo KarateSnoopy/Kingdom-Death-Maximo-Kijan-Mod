@@ -1,0 +1,68 @@
+function criticalWoundEffect()
+	getVars()
+	get_role()
+	if role == "Fool" then
+		Global.call('addBroadcast', {"crit", {gear = "You are the ☛ Fool ☚", effect = ""}})
+
+		gain_priority_target()
+		Global.call('addBroadcast', {"crit", {gear = "You gained the Priority Target Token", effect = ""}})
+
+		local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = ""
+		obj.getVar("phase")
+		obj.setVar("phase", var)
+		obj.call("spawn_token")
+		Global.call('addBroadcast', {"crit", {gear = "The Lion Knight gained a (+1) Damage Token", effect = ""}})
+
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not the ☛ Fool ☚", effect = ""}})
+	end
+end
+
+#include ../gain_priority
+#include ../get_vars
+
+function get_role()
+	grid.call("return_role")
+	role = grid.getVar("role")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	get_role()
+	if role == "Fool" then
+		Global.call('addBroadcast', {"reflex", {gear = "You are the ☛ Fool ☚", effect = ""}})
+		obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+		local var = "endOfattack"
+		obj.getVar("phase")
+		obj.setVar("phase", var)
+		Global.call('addBroadcast', {"reflex", {gear = "The Lion Knight gained (-2) Toughness until the end of your attack", effect = ""}})
+		startLuaCoroutine(self, "addStat_coR")
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "You are not the ☛ Fool ☚", effect = ""}})
+	end
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function addStatModifier()
+end

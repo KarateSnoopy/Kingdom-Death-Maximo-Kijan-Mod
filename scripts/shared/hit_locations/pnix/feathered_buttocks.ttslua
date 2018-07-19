@@ -1,0 +1,35 @@
+
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	getMonsterResource()
+end
+
+#include get_vars
+
+function getMonsterResource()
+	local tbl = {cardName = "Small Feathers", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Small Feathers", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Small Feathers", effect = ""}})
+	end
+end
+
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "If you have any Age Tokens ~ Suffer Rewind", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

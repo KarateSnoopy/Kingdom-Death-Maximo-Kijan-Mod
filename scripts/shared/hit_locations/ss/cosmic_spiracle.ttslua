@@ -1,0 +1,46 @@
+function criticalWoundEffect()
+	getVars()
+	if frenzyToken.getPosition().y > 3 then
+		Global.call('addBroadcast', {"crit", {gear = "You are Frenzied ~ You lost your Positive Tokens gained from Frenzy", effect = ""}})
+		for _, tok in ipairs(zone.getObjects()) do
+			if string.find(tok.getDescription(), "frenzy") then
+				tok.destroy()
+			end
+		end
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You have " .. get_courage_value(courage) .. " Courage", effect = ""}})
+		Global.call('addBroadcast', {"crit", {gear = "Roll 1d10 ~ If result is equal to or less than your Courage", effect = ""}})
+		Global.call('addBroadcast', {"crit", {gear = "Gain + ★ Survival", effect = ""}})
+	end
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Suffer the Frenzy Brain Trauma", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	broadcastToAll("You sense something and may end your attack before attempting to wound", {1, 1, 1})
+end
+
+#include ../get_vars
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end

@@ -1,0 +1,33 @@
+function criticalWoundEffect()
+	getMonsterResource()
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The Dragon King lost all its (-1) Tokens", effect = ""}})
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+	for _, tok in ipairs(zone.getObjects()) do
+		if string.find(tok.getDescription(), "minus one") then
+			tok.destroy()
+		end
+	end
+end
+
+function reflexEffect()
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Dragon King Resource", effect = ""}})
+end
+
+#include ../get_vars

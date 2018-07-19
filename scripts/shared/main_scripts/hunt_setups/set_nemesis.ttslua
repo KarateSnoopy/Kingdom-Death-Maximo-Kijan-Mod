@@ -1,0 +1,65 @@
+-- Set Nemesis -----------------------------------------------------------------
+function setup_BUTCH()
+	btn_clicked = 11
+	broadcastToAll("The Butcher Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_HAND()
+	btn_clicked = 12
+	broadcastToAll("The Hand Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_KING()
+	btn_clicked = 13
+	broadcastToAll("King's Man Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_LK()
+	btn_clicked = 14
+	broadcastToAll("Lion Knight Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_MH()
+	btn_clicked = 15
+	broadcastToAll("Manhunter Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_SM()
+	btn_clicked = 16
+	broadcastToAll("Slenderman Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_TYRANT()
+	btn_clicked = 17
+	broadcastToAll("The Tyrant Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_WATCH()
+	btn_clicked = 18
+	broadcastToAll("The Watcher Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_GSK()
+	btn_clicked = 19
+	broadcastToAll("Gold Smoke Knight Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_LT()
+	btn_clicked = 20
+	broadcastToAll("Lonely Tree Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Egg Sac Explosion Effect" then
+			gameBox.takeObject({guid = obj.guid, position = {72.14, 4.17, 48.02}, rotation = {0, 0, 0}, smooth = false})
+		end
+	end
+end

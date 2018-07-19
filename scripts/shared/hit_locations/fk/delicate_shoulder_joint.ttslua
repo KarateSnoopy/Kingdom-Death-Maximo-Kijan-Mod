@@ -1,0 +1,84 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+   Global.call('addBroadcast', {"crit", {gear = "You gained (+1) Survival ~ You gained a random Flower Resource", effect = ""}})
+	changeSurvivors("survival", 1, grid)
+
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	found_fairyRing = false
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "Flower Knight" then
+			local pos = obj.getPosition()
+			local hitList = Physics.cast({origin={pos.x, pos.y, pos.z}, direction={0,1,0}, type=2, size={3,3,3},max_distance = 0})
+			for _, entry in ipairs(hitList) do
+				if entry.hit_object.getName() == "Fairy Ring" then
+					found_fairyRing = true
+				end
+			end
+			if found_fairyRing then
+				local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+				local var = ""
+				obj.getVar("phase")
+				obj.setVar("phase", var)
+				obj.call("spawn_token")
+				Global.call('addBroadcast', {"crit", {gear = "The Flower Knight is inside the Fairy Ring", effect = "~ Gained a (-1) Accuracy Token ~"}})
+			else
+				Global.call('addBroadcast', {"crit", {gear = "The Flower Knight is NOT inside the Fairy Ring", effect = ""}})
+			end
+		end
+	end
+	--Global.call('addBroadcast', {"crit", {gear = "Is the Flower Knight in the Fairy Ring? ~ If Yes, use Button on Hit Location", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(-2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function getMonsterResource()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Flower Resource", effect = ""}})
+end
+
+#include ../get_vars
+
+function changeSurvivors(location, amount, grid)
+	surv_sheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	surv_sheet.call("add", {location, amount})
+end
+
+
+
+-- delicate shoulder joint

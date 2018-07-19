@@ -1,0 +1,25 @@
+
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_mov.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Movement Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "All Survivors adjacent to the monster suffer Knockback 7", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "If any collide with Terrain ~ Suffer Bash and ★ +3 Damage", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- ankle

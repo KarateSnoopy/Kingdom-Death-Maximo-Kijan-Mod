@@ -1,0 +1,25 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "soluble") then
+			broadcastToAll("You have Soluble Gear in your Grid ~ Archive It", msg_color)
+		else
+			broadcastToAll("You do not have Soluble Gear in your Grid", msg_color)
+			break
+		end
+	end
+end
+
+#include ../get_vars

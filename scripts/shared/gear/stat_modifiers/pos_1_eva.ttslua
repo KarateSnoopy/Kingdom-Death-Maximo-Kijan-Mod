@@ -1,0 +1,11 @@
+isKdmEffectsObject = true
+effects = {
+    evasion = 1
+}
+
+function getEffects()
+
+        effects.evasion = 1
+
+    return effects
+end

@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Attacker gains (+3) Insanity", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Turn The Watcher to face the furthest board edge and full move forward", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Turn to face the Attacker ~ You gain 1 Bleeding Token", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You may perform Embolden", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,109 @@
+#include ../util
+
+function onLoad()
+	createButton()
+end
+
+function createButton(object, player)
+	local params = {
+		click_function = "dud",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		scale				= {0.5, 0.5, 0.5},
+		width          = 2000,
+		height         = 400,
+		font_size      = 300,
+		color          = {0,0,0,0},
+		font_color     = {1,1,1,100},
+	}
+
+	params.position = {-5.5, 0, 8.4}
+	params.label = "[ Player 1 ]"
+	params.click_function = "move_camera_toP1"
+	self.createButton(params)
+
+	params.position = {-3, 0, 8.4}
+	params.label = "[ Player 2 ]"
+	params.click_function = "move_camera_toP2"
+	self.createButton(params)
+
+	params.position = {3, 0, 8.4}
+	params.label = "[ Player 3 ]"
+	params.click_function = "move_camera_toP3"
+	self.createButton(params)
+
+	params.position = {5.5, 0, 8.4}
+	params.label = "[ Player 4 ]"
+	params.click_function = "move_camera_toP4"
+	self.createButton(params)
+
+	params.position = {5.5, 0, 8.4}
+	params.label = "[ Player 4 ]"
+	params.click_function = "move_camera_toP4"
+	self.createButton(params)
+
+	params.position = {0, 0, 8.4}
+	params.label = "< Send Cards to >"
+	params.click_function = "dud"
+	self.createButton(params)
+
+	params.position = {0, 0.1, 8}
+	params.scale = {1,1,1}
+	params.width = 1300
+	params.height = 200
+	params.font_size = 175
+	params.label = "____________________________  Severe Injuries  ____________________________"
+	params.click_function = "openInjuries"
+	self.createButton(params)
+
+end
+
+function openInjuries()
+	bagInjuries = getObjectFromGUID('f974d8')
+	bagInjuries.call("buttonClick_place")
+end
+
+function move_camera_toP1(object, player)
+	playerLookAt(player, {-30.70, 4.77, -18.55})
+	grid_position = {-29.37, 4.76, -21.53}
+	move_cards_toGrid()
+end
+
+function move_camera_toP2(object, player)
+	playerLookAt(player, {-17.93, 4.76, -18.55})
+	grid_position = {-12.78, 4.77, -21.44}
+	move_cards_toGrid()
+end
+
+function move_camera_toP3(object, player)
+	playerLookAt(player, {16.10, 4.81, -18.55})
+	grid_position = {17.40, 4.75, -21.64}
+	move_cards_toGrid()
+end
+
+function move_camera_toP4(object, player)
+	playerLookAt(player, {30.80, 4.81, -18.55})
+	grid_position = {33.97, 4.76, -21.57}
+	move_cards_toGrid()
+end
+
+function move_cards_toGrid()
+	local pos = self.getPosition()
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {3,3,3},
+		max_distance 	= 0,
+		debug 			= false
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.tag == "Card" then
+			entry.hit_object.setPosition(grid_position)
+		end
+		if entry.hit_object.tag == "Deck" then
+			entry.hit_object.setPosition(grid_position)
+		end
+	end
+end

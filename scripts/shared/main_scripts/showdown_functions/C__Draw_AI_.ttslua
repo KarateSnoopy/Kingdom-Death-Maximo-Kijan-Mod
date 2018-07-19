@@ -1,0 +1,856 @@
+-- Draw AI ---------------------------------------------------------------------
+function drawAI()
+	stand_monster()
+	enable_Reactions()
+	-- Destroy prior cloned AI card
+	for k, v in pairs(table_drawnAI) do
+		if v ~= nil then
+			v.destroy()
+		end
+	end
+
+	deckMonsterAI = getObjectFromGUID(Global.getTable('zones').deckMonsterAI.guid)
+
+	-- Riot Mace
+	cannot_Draw_AI = false
+	for _, object in ipairs(deckMonsterAI.getObjects()) do
+		if object.getName() == "Riot Mace" then
+			object.destroy()
+			cannot_Draw_AI = true
+			broadcastToAll("Riot Mace ~ Monster performs Basic Action Instead", {1, 1, 1})
+		end
+	end
+
+	-- Bored
+	for _, object in ipairs(zoneInjuryBoard.getObjects()) do
+		if object.getName() == "Bored" then
+			cannot_Draw_AI = true
+			broadcastToAll("Bored Mood in Play ~ Instead of Drawing AI > Spiral Cyclone", {1, 1, 1})
+		end
+		if object.getName() == "Challenge" then
+			cannot_Draw_AI = true
+			broadcastToAll("Challenge Mood in Play > Do not draw AI", {1, 1, 1})
+		end
+	end
+
+	if cannot_Draw_AI then return end
+
+	-- Find AI Deck and Draw
+	foundDuration = false
+	foundDeck = false
+	for _, object in ipairs(deckMonsterAI.getObjects()) do
+		if string.find(object.getDescription(), "duration") and not string.find(object.getDescription(), "temp") then
+			if object.getRotation().z < 10 or object.getRotation().z > 360 then
+				foundDuration = true
+				card_drawnDuration = object
+			end
+		end
+	end
+
+	if foundDuration then
+		broadcastToAll("!!! Duration Drawn Face Up !!!", {1, 1, 1})
+		card_drawnDuration.setPositionSmooth({ - 3.67, 5, - 2.49}, false, false)
+		card_drawnDuration.setRotationSmooth({0, 180, 0})
+		card_drawnDuration.setLock(false)
+	end
+
+	if not foundDuration then
+		for _, object in ipairs(deckMonsterAI.getObjects()) do
+			if object.tag == "Deck" then
+				foundDeck = true
+				deck = object
+				break
+			end
+		end
+	end
+
+	if not foundDuration then
+		if foundDeck then
+			card_drawnAI = deck.takeObject({position = { - 0.23, 5.35, - 3.73}, rotation = {35, 180, 0}, top = true, callback = "lockCard", callback_owner = Global})
+			card_drawnAI.highlightOn({0.856, 0.1, 0.094}, 60)
+			table.insert(table_drawnAI, card_drawnAI.clone({position = { - 23.34, 5.29, - 14.33}}))
+			table.insert(table_drawnAI, card_drawnAI.clone({position = {23.45, 0.3, - 13.48}}))
+			startLuaCoroutine(self, "set_cloned_AI_cards")
+			get_drawnAI_Effects()
+		end
+
+		if not foundDeck then
+			for _, object in ipairs(deckMonsterAI.getObjects()) do
+				if object.tag == "Card" and not string.find(object.getDescription(), "persistent injury card") then
+					card_drawnAI = object
+				end
+			end
+			if card_drawnAI == nil then
+				broadcastToAll("Reshuffle the AI Deck First", {1,1,1,})
+				return
+			end
+			card_drawnAI.setPositionSmooth({ - 0.23, 5.35, - 3.73}, false, false)
+			card_drawnAI.setRotationSmooth({35, 180, 0})
+			card_drawnAI.highlightOn({0.856, 0.1, 0.094}, 60)
+			table.insert(table_drawnAI, card_drawnAI.clone({position = { - 23.35, 0.3, - 13.48}}))
+			table.insert(table_drawnAI, card_drawnAI.clone({position = {23.45, 0.3, - 13.48}}))
+			card_drawnAI.setLock(true)
+			startLuaCoroutine(self, "set_cloned_AI_cards")
+			get_drawnAI_Effects()
+		end
+
+		if string.find(card_drawnAI.getDescription(), "duration") then
+			broadcastToAll("!!! Duration Drawn Face Down !!!", {1, 1, 1})
+			card_drawnAI.setPositionSmooth({ - 3.67, 5, - 2.49}, false, false)
+			card_drawnAI.setRotationSmooth({0, 180, 0})
+			card_drawnAI.setLock(false)
+		end
+
+	else -- if foundDuration then
+		for _, object in ipairs(deckMonsterAI.getObjects()) do
+			if string.find(object.getDescription(), "duration") and object.getRotation().z < 35 and object.tag == "Card" then
+				object.setPositionSmooth({ - 0.23, 5.35, - 3.73}, false, false)
+				object.setRotationSmooth({35, 180, 0})
+				object.highlightOn({0.856, 0.1, 0.094}, 60)
+				table.insert(table_drawnAI, object.clone({position = { - 23.35, 0.3, - 13.48}}))
+				table.insert(table_drawnAI, object.clone({position = {23.45, 0.3, - 13.48}}))
+				object.setLock(true)
+				if object.getName() == "Atomic Conclusion" then
+					for _, obj in ipairs(zoneAIBoard.getObjects()) do
+						if string.find(obj.getDescription(), "duration") and not string.find(obj.getDescription(), "ai") then
+							obj.destroy()
+						end
+					end
+					cardName = "Atomic Conclusion Face Up"
+					tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+					local var = ""
+					tokSpawn.getVar("phase")
+					tokSpawn.setVar("phase", var)
+					startLuaCoroutine(self, "tokSpawn_coR")
+				end
+			end
+		end
+	end
+end
+
+function put_card_into_play()
+	card_drawnAI.setLock(false)
+	card_drawnAI.setRotationSmooth({0, 180, 0})
+
+	----- BUTCHER -----
+	if card_drawnAI.getName() == "Forbidden Light" then
+		card_drawnAI.setPositionSmooth({2.12, 4.70, -21.43})
+	elseif card_drawnAI.getName() == "Screaming" then
+		card_drawnAI.setPositionSmooth({-4.20, 4.70, -14.90})
+	elseif card_drawnAI.getName() == "Embrace the Pain" then
+		card_drawnAI.setPositionSmooth({-2.10, 4.70, -14.90})
+	elseif card_drawnAI.getName() == "Lantern Frenzy" then
+		card_drawnAI.setPositionSmooth({4.17, 4.70, -14.90})
+	end
+
+	----- DRAGON KING -----
+	if card_drawnAI.getName() == "Glowing Fist" then
+		card_drawnAI.setPositionSmooth({0.08, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Overheat" then
+		card_drawnAI.setPositionSmooth({4.19, 4.32, -14.16})
+	end
+
+	----- DUNG BEETLE KNIGHT -----
+	if card_drawnAI.getName() == "Beetle Flight" then
+		card_drawnAI.setPositionSmooth({0.07, 4.32, -17.97})
+	end
+
+	----- FLOWER KNIGHT -----
+	if card_drawnAI.getName() == "Cocoon" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.70, -14.15})
+	elseif card_drawnAI.getName() == "Entrancing Gaze" then
+		card_drawnAI.setPositionSmooth({4.19, 4.70, -17.97})
+	elseif card_drawnAI.getName() == "Hypervigilance" then
+		card_drawnAI.setPositionSmooth({4.19, 4.70, -14.15})
+	elseif card_drawnAI.getName() == "Noxious" then
+		card_drawnAI.setPositionSmooth({-0.02, 4.70, -21.56})
+	end
+
+	----- GORM -----
+	if card_drawnAI.getName() == "Posturing Piss" then
+		card_drawnAI.setPositionSmooth({2.17, 4.32, -14.16})
+	elseif card_drawnAI.getName() == "Thunderfoot" then
+		card_drawnAI.setPositionSmooth({-3.07, 4.33, -21.61})
+	elseif card_drawnAI.getName() == "Ancient Indigestion" then
+		card_drawnAI.setPositionSmooth({3.21, 4.33, -21.59})
+	end
+
+	----- KING'S MAN -----
+	if card_drawnAI.getName() == "King's Walk" then
+		card_drawnAI.setPositionSmooth({-2.01, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Lash Out" then
+		card_drawnAI.setPositionSmooth({3.98, 4.30, -14.28})
+	elseif card_drawnAI.getName() == "Spinning Halberd" then
+		card_drawnAI.setPositionSmooth({2.05, 4.30, -21.32})
+	elseif card_drawnAI.getName() == "Lantern Mirage" then
+		card_drawnAI.setPositionSmooth({-3.98, 4.24, -17.90})
+	end
+
+	----- LION GOD -----
+	if card_drawnAI.getName() == "Challenge" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Embrace the Eons" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "God Parasites" then
+		card_drawnAI.setPositionSmooth({0.08, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Cudgel" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.33, -21.57})
+	end
+
+	----- LION KNIGHT -----
+	if card_drawnAI.getName() == "Crowd-Pleaser" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Wire-Fighting" then
+		card_drawnAI.setPositionSmooth({0.07, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Upstage" then
+		card_drawnAI.setPositionSmooth({2.06, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Spotlight" then
+		card_drawnAI.setPositionSmooth({0.07, 4.30, -17.91})
+	end
+
+	----- LONELY TREE -----
+	if card_drawnAI.getName() == "Heavy Boughs" then
+		card_drawnAI.setPositionSmooth({-1.96, 4.68, -14.92})
+	elseif card_drawnAI.getName() == "Sprouted Thorns" then
+		card_drawnAI.setPositionSmooth({0.02, 4.68, -14.92})
+	elseif card_drawnAI.getName() == "Grass Whistle" then
+		card_drawnAI.setPositionSmooth({2.04, 4.68, -14.92})
+	elseif card_drawnAI.getName() == "Absorbing Roots" then
+		card_drawnAI.setPositionSmooth({3.96, 4.68, -14.92})
+	end
+
+	----- PHOENIX -----
+	if card_drawnAI.getName() == "Rancid Melon Stench" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Bored" then
+		card_drawnAI.setPositionSmooth({0.08, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Chatter" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -17.97})
+	end
+
+	----- SCREAMING ANTELOPE -----
+	if card_drawnAI.getName() == "Buck" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -14.15})
+	end
+
+	----- SLENDERMAN -----
+	if card_drawnAI.getName() == "Dark Hour" then
+		card_drawnAI.setPositionSmooth({-3.99, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Deep Paralysis" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Hairworm Emergence" then
+		card_drawnAI.setPositionSmooth({0.07, 4.68, -17.91})
+	end
+
+	----- SPIDICULES -----
+	if card_drawnAI.getName() == "Caustic Pheromones" then
+		card_drawnAI.setPositionSmooth({2.17, 4.32, -14.16})
+	elseif card_drawnAI.getName() == "Jumping Spiders" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Eighty Angry Legs" then
+		card_drawnAI.setPositionSmooth({0.07, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Frantic Spinning" then
+		card_drawnAI.setPositionSmooth({2.16, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Meat Mist" then
+		card_drawnAI.setPositionSmooth({4.19, 4.33, -21.58})
+	end
+
+	----- SUNSTALKER -----
+	if card_drawnAI.getName() == "Violet Bubble" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Vermilion Bubble" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Verdigris Bubble" then
+		card_drawnAI.setPositionSmooth({0.07, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Verdant Bubble" then
+		card_drawnAI.setPositionSmooth({2.19, 4.33, -21.57})
+	end
+
+	----- TYRANT -----
+	if card_drawnAI.getName() == "Smashing Star" then
+		card_drawnAI.setPositionSmooth({-3.99, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Salve Incantation" then
+		card_drawnAI.setPositionSmooth({3.99, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Blistering Star" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.68, -17.91})
+	elseif card_drawnAI.getName() == "Virulent Incantation" then
+		card_drawnAI.setPositionSmooth({0.07, 4.68, -17.91})
+	elseif card_drawnAI.getName() == "Repelling Incantation" then
+		card_drawnAI.setPositionSmooth({2.06, 4.68, -17.91})
+	elseif card_drawnAI.getName() == "Quaking Incantation" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.68, -21.33})
+	elseif card_drawnAI.getName() == "Smashing Incantation" then
+		card_drawnAI.setPositionSmooth({0.07, 4.68, -21.34})
+	elseif card_drawnAI.getName() == "Reaching Incantation" then
+		card_drawnAI.setPositionSmooth({2.06, 4.68, -21.34})
+	end
+
+	----- WATCHER -----
+	if card_drawnAI.getName() == "Inhale" then
+		card_drawnAI.setPositionSmooth({2.06, 4.68, -14.26})
+	elseif card_drawnAI.getName() == "Exhale" then
+		card_drawnAI.setPositionSmooth({3.99, 4.68, -14.27})
+	end
+
+	----- WHITE LION -----
+	if card_drawnAI.getName() == "Ground Fighting" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -17.97})
+	elseif card_drawnAI.getName() == "Enraged" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.32, -17.97})
+	elseif card_drawnAI.getName() == "Bloodthirsty" then
+		card_drawnAI.setPositionSmooth({-0.02, 4.32, -18.02})
+	elseif card_drawnAI.getName() == "Alert" then
+		card_drawnAI.setPositionSmooth({2.16, 4.32, -17.98})
+	end
+	destroy_cloned_cards_AI()
+	table_drawnAI = {}
+end
+
+function stand_monster()
+	token_knockdown_monster.setRotationSmooth({0, 180, 0}, false, true)
+	token_knockdown_monster.getVar('monster_knocked_down')
+	token_knockdown_monster.setVar('monster_knocked_down', false)
+
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, monster in ipairs(zoneShowdown.getObjects()) do
+		if (string.find(monster.getDescription(), "monster") and string.find(monster.getDescription(), "figurine")) then
+			local pos = monster.getPosition()
+			local rotX = monster.getRotation().x
+			local rotY = monster.getRotation().y
+			local rotZ = monster.getRotation().z
+			if rotZ > 165 and rotZ < 195 then
+				monster.setRotationSmooth({rotX, rotY, 0}, false, false)
+				monster.setPositionSmooth({pos.x, 5, pos.z})
+				monster.setLock(false)
+			end
+		end
+	end
+end -- end function
+
+function enable_Reactions()
+	-- Re-enable reactions
+	local btns_Right = hitTool_Right.getButtons()
+	for i, v in pairs(btns_Right) do
+		if v.label == "Reactions Cancelled" then
+			hitTool_Right.removeButton(v.index)
+		end
+	end
+	local btns_Left = hitTool_Left.getButtons()
+	for i, v in pairs(btns_Left) do
+		if v.label == "Reactions Cancelled" then
+			hitTool_Left.removeButton(v.index)
+		end
+	end
+end -- end function
+
+function get_drawnAI_Effects()
+	cardName = ""
+	local desc = card_drawnAI.getDescription()
+
+	-- Duration Effects --------------------------------------------------------
+
+	----- DRAGON KING -----
+	-- Atomic Conclusion
+	if card_drawnAI.getName() == "Atomic Conclusion" then
+		cardName = "Atomic Conclusion"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- GORM -----
+	-- Rear Up
+	if card_drawnAI.getName() == "Rear Up" then
+		cardName = "Rear Up"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- THE HAND -----
+	-- Take Your Best Shot
+	if card_drawnAI.getName() == "Take Your Best Shot" then
+		cardName = "Take Your Best Shot"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').neg_eva.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- PHOENIX -----
+	-- Life Pattern
+	if card_drawnAI.getName() == "Life Pattern" then
+		cardName = "Life Pattern"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- SPIDICULES -----
+	-- Hydraulic Leap
+	if card_drawnAI.getName() == "Hydraulic Leap" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Spidicules" then
+				obj.setPosition({1.05, 4.26, 0.23})
+				obj.setScale({0.95, 0.95, 0.95})
+				broadcastToAll("Spidicules leaped high into the air ~ cannot be wounded while this is in play", {1,1,1})
+			end
+		end
+	end
+
+	----- WHITE LION -----
+	-- Vanish
+	if card_drawnAI.getName() == "Vanish" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "White Lion" then
+				obj.setPosition({1.05, 4.26, 0.23})
+				obj.setScale({0.33, 0.33, 0.33})
+				broadcastToAll("The White Lion Vanished", {1,1,1})
+			end
+		end
+	end
+
+	-- Overlays ----------------------------------------------------------------
+
+	----- BUTCHER -----
+	-- Forbidden Light
+	if card_drawnAI.getName() == "Forbidden Light" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Butcher" then
+				obj.call("overlay_forbiddenLight")
+			end
+		end
+	elseif card_drawnAI.getName() == "Backhand" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Butcher" then
+				obj.call("overlay_backhand")
+			end
+		end
+	end
+
+	----- DRAGON KING -----
+	-- Crisis Crater
+	if card_drawnAI.getName() == "Crisis Crater" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Dragon King" then
+				obj.getVar("hasCrisisCrater")
+				obj.setVar("hasCrisisCrater", true)
+				obj.call("overlay_unseenAgony")
+			end
+		end
+	end
+
+	----- GORM -----
+	-- Hiccup
+	-- Headbutt
+	if string.find(desc, 'retch') then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Gorm" then
+				obj.call("overlay_retch")
+			end
+		end
+		-- Visual Effect
+		local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+		local rotZ = set_Visual.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+			for _, obj in ipairs(gameBox.getObjects()) do
+				if obj.name == "Visual Effect - Gorm Retch" then
+					local effect = gameBox.takeObject({position = {0.80, 3.30, 14.18}, smooth = false, guid = obj.guid})
+					effect.AssetBundle.playLoopingEffect(2)
+				end
+			end
+		end
+	end
+
+	----- KING'S MAN -----
+	-- Trip
+	-- Axe
+	-- Cleave
+	if string.find(desc, 'horizontal') then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_horizontal")
+			end
+		end
+	elseif string.find(desc, 'vertical') then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_vertical")
+			end
+		end
+	-- King's Grace
+	elseif card_drawnAI.getName() == "King's Grace" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_kingsGrace")
+			end
+		end
+	-- King's Axe
+	elseif card_drawnAI.getName() == "King's Axe" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_kingsAxe")
+			end
+		end
+	-- Lash Out
+	elseif card_drawnAI.getName() == "Lash Out" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_tripZone")
+			end
+		end
+	-- Perfect Thrust
+	elseif card_drawnAI.getName() == "Perfect Thrust" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_perfectThrust")
+			end
+		end
+	end
+
+	-- Special Circumstance Cards ----------------------------------------------
+
+	----- BUTCHER -----
+	-- Lantern Frenzy
+	if card_drawnAI.getName() == "Lantern Frenzy" then
+		cardName = "Lantern Frenzy"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_mov.guid)
+		local var = "lanternFrenzy"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "lanternFrenzy"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- DUNG BEETLE KNIGHT -----
+	if string.find(desc, "separation anxiety") then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Resin Dung Ball" then
+				dung_ball = obj
+			end
+		end
+		dung_ball.call("check_adjacent_toDungBall")
+		local bool = dung_ball.getVar("isAdjacent")
+		if not bool then
+			broadcastToAll("ⓧ Separation Anxiety !!", {0.42, 1, 0.47})
+		else
+			broadcastToAll("The Dung Beetle Knight is adjacent to the Resin Ball", {1,1,1})
+		end
+	end
+
+	----- FLOWER KNIGHT -----
+	-- Invitation
+	if card_drawnAI.getName() == "Invitation" then
+		cardName = "Invitation"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "endOfround"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+		local var = "endOfround"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- LION GOD -----
+	-- Challenge
+	if card_drawnAI.getName() == "Challenge" then
+		cardName = "Challenge"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "Challenge"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	-- Cudgel
+	if card_drawnAI.getName() == "Cudgel" then
+		cardName = "Cudgel"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "Cudgel"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- LION KNIGHT -----
+	-- Upstage
+	if card_drawnAI.getName() == "Upstage" then
+		cardName = "Upstage"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "upstage"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "upstage"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- LONELY TREE -----
+	-- Bladed Leaf
+	-- Seed Grenade
+	if card_drawnAI.getName() == "Bladed Leaf" or card_drawnAI.getName() == "Seed Grenade" then
+		fruit_count = 0
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if string.find(obj.getName(), "Nightmare Fruit") and obj.getPosition().y > 6 then
+				fruit_count = fruit_count + 1
+			end
+		end
+		cardName = "Bladed Leaf"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "endOfMonsterTurn"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	if card_drawnAI.getName() == "Grass Whistle" then
+		cardName = "Grass Whistle"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_eva.guid)
+		local var = "Grass Whistle"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	-- Dreamer's Fruit
+	if card_drawnAI.getName() == "Dreamer's Fruit" then
+		fruit_count = 0
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if string.find(obj.getName(), "Nightmare Fruit") and obj.getPosition().y > 6 then
+				fruit_count = fruit_count + 1
+			end
+		end
+		cardName = "Dreamer's Fruit"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "dreamers fruit"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- MANHUNTER -----
+	-- Endless Barrage
+	if card_drawnAI.getName() == "Endless Barrage" then
+		cardName = "Endless Barrage"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "endOfMonsterTurn"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+		local var = "endOfMonsterTurn"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- PHOENIX -----
+	-- Bored
+	if card_drawnAI.getName() == "Bored" then
+		cardName = "Bored"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+		local var = "bored"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	-- Survivor Status Button Creation ------------------------------------------
+
+	----- SPIDICULES -----
+	-- Animate
+	if card_drawnAI.getName() == "Animate" then
+		monster_Roller.getVar("survivorStatus")
+		monster_Roller.setVar("survivorStatus", "Animate")
+		monster_Roller.getVar("hasSurvivorStatusButtons")
+		monster_Roller.setVar("hasSurvivorStatusButtons", true)
+		monster_Roller.call("createButton_SurvivorStatus")
+	end
+
+	----- SCREAMING ANTELOPE -----
+	-- Crush and Devour
+	if card_drawnAI.getName() == "Crush and Devour" then
+		monster_Roller.getVar("survivorStatus")
+		monster_Roller.setVar("survivorStatus", "Gobbled Up")
+		monster_Roller.getVar("hasSurvivorStatusButtons")
+		monster_Roller.setVar("hasSurvivorStatusButtons", true)
+		monster_Roller.call("createButton_SurvivorStatus")
+	end
+
+end -- end function
+
+function tokSpawn_coR()
+	wait(0.1)
+	-- Rear Up
+	if cardName == "Rear Up" then
+		broadcastToAll("The Gorm gained (+5) Toughness until 'Rear Up' Leaves Play", {1, 1, 1})
+		for i=1, 5 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Life Pattern
+	elseif cardName == "Life Pattern" then
+		broadcastToAll("The Phoenix gained (+4) Toughness until 'Life Pattern' Leaves Play", {1, 1, 1})
+		for i=1, 4 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Take your best shot
+	elseif cardName == "Take Your Best Shot" then
+		broadcastToAll("The Hand gained (-10) Evasion until 'Take Your Best Shot' Leaves Play", {1, 1, 1})
+		for i=1, 10 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Invitation
+	elseif cardName == "Invitation" then
+		broadcastToAll("The Flower Knight gained (+2) Damage and (-2) Toughness until the End of the Round", {1,1,1})
+		for i=1, 2 do
+			tokSpawn1.call("spawn_token")
+			wait(0.50)
+		end
+		for i=1, 2 do
+			tokSpawn2.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Lantern Frenzy
+	elseif cardName == "Lantern Frenzy" then
+		broadcastToAll("The Butcher gained (+2) Movement and (+1) Speed while Lantern Frenzy is in Play", {1,1,1})
+		for i=1, 2 do
+			tokSpawn1.call("spawn_token")
+			wait(0.50)
+		end
+			tokSpawn2.call("spawn_token")
+
+	-- Bored
+	elseif cardName == "Bored" then
+		broadcastToAll("The Phoenix has (-2) Toughness while Bored is in Play", {1,1,1})
+		for i=1, 2 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Endless Barrage
+	elseif cardName == "Endless Barrage" then
+		broadcastToAll("Manhunter gained (+2) Speed ~ (-2) Accuracy for this Attack", {1,1,1})
+		for i=1, 2 do
+			tokSpawn1.call("spawn_token")
+			wait(0.50)
+		end
+		for i=1, 2 do
+			tokSpawn2.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Atomic Conclusion
+	elseif cardName == "Atomic Conclusion" then
+		broadcastToAll("Perform Irradiate", {1,1,1})
+		for i=1, 4 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Atomic Conclusion Face Up" then
+		broadcastToAll("The Dragon King gained 10 (-1) Toughness Tokens ~ Perform Meltdown", {1,1,1})
+		for i=1, 10 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Bladed Leaf" then
+		broadcastToAll("The Lonely Tree gained (+" .. fruit_count .. ") Damage", {1,1,1})
+		for i=1, fruit_count do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Grass Whistle" then
+		broadcastToAll("The Lonely Tree gained (+1) Evasion", {1,1,1})
+		tokSpawn.call("spawn_token")
+		wait(0.50)
+		for _, obj in ipairs(zoneAIBoard.getObjects()) do
+			if obj.getName() == "Life Trait" then
+				broadcastToAll("The Lonely Tree gained an additional (+1) Evasion for Level 3", {1,1,1})
+				tokSpawn.call("spawn_token")
+			end
+		end
+
+	elseif cardName == "Dreamer's Fruit" then
+		broadcastToAll("The Lonely Tree gained (+" .. fruit_count .. ") Speed", {1,1,1})
+		wait(0.5)
+		broadcastToAll("Speed Tokens will be added and removed as Fruit leaves and returns to the Tree", {1,1,1})
+		for i=1, fruit_count do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Upstage
+	elseif cardName == "Upstage" then
+		broadcastToAll("The Lion Knight gained (+1) Speed and (-1) Damage while Upstage is in Play", {1,1,1})
+		tokSpawn1.call("spawn_token")
+		wait(0.50)
+		tokSpawn2.call("spawn_token")
+
+	elseif cardName == "Cudgel" then
+		broadcastToAll("The Lion God gained (+2) Damage while Cudgel is in Play", {1,1,1})
+		for i=1, 2 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Challenge" then
+		broadcastToAll("The Lion God gained (+4) Toughness while Challenge is in Play", {1,1,1})
+		for i=1, 4 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+
+	end
+	return 1
+end
+
+function set_cloned_AI_cards()
+	wait(1)
+	for k, v in pairs(table_drawnAI) do
+		if v ~= nil then
+			v.flip()
+			v.highlightOn({0.856, 0.1, 0.094}, 60)
+			v.setLock(true)
+			v.setRotation({35, 180, 0})
+			v.setPosition({v.getPosition().x, 5.29, - 14.33})
+		end
+	end
+	return 1
+end
+
+function destroy_cloned_cards_AI()
+	-- Destroy current AI cards cloned to table from drawn AI
+	if next(table_drawnAI) == nil then return end
+	for k, v in pairs(table_drawnAI) do
+		if v ~= nil then
+			v.destroy()
+		end
+	end
+end

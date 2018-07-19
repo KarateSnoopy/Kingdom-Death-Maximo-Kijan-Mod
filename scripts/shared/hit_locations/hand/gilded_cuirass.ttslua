@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  Global.call('addBroadcast', {"reflex", {gear = "Perform Ghost Step ~ Targeting the Attacker", effect = ""}})
+  Global.call('addBroadcast', {"reflex", {gear = "If you attacked with a Grand Weapon ~ Spend 3 Survival or suffer a Broken Arm", effect = ""}})
+end
+
+function addStatModifier()
+end

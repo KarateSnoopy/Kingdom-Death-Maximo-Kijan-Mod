@@ -1,0 +1,29 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({3.97, 4.23, -21.44})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Crippled Vines ~ Keep in Play", effect = "", effect2 = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You are the Axe King! ~ Gain (+1) Permanent Strength", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Suffer Knockback 7 ~ Gain 1 Bleeding Token", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	broadcastToAll("The Lonely Tree bears fruit in an unoccupied space as close to you as possible", msg_color)
+end
+
+#include ../get_vars

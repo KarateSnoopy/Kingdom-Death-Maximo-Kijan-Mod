@@ -1,0 +1,499 @@
+--#include shared/util
+#include ../util
+
+arrowDuration = 5
+arrowRotation = 0.01
+rotateHight = 150 --should be a multiple of rotateDegrees
+rotateDegrees = 5
+
+--Turns onPickUp on/off (set to ON by default)
+onPickUp = true
+onKnockDown = true
+--start_Time = 0
+
+function onLoad()
+	createButtons_home_camera()
+end
+
+function createButtons_home_camera()
+	local btn_params = {
+		click_function = "camera_home",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 100,
+		height 			= 100,
+		font_size 		= 0,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100},
+	}
+
+	btn_params.position = {0.48, 0.1, 0.48}
+	self.createButton(btn_params)
+
+	btn_params.position = {0.48, 0.1, -0.48}
+	self.createButton(btn_params)
+
+	btn_params.position = {-0.48, 0.1, 0.48}
+	self.createButton(btn_params)
+
+	btn_params.position = {-0.48, 0.1, -0.48}
+	self.createButton(btn_params)
+end
+
+function camera_home(object, player_color)
+	playerLookAt(player_color, {-1.34, 4.54, -4.04})
+end
+
+function overlay(params)
+	local gPos = params[1]
+	local pColor = params[2]
+	local r = params[3]
+	local guid = params[4]
+	local insaneMove = params[5]
+	local lPos = self.positionToLocal(gPos)
+	local a = 0
+
+	if r then
+		a = ((r * 2) + 1)^2
+	else
+		return
+	end
+
+	local overlayParams = {}
+
+	if pColor then
+		self.setVar(guid, function () end)
+		overlayParams = {
+			click_function = guid,
+			function_owner = self,
+			label = '■',
+			width = 0,
+			height = 0,
+			-- color = {pColor[1], pColor[2], pColor[3], 0.5},
+			font_color = {pColor[1], pColor[2], pColor[3], 0.5},
+			font_size = 500,
+			position = {0, 0, 0}
+		}
+	else
+		return
+	end
+	local x = -r
+	local y = -r
+	local offset = 0.136
+	local btnParams = overlayParams
+	btnParams.position = lPos
+	btnParams.position.y = 0.06
+	btnParams.scale = {0.2, 0.2, 0.2}
+
+	if insaneMove then
+		x = 0
+		a = r * 4 + 2
+	end
+
+	for i = 1, a do
+		local sum = math.abs(x) + math.abs(y)
+		if sum <= r then
+			if x == 0 and y == 0 then
+				setStartPos(guid, {0 - lPos[1], btnParams.position.y, lPos[3]}, pColor)
+			else
+				btnParams.position.x = (x * offset) - lPos[1]
+				btnParams.position.z = (y * offset) + lPos[3] - 0.01
+				if btnParams.position.x < 1.45 and btnParams.position.x > - 1.45 then
+					if btnParams.position.z < 1.05 and btnParams.position.z > - 1.05 then
+						self.createButton(btnParams)
+					end
+				end
+			end
+		end
+		if insaneMove then
+			if x == 0 and y ~= r and i < 2*r + 1 then
+				y = y + 1
+			elseif x == 0 and y == r then
+				y = 0
+				x = -r
+			else
+				x = x + 1
+			end
+		else
+			if y == r then
+				x = x + 1
+				y = -r
+			else
+				y = y + 1
+			end
+		end
+	end
+end
+
+function kill(guid)
+	local btns = self.getButtons()
+	local leftBtns = {}
+	if btns ~= nil then
+		for _, v in pairs(btns) do
+			if v.click_function ~= guid then
+				table.insert(leftBtns, v)
+			end
+		end
+	end
+	self.clearButtons()
+	for _,u in pairs(leftBtns) do
+		self.createButton(u)
+	end
+end
+
+function onObjectPickUp(player_color, picked_up_object)
+	if string.find(picked_up_object.getName(), "Player") then
+
+		local gPos = picked_up_object.getPosition()
+
+		if gPos[1] > - 17 and gPos[1] < 17 then
+			if gPos[3] > 2.95 and gPos[3] < 27 then
+
+				if picked_up_object.getName() == "Player One" then
+					grid = getObjectFromGUID(Global.getTable("grids").red.guid)
+					zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+
+				elseif picked_up_object.getName() == "Player Two" then
+					grid = getObjectFromGUID(Global.getTable("grids").yellow.guid)
+					zone = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+
+				elseif picked_up_object.getName() == "Player Three" then
+					grid = getObjectFromGUID(Global.getTable("grids").green.guid)
+					zone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+
+				elseif picked_up_object.getName() == "Player Four" then
+					grid = getObjectFromGUID(Global.getTable("grids").blue.guid)
+					zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+				end
+
+				local zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+				hasHairworm = false
+				for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+					if card.getName() == "Hairworm Emergence" then
+						hasHairworm = true
+					end
+				end
+
+				local pColor = picked_up_object.getColorTint()
+				msg_color = picked_up_object.getColorTint()
+				if grid then
+					local charSheet = grid.getVar('FullCharSheet')
+					 insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+					if charSheet ~= nil then
+						isInsane = false
+						if insanity_value >= 3 then
+							isInsane = true
+						end
+						for _, obj in ipairs(zone.getObjects()) do
+							local rotZ = obj.getRotation().z
+							if obj.getName() == "isInsane" and rotZ > 165 and rotZ < 195 then
+								isInsane = true
+							end
+							if string.find(obj.getDescription(), "tall grass")
+							or string.find(obj.getDescription(), "stone face") then
+								obj.destroy()
+							end
+						end
+						local table = charSheet.getTable('buttons')
+						local range = table["movement"].label
+						range = tonumber(range)
+						if isInsane and hasHairworm then
+							broadcastToAll("Hairworm Emergence ~ You are Insane ~ When you move, move in a straight line equal to your Insanity", msg_color)
+							 params = {gPos, pColor, insanity_value, picked_up_object.getGUID(), true} -- INSANE
+						else
+							 params = {gPos, pColor, range, picked_up_object.getGUID(), false} -- INSANE
+						end
+						Timer.destroy(picked_up_object.getGUID() .. "_arrowFadeOutTimerId")
+						overlay(params)
+					end
+				end
+
+				--Start On PickUp section
+				onPickUp = Global.getVar('onPickUp')
+				if onPickUp == true then
+					if grid and zone then
+
+						local objectsInZone = zone.getObjects()
+						for _, object in ipairs(objectsInZone) do
+							local rotZ = object.getRotation().z
+
+							-- Century Greaves
+							if object.getName() == "Century Greaves" then
+								broadcastToColor("--- ♞ Century Greaves: (-1) Movement ♞ ---", player_color, msg_color)
+							-- Dismembered Leg
+							elseif object.getName() == "Dismembered Leg" then
+								broadcastToColor("--- ♞ Dismembered Leg: (-2) Movement ♞ ---", player_color, msg_color)
+							-- Broken Leg
+							elseif object.getName() == "Broken Leg" then
+								broadcastToColor("--- ♞ Broken Leg: (-1) Movement ♞ ---", player_color, msg_color)
+							-- Broken Hip
+							elseif object.getName() == "Broken Hip" then
+								broadcastToColor("--- ♞ Broken Hip: (-1) Movement ♞ ---", player_color, msg_color)
+							-- Disemboweled
+							elseif object.getName() == "Disemboweled" then
+								broadcastToColor("--- ♞ Disemboweled: Your Movement is (1) ♞ ---", player_color, msg_color)
+							-- Prismatic Lantern
+							elseif object.getName() == "Prismatic Lantern" then
+								broadcastToColor("+++ ♞ Prismatic Lantern: (+1) Movement ♞ ~~~", player_color, msg_color)
+							-- Phoenix Greaves
+							elseif (insanity_value >= 3 or isInsane) and object.getName() == "Phoenix Greaves" then
+								broadcastToColor("+++ ♞ Phoenix Greaves: (+2)  Movement ♞ +++", player_color, msg_color)
+							-- Dragon Boots
+							elseif object.getName() == "Dragon Boots" then
+								broadcastToColor("+++ ♞ Dragon Boots: (+2) Movement during your act ~~~", player_color, msg_color)
+							-- Calcified Greaves
+							elseif object.getName() == "Calcified Greaves" then
+								broadcastToColor("--- ♞ Calcified Greaves: (-1) Movement ♞ ---", player_color, msg_color)
+							-- Steel Shield
+							elseif object.getName() == "Steel Shield" then
+								broadcastToColor("--- ♞ Steel Shield: (-3) Movement ♞ ---", player_color, msg_color)
+							-- Silk Boots
+							elseif object.getName() == "Silk Boots" and (rotZ > 165 and rotZ < 195) then
+								broadcastToColor("+++ ♞ Silk Boots: (+1) Movement ♞ +++", player_color, msg_color)
+							-- Lantern Greaves
+							elseif object.getName() == "Lantern Greaves" and (rotZ > 165 and rotZ < 195) then
+								broadcastToColor("+++ ♞ Lantern Greaves: (+2) Movement ♞ +++", player_color, msg_color)
+							-- Leather Boots
+							elseif object.getName() == "Leather Boots" and (rotZ > 165 and rotZ < 195) then
+								broadcastToColor("+++ ♞ Leather Boots: At the end of your Act you may move (+1) space ♞ +++", player_color, msg_color)
+							-- White Lion Boots
+							elseif object.getName() == "White Lion Boots" and (rotZ > 165 and rotZ < 195) then
+								broadcastToColor("+++ ♞ White Lion Boots: (+1) Movement ♞ +++", player_color, msg_color)
+							-- Lantern Cuirass
+							elseif object.getName() == "Lantern Cuirass" then
+								broadcastToColor("--- ♞ Lantern Cuirass: (-2) Movement ♞ ---", player_color, msg_color)
+							end
+						end -- end for loop body
+					end -- end if grid and zone
+				end -- end if onPickUp
+			end
+		end
+	end
+end
+
+function onObjectDropped(player_color, dropped_object)
+	local obj = dropped_object
+
+	if obj.getName() == "Player One"
+	or obj.getName() == "Player Two"
+	or obj.getName() == "Player Three"
+	or obj.getName() == "Player Four" then
+		kill(obj.getGUID())
+		Timer.create({identifier = obj.getGUID() .. "setArrow", function_name = "setArrow", function_owner = self, parameters = {obj.getGUID()}, delay = 0.1})
+	end
+
+	-- Tall Grass
+	-- Giant Stone Face
+	color = ""
+	if string.find(obj.getName(), "Player") then
+		local surv_pos = obj.getPosition()
+		if obj.getName() == "Player One" then
+			color = "red"
+			grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+			msg_color = grid.getTable("msg_color")
+			zonePlayer = grid.getVar("zonePlayer")
+		end
+		if obj.getName() == "Player Two" then
+			color = "yellow"
+			grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+			msg_color = grid.getTable("msg_color")
+			zonePlayer = grid.getVar("zonePlayer")
+		end
+		if obj.getName() == "Player Three" then
+			color = "green"
+			grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+			msg_color = grid.getTable("msg_color")
+			zonePlayer = grid.getVar("zonePlayer")
+		end
+		if obj.getName() == "Player Four" then
+			color = "blue"
+			grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+			msg_color = grid.getTable("msg_color")
+			zonePlayer = grid.getVar("zonePlayer")
+		end
+
+		grid.call("checkWeapon")
+		weaponGUID = grid.getVar("weaponGUID")
+		has_ranged_weapon = false
+		for _, weapon in ipairs(zonePlayer.getObjects()) do
+			if string.find(weapon.getDescription(), "ranged")
+			and weapon.getGUID() == weaponGUID then
+				has_ranged_weapon = true
+			end
+		end
+
+		local hitList = Physics.cast({
+			origin 			= {surv_pos.x, surv_pos.y, surv_pos.z},
+			direction 		= {0, -1, 0},
+			type 				= 3,
+			size 				= {1.55, 1.55, 1.55},
+			max_distance 	= 5,
+			debug 			= false
+		})
+		found_stone_face = false
+		found_tall_grass = false
+		for _, entry in ipairs(hitList) do
+			-- Giant Stone Face
+			if entry.hit_object.getName() == "Giant Stone Face" then
+				found_stone_face = true
+			end
+			-- Tall Grass
+			if entry.hit_object.getName() == "Tall Grass" then
+				found_tall_grass = true
+			end
+		end
+		if found_tall_grass then
+			broadcastToAll("Tall Grass ~ You gained (+2) Evasion", msg_color)
+			local stats = {color = color, stat = "eva", modifier = "pos", num = 2, phase = "tall grass"}
+			Global.setTable('temp', stats)
+			startLuaCoroutine(Global, "spwn_tok")
+		end
+		if found_stone_face then
+			if has_ranged_weapon then
+				broadcastToAll("Giant Stone Face ~ You gained (+2) Accuracy with Ranged Weapons", msg_color)
+				local stats = {color = color, stat = "acc", modifier = "pos", num = 2, phase = "stone face"}
+				Global.setTable('temp', stats)
+				startLuaCoroutine(Global, "spwn_tok")
+			end
+		end
+	end
+
+end
+
+function setStartPos(guid, pos, pColor)
+	self.setVar(guid .. "_start", function () end)
+	self.createButton({
+		click_function = guid .. "_start",
+		function_owner = self,
+		label = '●',
+		scale = {0.18, 1, 0.18},
+		position = pos,
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = pColor,
+	})
+end
+
+function setArrow(guids)
+	local guid = guids[1]
+	local pos = {}
+	local pColor = {}
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for _, v in pairs(btns) do
+			if v.click_function == guid .. "_start" then
+				pos = v.position
+				pColor = v.font_color
+				self.removeButton(v.index)
+			end
+		end
+	end
+	if not next(pos) then
+		return
+	end
+	-- pos[2] = 1
+	pos.y = 0.6
+
+	killTimerButton({guid=guid})
+
+	self.setVar(guid .. "_arrow", function () end)
+	self.createButton({
+		click_function = guid .. "_arrow",
+		function_owner = self,
+
+		-- label = '▼',
+		-- rotation = {0, 90, -90},
+		-- scale = {0.1, 1, 2},
+
+		label = "↦",
+		rotation = {0, 0, 90},
+		scale = {2, 1, 0.2},
+
+		position = pos,
+		width = 0,
+		height = 0,
+		font_size = 400,
+		font_color = pColor,
+	})
+	Timer.create({
+		identifier = guid .. "_setTimer",
+		function_name = "setTimer",
+		function_owner = self,
+		parameters = {
+			guid = guid,
+		},
+		delay = 0.1,
+	})
+
+end
+
+function setTimer(params)
+	local guid = params.guid
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for _, v in pairs(btns) do
+			if v.click_function == guid .. "_arrow" then
+				-- v.rotation = {90,90,-90}
+				-- self.editButton(v)
+				Timer.destroy(guid .. "_arrowFadeOutTimerId")
+				Timer.create({
+					identifier = guid .. "_arrowFadeOutTimerId",
+					function_name = "killTimerButton",
+					function_owner = self,
+					parameters = {
+						guid = guid,
+					},
+					delay = arrowDuration,
+				})
+				Timer.destroy(guid .. "_arrowRotationTimerId")
+				Timer.create({
+					identifier = guid .. "_arrowRotationTimerId",
+					function_name = "rotateMarker",
+					function_owner = self,
+					parameters = {
+						guid = guid
+					},
+					delay = arrowRotation,
+					repetitions = 0
+				})
+			end
+		end
+	end
+end
+
+function killTimer(params)
+	Timer.destroy(params.guid .. "_arrowRotationTimerId")
+	Timer.destroy(params.guid .. "_arrowFadeOutTimerId")
+end
+
+function killTimerButton(params)
+	killTimer(params)
+	btns = self.getButtons()
+	if btns ~= nil then
+		for _, v in pairs(btns) do
+			if v.click_function == params.guid .. "_arrow" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function rotateMarker(param)
+	btns = self.getButtons()
+	for _, v in pairs(btns) do
+		if v.click_function == param.guid .. "_arrow" then
+			v.rotation.x = v.rotation.x + rotateDegrees
+			if v.rotation.x % (rotateDegrees * 2) == 0 then
+				if math.floor(v.rotation.x / rotateHight) % 2 == 0 then
+					v.position.y = v.position.y + 0.1
+				else
+					v.position.y = v.position.y - 0.1
+				end
+			end
+			self.editButton(v)
+		end
+	end
+end

@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "All Survivors gain (+1) Survival ~ Manually Adjust", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "Roll 1d10 ~ On a 6+ ~ The Lion Knight is knocked down!", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "♘ Turn the Lion Knight to face Attacker ~ Move 1 Space away ♘", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	hasNoisy = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "noisy") then
+			hasNoisy = true
+		end
+	end
+	if hasNoisy then
+		hitTool.call("reactionsCancelled_nextWoundAttempt")
+		broadcastToAll("You have Noisy Gear ~ This reaction is cancelled", msg_color)
+	else
+		broadcastToAll("You do not have Noisy Gear", msg_color)
+	end
+end
+
+#include ../get_vars

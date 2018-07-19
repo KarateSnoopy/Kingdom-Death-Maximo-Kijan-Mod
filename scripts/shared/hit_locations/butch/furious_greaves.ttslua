@@ -1,0 +1,15 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  Global.call('addBroadcast', {"reflex", {gear = "Full Move towards the Attacker ~ Don't if already adjacent", effect = ""}})
+end
+
+function addStatModifier()
+end

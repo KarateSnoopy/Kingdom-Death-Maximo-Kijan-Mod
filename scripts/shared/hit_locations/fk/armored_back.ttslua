@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "If you are adjacent to the Flower Knight ~ Suffer Bash", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ Without turning, The Flower Knight moves 3 spaces toward the Center ♘", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+
+-- armored back

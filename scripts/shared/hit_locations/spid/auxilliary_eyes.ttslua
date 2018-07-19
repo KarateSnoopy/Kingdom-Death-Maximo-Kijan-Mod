@@ -1,0 +1,27 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "All non-deaf Survivors Gain (+1) Survival", effect = ""}})
+    getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "Spidicules gained a (-1) Accuracy Token", effect = ""}})
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "All Survivors adjacent ~ Suffer Bash and Knockback 5", effect = ""}})
+end
+
+function addStatModifier()
+end

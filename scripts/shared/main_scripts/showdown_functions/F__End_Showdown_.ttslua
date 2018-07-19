@@ -1,0 +1,312 @@
+-- End Showdown ----------------------------------------------------------------
+function endShowdown()
+	destroy_cloned_cards_AI()
+	table_drawnAI = {}
+	broadcastTable = {}
+	changeMonster({mov = 0, tgh = 0, spd = 0, acc = 0, evs = 0, lck = 0, dmg = 0})
+	resetSurvFigurines()
+	storeSurvDiedMarkers()
+	deleteAIdeck()
+	reset_gear()
+	resetFrenzy()
+	reset_zoneEffects()
+	play_music_track()
+	store_effects()
+	check_cooking_innovation()
+
+	--storeResources() -- moved to reset_gear()
+
+	-- Trigger 'When you Return' scripts on
+	boardStory_Hunt = getObjectFromGUID('9eaa8a')
+	boardStory_Hunt.call("returnClick")
+	boardStory_Hunt.call("resetTemps")
+
+	tool_storyHunt = getObjectFromGUID('c66fd4')
+	tool_storyHunt.call("destroy_currentLoaded")
+
+	-- Recall Showdown Bag
+	local zone = getObjectFromGUID('6604b4') -- zone where showdown bags are spawned
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.tag == "Bag" then
+			bag = obj
+		end
+	end
+	if bag ~= nil then
+		bag.call("buttonClick_recall")
+	end
+
+	-- Store Injury Tables
+	bagInjuries = getObjectFromGUID('f974d8')
+	bagInjuries.call("buttonClick_recall")
+
+	-- Reset 'Start the Showdown' Button
+	token_startShowdown = getObjectFromGUID('9091f8')
+	token_startShowdown.setPosition({ - 0.29, 4.76, - 6.85})
+	token_startShowdown.call("createButtons")
+	token_startShowdown.setDescription("showdown ended")
+
+	-- Reset Buttons for 'When Survivor Died'
+	redSurvCard.call("clearButtons")
+	redSurvCard.call("create_init_Buttons")
+	yellowSurvCard.call("clearButtons")
+	yellowSurvCard.call("create_init_Buttons")
+	greenSurvCard.call("clearButtons")
+	greenSurvCard.call("create_init_Buttons")
+	blueSurvCard.call("clearButtons")
+	blueSurvCard.call("create_init_Buttons")
+
+	-- Reset Buttons for 'When Survivor Died'
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').red.guid)
+		tok.call("createButtons")
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').yellow.guid)
+		tok.call("createButtons")
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').green.guid)
+		tok.call("createButtons")
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').blue.guid)
+		tok.call("createButtons")
+
+	-- Resets Always in Darkness Booleans for Sunstalker
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool1 = card.getVar("inDarkness_always_red")
+		card.setVar(bool1, false)
+	local bool2 = card.getVar("inDarkness_always_yellow")
+		card.setVar(bool2, false)
+	local bool3 = card.getVar("inDarkness_always_green")
+		card.setVar(bool3, false)
+	local bool4 = card.getVar("inDarkness_always_blue")
+		card.setVar(bool4, false)
+
+	startLuaCoroutine(self, 'deleteTagMonster')
+end
+
+function get_run_away_story_event()
+	pageToLoad = "run away"
+	local pos = self.getPosition()
+	local deck = getObjectFromGUID("21fb65")
+	for _, story in ipairs(deck.getObjects()) do
+		local desc = story.description
+		local name = story.nickname
+		local scale = {1.96, 1.00, 1.96}
+		if string.find(string.lower(story.nickname), pageToLoad) and string.find(desc, "one") then
+			page_run_away = deck.takeObject({position = {0.00, 4.77, -20.04}, rotation = {12,180,0}, guid = story.guid, smooth = false})
+			page_run_away.setLock(true)
+			page_run_away.setScale(scale)
+			page_run_away.setRotation({12,180,0})
+		end
+	end
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Run Away" then
+			self.removeButton(v.index)
+		end
+	end
+	create_end_run_away_Button()
+end
+
+function end_run_away()
+	page_run_away.destroy()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Close Run Away" then
+			self.removeButton(v.index)
+		end
+	end
+	create_run_away_Button()
+end
+
+function resetSurvFigurines()
+	local zones = {
+		zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid),
+		zoneSurvivorStatus = getObjectFromGUID(Global.getTable('zonesDestruct').zoneSurvivorStatus.guid),
+	}
+	for zoneKey, zoneGUIDtable in pairs(zones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+
+		for _, object in ipairs(objectsInZone) do
+			if object.getName() == "Player One" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({ - 2.37, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+
+			elseif object.getName() == "Player Two" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({ - 0.79, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+
+			elseif object.getName() == "Player Three" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({0.79, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+
+			elseif object.getName() == "Player Four" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({2.37, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+			end
+		end
+
+	end
+end
+
+function storeSurvDiedMarkers()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneSurvivorStatus.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		if object.getName() == "dead_skull_token" then
+			gameBox.putObject(object)
+		end
+	end
+end
+
+function deleteAIdeck()
+	local zoneAIBoard = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+	for k, v in pairs(zoneAIBoard.getObjects()) do
+		if v.tag == 'Deck' then
+			v.destruct()
+		end
+	end
+end
+
+function reset_gear()
+	local playerZones = {
+		getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		getObjectFromGUID(Global.getTable('zones').zoneP4.guid),
+	}
+	-- Shielded Quiver
+	for _, zoneTable in pairs(playerZones) do
+		hasQuiver = false
+		for k, v in pairs(zoneTable.getObjects()) do
+			if v.getName() == "Shielded Quiver" then
+				hasQuiver = true
+			end
+		end -- end for loop
+		for k, v in pairs(zoneTable.getObjects()) do
+			local desc = v.getDescription()
+
+			-- Resets Arrow Counts
+			if string.find(desc, "arrow") then
+				if hasQuiver then
+					v.call("setStartAmmoPlus1")
+				else
+					v.call("setStartAmmo")
+				end
+			elseif string.find(desc, "ammunition") then
+				v.call("setStartAmmo")
+			end
+
+			-- Reset Gear that gives 1 Armor to Each Hit Location
+			if string.find(desc, ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs") then
+				local new_desc = string.gsub(desc, ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs", "")
+				v.setDescription(new_desc)
+				v.translate({0,6,0})
+			end
+
+			-- Resets Once Per Showdown Used
+			if string.find(desc, ", once per showdown used") then
+				local new_desc = string.gsub(desc, ", once per showdown used", "")
+			end
+
+			-- Destroys Tokens lasting to end of showdown
+			if string.find(desc, ", until the end of the showdown") then
+				v.destroy()
+			end
+
+			-- Crystal Skin
+			if v.getName() == "Crystal Skin" then
+				local new_desc = string.gsub(desc, "armor, 3head, 3body, 3waist, 3legs, 3arms", "")
+				v.setDescription(new_desc)
+			end
+
+			-- Moves Resources to Step 9
+			if string.find(desc, "resource") then
+				v.setPosition({ - 37.09, 4.5, 30.11})
+			end
+
+		end -- end 2nd for loop
+	end -- end for loop over each zone
+end -- end function
+
+function resetFrenzy()
+	local frenzy_red = getObjectFromGUID('7636f9')
+	frenzy_red.setPosition({ - 5.85, 0, - 7.22})
+	local frenzy_yellow = getObjectFromGUID('c6fee5')
+	frenzy_yellow.setPosition({ - 2.82, 0, - 7.22})
+	local frenzy_green = getObjectFromGUID('8120c3')
+	frenzy_green.setPosition({2.34, 0, - 7.21})
+	local frenzy_blue = getObjectFromGUID('9cac01')
+	frenzy_blue.setPosition({5.55, 0, - 7.22})
+end
+
+-- Resets Area of Effect Zones to starting position
+function reset_zoneEffects()
+	zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+	zoneEffect.setPosition({ - 42.44, 6.67, - 66.95})
+end
+
+-- Cleans up and deletes everything with tag 'monster' and 'terrain'
+function deleteTagMonster()
+	print("↦ Showdown board cleared")
+	wait(0.25)
+	zonesDestruct = Global.getTable('zonesDestruct')
+	for zoneKey, zoneGUIDtable in pairs(zonesDestruct) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+		for k, object in pairs(objectsInZone) do
+			local desc = object.getDescription()
+			if string.find(desc, 'monster') or string.find(desc, 'terrain') or string.find(desc, 'reference') or string.find(desc, 'end of showdown') or string.find(desc, 'end of attack') then
+				object.destruct()
+			end
+		end
+	end
+	wait(0.5)
+	-- Reset Monster Injury Board to Main Menu
+	for _, obj in ipairs(zoneInjuryBoard.getObjects()) do
+		if obj.tag == "Board" and obj.getPosition().y > 3 then
+			board = obj
+			break
+		end
+	end
+	board.setState(21)
+	return 1
+end
+
+function store_effects()
+	for _, obj in ipairs(zoneSpecialEffects.getObjects()) do
+		if obj.getName() == "Egg Sac Explosion Effect" then
+			gameBox.putObject(obj)
+
+		elseif obj.getName() == "Egg Sac Miasma" then
+			gameBox.putObject(obj)
+
+		elseif obj.getName() == "Shade Miasma" then
+			gameBox.putObject(obj)
+
+		elseif obj.getName() == "Gorm Bulb Effect" then
+			gameBox.putObject(obj)
+		end
+	end
+end
+
+function check_cooking_innovation()
+	for _, card in ipairs(zoneInnovations.getObjects()) do
+		if card.getName() == "Cooking" then
+			local bagEndeavor = getObjectFromGUID('5dffd3')
+			local pos = bagEndeavor.getPosition()
+			local tok = bagEndeavor.takeObject({
+				position          = {pos.x - 3, pos.y, pos.z},
+				rotation          = {0, 45, 0},
+				smooth            = false,
+			})
+			tok.setName("+1 Endeavor: Cooking")
+		end
+	end
+end

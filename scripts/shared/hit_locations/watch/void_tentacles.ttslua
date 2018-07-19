@@ -1,0 +1,23 @@
+function criticalWoundEffect()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneSurvivorStatus.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Stolen Dreams" then
+			card.destroy()
+		end
+	end
+	Global.call('addBroadcast', {"crit", {gear = "All Stolen Dreams Survivor Status Archive", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "All knocked down Survivors may stand", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Attacker suffers Bash and Knockback 10", effect = ""}})
+end
+
+function addStatModifier()
+end

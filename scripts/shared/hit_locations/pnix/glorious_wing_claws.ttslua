@@ -1,0 +1,22 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_dmg.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Phoenix gained a (-1) Damage Token", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Survivors in the Eye of the Storm ~ Gain (+1) Insanity", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "All other Survivors ~ Suffer Bash and Knockback 7", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

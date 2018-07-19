@@ -1,0 +1,35 @@
+function criticalWoundEffect()
+	getVars()
+	changeSurvivors("survival", 1, grid)
+	changeSurvivors("insanity", 1, grid)
+	Global.call('addBroadcast', {"crit", {gear = "You gained (+1) Survival and (+1) Insanity", effect = ""}})
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Dung Beetle Knight gained a (-1) Toughness Token", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+#include ../get_vars
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "The Dung Beetle Knight suffers Knockback 3", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "If any Survivor is adjacent to you; Gain (+1) Survival", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- breastplate

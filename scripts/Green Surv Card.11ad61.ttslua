@@ -90,4 +90,4 @@ function attackBlind(object, player)
 	move_camera_toHitLocations(object, player)
 end
 
-#include shared/SurvCard
+#include shared/survCard

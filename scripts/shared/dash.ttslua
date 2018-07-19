@@ -1,4 +1,4 @@
-#include util
+
 
 function createButton(object, player_color)
 	self.createButton({click_function = "callDash", function_owner = self, label = "Dash",
@@ -67,3 +67,5 @@ function changeSurvivors(location, amount, grid)
 	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
 	obj.call("add", {location, amount})
 end
+
+#include util

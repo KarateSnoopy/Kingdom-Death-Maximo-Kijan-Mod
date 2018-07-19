@@ -1,0 +1,69 @@
+
+function criticalWoundEffect()
+	getVars()
+	getManhuntersHat()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Full move the Manhunter towards attacker and turn to face", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "If you are adjacent ~ suffer a Severe Waist Injury with a +1 to the Result", effect = ""}})
+
+	local pos = self.getPosition()
+	local clone = self.clone({position = pos})
+	clone.setPosition({6.06, 4.75, -36.16})
+	clone.setLock(true)
+	clone.setRotation({8.00, 180.03, 0.01})
+end
+
+function addStatModifier()
+end
+
+function getManhuntersHat()
+	local tbl = {cardName = "Manhunter's Hat", zone = getObjectFromGUID(Global.getTable('zones').zoneGearDeack.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+
+	--[[local zone = getObjectFromGUID(Global.getTable('zones').zoneGearDeack.guid)
+	for _, object in ipairs(zone.getObjects()) do
+		if object.tag == "Deck" then
+			deck = object
+			break
+		end
+	end
+	for _, card in ipairs(deck.getObjects()) do
+		if card.nickname == "Manhunter's Hat" then
+			local card = deck.takeObject({position = pos, smooth = false})
+		end
+	end--]]
+
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Manhunter's Hat", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You already knocked the Manhunter's Hat off his head", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	local tbl = {cardName = "Leather", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Leather Strange Resource", effect = ""}})
+	end
+end
+
+-- hunters hat

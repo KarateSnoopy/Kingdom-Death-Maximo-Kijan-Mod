@@ -1,0 +1,169 @@
+
+-- Get Showdown Bag / Monster Story --------------------------------------------
+function get_bag_Showdown(object, player)
+	close_Quarry()
+	close_Nemesis()
+	clone_deal_terrainDeck()
+	clone_deal_huntDecks()
+	removeButtons_monsterSetup()
+
+	if hunt_Phase then
+		createButton_endHunt()
+		for _, obj in ipairs(bag_quarry_showdowns.getObjects()) do
+			local pos = bag_quarry_showdowns.getPosition()
+			if obj.name == name then
+				local bag = bag_quarry_showdowns.takeObject({position = {pos.x, pos.y + 10, pos.z - 10}, smooth = false, guid = obj.guid})
+				bag.setPosition({24.79, 4.25, 5.24})
+				bag.setLock(true)
+			end
+		end
+
+	elseif not hunt_Phase then
+		for _, obj in ipairs(bag_nemesis_showdowns.getObjects()) do
+			local pos = bag_nemesis_showdowns.getPosition()
+			if obj.name == name then
+				local bag = bag_nemesis_showdowns.takeObject({position = {pos.x, pos.y + 10, pos.z - 10}, smooth = false, guid = obj.guid})
+				bag.setPosition({24.79, 4.25, 5.24})
+				bag.setLock(true)
+			end
+		end
+	end
+
+	if hunt_Phase then
+		-- Lighting
+		local set_Lighting = getObjectFromGUID(Global.getTable('user_settings').set_Lighting.guid)
+		local rotZ = set_Lighting.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+			tool_Lighting = getObjectFromGUID('cdef09')
+			tool_Lighting.call("setLightingTable_hunt")
+		end
+		-- Music
+		local set_Sound = getObjectFromGUID(Global.getTable('user_settings').set_Sound.guid)
+		local rotZ = set_Sound.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+			local music_player = getObjectFromGUID(Global.getTable('user_settings').music_player.guid)
+			local hunt_phase_soundtrack = getObjectFromGUID(Global.getTable('user_settings').hunt_phase_soundtrack.guid)
+			local track = tonumber(hunt_phase_soundtrack.getDescription())
+			if music_player ~= nil then
+				music_player.AssetBundle.playLoopingEffect(track)
+			end
+		end
+	end
+	startLuaCoroutine(self, "load_showdown_story_set_board_state")
+	startLuaCoroutine(self, "raise_hunt_figurine_after_load")
+	hunt_Phase = false
+end
+
+function load_showdown_story_set_board_state()
+	wait(1)
+
+	for _, obj in ipairs(zoneInjuryBoard.getObjects()) do
+		if obj.tag == "Board" and obj.getPosition().y > 3 then
+			board = obj
+			break
+		end
+	end
+
+	tool_storyHunt = getObjectFromGUID('c66fd4')
+	if btn_clicked == 1 then
+		tool_storyHunt.call('show_DK')
+		board.setState(1)
+
+	elseif btn_clicked == 2 then
+		tool_storyHunt.call('showDBK')
+		board.setState(2)
+
+	elseif btn_clicked == 3 then
+		tool_storyHunt.call('showFK')
+		board.setState(3)
+
+	elseif btn_clicked == 4 then
+		tool_storyHunt.call('showGRM')
+		board.setState(4)
+
+	elseif btn_clicked == 5 then
+		tool_storyHunt.call('showPNIX')
+		board.setState(5)
+
+	elseif btn_clicked == 6 then
+		tool_storyHunt.call('showLG')
+		board.setState(6)
+
+	elseif btn_clicked == 7 then
+		tool_storyHunt.call('showSA')
+		board.setState(7)
+
+	elseif btn_clicked == 8 then
+		tool_storyHunt.call('showSPID')
+		board.setState(8)
+
+	elseif btn_clicked == 9 then
+		tool_storyHunt.call('showSS')
+		board.setState(9)
+
+	elseif btn_clicked == 10 then
+		tool_storyHunt.call('showWL')
+		board.setState(10)
+
+	elseif btn_clicked == 11 then
+		tool_storyHunt.call('showBUTCH')
+		board.setState(11)
+
+	elseif btn_clicked == 12 then
+		tool_storyHunt.call('showHAND')
+		board.setState(12)
+
+	elseif btn_clicked == 13 then
+		tool_storyHunt.call('showKING')
+		board.setState(13)
+
+	elseif btn_clicked == 14 then
+		tool_storyHunt.call('showLK')
+		board.setState(14)
+
+	elseif btn_clicked == 15 then
+		tool_storyHunt.call('showMH')
+		board.setState(15)
+
+	elseif btn_clicked == 16 then
+		tool_storyHunt.call('showSM')
+		board.setState(16)
+
+	elseif btn_clicked == 17 then
+		tool_storyHunt.call('showTYRANT')
+		board.setState(17)
+
+	elseif btn_clicked == 18 then
+		tool_storyHunt.call('showWATCH')
+		board.setState(18)
+
+	elseif btn_clicked == 19 then
+		tool_storyHunt.call('showGSK')
+		board.setState(19)
+
+	elseif btn_clicked == 20 then
+		tool_storyHunt.call('showLT')
+		board.setState(20)
+
+	elseif btn_clicked == 21 then
+		tool_storyHunt.call('showLEGEND')
+		board.setState(10)
+
+	elseif btn_clicked == 22 then
+		tool_storyHunt.call('showLEGEND')
+		board.setState(10)
+
+	elseif btn_clicked == 23 then
+		tool_storyHunt.call('showLEGEND')
+		board.setState(7)
+
+	elseif btn_clicked == 24 then
+		tool_storyHunt.call('showLEGEND')
+		board.setState(5)
+
+	elseif btn_clicked == 25 then
+		tool_storyHunt.call('showBL')
+		board.setState(23)
+	end
+	return 1
+end

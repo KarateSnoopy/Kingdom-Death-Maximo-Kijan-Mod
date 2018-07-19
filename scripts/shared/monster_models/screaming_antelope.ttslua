@@ -1,0 +1,21 @@
+function onPickUp(color, obj)
+	local object = self.guid
+	local name = self.getName()
+	if self.getName() == "Screaming Antelope" then
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.zoneInjuryBoard.guid)
+		local objectsInZone = zone.getObjects()
+		for _, object in ipairs(objectsInZone) do
+
+			-- Delicate Inverted Knee
+			if object.getName() == "Delicate Inverted Knee" then
+				broadcastToAll("** Persistent Injury ~ Crushed Knee: If the monster moves, roll 1d10, on a 1 it is knocked down **", {1,1,1})
+			end
+
+			-- Restless Inner Thigh
+			if object.getName() == "Restless Inner Thigh" then
+				broadcastToAll("** Persistent Injury ~ Degenerating Wound: If the monster moves, it suffers a wound **", {1,1,1})
+			end
+		end
+	end
+end

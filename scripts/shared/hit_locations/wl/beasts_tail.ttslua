@@ -1,0 +1,77 @@
+function criticalWoundEffect()
+	getMonsterResource()
+	getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The White Lion gained a (-1) Accuracy Tokens ", effect = ""}})
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Lion's Tail", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Lion Tail", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You already hacked off the Lion's Tail", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "The White Lion full Moves Forward", effect = ""}})
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, injury in ipairs(zone.getObjects()) do
+		if injury.getName() == "Beast's Paw" then
+			Global.call('addBroadcast', {"reflex", {gear = "Persistent Injury in Play ~ Ignore the Effects of Grab", effect = ""}})
+			return
+		end
+		if not injury.getName() == "Beast's Paw" then
+			Global.call('addBroadcast', {"reflex", {gear = "Survivors passed over suffer grab", effect = ""}})
+		end
+	end
+end
+
+function addStatModifier()
+end
+
+
+function getVars()
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+
+	msg_color = grid.getTable("msg_color")
+
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end
+
+-- tail

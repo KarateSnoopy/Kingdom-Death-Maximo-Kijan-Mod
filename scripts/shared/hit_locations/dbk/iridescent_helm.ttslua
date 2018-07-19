@@ -1,0 +1,71 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({-4.19, 4.33, -21.57})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Horn ~ Keep in Play", effect = ""}})
+	getMonsterResource()
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	local tbl = {cardName = "Beetle Horn", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Beetle Horn", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Beetle Horns", effect = ""}})
+	end
+end
+
+function woundEffect()
+	getVars()
+	hasWoundBonus = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if (string.find(gear.getDescription(), "club") and gear.getGUID() == weaponGUID) or (string.find(gear.getDescription(), "shield") and gear.getGUID() == weaponGUID) then
+			hasWoundBonus = true
+			obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+			local var = "endOfattack"
+			obj.getVar("phase")
+			obj.setVar("phase", var)
+			startLuaCoroutine(self, "addStat_coR")
+			Global.call('addBroadcast', {"wound_reaction", {gear = "The Dung Beetle Knight gained (-4) Toughness until the end of your attack", effect = ""}})
+			hitTool.call("reactionsCancelled_endOfAttack")
+			Global.call('addBroadcast', {"wound_reaction", {gear = "Reactions Cancelled on the Next Selected Hit Location", effect = ""}})
+		end
+	end
+	if not hasWoundBonus then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are not attacking with a Club or Shield", effect = ""}})
+	end
+end
+
+function addStat_coR()
+	for i=1, 4 do
+		obj.call('spawn_token')
+		wait(0.25)
+	end
+	return 1
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

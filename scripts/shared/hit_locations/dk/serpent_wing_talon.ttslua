@@ -1,0 +1,60 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	getMonsterResource2()
+
+	hasForbiddenDance = false
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Forbidden Dance" then
+			hasForbiddenDance = true
+		end
+	end
+	if hasForbiddenDance then
+		Global.call('addBroadcast', {"crit", {gear = "The Settlement has Forbidden Dance ~ You gain (+1) Permanent Movement", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "The Settlement does not have Forbidden Dance", effect = ""}})
+	end
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	local tbl = {cardName = "Veined Wing", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Veined Wing", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Veined Wings", effect = ""}})
+	end
+end
+
+function getMonsterResource2()
+	local tbl = {cardName = "Husk", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Husk", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Husks", effect = ""}})
+	end
+end

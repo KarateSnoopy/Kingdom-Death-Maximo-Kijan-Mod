@@ -1,0 +1,84 @@
+function onLoad()
+	self.createButton({
+		click_function = "return_fruit",
+		function_owner = self,
+		label 			= "Return",
+		position 		= {0, 0.3, 1.1},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 2000,
+		height 			= 400,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1,1,1,100}
+	})
+end
+
+function return_fruit()
+	local pos = self.getPosition()
+	self.setLock(true)
+
+	local name = self.getName()
+	if name == "Nightmare Fruit 1" then
+		self.setPosition({-2.35, 9.17, 15.59})
+	elseif name == "Nightmare Fruit 2" then
+		self.setPosition({-2.35, 9.17, 15.59})
+	elseif name == "Nightmare Fruit 3" then
+		self.setPosition({-2.35, 9.17, 15.59})
+	elseif name == "Nightmare Fruit 4" then
+		self.setPosition({-2.35, 9.17, 15.59})
+	elseif name == "Nightmare Fruit 5" then
+		self.setPosition({-2.35, 9.17, 15.59})
+	elseif name == "Nightmare Fruit 6" then
+		self.setPosition({-2.35, 9.17, 15.59})
+	end
+
+	local bag_effects = getObjectFromGUID('dff02a')
+	effect = bag_effects.takeObject({
+		position = pos,
+		callback = "lock_callback",
+		callback_owner = Global,
+		smooth = false
+	})
+	effect.AssetBundle.playLoopingEffect(2)
+	startLuaCoroutine(self, "delay_destroy_coR")
+	local bool = return_bool(hasDreamer)
+	if bool then
+		spawn_spd_token()
+		broadcastToAll("Dreamer's Fruit : (+1) Speed", {1,1,1})
+	end
+end
+
+function delay_destroy_coR()
+	wait(0.75)
+	effect.destroy()
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function spawn_spd_token()
+	local bool = return_bool(hasDreamer)
+	if bool then
+		local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "dreamers fruit"
+		obj.getVar("phase")
+		obj.setVar("phase", var)
+		obj.call("spawn_token")
+	end
+end
+
+function return_bool(hasDreamer)
+	hasDreamer = false
+	local zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+		if card.getName() == "Dreamer's Fruit" then
+			hasDreamer = true
+		end
+	end
+	return hasDreamer
+end

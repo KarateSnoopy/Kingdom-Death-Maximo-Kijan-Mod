@@ -1,0 +1,33 @@
+function criticalWoundEffect()
+	getVars()
+	value = (insanity_value * -1)
+	changeSurvivors("insanity", value, grid)
+	Global.call('addBroadcast', {"crit", {gear = "Your Insanity was set to 0", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	local weapon = grid.getTable("weapon")
+	if weapon.name == "FistAndTooth" then
+		Global.call('addBroadcast', {"reflex", {gear = "You are attacking with Fist and Tooth ~ Ignore this Reaction", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "If you are adjacent ~ All remaining hits in this attack are cancelled", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "Your weapon is Lost and Archived ~ Unless you follow to the Dark Place", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function addStatModifier()
+end

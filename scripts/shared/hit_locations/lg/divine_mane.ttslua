@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Turn The Lion God to face the Attacker", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "All non-deaf Survivors in the Reverb Zone", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "Suffer ★ +2 Damage, Knockback 7 and are Knocked Down", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- divine mane

@@ -1,0 +1,44 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Ruined Pistol Hand ~ Keep in Play", effect = ""}})
+	 self.setPositionSmootH({3.98, 4.30, -14.27})
+    Global.call('addBroadcast', {"crit", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Full move the Manhunter onto the space you occupy ♘", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(+2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+#include ../get_vars
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+-- gun arm

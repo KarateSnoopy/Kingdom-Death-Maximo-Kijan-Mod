@@ -1,0 +1,29 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Abdominal Hernia ~ Keep in Play", effect = ""}})
+	self.setPositionSmooth({0.07, 4.34, -17.97})
+	getStat()
+end
+
+function getStat()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "Spidicules gained a (-1) Toughness Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Full Move Spidicules away from all Threats", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Full Move all Spiderlings towards the attacker", effect = ""}})
+end
+
+function addStatModifier()
+
+end

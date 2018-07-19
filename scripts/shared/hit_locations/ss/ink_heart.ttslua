@@ -1,0 +1,61 @@
+function criticalWoundEffect()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Inked ~ Keep in Play", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Until the Showdown Ends ~ You are always in Darkness", effect = ""}})
+
+	if grid.getName() == "Inventory P1" then
+		 bool1 = card.getVar("inDarkness_always_red")
+		 card.setVar("inDarkness_always_red", true)
+	elseif grid.getName() == "Inventory P2" then
+		bool1 = card.getVar("inDarkness_always_yellow")
+		card.setVar("inDarkness_always_yellow", true)
+	elseif grid.getName() == "Inventory P3" then
+		bool1 = card.getVar("inDarkness_always_green")
+		card.setVar("inDarkness_always_green", true)
+	elseif grid.getName() == "Inventory P4" then
+		bool1 = card.getVar("inDarkness_always_blue")
+		card.setVar("inDarkness_always_blue", true)
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	zone = grid.getVar("zonePlayer")
+	pos = grid.getTable("gained_resource_pos")
+
+end
+
+function getMonsterResource()
+getVars()
+	local tbl = {cardName = "Shadow Ink Gland", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Shadow Ink Gland", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Shadow Ink Gland", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,212 @@
+-- Setup Levels ----------------------------------------------------------------
+function setup_level1(object, player)
+	if btn_clicked == 1 then
+		name = "Dragon King Level 1"
+		changeMonster({mov = 10, tgh = 13})
+	elseif btn_clicked == 2 then
+		name = "Dung Beetle Knight Level 1"
+		changeMonster({mov = 7, tgh = 12})
+	elseif btn_clicked == 3 then
+		name = "Flower Knight Level 1"
+		changeMonster({mov = 7, tgh = 6})
+	elseif btn_clicked == 4 then
+		name = "Gorm Level 1"
+		changeMonster({mov = 6, tgh = 8})
+	elseif btn_clicked == 5 then
+		name = "Phoenix Level 1"
+		changeMonster({mov = 8, tgh = 14})
+	elseif btn_clicked == 6 then
+		name = "Lion God Level 1"
+		changeMonster({mov = 8, tgh = 10})
+	elseif btn_clicked == 7 then
+		name = "Screaming Antelope Level 1"
+		changeMonster({mov = 6, tgh = 8})
+	elseif btn_clicked == 8 then
+		name = "Spidicules Level 1"
+		changeMonster({mov = 11, tgh = 8})
+	elseif btn_clicked == 9 then
+		name = "Sunstalker Level 1"
+		changeMonster({mov = 16, tgh = 10})
+	elseif btn_clicked == 10 then
+		name = "White Lion Level 1"
+		changeMonster({mov = 6, tgh = 8})
+	elseif btn_clicked == 11 then
+		name = "The Butcher Level 1"
+		changeMonster({mov = 5, tgh = 9})
+	elseif btn_clicked == 12 then
+		name = "The Hand Level 1"
+		changeMonster({mov = 5, tgh = 14})
+	elseif btn_clicked == 13 then
+		name = "Kingsman Level 1"
+		changeMonster({mov = 5, tgh = 12})
+	elseif btn_clicked == 14 then
+		name = "Lion Knight Level 1"
+		changeMonster({mov = 7, tgh = 10})
+	elseif btn_clicked == 15 then
+		name = "Manhunter Level 1"
+		changeMonster({mov = 6, tgh = 8})
+	elseif btn_clicked == 16 then
+		name = "Slenderman Level 1"
+		changeMonster({mov = 6, tgh = 11})
+	elseif btn_clicked == 17 then
+		name = "The Tyrant Level 1"
+		changeMonster({mov = 6, tgh = 8})
+	elseif btn_clicked == 18 then
+		name = "The Watcher Level 1"
+	elseif btn_clicked == 19 then
+		name = "Gold Smoke Knight Level 1"
+		changeMonster({mov = 8, tgh = 27})
+	elseif btn_clicked == 20 then
+		name = "The Lonely Tree Level 1"
+		changeMonster({mov = 0, tgh = 11, dmg = -1})
+	elseif btn_clicked == 25 then
+		name = "Black Lion Level 1"
+		changeMonster({mov = 7, tgh = 10})
+	end
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_level2(object, player)
+	if btn_clicked == 1 then
+		name = "Dragon King Level 2"
+		changeMonster({mov = 10, tgh = 15, spd = 1, dmg = 1})
+	elseif btn_clicked == 2 then
+		name = "Dung Beetle Knight Level 2"
+		changeMonster({mov = 7, tgh = 14, spd = 1, dmg = 1})
+	elseif btn_clicked == 3 then
+		name = "Flower Knight Level 2"
+		changeMonster({mov = 8, tgh = 8, dmg = 1})
+	elseif btn_clicked == 4 then
+		name = "Gorm Level 2"
+		changeMonster({mov = 9, tgh = 11, spd = 1, dmg = 1})
+	elseif btn_clicked == 5 then
+		name = "Phoenix Level 2"
+		changeMonster({mov = 8, tgh = 12, spd = 1, dmg = 1})
+	elseif btn_clicked == 6 then
+		name = "Lion God Level 2"
+		changeMonster({mov = 9, tgh = 16, spd = 1, dmg = 1, lck = 1})
+	elseif btn_clicked == 7 then
+		name = "Screaming Antelope Level 2"
+		changeMonster({mov = 6, tgh = 10, spd = 1, dmg = 1})
+	elseif btn_clicked == 8 then
+		name = "Spidicules Level 2"
+		changeMonster({mov = 14, tgh = 10, spd = 1, dmg = 1})
+	elseif btn_clicked == 9 then
+		name = "Sunstalker Level 2"
+		changeMonster({mov = 16, tgh = 12, spd = 1, dmg = 1})
+	elseif btn_clicked == 10 then
+		name = "White Lion Level 2"
+		changeMonster({mov = 7, tgh = 10, spd = 1, dmg = 1})
+	elseif btn_clicked == 11 then
+		name = "The Butcher Level 2"
+		changeMonster({mov = 5, tgh = 12, spd = 1, dmg = 1})
+	elseif btn_clicked == 12 then
+		name = "The Hand Level 2"
+		changeMonster({mov = 6, tgh = 15, spd = 1, dmg = 1})
+	elseif btn_clicked == 13 then
+		name = "Kingsman Level 2"
+		changeMonster({mov = 6, tgh = 15, spd = 1, dmg = 1})
+	elseif btn_clicked == 14 then
+		name = "Lion Knight Level 2"
+		changeMonster({mov = 8, tgh = 12})
+	elseif btn_clicked == 15 then
+		name = "Manhunter Level 2"
+		changeMonster({mov = 7, tgh = 11, spd = 1, dmg = 1})
+	elseif btn_clicked == 16 then
+		name = "Slenderman Level 2"
+		changeMonster({mov = 6, tgh = 13, spd = 1, dmg = 1, acc = 1})
+	elseif btn_clicked == 17 then
+		name = "The Tyrant Level 2"
+		changeMonster({mov = 7, tgh = 10, spd = 1, dmg = 1})
+	elseif btn_clicked == 20 then
+		name = "The Lonely Tree Level 2"
+		changeMonster({tgh = 13})
+	elseif btn_clicked == 25 then
+		name = "Black Lion Level 2"
+		changeMonster({mov = 8, tgh = 12, spd = 1, dmg = 1})
+	end
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_level3(object, player)
+	if btn_clicked == 1 then
+		name = "Dragon King Level 3"
+		changeMonster({mov = 10, tgh = 17, spd = 2, dmg = 2, lck = 1})
+	elseif btn_clicked == 2 then
+		name = "Dung Beetle Knight Level 3"
+		changeMonster({mov = 8, tgh = 18, spd = 2, dmg = 2, acc = 1, evs = 1})
+	elseif btn_clicked == 3 then
+		name = "Flower Knight Level 3"
+		changeMonster({mov = 9, tgh = 11, spd = 1, dmg = 2})
+	elseif btn_clicked == 4 then
+		name = "Gorm Level 3"
+		changeMonster({mov = 8, tgh = 15, spd = 2, dmg = 2, lck = 1})
+	elseif btn_clicked == 5 then
+		name = "Phoenix Level 3"
+		changeMonster({mov = 8, tgh = 17, spd = 2, dmg = 3, lck = 2})
+	elseif btn_clicked == 6 then
+		name = "Lion God Level 3"
+		changeMonster({mov = 10, tgh = 21, spd = 2, dmg = 3, evs = 1, lck = 2})
+	elseif btn_clicked == 7 then
+		name = "Screaming Antelope Level 3"
+		changeMonster({mov = 8, tgh = 12, spd = 2, dmg = 2, evs = 1})
+	elseif btn_clicked == 8 then
+		name = "Spidicules Level 3"
+		changeMonster({mov = 16, tgh = 12, spd = 2, dmg = 2})
+	elseif btn_clicked == 9 then
+		name = "Sunstalker Level 3"
+		changeMonster({mov = 16, tgh = 16, spd = 2, dmg = 2, acc = 1, lck = 1})
+	elseif btn_clicked == 10 then
+		name = "White Lion Level 3"
+		changeMonster({mov = 8, tgh = 14, spd = 2, dmg = 2, acc = 2, lck = 1})
+	elseif btn_clicked == 11 then
+		name = "The Butcher Level 3"
+		changeMonster({mov = 8, tgh = 15, spd = 2, dmg = 2, acc = 2})
+	elseif btn_clicked == 12 then
+		name = "The Hand Level 3"
+		changeMonster({mov = 6, tgh = 30, spd = 3, dmg = 6})
+	elseif btn_clicked == 13 then
+		name = "Kingsman Level 3"
+		changeMonster({mov = 6, tgh = 18, spd = 2, dmg = 2, acc = 2})
+	elseif btn_clicked == 14 then
+		name = "Lion Knight Level 3"
+		changeMonster({mov = 9, tgh = 15, spd = 1, dmg = 1})
+	elseif btn_clicked == 15 then
+		name = "Manhunter Level 3"
+		changeMonster({mov = 8, tgh = 11, spd = 1, dmg = 1})
+	elseif btn_clicked == 16 then
+		name = "Slenderman Level 3"
+		changeMonster({mov = 6, tgh = 17, spd = 2, dmg = 2, acc = 2, lck = 1})
+	elseif btn_clicked == 17 then
+		name = "The Tyrant Level 3"
+		changeMonster({mov = 7, tgh = 14, spd = 2, dmg = 2})
+	elseif btn_clicked == 20 then
+		name = "The Lonely Tree Level 3"
+		changeMonster({tgh = 17, spd = 1, dmg = 1})
+	elseif btn_clicked == 25 then
+		name = "Black Lion Level 3"
+		changeMonster({mov = 9, tgh = 18, spd = 2, dmg = 2, acc = 3, lck = 2})
+	end
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_level4(object, player)
+	if btn_clicked == 15 then
+		name = "Manhunter Level 4"
+		changeMonster({mov = 9, tgh = 13, spd = 2, dmg = 2, acc = 2})
+	elseif btn_clicked == 25 then
+		name = "Black Lion Level 4"
+		changeMonster({mov = 10, tgh = 25, spd = 4, dmg = 4, acc = 7, lck = 5})
+	end
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+-- additional levels
+	-- DBK - changeMonster({mov = 9, tgh = 25, spd = 2, dmg = 5, acc = 1, lck = 3})

@@ -1,0 +1,48 @@
+function gain_priority_target()
+	getVars()
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	hasPriority = false
+	cannot_be_removed = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if string.find(tok.getDescription(), "permanent") then
+			cannot_be_removed = true
+		end
+	end
+	if cannot_be_removed then
+		broadcastToAll("A Survivor already has the Priority Target Permanently ~ From a Game Effect", {1,1,1})
+		return
+	end
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			else
+				local obj = getObjectFromGUID(Global.getTable('main_tokens').priority_token.guid)
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone({position = objPos})
+				surv.translate({0,2,0})
+				priority_target.setPosition(pos)
+			end
+		end
+	end
+end
+
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+	PlayerName = grid.getVar("PlayerName")
+end

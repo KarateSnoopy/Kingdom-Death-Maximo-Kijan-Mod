@@ -1,0 +1,27 @@
+--//TODO: Add function to get Mammoth Hunting
+function criticalWoundEffect()
+	getStatToken()
+	Global.call('addBroadcast', {"crit", {gear = "Gain the Mammoth Hunting Fighting Art", effect = ""}})
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Gorm is enraged and gained a (+1) Damage Token", effect = ""}})
+
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

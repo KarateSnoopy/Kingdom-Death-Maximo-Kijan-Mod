@@ -1,0 +1,47 @@
+function criticalWoundEffect()
+	getVars()
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "token") and not (obj.getName() == "Bleeding"or not string.fing(obj.getDescription(), "temp")) then
+			obj.destroy()
+		end
+	end
+	Global.call('addBroadcast', {"crit", {gear = "All your Attribute Modifiers were removed", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	local courage = get_courage_value(courage)
+	Global.call('addBroadcast', {"reflex", {gear = "You have " .. courage .. " Courage", effect = ""}})
+	if courage < 3 then
+		Global.call('addBroadcast', {"reflex", {gear = "You are knocked down", effect = ""}})
+	end
+	if courage < 9 then
+		Global.call('addBroadcast', {"reflex", {gear = "Suffer a Random Brain Trauma", effect = ""}})
+	end
+end
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+function addStatModifier()
+end
+
+#include ../get_vars

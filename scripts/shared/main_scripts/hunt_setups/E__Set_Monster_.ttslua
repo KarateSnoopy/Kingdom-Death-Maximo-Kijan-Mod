@@ -1,0 +1,212 @@
+-- Set Quarries ----------------------------------------------------------------
+function setup_DK()
+	btn_clicked = 1
+	deck_toGet = "Dragon King Hunt Events Deck"
+	broadcastToAll("Dragon King Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_DBK()
+	btn_clicked = 2
+	deck_toGet = "Dung Beetle Knight Hunt Events Deck"
+	broadcastToAll("Dung Beetle Knight Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_FK()
+	btn_clicked = 3
+	deck_toGet = "Flower Knight Hunt Events Deck"
+	broadcastToAll("Flower Knight Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_GRM()
+	btn_clicked = 4
+	deck_toGet = "Gorm Hunt Events Deck"
+	broadcastToAll("Gorm Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Gorm Bulb Effect" then
+			gameBox.takeObject({guid = obj.guid, position = {79.50, 4.11, 46.94}, rotation = {0, 0, 0}, smooth = false})
+		elseif obj.name == "Posturing Piss Miasma" then
+			gameBox.takeObject({guid = obj.guid, position = {79.50, 4.11, 50}, rotation = {0, 0, 0}, smooth = false})
+		end
+	end
+end
+
+function setup_PNIX()
+	btn_clicked = 5
+	deck_toGet = "Phoenix Hunt Events Deck"
+	broadcastToAll("Phoenix Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_LG()
+	btn_clicked = 6
+	deck_toGet = "Lion God Hunt Events Deck"
+	broadcastToAll("Lion God Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_SA()
+	btn_clicked = 7
+	deck_toGet = "Screaming Antelope Hunt Events Deck"
+	broadcastToAll("Screaming Antelope Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_SPID()
+	btn_clicked = 8
+	deck_toGet = "Spidicules Hunt Events Deck"
+	broadcastToAll("Spidicules Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Egg Sac Explosion Effect" then
+			gameBox.takeObject({guid = obj.guid, position = {72.14, 4.17, 48.02}, rotation = {0, 0, 0}, smooth = false})
+		end
+		if obj.name == "Egg Sac Miasma" then
+			gameBox.takeObject({guid = obj.guid, position = {72.14, 4.10, 44.50}, rotation = {0, 0, 0}, smooth = false})
+		end
+	end
+end
+
+function setup_SS()
+	btn_clicked = 9
+	deck_toGet = "Sunstalker Hunt Events Deck"
+	broadcastToAll("Sunstalker Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Shade Miasma" then
+			gameBox.takeObject({guid = obj.guid, position = {73.23, 4.10, 44.54}, rotation = {0, 0, 0}, smooth = false})
+		end
+	end
+end
+
+function setup_WL()
+	btn_clicked = 10
+	deck_toGet = "White Lion Hunt Events Deck"
+	broadcastToAll("White Lion Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_BL()
+	btn_clicked = 25
+	deck_toGet = "Black Lion Hunt Events Deck"
+	broadcastToAll("Black Lion Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+
+
+
+-- Set Nemesis -----------------------------------------------------------------
+function setup_BUTCH()
+	btn_clicked = 11
+	broadcastToAll("The Butcher Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_HAND()
+	btn_clicked = 12
+	broadcastToAll("The Hand Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_KING()
+	btn_clicked = 13
+	broadcastToAll("King's Man Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_LK()
+	btn_clicked = 14
+	broadcastToAll("Lion Knight Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_MH()
+	btn_clicked = 15
+	broadcastToAll("Manhunter Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_SM()
+	btn_clicked = 16
+	broadcastToAll("Slenderman Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_TYRANT()
+	btn_clicked = 17
+	broadcastToAll("The Tyrant Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_WATCH()
+	btn_clicked = 18
+	broadcastToAll("The Watcher Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_GSK()
+	btn_clicked = 19
+	broadcastToAll("Gold Smoke Knight Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+end
+
+function setup_LT()
+	btn_clicked = 20
+	broadcastToAll("Lonely Tree Selected ~ Choose Level", {1,1,1})
+	createButtons_Levels()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Egg Sac Explosion Effect" then
+			gameBox.takeObject({guid = obj.guid, position = {72.14, 4.17, 48.02}, rotation = {0, 0, 0}, smooth = false})
+		end
+	end
+end
+
+
+
+
+
+-- Set Legendaries -------------------------------------------------------------
+function setup_great_golden_cat()
+	btn_clicked = 21
+	deck_toGet = "White Lion Hunt Events Deck"
+	name = "Great Golden Cat"
+	changeMonster({mov = 9, tgh = 17, spd = 3, dmg = 5, lck = 1, acc = 3})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_beast_of_sorrow()
+	btn_clicked = 22
+	deck_toGet = "White Lion Hunt Events Deck"
+	name = "Beast of Sorrow"
+	changeMonster({mov = 7, tgh = 13, spd = 1, dmg = 1})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_mad_steed()
+	btn_clicked = 23
+	deck_toGet = "Screaming Antelope Hunt Events Deck"
+	name = "Mad Steed"
+	changeMonster({mov = 9, tgh = 22, spd = 3, dmg = 5, lck = 1, acc = 1})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_golden_king()
+	btn_clicked = 24
+	deck_toGet = "Phoenix Hunt Events Deck"
+	name = "Great Golden Eyed King of 1000 Years"
+	changeMonster({mov = 10, tgh = 25, spd = 3, dmg = 3, lck = 1000, evs = 1, acc = 2})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end

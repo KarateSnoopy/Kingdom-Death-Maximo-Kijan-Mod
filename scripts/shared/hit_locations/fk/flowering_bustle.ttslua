@@ -1,0 +1,62 @@
+function criticalWoundEffect()
+     Global.call('addBroadcast', {"crit", {gear = "You may spend \u{02606} Survival to gain (+1) Permanent Accuracy", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == PlayerName then
+			local pos = obj.getPosition()
+			local hitList = Physics.cast({origin={pos.x, pos.y, pos.z}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 0})
+			found_fairyRing = false
+			for _, entry in ipairs(hitList) do
+				if entry.hit_object.getName() == "Fairy Ring" then
+					found_fairyRing = true
+					startLuaCoroutine(self, "add_mov")
+					startLuaCoroutine(self, "add_lck")
+					Global.call('addBroadcast', {"reflex", {gear = "You are inside the Fairy Ring ~ You gained a (-1) Movement and (+1) Luck Token", effect = ""}})
+				end
+			end
+			if not found_fairyRing then
+				Global.call('addBroadcast', {"reflex", {gear = "You are NOT inside the Fairy Ring", effect = ""}})
+			end
+		end
+	end
+end
+
+function add_mov()
+	wait(0.25)
+	local stats = {color = color, stat = 'mov', modifier = "neg", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	return 1
+end
+
+function add_lck()
+	wait(0.50)
+	local stats = {color = color, stat = 'lck', modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	return 1
+end
+
+function addStatModifier()
+end
+
+#include ../get_vars
+
+-- Coroutine timer
+function wait(time)
+  local start = os.time()
+  repeat coroutine.yield(0) until os.time() > start + time
+end
+
+
+-- flowering bustle

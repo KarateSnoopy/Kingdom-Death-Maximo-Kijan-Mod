@@ -1,0 +1,48 @@
+
+function criticalWoundEffect()
+	getVars()
+	check_isInsane()
+	getMonsterResource(deck, name, params)
+end
+
+function getMonsterResource()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Screaming Antelope Resource", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Roll 1d10 for each Survivor in the blind spot", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Resolve the effects on this Hit Location", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+#include get_vars
+
+function check_isInsane()
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "isInsane" and (obj.getRotation().z > 165 and obj.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+	if not isInsane then
+		broadcastToAll("You are not Insane", msg_color)
+	end
+	if isInsane then
+		broadcastToAll("You are Insane ~ Cancel all hit and end your attack", msg_color)
+	end
+end

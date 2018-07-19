@@ -1,0 +1,141 @@
+-- Buttons ---------------------------------------------------------------------
+function set_buttons_table()
+	btn_params = {
+		click_function = '',
+		function_owner = self,
+		label 			= '',
+		position 		= {},
+		rotation 		= { - 10, 0, 0},
+		width 			= 3000,
+		height 			= 400,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+end
+
+function create_DrawAIButton()
+	set_buttons_table()
+
+	btn_params.click_function = 'drawAI'
+	btn_params.label = "Draw AI"
+	btn_params.position = {0, 0.20, - 1.2}
+	self.createButton(btn_params)
+end
+
+function create_putIntoPlay_button()
+	btn_params.click_function = 'put_card_into_play'
+	btn_params.label = "Put into Play"
+	btn_params.position = {0, 0.20, 0}
+	self.createButton(btn_params)
+end
+
+function create_endMonsterTurnButton()
+	btn_params.click_function = 'endMonsterTurn'
+	btn_params.label = "End Monster Turn"
+	btn_params.position = {0, 0.20, 1.2}
+	btn_params.font_size = 350
+	self.createButton(btn_params)
+end
+
+function createSurvivorTurnButton()
+	btn_params.click_function = 'dud'
+	btn_params.label = "Survivor's Turn"
+	btn_params.position = {0, 0.10, 1.2}
+	self.createButton(btn_params)
+end
+
+function create_next_round_button()
+	btn_params.click_function = 'nextRound'
+	btn_params.label = "Next Round"
+	btn_params.position = {0, 0.20, 0.3}
+	btn_params.font_size = 500
+	btn_params.height = 550
+	self.createButton(btn_params)
+end
+
+function create_endShowdown_button()
+	local btn_params = {
+		click_function = 'endShowdown',
+		function_owner = self,
+		label 			= 'End Showdown',
+		position 		= {0.8, 0.2, 46.7},
+		rotation 		= { - 10, 0, 0},
+		width 			= 6000,
+		height 			= 750,
+		font_size 		= 700,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+	self.createButton(btn_params)
+
+	btn_params.label = "Run Away"
+	btn_params.click_function = "get_run_away_story_event"
+	btn_params.position = {0.8, 0.2, 45.1}
+	btn_params.font_size = 400
+	btn_params.height = 450
+	self.createButton(btn_params)
+end
+
+function create_run_away_Button()
+	local btn_params = {
+		click_function = 'get_run_away_story_event',
+		function_owner = self,
+		label 			= 'Run Away',
+		position 		= {0.8, 0.2, 45.1},
+		rotation 		= { - 10, 0, 0},
+		width 			= 6000,
+		height 			= 450,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+	self.createButton(btn_params)
+end
+
+function create_end_run_away_Button()
+	local btn_params = {
+		click_function = 'end_run_away',
+		function_owner = self,
+		label 			= 'Close Run Away',
+		position 		= {0.8, 0.2, 45.1},
+		rotation 		= { - 10, 0, 0},
+		width 			= 6000,
+		height 			= 450,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+	self.createButton(btn_params)
+end
+
+
+function remove_SurvivorTurn_Button()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Survivor's Turn" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function remove_nextRound_Button()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Next Round" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function remove_monsters_turn_buttons()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Put into Play"
+		or v.label == "Draw AI"
+		or v.label == "End Monster Turn"
+		then
+			self.removeButton(v.index)
+		end
+	end
+end

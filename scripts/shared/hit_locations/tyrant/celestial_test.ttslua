@@ -1,0 +1,18 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound_reaction", {gear = "Gain a Scar, (+1) Permanent Strength and 1 Bleeding Token", effect = "Archive This Card"}})
+end
+
+function failureEffect()
+Global.call('addBroadcast', {"failure", {gear = "You are knocked down and gain 1 Bleeding Token", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	broadcastToAll("You suffer (-1) Strength to Wound for each Dragon Trait you have (up to -4)", {1,1,1})
+	broadcastToAll("You must Manually adjust this", {1,1,1})
+end

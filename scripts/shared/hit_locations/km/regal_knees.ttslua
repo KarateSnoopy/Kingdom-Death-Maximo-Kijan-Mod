@@ -1,0 +1,39 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({0.07, 4.23, -21.32})
+    Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Broken Knee ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	hasHeavyArmor = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "heavy") and string.find(gear.getDescription(), "armor") then
+			hasHeavyArmor = true
+		end
+	end
+	if hasHeavyArmor then
+		broadcastToAll("You are wearing Heavy Armor ~ You are knocked down", msg_color)
+	else
+		broadcastToAll("You are not wearing Heavy Armor", msg_color)
+	end
+	hitTool = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+   hitTool.call("return_battle_pressure")
+end
+
+#include ../get_vars

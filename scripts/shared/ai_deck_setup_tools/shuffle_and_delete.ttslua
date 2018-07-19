@@ -1,0 +1,36 @@
+function shuffle()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for k, v in pairs(objectsInZone) do
+        if v.tag == 'Deck' then
+            v.shuffle()
+        end
+    end
+end
+
+function deleteLeftoverAICards()
+	pos_self = self.getPosition()
+	offsetX = createOffsetX()
+	init_posX = pos_self.x -2.69
+
+	for i=1, 4 do
+		local hitList = Physics.cast({origin={init_posX - (offsetX()), pos_self.y, pos_self.z + 2.15}, direction={0,1,0}, type=2, size={1.5, 1.5, 1.5}, max_distance = 0})
+	   for _, entry in ipairs(hitList) do
+			if entry.hit_object.tag == "Deck" then
+				entry.hit_object.destroy()
+			end
+			if entry.hit_object.tag == "Card" then
+				entry.hit_object.destroy()
+			end
+		end
+	end
+end
+
+function createOffsetX()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 2.53
+		return i
+	 end
+ end

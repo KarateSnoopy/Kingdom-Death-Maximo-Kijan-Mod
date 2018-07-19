@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Toughness Token", effect = ""}})
+end
+
+function woundEffect()
+	hitTool_right = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+	hitTool_right.call("reactionsCancelled_endOfAttack")
+	hitTool_right.call('removeButton_ReactionTriggered')
+
+	hitTool_left = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_L.guid)
+	hitTool_left.call("reactionsCancelled_endOfAttack")
+
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Reactions cancelled until the end of the attack", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+    broadcastToAll('End your Attack unless you gain 1 Bleeding Token', msg_color)
+end
+
+#include ../get_vars

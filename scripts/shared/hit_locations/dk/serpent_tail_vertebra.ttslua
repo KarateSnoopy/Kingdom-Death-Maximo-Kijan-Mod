@@ -1,0 +1,49 @@
+function criticalWoundEffect()
+	getVars()
+	if hit_blind then
+		hit_tool_R = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+	 	hit_tool_R.call("reactionsCancelled")
+	 	hit_tool_R.call('removeButton_ReactionTriggered')
+	 	hit_tool_R.call('createButton_survival_Opportunity')
+
+	 	hit_tool_L = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_L.guid)
+	 	hit_tool_L.call("reactionsCancelled")
+		Global.call('addBroadcast', {"crit", {gear = "Reactions cancelled until the end of the round", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not attacking from the Blind Spot", effect = ""}})
+	end
+	Global.call('addBroadcast', {"crit", {gear = "All Survivors within 2 spaces ~ Suffer Knockback 5", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+#include ../get_vars
+
+function get_courage_value(courage)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	courage = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 8)
+		if prefix == "courage_" then
+			if v.label ~= '' then
+				courage = courage + 1
+			end
+		end
+	end
+	return courage
+end
+
+function failureEffect()
+	getVars()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "The Dragon King turns to face away from the Attacker", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Roll 1d10 and add your " .. get_courage_value(courage) .. " Courage", effect = ""}})
+	 Global.call('addBroadcast', {"wound_reaction", {gear = "If the result is less than 8 ~ Suffer Bash and +1★ Damage to the Legs", effect = ""}})
+end
+
+function reflexEffect()
+end

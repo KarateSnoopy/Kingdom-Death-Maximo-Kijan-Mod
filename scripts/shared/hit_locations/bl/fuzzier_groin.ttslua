@@ -1,0 +1,42 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	gain_priority_target()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Lost Ovaries ~ Keep in Play", effect = "", effect2 = ""}})
+	self.setPositionSmooth({2.08, 4.24, -21.37}, false, false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+
+function getMonsterResource()
+	local tbl = {cardName = "Lion Ovaries", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Lion Ovaries", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Lion Ovaries", effect = ""}})
+	end
+end
+
+#include ../get_vars
+#include ../gain_priority

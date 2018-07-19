@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+	-- TODO:// add function to add survival and insanity
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+3) Survival ~ Gain (+3) Insanity", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "If you are within 4 Spaces of the Manhunter", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "He full moves until adjacent ~ turns to face you ~ Performs Tombstone", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- corded neck

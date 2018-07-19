@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	getVars()
+	count = 0
+	for _, card in ipairs(zone.getObjects()) do
+		if string.find(card.getDescription(), "disorder") then
+			count = count + 1
+		end
+	end
+	if count >= 3 then
+		Global.call('addBroadcast', {"failure", {gear = "You have 3 Disorders ~ You are knocked down and gain 1 Bleeding Token", effect = ""}})
+	else
+		Global.call('addBroadcast', {"failure", {gear = "You do not have 3+ Disorders ~ Gain a Random Disorder", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

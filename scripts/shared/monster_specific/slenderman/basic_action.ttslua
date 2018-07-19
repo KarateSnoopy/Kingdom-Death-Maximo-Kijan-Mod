@@ -1,0 +1,33 @@
+function onLoad()
+	createButtons()
+end
+
+function createButtons()
+	self.createButton({click_function = "amnesia", function_owner = self, label = "Amnesia",
+	position = {0, 0.3, -1.9}, scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 300, color = {0, 0, 0, 1},
+	font_color = {1, 1, 1, 1}})
+
+	self.createButton({click_function = "return_slenderman", function_owner = self, label = "Return", position = {0, 0.2, -2.3},
+	scale = {0.5, 0.5, 0.5}, width = 2000, height = 400, font_size = 300, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+
+end
+
+function amnesia()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, monst in ipairs(zone.getObjects()) do
+		if monst.getName() == "Slenderman" then
+			monst.setPosition({1.71, 4.35, 0.20})
+			monst.setScale({1.10, 1.10, 1.10})
+		end
+	end
+end
+
+function return_slenderman()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+	for _, monst in ipairs(zone.getObjects()) do
+		if monst.getName() == "Slenderman" then
+			monst.setScale({3.05, 3.05, 3.05})
+			monst.setPosition({1.21, 4.68, -2.47})
+		end
+	end
+end

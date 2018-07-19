@@ -1,0 +1,112 @@
+name = ""
+pos = {24.96, 4.01, 1.79}
+
+pos_deckBasic = {-21.61, 4.31, 25.29}
+pos_deckMonst = {-19.12, 4.30, 25.31}
+huntPos1 = {-12.97, 4.40, 31.63}
+huntPos2 = {-10.33, 4.40, 31.65}
+huntPos3 = {-7.69, 4.40, 31.63}
+huntPos4 = {-5.12, 4.40, 31.64}
+huntPos5 = {-2.61, 4.40, 31.60}
+huntPos6 = {2.71, 4.40, 31.54}
+huntPos7 = {5.24, 4.40, 31.53}
+huntPos8 = {7.81, 4.40, 31.52}
+huntPos9 = {10.36, 4.40, 31.53}
+huntPos10 = {12.98, 4.40, 31.49}
+
+terrainPos1 = {-19.12, 4.28, 7.45}
+terrainPos2 = {-19.17, 4.29, 11.01}
+terrainPos3 = {-19.13, 4.29, 14.61}
+terrainPos4 = {-19.15, 4.29, 18.17}
+terrainPos5 = {-21.66, 4.29, 21.65}
+terrainPos6 = {-21.65, 4.29, 10.98}
+terrainPos7 = {-21.64, 4.29, 14.59}
+terrainPos8 = {-21.65, 4.29, 18.21}
+
+-- Tables and Variables --------------------------------------------------------
+btn_removal = {}
+hunt_Phase = false
+
+--Saves the count value into a table (data_to_save) then encodes it into the Tabletop save
+function onSave()
+	local data_to_save = {}
+	data_to_save.saved_counts = {}
+	for i, v in pairs(buttons.counts) do
+		data_to_save.saved_counts[tostring(i)] = v or 0
+	end
+	saved_data = JSON.encode(data_to_save)
+
+	--Uncomment this line to reset the save data
+	-- saved_data = ''
+	return saved_data
+end
+
+--loads buttons and gets saved data
+function onload(saved_data)
+	bag_quarry_showdowns = getObjectFromGUID('f18343')
+	bag_nemesis_showdowns = getObjectFromGUID('3cb738')
+
+	-- Available Monster Display
+	bag_Quarry = getObjectFromGUID('6e836f')
+	bag_Nemesis = getObjectFromGUID('e59309')
+
+	-- Hunt Phase Setup Bag
+	bag_Hunt = getObjectFromGUID('3bc832')
+
+	-- For Setting Monster Stats
+	monsterBoard = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
+
+	-- Token used to get Rotation for ifHunt
+	huntLoaded = getObjectFromGUID('50ec55')
+
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+
+	-- Zones
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+
+	if huntLoaded.getRotation().z < 65 then
+		createButton_endHunt()
+	end
+
+	original_rot = {['x'] = 0, ['y'] = 180, ['z'] = 0}
+	initButtonsTable()
+	objs = {}
+	initCustomButtons()
+
+	--categorize buttons
+	for i, v in pairs(buttons) do
+		buttons.counts[tostring(i)] = 0
+		if tostring(i) ~= 'index' and tostring(i) ~= 'counts' and tostring(i) ~= 'params' and tostring(i) ~= 'targetFunc' then
+			self.setVar(tostring(i) .. 'PlusOne', function () plus(tostring(i), 1) end)
+			self.setVar(tostring(i) .. 'MinusOne', function () minus(tostring(i), 1) end)
+			self.setVar(tostring(i) .. 'ResetTemps', function () resetTemps(tostring(i)) end)
+			self.setVar(tostring(i) .. 'depart', function () departClick(false) end)
+			self.setVar(tostring(i) .. 'departN', function () departClick(true) end)
+		end
+	end
+	generateButtonParameters()
+
+	--loads saved data if exists
+	if saved_data ~= '' then
+		local loaded_data = JSON.decode(saved_data)
+		buttons.counts = loaded_data.saved_counts
+		for i, v in pairs(buttons) do
+			if tostring(i) ~= 'index' and tostring(i) ~= 'counts' and tostring(i) ~= 'params' and tostring(i) ~= 'targetFunc' and tostring(i) ~= 'reset' and tostring(i) ~= 'depart' then
+				if buttons.counts[tostring(i)] == nil then
+					buttons.counts[tostring(i)] = 0
+				end
+			end
+		end
+	else
+		for i, v in pairs(buttons) do
+			if tostring(i) ~= 'index' and tostring(i) ~= 'counts' and tostring(i) ~= 'params' and tostring(i) ~= 'targetFunc' and tostring(i) ~= 'reset' and tostring(i) ~= 'depart' then
+				buttons.counts[tostring(i)] = 0
+			end
+		end
+	end
+
+	--update display
+	updateDisplay(true)
+	create_other_Buttons()
+end

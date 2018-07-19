@@ -1,0 +1,105 @@
+msg_color_red = {0.856, 0.1, 0.094}
+msg_color_yellow = {0.905, 0.898, 0.172}
+msg_color_green = {0.192, 0.701, 0.168}
+msg_color_blue = {0.118, 0.53, 1}
+
+function onLoad()
+	zoneAIBoard = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+	zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+
+	self.createButton({click_function = "irradiate", function_owner = self, label = "Irradiate", position = {-5.3, 0.6, -8.5},
+	width = 2300, height = 250, font_size = 250, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 100}})
+
+	self.createButton({click_function = "meltdown", function_owner = self, label = "Meltdown", position = {5, 0.6, -8.5},
+	width = 2300, height = 250, font_size = 250, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 100}})
+
+	self.createButton({click_function = "unseenAgony", function_owner = self, label = "Unseen Agony", position = {-0.3, 0.6, -8.5},
+	width = 2300, height = 250, font_size = 250, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 100}})
+end
+
+function irradiate()
+	count = 0
+	for _, tok in ipairs(zoneAIBoard.getObjects()) do
+		if tok.getName() == "Toughness" and string.find(tok.getDescription(), 'minus one') then
+			count = count + 1
+		end
+	end
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+
+	if count == 0 then
+		obj.call("spawn_token")
+	elseif count == 1 then
+		obj.call("spawn_token")
+	elseif count == 2 then
+		obj.call("spawn_token")
+	elseif count == 3 then
+		obj.call("spawn_token")
+	elseif count == 4 then
+		obj.call("spawn_token")
+		--Meltdown
+		broadcastToAll("The Dragon King's Heart is exposed: --> Meltdown", {1,1,1})
+	end
+	if count < 4 then
+		broadcastToAll("The Dragon King gained a (-1) Toughness Token", {1,1,1})
+	end
+end
+
+function meltdown()
+	token_count =  0
+	for _, token in ipairs(zoneAIBoard.getObjects()) do
+		if token.getName() == "Toughness" then
+			token_count = token_count + 1
+			token.destruct()
+		end
+	end
+	broadcastToAll("The Dragon King had " .. token_count .. " (-1) Toughness Tokens", {1,1,1})
+	local story_deck = getObjectFromGUID(Global.getTable('decks_toSearch').deckStory.guid)
+	for _, card in ipairs(story_deck.getObjects()) do
+		local desc = card.description
+		if card.nickname == "Meltdown" and string.find(desc, "one") then
+			local page = story_deck.takeObject({smooth = false, guid = card.guid})
+			page.setRotation({8,180,0})
+			page.setScale({1.39, 1.00, 1.39})
+			page.setPosition({-3.17, 4.96, -11.95})
+			page.setLock(true)
+		end
+		if card.nickname == "Meltdown" and string.find(desc, "two") then
+			local page = story_deck.takeObject({smooth = false, guid = card.guid})
+			page.setRotation({8,180,0})
+			page.setScale({1.39, 1.00, 1.39})
+			page.setPosition({2.52, 4.96, -11.95})
+			page.setLock(true)
+		end
+	end
+	local next_round_token = getObjectFromGUID(Global.getTable('main_tokens').next_round.guid)
+	next_round_token.call("createButton_meltdown")
+end
+
+function unseenAgony()
+	for _, monst in ipairs(zoneShowdown.getObjects()) do
+		if monst.getName() == "Dragon King" then
+			monst.call("overlay_unseenAgony")
+		end
+	end
+	count = 0
+	for _, token in ipairs(zoneAIBoard.getObjects()) do
+		if string.find(token.getName(), "Toughness")  and string.find(token.getDescription(), "minus one") then
+			count = count + 1
+		end
+	end
+	for _, surv in ipairs(zoneEffect.getObjects()) do
+		if surv.getName() == "Player One" then
+			broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_red)
+		elseif surv.getName() == "Player Two" then
+			broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_yellow)
+		elseif surv.getName() == "Player Three" then
+			broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_green)
+		elseif surv.getName() == "Player Four" then
+			broadcastToAll("You are in the Blast Zone ~ Suffer " .. count .. " Damage to ★ Locations", msg_color_blue)
+		end
+	end
+end

@@ -1,0 +1,34 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Place a Lava Pool Terrain Tile in an unoccupied space as close to Attacker as possible", effect = ""}})
+	getMonsterResource()
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Veined Wing", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Veined Wing", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Veined Wings", effect = ""}})
+	end
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Place 2 Lava Pool Terrain Tiles in spaces the Dragon King Occupies", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Full move the Dragon King away from the Attacker", effect = "", effect2 = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

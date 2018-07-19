@@ -1,0 +1,25 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({2.05, 4.23, -21.44}, false, false)
+  Global.call('addBroadcast', {"crit", {gear = "A Survivor adjacent to the Loney Tree may archive this location to gain a 'Bone Axe' Gear", effect = "", effect2 = ""}})
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

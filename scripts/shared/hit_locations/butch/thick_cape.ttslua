@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+  Global.call('addBroadcast', {"reflex", {gear = "Roll 1d10 ~ If greater than your Courage, suffer ★ Brain Damage", effect = ""}})
+end
+
+
+function addStatModifier()
+end

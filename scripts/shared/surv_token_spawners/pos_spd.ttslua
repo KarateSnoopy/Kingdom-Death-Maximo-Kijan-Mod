@@ -1,0 +1,62 @@
+function onLoad()
+   createButtons()
+end
+
+function createButtons()
+   self.createButton({click_function = "spawn_token", function_owner = self, label = "", position = {0, 0.18, 0.07}, width = 800, height = 800, font_size = 650,
+   color = {1, 1, 1, 0}, font_color = {0, 0, 0, 100}})
+end
+
+function spawn_token()
+   local bag = getObjectFromGUID(Global.getTable('bags_stats').bag_spd.guid)
+   local pos = self.getPosition()
+   local token_pos = {pos.x, pos.y + 2, pos.z + 0.45}
+   local rot = {0, 180, 0}
+   local token = bag.takeObject({position = token_pos, rotation = rot, smooth = false})
+
+	local hitList = Physics.cast({
+		origin			= {pos.x, pos.y, pos.z},
+		direction		= {0,1,0},
+		type				= 2,
+		size				= {2,2,2},
+		max_distance 	= 0,
+	})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.getName() == "Inventory P1" then
+			table_toGet = "stats_red"
+		elseif entry.hit_object.getName() == "Inventory P2" then
+			table_toGet = "stats_yellow"
+		elseif entry.hit_object.getName() == "Inventory P3" then
+			table_toGet = "stats_green"
+		elseif entry.hit_object.getName() == "Inventory P4" then
+			table_toGet = "stats_blue"
+		end
+	end
+
+	phase = Global.getTable(table_toGet).phase
+	if phase == nil then
+		phase = Global.getTable('temp').phase
+	end
+
+   if phase == "endOfround" then
+      token.setDescription('temp, end of round')
+
+   elseif phase == "endOfattack" then
+      token.setDescription('temp, end of attack')
+
+   elseif phase == "endOfwoundattempt" then
+      token.setDescription('temp, end of wound attempt')
+
+   elseif phase == "endOfwound" then
+      token.setDescription('temp, end of wound')
+
+   elseif phase == "haze" then
+      token.setDescription('temp, haze')
+
+   elseif phase == "frenzy" then
+      token.setDescription('token, frenzy, plus1spd')
+
+   else
+      token.setDescription('token, plus1spd')
+   end
+end

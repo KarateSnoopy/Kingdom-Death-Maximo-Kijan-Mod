@@ -1,0 +1,109 @@
+function onLoad()
+	createButtons()
+	zoneSurvivorStatus = getObjectFromGUID(Global.getTable('zonesDestruct').zoneSurvivorStatus.guid)
+end
+
+function createButtons()
+	self.createButton({click_function = "pass_roles", function_owner = self, label = "Pass Role Cards",
+	position = {-0.3, 0.7, -8.7}, scale = {0.5, 0.5, 0.5}, width = 3700, height = 400, font_size = 400, color = {0,0,0,0}, font_color = {1,1,1,100}})
+end
+
+function randomize_roles()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneHitLoc1.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.tag == "Deck" then
+			deck = obj
+			break
+		end
+	end
+	deck.shuffle()
+	deck.takeObject({top = true, smooth = true, position = {-5.86, 4.5, -7.22}})
+	deck.shuffle()
+	deck.takeObject({top = true, smooth = true, position = {-2.82, 4.5, -7.22}})
+	deck.shuffle()
+	deck.takeObject({top = true, smooth = true, position = {2.34, 4.5, -7.22}})
+	deck.shuffle()
+	deck.takeObject({top = true, smooth = true, position = {5.55, 4.5, -7.22}})
+end
+
+function pass_roles()
+	playerZones = {
+      red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+      yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+      green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+      blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+   }
+
+   for zoneKey, zoneGUIDtable in pairs(playerZones) do
+      local zoneGUID = zoneGUIDtable.guid
+      local zone = getObjectFromGUID(zoneGUID)
+      local objectsInZone = zone.getObjects()
+      for _, obj in ipairs(objectsInZone) do
+         if string.find(obj.getDescription(), "temp, ruler") then
+         	obj.destruct()
+         end
+      end
+   end
+
+	for _, role in ipairs(zoneSurvivorStatus.getObjects()) do
+		if string.find(role.getDescription(), "role") then
+			local posX = role.getPosition().x
+			if posX < -5.00 then
+				role.setPositionSmooth({position = Global.getTable('surv_status_card_p2')})
+				--role.setPositionSmooth({-2.82, 4.5, -7.22})
+			elseif posX < -2.00 and posX > -3.00 then
+				role.setPositionSmooth({position = Global.getTable('surv_status_card_p3')})
+				--role.setPositionSmooth({2.34, 4.5, -7.22})
+			elseif posX > 2.00 and posX < 3.00 then
+				role.setPositionSmooth({position = Global.getTable('surv_status_card_p4')})
+				--role.setPositionSmooth({5.55, 4.5, -7.22})
+			elseif posX > 5.00 then
+				role.setPositionSmooth({position = Global.getTable('surv_status_card_p1')})
+				--role.setPositionSmooth({-5.86, 4.5, -7.22})
+			end
+		end
+	end
+	startLuaCoroutine(self, "calc_ruler_mov_penalty")
+end
+
+function calc_ruler_mov_penalty()
+	wait(2)
+	for _, role in ipairs(zoneSurvivorStatus.getObjects()) do
+		local posX = role.getPosition().x
+		if role.getName() == "Ruler" then
+			if posX < -5.00 then
+				grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+				color = "red"
+				stats_table = "stats_red"
+				coR_color = "spawn_tok_red"
+			elseif posX < -2.00 and posX > -3.00 then
+				grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+				color = "yellow"
+				stats_table = "stats_yellow"
+				coR_color = "spawn_tok_yellow"
+			elseif posX > 2.00 and posX < 3.00 then
+				grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+				color = "green"
+				stats_table = "stats_green"
+				coR_color = "spawn_tok_green"
+			elseif posX > 5.00 then
+				grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+				color = "blue"
+				stats_table = "stats_blue"
+				coR_color = "spawn_tok_blue"
+			end
+		end
+	end
+	local stats = {color = color, stat = "mov", modifier = "neg", num = 2, phase = "ruler"}
+	Global.setTable(stats_table, stats)
+	startLuaCoroutine(Global, coR_color)
+	msg_color = grid.getTable("msg_color")
+	broadcastToAll("You are now the Ruler. You gained (-2) Movement Tokens.", msg_color)
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0) until os.time() > start + time
+end

@@ -1,0 +1,46 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+	getVars()
+	changeSurvivors("survival", 1, grid)
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You gained (+1) Survival", effect = "", effect2 = ""}})
+
+	 obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "startOfMonsterTurn"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+	Global.call('addBroadcast', {"wound_reaction", {gear = "The Kingsman gained (-2) Toughness until the start of its next turn", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+#include ../get_vars
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function addStatModifier()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end

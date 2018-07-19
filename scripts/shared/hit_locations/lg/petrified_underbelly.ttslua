@@ -1,0 +1,27 @@
+function criticalWoundEffect()
+	getVars()
+	changeSurvivors("insanity", 3, grid)
+	Global.call('addBroadcast', {"crit", {gear = "You gained (+3) Insanity", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Resolve the Effects on this Hit Location", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- underbelly

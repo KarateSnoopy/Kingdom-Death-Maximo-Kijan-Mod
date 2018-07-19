@@ -1,0 +1,25 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Reactions Cancelled until the End of the Round", effect = ""}})
+	hitTool_right = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+	hitTool_right.call("reactionsCancelled")
+	hitTool_right.call('removeButton_ReactionTriggered')
+	hitTool_right.call('createButton_survival_Opportunity')
+
+	hitTool_left = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_L.guid)
+	hitTool_left.call("reactionsCancelled")
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "The Manhunter fulls moves onto the space occupied by the attacker", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- offhand

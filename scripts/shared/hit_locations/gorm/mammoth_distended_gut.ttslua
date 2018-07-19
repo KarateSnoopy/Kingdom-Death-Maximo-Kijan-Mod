@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+	getMonsterResource(deck, name, params)
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Stout Kidney", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Stout Kidney", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "Theare are no more Stout Kidneys", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "☠☠☠ Perform Retch ☠☠☠", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

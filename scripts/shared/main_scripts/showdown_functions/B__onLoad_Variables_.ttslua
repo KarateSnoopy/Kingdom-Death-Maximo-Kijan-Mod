@@ -1,0 +1,109 @@
+-- Tables and Variables --------------------------------------------------------
+gears = {
+	p1GearGUID = '1b5c7a',
+	p2GearGUID = 'fd8b97',
+	p3GearGUID = '86e4fd',
+	p4GearGUID = 'f7c730',
+}
+
+table_drawnAI = {}
+
+tokens = {
+	--Player 1
+	p1Action = 'a66bc1',
+	p1Dodge = '4fc811',
+	p1Encourage = '6a9974',
+	p1Dash = 'e85587',
+	p1Surge = '92bf04',
+	p1Embolden = 'a886d9',
+	p1Overcharge = '965d22',
+	--Player 2
+	p2Action = '4825fa',
+	p2Dodge = 'aaba33',
+	p2Encourage = '64f543',
+	p2Dash = '6c533b',
+	p2Surge = 'c0c91a',
+	p2Embolden = '91717c',
+	p2Overcharge = '6dec68',
+	--Player 3
+	p3Action = '148863',
+	p3Dodge = '08083d',
+	p3Encourage = '310af6',
+	p3Dash = 'e357b6',
+	p3Surge = 'ab6362',
+	p3Embolden = '778347',
+	p3Overcharge = 'fb8947',
+	--Player 4
+	p4Action = '5e9f5a',
+	p4Dodge = 'a42cb4',
+	p4Encourage = '25a2a1',
+	p4Dash = '01e8e2',
+	p4Surge = '829340',
+	p4Embolden = '4e6f3a',
+	p4Overcharge = '59439e',
+}
+
+-- END TABLE OF CONTENTS -------------------------------------------------------
+
+function onLoad()
+	-- gameBox
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	-- Objects
+	hitTool_Right = getObjectFromGUID('10e61e')
+	hitTool_Left = getObjectFromGUID('309402')
+	token_knockdown_monster = getObjectFromGUID("a61816")
+
+	-- Surv cards
+	redSurvCard = getObjectFromGUID(Global.getTable('survCards').red.guid)
+	yellowSurvCard = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+	greenSurvCard = getObjectFromGUID(Global.getTable('survCards').green.guid)
+	blueSurvCard = getObjectFromGUID(Global.getTable('survCards').blue.guid)
+
+	-- Surv Menu Tokens
+	menu_token_red = getObjectFromGUID(Global.getTable('menu_tokens').red.guid)
+	menu_token_yellow = getObjectFromGUID(Global.getTable('menu_tokens').yellow.guid)
+	menu_token_green = getObjectFromGUID(Global.getTable('menu_tokens').green.guid)
+	menu_token_blue = getObjectFromGUID(Global.getTable('menu_tokens').blue.guid)
+
+	-- Zones
+	zone_Red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	zone_Yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	zone_Green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	zone_Blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	zoneSpecialEffects = getObjectFromGUID(Global.getTable('zones').zoneSpecialEffects.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	zoneAIBoard = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+
+	playerZones = {
+		red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	}
+
+	-- Roller
+	monster_Roller = getObjectFromGUID('1daf26')
+
+	--Buttons
+	--create_DrawAIButton()
+	--create_putIntoPlay_button()
+	--create_endMonsterTurnButton()
+
+	set_buttons_table()
+
+	if self.getDescription() == "Monster's Turn" then
+		create_DrawAIButton()
+		create_putIntoPlay_button()
+		create_endMonsterTurnButton()
+		--remove_SurvivorTurn_Button()
+		--remove_nextRound_Button()
+
+	elseif self.getDescription() == "Survivor's Turn" then
+		--remove_monsters_turn_buttons()
+		createSurvivorTurnButton()
+		create_next_round_button()
+	end
+	create_endShowdown_button()
+end

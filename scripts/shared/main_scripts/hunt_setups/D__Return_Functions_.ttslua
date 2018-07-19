@@ -1,0 +1,131 @@
+function returnClick()
+	startLuaCoroutine(self, "returnCoroutine")
+end
+
+function returnCoroutine()
+	local gridTable = Global.getTable('grids')
+	local zonesTable = Global.getTable('zones')
+	local players = {player1 = {getObjectFromGUID(gridTable.red.guid), getObjectFromGUID(zonesTable.zoneP1.guid), "Player 1"},
+	player2 = {getObjectFromGUID(gridTable.yellow.guid), getObjectFromGUID(zonesTable.zoneP2.guid), "Player 2"},
+	player3 = {getObjectFromGUID(gridTable.green.guid), getObjectFromGUID(zonesTable.zoneP3.guid), "Player 3"},
+	player4 = {getObjectFromGUID(gridTable.blue.guid), getObjectFromGUID(zonesTable.zoneP4.guid), "Player 4"}
+	}
+	wait(0.1)
+	for _, player in pairs(players) do
+		returnSurv(player[1], player[2], player[3])
+	end
+	return 1
+end
+
+function returnSurv(grid, zone, name)
+	local broadcastTable = {}
+	local bag = ""
+	local tempBag = ""
+	if grid.getVar("FullCharSheetGUID") == '' or grid.getVar("FullCharSheetGUID") == nil then
+		table.insert(broadcastTable, "__________" .. name .. " Died __________")
+	else
+		table.insert(broadcastTable, "__________" .. name .. " Returned __________")
+		if name == "Player 1" then
+			bag = getObjectFromGUID('d202ed')
+		elseif name == "Player 2" then
+			bag = getObjectFromGUID('6b02af')
+		elseif name == "Player 3" then
+			bag = getObjectFromGUID('98eafe')
+		elseif name == "Player 4" then
+			bag = getObjectFromGUID('38ac5c')
+		end
+		local objectsInZone = zone.getObjects()
+		for _, object in ipairs(objectsInZone) do
+			if object.getName() == "Hoarder" then
+				table.insert(broadcastTable, "[b]Hoarder[/b]: Archive 1 resource gained from this showdown and gain (+1) Courage")
+
+			elseif object.getName() == "Matchmaker" then
+				table.insert(broadcastTable, "[b]Matchmaker[/b]: You may spend an Endeavor for Intimacy")
+				bag = getObjectFromGUID('5dffd3')
+
+			elseif object.getName() == "Secretive" then
+				table.insert(broadcastTable, "[b]Secretive[/b]: You must skip the next hunt")
+
+			elseif object.getName() == "Post Traumatic Stress" then
+				table.insert(broadcastTable, "[b]Post Traumatic Stress[/b]: You must skip the next hunt and cannot contribute to any endeavors")
+
+			elseif object.getName() == "Fear of the Dark" then
+				table.insert(broadcastTable, "[b]Fear of the Dark[/b]: You Retire")
+
+			elseif object.getName() == "Tinker" then
+				spawnTinkerEndeavor(name)
+
+			elseif object.getName() == "Heart of the Storm" then
+				table.insert(broadcastTable, "[b]Heart of the Storm[/b]: If you gain Weapon XP, gain (+3) Weapon XP and 1 Iron Strange Resource")
+
+			elseif object.getName() == "Elder Earrings" then
+				table.insert(broadcastTable, "[b]Elder Earrings[/b]: Gain (+1) Hunt XP")
+
+			elseif object.getName() == "Scavenger Kit" then
+				table.insert(broadcastTable, "[b]Scavenger Kit[/b]: Gain either +1 Random Basic or +1 Random Monster resource from this monster.")
+
+			elseif object.getName() == "Healing Potion" then
+				table.insert(broadcastTable, "[b]Healing Potion[/b]: If you suffered any Severe Injuries ~ You may archive Healing Potion to remove it")
+
+			elseif object.getName() == "Torn Achilles Tendon" then
+				table.insert(broadcastTable, "Torn Achilles ~ Skip the Next Hunt")
+				object.destroy()
+
+			elseif object.getName() == "Dislocated Shoulder" then
+				object.destroy()
+
+			elseif object.getName() == "Ruptured Spleen" then
+				table.insert(broadcastTable, "Ruptured Spleen ~ Skip the Next Hunt")
+				object.destroy()
+
+			elseif object.getName() == "Torn Muscle" then
+				table.insert(broadcastTable, "Torn Muscle ~ Skip the Next Hunt")
+				object.destroy()
+
+			elseif object.getName() == "Bruised Tailbone" then
+				object.destroy()
+
+			elseif object.getName() == "Spiral Fracture" then
+				table.insert(broadcastTable, "Spiral Fracture ~ Skip the Next Hunt")
+				object.destroy()
+
+			elseif object.getName() == "Slashed Back" then
+				object.destroy()
+
+			end
+		end
+		spawnEndeavor(bag)
+	end
+	if #broadcastTable > 0 then
+		for _, b in pairs(broadcastTable) do
+			broadcastToAll(b, {1,1,1})
+			wait(1)
+		end
+		wait(0.4)
+	end
+	return 1
+end
+
+function spawnEndeavor(bag)
+	local pos = bag.getPosition()
+	pos.y = pos.y + 2
+	pos.x = pos.x - 2
+	bag.takeObject({position = pos})
+end
+
+function spawnTinkerEndeavor(name)
+	local bag = ""
+	if name == "Player 1" then
+		bag = getObjectFromGUID('d202ed')
+	elseif name == "Player 2" then
+		bag = getObjectFromGUID('6b02af')
+	elseif name == "Player 3" then
+		bag = getObjectFromGUID('98eafe')
+	elseif name == "Player 4" then
+		bag = getObjectFromGUID('38ac5c')
+	end
+	local pos = bag.getPosition()
+	pos.y = pos.y + 2
+	pos.x = pos.x - 3
+	bag.takeObject({position = pos})
+end

@@ -1,0 +1,57 @@
+function criticalWoundEffect()
+	local grid = getObjectFromGUID(Global.getTable("grids").red.guid)
+	local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	local insanity_value = (insanity_value * -1)
+	local obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {"insanity", insanity_value})
+
+	local grid = getObjectFromGUID(Global.getTable("grids").yellow.guid)
+	local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	local insanity_value = (insanity_value * -1)
+	local obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {"insanity", insanity_value})
+
+	local grid = getObjectFromGUID(Global.getTable("grids").green.guid)
+	local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	local insanity_value = (insanity_value * -1)
+	local obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {"insanity", insanity_value})
+
+	local grid = getObjectFromGUID(Global.getTable("grids").blue.guid)
+	local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	local insanity_value = (insanity_value * -1)
+	local obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {"insanity", insanity_value})
+
+
+	Global.call('addBroadcast', {"crit", {gear = "All Survivors Insanity set to 0", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "You are knocked down!", effect = ""}})
+	hasMetalArmor = false
+	for _, armor in ipairs(zone.getObjects()) do
+		local desc = armor.getDescription()
+		if string.find(desc, "metal") and string.find(desc, "armor") then
+			hasMetalArmor = true
+		end
+	end
+	if hasMetalArmor then
+		Global.call('addBroadcast', {"reflex", {gear = "You are wearing Metal Armor ~ Suffer a random Severe Body Injury", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "You are not wearing Metal Armor", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+
+function addStatModifier()
+end

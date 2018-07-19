@@ -1,0 +1,49 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({-3.98, 4.24, -17.90})
+	Global.call('addBroadcast', {"crit", {gear = "You gain (+1) Survival ~ Persistent Injury ~ Keep In Play", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Ignore all Lens Effects ~ Lens flipped to Closed", effect = ""}})
+	flipLens()
+end
+
+function flipLens()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+			card.flip()
+		elseif card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+			card.flip()
+		elseif card.getName() == "Red Lens" and card.getRotation().z > 165 then
+			card.flip()
+		end
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Blue Lens" and card.getRotation().z > 165 then
+			broadcastToAll("Blue Lens Open ~ The Hand perfectly predicts this attack ~ This hit is Cancelled", msg_color)
+			local pos = Global.getTable('HL_discard_pos')
+			self.setPositionSmooth({position = pos})
+		end
+	end
+end
+
+#include ../get_vars

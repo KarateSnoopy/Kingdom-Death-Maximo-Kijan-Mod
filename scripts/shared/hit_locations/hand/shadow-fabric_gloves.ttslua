@@ -1,0 +1,87 @@
+function criticalWoundEffect()
+	getVars()
+	Global.call('addBroadcast', {"crit", {gear = "Ignore all Closed Lens effects and instead flip a Lens of your choice", effect = ""}})
+	getMonsterResource()
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Broken Lantern", zone = getObjectFromGUID(Global.getTable('zones').deckBasicResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Broken Lantern", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Broken Lanterns", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The Hand redirects your hit ~ Select a Survivor within 2 spaces", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "They suffer 5 Damage, Knockback 7 and Bash", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').monsterInjuryZone.guid)
+	local pos = self.getPosition()
+	if pos.x > 0 then
+		hitTool = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+	elseif pos.x < 0 then
+		hitTool = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_L.guid)
+	end
+	local hitTable = hitTool.getTable('hitLocation')
+	green_open = false
+	for _, card in ipairs(zone.getObjects()) do
+		if card.getName() == "Green Lens" and card.getRotation().z > 165 then
+			green_open = true
+		end
+	end
+	if green_open then
+		for k, v in pairs(hitTable) do
+			obj = getObjectFromGUID(v)
+			obj.setDescription(obj.getDescription() .. ", super_dense")
+		end
+		broadcastToAll("Green Lens Open ~ (+4) Toughness to Wound this Location and it gained 'Super Dense'", msg_color)
+		startLuaCoroutine(self, "addStat_coR")
+	end
+	if not green_open then
+		for k, v in pairs(hitTable) do
+			obj = getObjectFromGUID(v)
+			local desc = obj.getDescription()
+			if string.find(desc, "super_dense") then
+				local new_desc = string.gsub(desc, ", super_dense", "")
+				obj.setDescription(new_desc)
+			end
+		end
+	end
+end -- end function
+
+function addStat_coR()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	for i=1, 4 do
+		obj.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end

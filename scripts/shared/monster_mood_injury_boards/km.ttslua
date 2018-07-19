@@ -1,0 +1,100 @@
+function onLoad()
+	createButtons()
+end
+
+function createButtons()
+
+	gridRed = getObjectFromGUID(Global.getTable('grids').red.guid)
+	gridYellow = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+	gridGreen = getObjectFromGUID(Global.getTable('grids').green.guid)
+	gridBlue = getObjectFromGUID(Global.getTable('grids').blue.guid)
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "Rebel",
+		position 		= {},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 3300,
+		height 			= 400,
+		font_size		= 350,
+		font_color		= {},
+		color 			= {0,0,0},
+		tooltip 			= "Remove Negative movement tokens gained by Silent Hymn"
+	}
+
+	btn_params.position = {-6, 0.7, -5.25}
+	btn_params.click_function = "set_red"
+	btn_params.font_color = gridRed.getTable("msg_color")
+	self.createButton(btn_params)
+
+	btn_params.position = {-2, 0.7, -5.25}
+	btn_params.click_function = "set_yellow"
+	btn_params.font_color = gridYellow.getTable("msg_color")
+	self.createButton(btn_params)
+
+	btn_params.position = {2, 0.7, -5.25}
+	btn_params.click_function = "set_green"
+	btn_params.font_color = gridGreen.getTable("msg_color")
+	self.createButton(btn_params)
+
+	btn_params.position = {6, 0.7, -5.25}
+	btn_params.click_function = "set_blue"
+	btn_params.font_color = gridBlue.getTable("msg_color")
+	self.createButton(btn_params)
+
+end
+
+function set_red()
+	zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+	msg_color = grid.getTable("msg_color")
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	removeTokens()
+end
+
+function set_yellow()
+	zone = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+	msg_color = grid.getTable("msg_color")
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	removeTokens()
+end
+
+function set_green()
+	zone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+	msg_color = grid.getTable("msg_color")
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	removeTokens()
+end
+
+function set_blue()
+	zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+	msg_color = grid.getTable("msg_color")
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+	removeTokens()
+end
+
+function removeTokens()
+	if survival_value >= 1 then
+		for _, tok in ipairs(zone.getObjects()) do
+			if string.find(tok.getDescription(), "silent hymn") then
+				if tok ~= nil then
+					tok.destroy()
+				end
+			end
+		end
+		broadcastToAll("Your Negative Movement Tokens were Removed", msg_color)
+		survival_value = survival_value * -1
+		changeSurvivors("survival", survival_value, grid)
+	else
+		broadcastToAll("You must have at least 1 Survival to Rebel", msg_color)
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

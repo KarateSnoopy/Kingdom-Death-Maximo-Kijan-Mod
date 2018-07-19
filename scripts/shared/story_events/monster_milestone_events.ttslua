@@ -1,0 +1,511 @@
+function onLoad()
+	createButton_openMenu()
+	-- bag_storage = getObjectFromGUID('0ad7f0')
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	boardLoaded = false
+end
+
+pageToLoad = ""
+
+function createButton_openMenu()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		scale					 = {1,1,1},
+		width          = 5000,
+		height         = 1000,
+		font_size      = 700,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	self.createButton({
+		click_function = "openMilestone",
+		function_owner = self,
+		width = 5000,
+		height = 700,
+		rotation = {-8, 0, 0},
+		color = {0,0,0},
+		font_color = {1,1,1},
+		font_size = 750,
+		label = "______________________  Milestone Events  ______________________",
+		position = {0, 0.25, 3}
+	})
+
+	self.createButton({
+		click_function = "openMonster",
+		function_owner = self,
+		width = 5000,
+		height = 700,
+		rotation = {-8, 0, 0},
+		color = {0,0,0},
+		font_color = {1,1,1},
+		font_size = 750,
+		label = "___________________________  Monster Events  ___________________________",
+		position = {0, 0.25, 6}
+	})
+
+end
+
+function removeButtons_All()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+			self.removeButton(v.index)
+	end
+end
+
+function openMilestone()
+	get_storyBoard()
+	removeButtons_All()
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		scale					 = {1,1,1},
+		width          = 3000,
+		height         = 700,
+		font_size      = 600,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "close_menu"
+	btn_params.position = {0, 0.25, 3}
+	btn_params.label = "Close Menu"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory1"
+	btn_params.position = {-18, 0.25, 0}
+	btn_params.label = "See the Truth"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory2"
+	btn_params.position = {-9, 0.25, 0}
+	btn_params.label = "Bold"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory4"
+	btn_params.position = {9, 0.25, 0}
+	btn_params.label = "Insight"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory5"
+	btn_params.position = {18, 0.25, 0}
+	btn_params.label = "White Secret"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory6"
+	btn_params.position = {9, 0.25, 2.1}
+	btn_params.label = "Awake"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory6"
+	btn_params.position = {-9, 0.25, 2.1}
+	btn_params.label = "Awake"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "getStory3"
+	btn_params.position = {0, 0.25, 0}
+	btn_params.font_size = 800
+	btn_params.label = "Age"
+	btn_params.scale = {1.5, 1.5, 1.5}
+	self.createButton(btn_params)
+end
+
+function getStory1()
+	pageToLoad = self.setDescription("see the truth")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function getStory2()
+	pageToLoad = self.setDescription("bold")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function getStory3()
+	pageToLoad = self.setDescription("age")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function getStory4()
+	pageToLoad = self.setDescription("insight")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function getStory5()
+	pageToLoad = self.setDescription("white secret")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function getStory6()
+	pageToLoad = self.setDescription("awake")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function openMonster()
+	get_storyBoard()
+	removeButtons_All()
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		scale					 = {1,1,1},
+		width          = 5000,
+		height         = 800,
+		font_size      = 700,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "close_menu"
+	btn_params.position = {0, 0.25, 3}
+	btn_params.label = "Close Menu"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get6"
+	btn_params.position = {-32, 0.25, 5}
+	btn_params.label = "Hammer and Nail"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get7"
+	btn_params.position = {32, 0.25, 5}
+	btn_params.label = "Necropolis"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get8"
+	btn_params.position = {14, 0.25, 15}
+	btn_params.label = "Crush and Devour"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get9"
+	btn_params.position = {14, 0.25, 13}
+	btn_params.label = "Melting Horror"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get10"
+	btn_params.position = {14, 0.25, 7}
+	btn_params.label = "Final March"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get11"
+	btn_params.position = {14, 0.25, 9}
+	btn_params.label = "Fetid Grotto"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get12"
+	btn_params.position = {14, 0.25, 11}
+	btn_params.label = "Spidisisyphus"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get13"
+	btn_params.position = {14, 0.25, 17}
+	btn_params.label = "Puppet's Embalming"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get14"
+	btn_params.position = {14, 0.25, 5}
+	btn_params.label = "Taken"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get15"
+	btn_params.position = {-14, 0.25, 17}
+	btn_params.label = "Conquer Your Shadow"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get16"
+	btn_params.position = {-14, 0.25, 7}
+	btn_params.label = "Death Pit"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get17"
+	btn_params.position = {-14, 0.25, 13}
+	btn_params.label = "King's Curse"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get18"
+	btn_params.position = {-14, 0.25, 11}
+	btn_params.label = "King's Step"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get19"
+	btn_params.position = {-14, 0.25, 15}
+	btn_params.label = "Legendary Lungs"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get20"
+	btn_params.position = {-14, 0.25, 5}
+	btn_params.label = "Blackout"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get21"
+	btn_params.position = {-14, 0.25, 9}
+	btn_params.label = "Dark Place"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get22"
+	btn_params.position = {32, 0.25, 7}
+	btn_params.label = "Intermission"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get23"
+	btn_params.position = {-32, 0.25, 7}
+	btn_params.label = "Spelunking of Death"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "get24"
+	btn_params.position = {-32, 0.25, 9}
+	btn_params.label = "Breakthrough"
+	self.createButton(btn_params)
+
+
+end
+
+function get6()
+	pageToLoad = self.setDescription("hammer and nail")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get7()
+	pageToLoad = self.setDescription("necropolis")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get8()
+	pageToLoad = self.setDescription("crush and devour")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get9()
+	pageToLoad = self.setDescription("melting horror")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get10()
+	pageToLoad = self.setDescription("final march")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get11()
+	pageToLoad = self.setDescription("fetid grotto")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get12()
+	pageToLoad = self.setDescription("spidisisyphus")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get13()
+	pageToLoad = self.setDescription("puppet's embalming")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get14()
+	pageToLoad = self.setDescription("taken")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get15()
+	pageToLoad = self.setDescription("conquer your shadow")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get16()
+	pageToLoad = self.setDescription("death pit")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get17()
+	pageToLoad = self.setDescription("king's curse")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get18()
+	pageToLoad = self.setDescription("king's step")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get19()
+	pageToLoad = self.setDescription("legendary lungs")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get20()
+	pageToLoad = self.setDescription("blackout")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get21()
+	pageToLoad = self.setDescription("dark place")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get22()
+	pageToLoad = self.setDescription("intermission")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get23()
+	pageToLoad = self.setDescription("spelunking of death")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get24()
+	pageToLoad = self.setDescription("breakthrough")
+	destroy_currentLoaded()
+	get_storyEvent()
+end
+
+function get_storyBoard()
+	isLoaded = return_boardLoaded(boardLoaded)
+	if not isLoaded then
+		local board = gameBox.takeObject({position = {0.00, 4.90, -43.89}, rotation = {12,180,0}, smooth = false, guid = 'bde0c8'})
+		board.setLock(true)
+
+		pole_Left = gameBox.takeObject({position = {-11.22, 4.64, -39.95}, rotation = {357.11, 254.98, 0.00}, smooth = false, guid = '5055b7'})
+		pole_Left.setLock(true)
+
+	  lamp_Left = gameBox.takeObject({position = {-10.18, 9.93, -39.91}, rotation = {0.00, 0.00, 180.00}, smooth = false, guid = '0abd6d'})
+		lamp_Left.setLock(true)
+
+	  pole_Right = gameBox.takeObject({position = {11.06, 4.89, -40.08}, rotation = {2.75, 75.06, 1.68}, smooth = false, guid = 'acba38'})
+		pole_Right.setLock(true)
+
+	  lamp_Right = gameBox.takeObject({position = {10.41, 10.13, -39.89}, rotation = {0.00, 0.00, 180.00}, smooth = false, guid = '46ec83'})
+		lamp_Right.setLock(true)
+
+		dice_Roller = gameBox.takeObject({position = {0.00, 4.18, -55.75}, rotation = {12, 180, 0}, smooth = false, guid = '5bd420'})
+		dice_Roller.setLock(true)
+	end
+end
+
+
+
+------------------------------------------------------
+-- Get Story Event ~ Destroy Current Loaded
+------------------------------------------------------
+
+function get_storyEvent()
+  local pos = self.getPosition()
+  local deck = getObjectFromGUID("21fb65")
+  for _, story in ipairs(deck.getObjects()) do
+    local desc = story.description
+		local name = story.nickname
+		local scale = {2.64, 1.00, 2.64}
+		if string.find(string.lower(story.nickname), self.getDescription()) and string.find(desc, "one") then
+      local page = deck.takeObject({position = {-5.47, 5.52, -43.96}, guid = story.guid, smooth = false})
+			page.setLock(true)
+			page.setScale(scale)
+			page.setRotation({12,180,0})
+		elseif string.find(string.lower(story.nickname), self.getDescription()) and string.find(desc, "two") then
+      local page = deck.takeObject({position = {5.27, 5.53, -43.95}, guid = story.guid, smooth = false})
+			page.setLock(true)
+			page.setScale(scale)
+			page.setRotation({12,180,0})
+    end
+  end
+end
+
+function destroy_currentLoaded()
+  local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x - 5.4, pos.y, pos.z + 4.84}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+  for _, entry in ipairs(hitList) do
+    if string.find(entry.hit_object.getDescription(), "story") then
+        entry.hit_object.destroy()
+    end
+  end
+	local hitList = Physics.cast({origin={pos.x + 5.4, pos.y, pos.z + 4.84}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getDescription(), "story") then
+				entry.hit_object.destroy()
+		end
+	end
+end
+
+function close_menu()
+	destroy_currentLoaded()
+	removeButtons_All()
+	createButton_openMenu()
+	put_storyBoard()
+end
+
+function return_boardLoaded(boardLoaded)
+	boardLoaded = false
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x + 5.4, pos.y, pos.z + 4.84}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getName(), "Board") then
+			boardLoaded = true
+			break
+		end
+	end
+	return boardLoaded
+end
+
+function put_storyBoard()
+	dice_Roller = getObjectFromGUID('5bd420')
+	lamp_Left = getObjectFromGUID('0abd6d')
+	lamp_Right = getObjectFromGUID('46ec83')
+	pole_Left = getObjectFromGUID('5055b7')
+	pole_Right = getObjectFromGUID('acba38')
+
+	local pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x + 5.4, pos.y, pos.z + 4.84}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 10})
+	for _, entry in ipairs(hitList) do
+		if string.find(entry.hit_object.getName(), "Board") then
+			storyBoard = entry.hit_object
+			storyBoardFound = true
+			break
+		end
+	end
+	if storyBoardFound then
+		storyBoard.setLock(false)
+		pole_Left.setLock(false)
+		pole_Right.setLock(false)
+		lamp_Left.setLock(false)
+		lamp_Right.setLock(false)
+		gameBox.putObject(storyBoard)
+		gameBox.putObject(pole_Left)
+		gameBox.putObject(pole_Right)
+		gameBox.putObject(lamp_Left)
+		gameBox.putObject(lamp_Right)
+		gameBox.putObject(dice_Roller)
+		boardLoaded = false
+	end
+	storyBoardFound = false
+end
+
+-- end milestone events

@@ -1,0 +1,130 @@
+
+-- Utility Functions -----------------------------------------------------------
+function updateDisplay(firstTime)
+	for i, v in pairs(buttons) do
+		if tostring(i) ~= 'index' and tostring(i) ~= 'counts' and tostring(i) ~= 'params' and tostring(i) ~= 'targetFunc' then
+			if (buttons[tostring(i)].isReset == true) then
+				buttons[tostring(i)].display.label = ''
+			elseif (buttons[tostring(i)].isDepart == true) then
+				buttons[tostring(i)].display.label = 'Depart vs Quarry'
+			elseif (buttons[tostring(i)].isNemesis == true) then
+				buttons[tostring(i)].display.label = 'Depart vs Nemesis'
+			else
+				buttons[tostring(i)].display.label = tostring(buttons.counts[tostring(i)])
+			end
+			if (firstTime) then
+				self.createButton(buttons[tostring(i)].display)
+				if (buttons[tostring(i)].plusOne ~= nil) then self.createButton(buttons[tostring(i)].plusOne) end
+				if (buttons[tostring(i)].minusOne ~= nil) then self.createButton(buttons[tostring(i)].minusOne) end
+			else
+				self.editButton(buttons[tostring(i)].display)
+			end
+		end
+	end
+end
+
+function resetTemps()
+	--Resets counts on each display to 0
+	for i, v in pairs(buttons) do
+		if tostring(i) == 'survival_temp' or tostring(i) == 'survivalN_temp' or tostring(i) == 'insanity_temp' then
+			buttons.counts[tostring(i)] = 0
+		end
+	end
+	updateDisplay(false)
+end
+
+function plus(location, amount)
+	buttons.counts[location] = buttons.counts[location] + amount
+	updateDisplay(false)
+end
+
+function minus(location, amount)
+	buttons.counts[location] = buttons.counts[location] - amount
+	updateDisplay(false)
+end
+
+function changeAllSurvivors(location, amount)
+	grids = Global.getTable("grids")
+	for i, v in pairs(grids) do
+		obj = getObjectFromGUID(getObjectFromGUID(v.guid).getVar("FullCharSheetGUID"))
+		obj.call("add", {location, amount})
+	end
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+function changeMonster(stats)
+  local buttons = monsterBoard.getTable("buttons")
+  for i, v in pairs(stats) do
+    buttons.counts[i] = v
+  end
+  monsterBoard.setTable("buttons", buttons)
+  monsterBoard.call("updateDisplay")
+end
+
+function wait(time)
+  local start = os.time()
+  --each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+  repeat coroutine.yield(0) until os.time() > start + time
+end
+
+-- to prevent collision with hunt even card
+function raise_hunt_figurine_after_load()
+	wait(3)
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.tag == "Figurine" and obj.getPosition().z > 25 and not string.find(obj.getName(), "Event") then
+			local pos = obj.getPosition()
+			obj.setLock(true)
+			obj.setPosition({pos.x, pos.y + 1, pos.z})
+			wait(3)
+			obj.setLock(false)
+		end
+	end
+	return 1
+end
+
+function dud() end
+
+-- End Hunt --------------------------------------------------------------------
+function endHunt(object, player)
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		if object.getName() == "Manhunter: Sonorous Rest" then
+			object.setPosition({-70.65, 6.07, -52.46})
+		end
+		if object.tag == "Card" and string.find(object.getDescription(), "hunt") then
+			object.destruct()
+		end
+		if object.tag == "Figurine" and (object.getPosition().z > 25 and not string.find(object.getName(), "Event Revealer")) then
+			object.destruct()
+		end
+		if object.tag == "Deck" and string.find(object.getName(), "Hunt Events") then
+			object.destroy()
+		end
+		if object.tag == "Dice" then
+			object.destroy()
+		end
+	end
+
+	-- Lighting
+	local set_Lighting = getObjectFromGUID(Global.getTable('user_settings').set_Lighting.guid)
+	local rotZ = set_Lighting.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		tool_Lighting = getObjectFromGUID('cdef09')
+		tool_Lighting.call("setLightingTable_showdown")
+	end
+
+	bag_Hunt.call('buttonClick_recall')
+	huntLoaded.setRotation({0,180,180})
+
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "End Hunt" then
+			self.removeButton(v.index)
+		end
+	end
+end

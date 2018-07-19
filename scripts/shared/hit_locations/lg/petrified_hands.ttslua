@@ -1,0 +1,27 @@
+function criticalWoundEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Lion God gained a (-1) Toughness Token", effect = ""}})
+end
+
+function woundEffect()
+	getVars()
+	local pos = survCard.getPosition()
+	local clone = self.clone(pos)
+	clone.setScale({0.49, 1.00, 0.49})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Gain 1 Bleeding Token ~ You may not spend ♘ until end of the Lion God's next turn", effect = ""}})
+end
+
+#include ../get_vars
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,355 @@
+-- View Available Monsters
+function view_Quarry()
+	bag_Quarry.call("buttonClick_place")
+end
+
+function close_Quarry()
+	bag_Quarry.call("buttonClick_recall")
+end
+
+function view_Nemesis()
+	bag_Nemesis.call("buttonClick_place")
+end
+
+function close_Nemesis()
+	bag_Nemesis.call("buttonClick_recall")
+end
+
+-- Depart ----------------------------------------------------------------------
+function departClick(nemesis)
+	if isCampaignLoaded() == false then
+		goToCampaignStartButton()
+		return
+	end
+
+	-- Reset Game State for Start of Showdown without triggering monster AI cards in Injury Board Zone
+	local next_round_tool = getObjectFromGUID('b94669')
+	next_round_tool.call("nextRound")
+
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "board") then
+			board = obj
+			break
+		end
+	end
+	local btns = board.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "Main Menu" then
+				board.call("main_menu")
+			end
+		end
+	end
+
+	if nemesis then
+		removeButtons_monsterSetup()
+		createNemesisButtons()
+		--local showdownTool = getObjectFromGUID('c3451a')
+		--showdownTool.call("createNemesisButtons")
+		nemesis_perm = tonumber(buttons.counts["survivalN_perm"])
+		nemesis_temp = tonumber(buttons.counts["survivalN_temp"])
+	else
+		removeButtons_monsterSetup()
+		createQuarryButtons()
+		bag_Hunt.call('buttonClick_place')
+		huntLoaded.setRotation({0,180,0})
+		nemesis_perm = 0
+		nemesis_temp = 0
+	end
+	--[[
+	changeAllSurvivors("survival", tonumber(buttons.counts["survival_perm"]) + nemesis_perm + tonumber(buttons.counts["survival_temp"]) + nemesis_temp)
+	changeAllSurvivors("insanity", tonumber(buttons.counts["insanity_perm"]) + tonumber(buttons.counts["insanity_temp"]))
+	broadcastToAll("_____________ Departing Bonuses Gained _____________", {1, 1, 1})
+	startLuaCoroutine(self, "departCoroutine") --]]
+end
+
+function calculate_departing_bonuses()
+	changeAllSurvivors("survival", tonumber(buttons.counts["survival_perm"]) + nemesis_perm + tonumber(buttons.counts["survival_temp"]) + nemesis_temp)
+	changeAllSurvivors("insanity", tonumber(buttons.counts["insanity_perm"]) + tonumber(buttons.counts["insanity_temp"]))
+	broadcastToAll("_____________ Departing Bonuses Gained _____________", {1, 1, 1})
+	startLuaCoroutine(self, "departCoroutine")
+end
+
+function departCoroutine()
+	local gridTable = Global.getTable('grids')
+	local zonesTable = Global.getTable('zones')
+	local players = {player1 = {getObjectFromGUID(gridTable.red.guid), getObjectFromGUID(zonesTable.zoneP1.guid), "Player 1"},
+						player2 = {getObjectFromGUID(gridTable.yellow.guid), getObjectFromGUID(zonesTable.zoneP2.guid), "Player 2"},
+						player3 = {getObjectFromGUID(gridTable.green.guid), getObjectFromGUID(zonesTable.zoneP3.guid), "Player 3"},
+						player4 = {getObjectFromGUID(gridTable.blue.guid), getObjectFromGUID(zonesTable.zoneP4.guid), "Player 4"}
+						}
+	wait(1)
+	for _, player in pairs(players) do
+		departSurv(player[1], player[2], player[3])
+	end
+	return 1
+end
+
+function departSurv(grid, zone, name)
+	hasArmor = false
+	isInsane = false
+
+	local broadcastTable = {}
+	for _, object in ipairs(zone.getObjects()) do
+		local desc = object.getDescription()
+		local rotZ = object.getRotation().z
+
+		-- True / False Settings
+		if string.find(desc, 'armor') then
+			hasArmor = true
+		end
+
+		if object.getName() == "isInsane" and (rotZ > 165 and rotZ < 195) then
+			isInsane = true
+		end
+
+		if string.find(desc, "green_affinities") then
+			affinity_green = object
+		elseif string.find(desc, "blue_affinities") then
+			affinity_blue = object
+		elseif string.find(desc, "red_affinities") then
+			affinity_red = object
+		end
+
+			-- Crystal Skin
+		if object.getName() == "Crystal Skin" then
+			if hasArmor then
+				table.insert(broadcastTable, "[b]Crystal Skin[/b]: You have Armor ~ No Bonus")
+			end
+			if not hasArmor then
+				if object.getName() == "Crystal Skin" then
+					object.translate({0,6,0})
+					wait(1)
+					local desc = object.getDescription()
+					local new_desc = (object.getDescription() .. ", armor, 3head, 3body, 3waist, 3legs, 3arms")
+					object.setDescription(new_desc)
+					table.insert(broadcastTable, "[b]Crystal Skin[/b]: You gained 3 to all Hit Locations")
+				end
+			end
+		end
+
+			-- Binge Eating Disorder
+		if object.getName() == "Binge Eating Disorder" then
+			table.insert(broadcastTable, "[b]Binge Eating Disorder[/b]: You cannot depart unless you have 'consumable' gear.")
+
+			-- Quixotic
+		elseif object.getName() == "Quixotic" then
+			local insanity = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+			if isInsane or insanity >= 3 then
+				table.insert(broadcastTable, "[b]Quixotic[/b]: You are insane ~ You gained +1 Survival and +1 Strength Token")
+				changeSurvivors("survival", 1, grid)
+				local strTokenBag = getObjectFromGUID('0bf641')
+				local pos = grid.getPosition()
+				local quixoticToken = strTokenBag.takeObject({position = {-21.90, 4.12, -26.91}, rotation = {0,180,0}})
+				quixoticToken.setPosition({pos.x + 3.07, pos.y+2, pos.z + 3.39})
+				quixoticToken.setName("Quixotic")
+			end
+
+			-- Squeamish
+		elseif object.getName() == "Squeamish" then
+			table.insert(broadcastTable, "[b]Squeamish[/b]: You cannot depart with 'stinky' gear.")
+			stinky = checkStinkyGear(zone)
+			if stinky ~= "" then
+				table.insert(stinky)
+			end
+
+			-- Superstitous
+		elseif object.getName() == "Superstitous" then
+			table.insert(broadcastTable, "[b]Superstitious[/b]: You cannot depart with 'other' gear.")
+			other = checkOtherGear(zone)
+			if other ~= "" then
+				table.insert(other)
+			end
+
+			-- Flower Addiction
+		elseif object.getName() == "Flower Addiction" then
+			table.insert(broadcastTable, "[b]Flower Addiction[/b]: You may only depart to hunt the Flower Knight.")
+
+			-- Megalophobia
+		elseif object.getName() == "Megalophobia" then
+			table.insert(broadcastTable, "[b]Megalophobia[/b]: You cannot depart to hunt a monster that occupies more than 4 spaces.")
+
+			-- Necromancer
+		elseif object.getName() == "Necromancer" then
+			table.insert(broadcastTable, "[b]Necromancer[/b]: Gain +1 to All hit locations for each gear card in your grid with the symbol keyword.")
+
+			-- Ageless Apprentice
+		elseif object.getName() == "Ageless Apprentice" then
+			table.insert(broadcastTable, "[b]Ageless Apprenctice[/b]: You may rotate up to 3 gear cards in your gear grid; changing the affinity locations.")
+
+			-- Seasoned Monster Meat
+		elseif object.getName() == "Seasoned Monster Meat" then
+			table.insert(broadcastTable, "[b]Seasoned Monster Meat[/b]: You gained (+3) Survival.")
+			changeSurvivors("survival", 3, grid)
+
+			-- Gloom Bracelets
+		elseif object.getName() == "Gloom Bracelets" then
+			table.insert(broadcastTable, "[b]Gloom Bracelets[/b]: You gained (+2) Insanity.")
+			changeSurvivors("insanity", 2, grid)
+
+			-- Slender Ovule
+		elseif object.getName() == "Slender Ovule" then
+			table.insert(broadcastTable, "[b]Slender Ovule[/b]: You gained (+3) Insanity.")
+			changeSurvivors("insanity", 3, grid)
+
+			-- Silk Robes
+		elseif object.getName() == "Silk Robes" then
+			table.insert(broadcastTable, "[b]Silk Robes[/b]: You gained (+1) Survival.")
+			changeSurvivors("survival", 1, grid)
+
+			-- Silk Sash
+		elseif object.getName() == "Silk Sash" then
+			table.insert(broadcastTable, "[b]Silk Sash[/b]: You gained (+1) Survival.")
+			changeSurvivors("survival", 1, grid)
+
+			-- Almanac
+		elseif object.getName() == "Almanac" then
+			table.insert(broadcastTable, "[b]Almanac[/b]: You gained (+2) Insanity.")
+			changeSurvivors("insanity", 2, grid)
+
+			-- Lantern Cuirass
+		elseif object.getName() == "Lantern Cuirass" and (rotZ > 165 and rotZ < 195) then
+			table.insert(broadcastTable, "[b]Lantern Cuirass[/b]: Add 3 to all hit locations.")
+
+			-- Leather Bracers
+		elseif object.getName() == "Leather Bracers" then
+			table.insert(broadcastTable, "[b]Leather Bracers[/b]: You gained (+2) Survival.")
+			changeSurvivors("survival", 2, grid)
+
+			-- Leather Mask
+		elseif object.getName() == "Leather Mask" then
+			table.insert(broadcastTable, "[b]Leather Mask[/b]: You gained (+2) Insanity.")
+			changeSurvivors("insanity", 2, grid)
+
+			-- Dried Acanthus
+		elseif object.getName() == "Dried Acanthus" then
+			table.insert(broadcastTable, "[b]Dried Acanthus[/b]: You gained (+2) Survival.")
+			changeSurvivors("survival", 2, grid)
+
+			-- Fecal Salve
+		elseif object.getName() == "Fecal Salve" then
+			table.insert(broadcastTable, "[b]Fecal Salve[/b]: You gained (+1) Survival.")
+			changeSurvivors("survival", 1, grid)
+
+			-- Crest Crown
+		elseif object.getName() == "Crest Crown" and (rotZ > 165 and rotZ < 195) then
+			local numBlueAffinity = tonumber(affinity_blue.call("getCount"))
+			for i=1, numBlueAffinity do
+				changeSurvivors("survival", 1, grid)
+				changeSurvivors("insanity", 1, grid)
+			end
+			if numBlueAffinity >= 1 then
+				table.insert(broadcastTable, "[b]Crest Crown[/b]: You gained (+" .. numBlueAffinity .. ") Survival and (+" .. numBlueAffinity .. ") Insanity")
+			end
+
+			-- Phoenix Faulds
+		elseif object.getName() == "Phoenix Faulds" then
+			table.insert(broadcastTable, "[b]Phoenix Faulds[/b]: You gained (+1) Insanity.")
+			changeSurvivors("insanity", 1, grid)
+
+			-- Phoenix Gauntlet
+		elseif object.getName() == "Phoenix Gauntlet" then
+			table.insert(broadcastTable, "[b]Phoenix Gauntlet[/b]: You gained (+1) Insanity.")
+			changeSurvivors("insanity", 1, grid)
+
+			-- Rawhide Boots
+		elseif object.getName() == "Rawhide Boots" then
+			table.insert(broadcastTable, "[b]Rawhide Boots[/b]: You gained (+1) Survival.")
+			changeSurvivors("survival", 1, grid)
+
+			-- Rawhide Gloves
+		elseif object.getName() == "Rawhide Gloves" then
+			table.insert(broadcastTable, "[b]Rawhide Gloves[/b]: You gained (+1) Survival.")
+			changeSurvivors("survival", 1, grid)
+
+			-- Rawhide Drum
+		elseif object.getName() == "Rawhide Drum" then
+			table.insert(broadcastTable, "[b]Rawhide Drums[/b]: You gained (+1) Insanity.")
+			changeSurvivors("insanity", 1, grid)
+
+			-- Partner
+		elseif object.getName() == "Partner" then
+			table.insert(broadcastTable, "[b]Partner[/b]: If your Partner also departed, (+2) Survival.")
+
+			-- Endless Babble
+		elseif object.getName() == "Endless Babble" then
+			table.insert(broadcastTable, "[b]Endless Babble[/b]: Departing Survivors gained (+1) Insanity.")
+			changeAllSurvivors("insanity", 1)
+
+			-- Gloom Mehndi
+		elseif object.getName() == "Gloom Mehndi" then
+			object.setDescription(desc .. ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs")
+			object.translate({0,6,0})
+			table.insert(broadcastTable, "[b]Gloom Mehndi[/b]: You gained 1 Armor to all Hit Locations.")
+
+			-- Cycloid Scale Skirt
+		elseif object.getName() == "Cycloid Scale Skirt" and (rotZ > 165 and rotZ < 195) then
+			local numBlueAffinity = tonumber(affinity_blue.call("getCount"))
+			for i=1, numBlueAffinity do
+				changeSurvivors("survival", 1, grid)
+			end
+			if numBlueAffinity >= 1 then
+				table.insert(broadcastTable, "[b]Cycloid Scale Skirt[/b]: You gained (+" .. numBlueAffinity .. ") Survival" )
+			end
+
+			-- Gloom Cream
+		elseif object.getName() == "Gloom Cream" and (rotZ > 165 and rotZ < 195) then
+			table.insert(broadcastTable, "[b]Gloom Cream[/b]: Gain (-3) Hunt XP and (-1) Understanding. If you have no Understanding, die immediately")
+
+		-- Acanthus Doctor
+		elseif object.getName() == "Acanthus Doctor" and (rotZ < 165 or rotZ > 345) then
+			if hasArmor then
+				table.insert(broadcastTable, "[b]Acanthus Doctor[/b]: You are wearing Armor ~ You do not gain any Strength Tokens")
+			end
+			if not hasArmor then
+				local pos = object.getPosition()
+				local numGreenAffinity = tonumber(affinity_green.call("getCount"))
+				for i=1, numGreenAffinity do
+					local strToken = getObjectFromGUID('4c2300')
+					local strToken_temp = strToken.takeObject({position = {pos.x, pos.y + i * 0.5, pos.z}, rotation = {0, 180, 0}})
+					strToken_temp.setScale({0.46, 1.00, 0.46})
+				end
+				table.insert(broadcastTable, "[b]Acanthus Doctor[/b]: You gained (+" .. numGreenAffinity .. ") Strength Tokens")
+			end -- End Acanthus Doctor
+
+		-- Sun Lure and Hook
+		elseif object.getName() == "Sun Lure and Hook" then
+			changeSurvivors("survival", 1, grid)
+			table.insert(broadcastTable, "[b]Sun Lure and Hook[/b]: You gained (+1) Survival.")
+
+		end
+	end
+	if #broadcastTable > 0 then
+		broadcastToAll("~~~~~~~[b]" .. name .. "[/b]~~~~~~~", {1,1,1})
+		for _, b in pairs(broadcastTable) do
+			broadcastToAll(b, {1,1,1})
+			wait(1.5)
+		end
+		wait(0.50) -- wait between each players itemcheck
+	end
+end
+
+function checkStinkyGear(zone)
+	wait(2)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local desc = object.getDescription()
+		if string.find(desc, 'stinky') then
+			return "You have 'stinky' gear in your gear grid."
+		end
+	end
+	return ""
+end
+
+function checkOtherGear(zone)
+	wait(2)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		local desc = object.getDescription()
+		if string.find(desc, 'other') then
+			return "You have 'other' gear in your gear grid."
+		end
+	end
+	return ""
+end

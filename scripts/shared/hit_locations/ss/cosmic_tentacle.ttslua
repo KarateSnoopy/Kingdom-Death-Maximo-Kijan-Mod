@@ -1,0 +1,53 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Severed Tentacle ~ Keep in Play", effect = ""}})
+end
+
+function getMonsterResource()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Sunstalker Resource", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+
+	if grid.getName() == "Inventory P1" then
+		 bool1 = card.getVar("inDarkness_red")
+		 bool2 = card.getVar("inDarkness_always_red")
+	elseif grid.getName() == "Inventory P2" then
+		bool1 = card.getVar("inDarkness_yellow")
+		bool2 = card.getVar("inDarkness_always_yellow")
+	elseif grid.getName() == "Inventory P3" then
+		bool1 = card.getVar("inDarkness_green")
+		bool2 = card.getVar("inDarkness_always_green")
+	elseif grid.getName() == "Inventory P4" then
+		bool1 = card.getVar("inDarkness_blue")
+		bool2 = card.getVar("inDarkness_always_blue")
+	end
+
+	if bool1 or bool2 then
+		Global.call('addBroadcast', {"reflex", {gear = "The Sunstalker turns to face you", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "You are in Darkness from the effects of a Hit Location", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "Rotate the Sun Dial 90 Degrees Clockwise", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "The Sunstalker turns to face you", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "If you are in Darkness ~ Rotate the Sun Dial 90 Degrees Clockwise", effect = ""}})
+	end
+
+end
+
+function addStatModifier()
+
+end
+
+#include ../get_vars

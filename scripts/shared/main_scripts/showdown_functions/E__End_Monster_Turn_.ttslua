@@ -1,0 +1,179 @@
+-- End Monster Turn ------------------------------------------------------------
+function endMonsterTurn()
+	self.setDescription("Survivor's Turn")
+	remove_monsters_turn_buttons()
+	createSurvivorTurnButton()
+	create_next_round_button()
+
+	remove_overlays()
+	check_at_the_end_of_the_monster_turn()
+	destroy_cloned_cards_AI()
+
+	-- Puts AI card on discard pile
+	pos = self.getPosition()
+	local hitList = Physics.cast({origin = {pos.x, pos.y + 1, pos.z + 1}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.tag == "Card" and string.find(entry.hit_object.getDescription(), "ai") then
+			entry.hit_object.setLock(false)
+			entry.hit_object.setPositionSmooth({ - 1.24, 6.31, - 2.45}, false, false)
+			entry.hit_object.setRotationSmooth({0, 180, 0, false, true})
+			entry.hit_object.highlightOff()
+		end
+	end
+
+
+
+	-- Destroys End of Monster Turn Tokens
+	for _, object in ipairs(zoneAIBoard.getObjects()) do
+		if string.find(object.getDescription(), "end of monster turn") then
+			object.destroy()
+		end
+	end
+
+	-- Reset Monster Attack Roller Buttons if Survivor Status Buttons were created
+	monster_Roller.call("initCustomButtons")
+	monster_Roller.getVar("hasSurvivorStatusButtons")
+	monster_Roller.setVar("hasSurvivorStatusButtons", false)
+end
+
+function remove_overlays()
+	-- Removes Overlays created by AI Cards
+
+	----- BUTCHER -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Butcher" then
+			obj.call("remove_overlay_backhand")
+		end
+	end
+
+	----- DRAGON KING -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Dragon King" then
+			obj.getVar("hasCrisisCrater")
+			obj.setVar("hasCrisisCrater", false)
+			obj.call("remove_overlay_unseenAgony")
+		end
+	end
+
+	----- GORM -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Gorm" then
+			obj.call("remove_overlay_retch")
+		end
+	end
+
+	----- KING'S MAN -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "King's Man" then
+			local btns = obj.getButtons()
+			if btns ~= nil then
+				for i, v in pairs(btns) do
+					if v.click_function == "overlay_horizontal" then
+						obj.call("remove_overlay_horizontal")
+					elseif v.click_function == "overlay_vertical" then
+						obj.call("remove_overlay_vertical")
+					elseif v.click_function == "overlay_kingsGrace" then
+						obj.call("remove_overlay_kingsGrace")
+					elseif v.click_function == "overlay_kingsAxe" then
+						obj.call("remove_overlay_kingsAxe")
+					elseif v.click_function == "overlay_perfectThrust" then
+						obj.call("remove_overlay_perfectThrust")
+					end
+				end
+			end
+		end
+	end
+end -- end function
+
+function check_at_the_end_of_the_monster_turn()
+	for _, object in ipairs(zoneInjuryBoard.getObjects()) do
+		if object.getName() == "Cunning" then
+			broadcastToAll("Cunning in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Diabolical" then
+			broadcastToAll("Diabolical in Play", {1, 1, 1})
+		end
+
+		-- Forbidden Light
+		if object.getName() == "Forbidden Light" then
+			local pos = object.getPosition()
+			local str_bag = getObjectFromGUID('0bf641')
+			str_tok_forbiddenLight = str_bag.takeObject({position={pos.x, pos.y + 0.6, pos.z}, smooth=false, rotation={0,180,180}})
+			str_tok_forbiddenLight.setDescription("monster, forbidden light")
+			local count = 0
+			for _, tok in ipairs(zoneInjuryBoard.getObjects()) do
+				if string.find(tok.getDescription(), "forbidden light") then
+					count = count + 1
+				end
+			end
+			if count <= 3 then
+				broadcastToAll("Token added to Forbidden Light", {1,1,1})
+			end
+			if count >=4 then
+				object.setPosition({-1.24, 5, -2.48})
+				broadcastToAll("Forbidden Light has 5 Tokens and was Discarded", {1,1,1})
+				startLuaCoroutine(self, "delete_forbiddenLight_tokens")
+			end
+		end
+
+		if object.getName() == "Zeal" then
+			broadcastToAll("Zeal ~ Monster performs Basic Action", {1, 1, 1})
+		end
+
+		if object.getName() == "Exhale" then
+			broadcastToAll("Exhale in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Inhale" then
+			broadcastToAll("Inhale in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Hypervigilance" then
+			broadcastToAll("Hypervigilance in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Musth" then
+			broadcastToAll("Musth in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Absorbing Roots" then
+			knockdown_count = 0
+			for _, surv in ipairs(zoneShowdown.getObjects()) do
+				local rotZ = surv.getRotation().z
+				if string.find(surv.getName(), "Player") and rotZ > 165 and rotZ < 195 then
+					knockdown_count = knockdown_count + 1
+				end
+			end
+			if knockdown_count > 1 then
+				broadcastToAll("Absorbing Roots ~ The Lonely Tree heals " .. knockdown_count .. ". ")
+			end
+		end
+
+		if object.getName() == "Mauler" then
+			broadcastToAll("The Gold Smoke Knight performs Blacken", {1, 1, 1})
+		end
+
+	end ----------------------- end for loop body -------------------------------
+end -- end function
+
+function delete_forbiddenLight_tokens()
+	wait(2)
+	for _, tok in ipairs(zoneInjuryBoard.getObjects()) do
+		if string.find(tok.getDescription(), "forbidden light") then
+			tok.destroy()
+		end
+	end
+	for zoneKey, zoneGUIDtable in pairs(playerZones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+		for _, obj in ipairs(objectsInZone) do
+			if string.find(obj.getDescription(), "forbidden light") then
+				obj.destroy()
+			end
+		end
+	end
+	broadcastToAll("Survivor's (-1) Strength Tokens for Forbidden Light were removed", {1,1,1})
+	return 1
+end -- end function

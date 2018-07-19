@@ -1,0 +1,55 @@
+function criticalWoundEffect()
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	self.setPositionSmooth({1.01, 4.23, -21.27})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Jitters ~ Keep in Play", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "♘ The Lion Knight turns to face you ♘", effect = ""}})
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfattack"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	startLuaCoroutine(self, "addStat_coR")
+	Global.call('addBroadcast', {"failure", {gear = "He gained (+2) Toughness until the end of your attack", effect = ""}})
+end
+
+function addStat_coR()
+	obj.call('spawn_token')
+	wait(0.50)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	hasKatar = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "katar") and gear.getGUID() == weaponGUID then
+			hasKatar = true
+		end
+	end
+	if hasKatar then
+		broadcastToAll("You hit with a Katar ~ End your attack and you are Knocked Down", msg_color)
+	end
+end
+
+#include ../get_vars

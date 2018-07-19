@@ -1,0 +1,408 @@
+function overlay_kingsAxe()
+
+	local btn_arrows = {
+		click_function = "overlay_kingsGrace",
+		function_owner = self,
+		label = "⇨",
+		rotation = {0, 90, 0},
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 700,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	btn_arrows.font_color = {1, 1, 1, 0.8}
+	btn_arrows.position = {-6.59, 0, 7.05}
+	btn_arrows.rotation = {0,0,0}
+	self.createButton(btn_arrows)
+
+	btn_arrows.position = {-6.99, 0, -6.5}
+	btn_arrows.rotation = {0, 90, 0}
+	self.createButton(btn_arrows)
+
+	btn_arrows.position = {6.66, 0, -7}
+	btn_arrows.rotation = {0, 180, 0}
+	self.createButton(btn_arrows)
+
+	local btn_params = {
+		click_function = "overlay_kingsGrace",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	btn_params.position = {6.68, 0, 6.45}
+	self.createButton(btn_params)
+
+	btn_params.position = {6.68, 0, -6.8}
+	self.createButton(btn_params)
+
+	init_posX = -6.58 ; offsetX = 2.65 ; offsetY = 0 ; init_posZ = -9.42 ; offsetZ = 2.65
+
+	offset = createOffset2()
+	for i=1, 6 do
+		btn_params.position = {init_posX, offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 6 do
+		btn_params.position = {init_posX + offsetX, offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetX * 2), offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetX * 2), offsetY, init_posZ + (offsetZ * 4) + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetZ * 3), offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetZ * 3), offsetY, init_posZ + (offsetZ * 4)  + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetZ * 4), offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetZ * 4), offsetY, init_posZ + (offsetZ * 4)  + (offset())}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_kingsAxe()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_kingsAxe" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function overlay_perfectThrust()
+
+	local btn_params = {
+		click_function = "overlay_perfectThrust",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {1.0, 0.0, 0.76, 0.55}
+	}
+
+	btn_params.position = {-1.27, 0, 6.45}
+	self.createButton(btn_params)
+
+	btn_params.position = {-6.57, 0, 1.15}
+	self.createButton(btn_params)
+
+	btn_params.position = {4.03, 0, -1.5}
+	self.createButton(btn_params)
+
+end
+
+function remove_overlay_perfectThrust()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_perfectThrust" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+
+function overlay_kingsGrace()
+	local btn_params = {
+		click_function = "overlay_kingsGrace",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.55, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	init_posX = -6.58 ; offsetX = 2.65 ; offsetY = 0 ; init_posZ = -9.42 ; offsetZ = 2.65
+
+	offset = createOffset2()
+
+	for i=1, 6 do
+		btn_params.position = {init_posX, offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+
+	for i=1, 6 do
+		btn_params.position = {init_posX + offsetX, offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetX * 2), offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetX * 2), offsetY, init_posZ + (offsetZ * 4) + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetZ * 3), offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+	for i=1, 2 do
+		btn_params.position = {init_posX + (offsetZ * 3), offsetY, init_posZ + (offsetZ * 4)  + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+
+	for i=1, 6 do
+		btn_params.position = {init_posX + (offsetZ * 4), offsetY, init_posZ  + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset2()
+
+	for i=1, 6 do
+		btn_params.position = {init_posX + (offsetZ * 5), offsetY, init_posZ  + (offset())}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_kingsGrace()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_kingsGrace" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function overlay_tripZone()
+
+	local btn_params = {
+		click_function = "overlay_tripZone",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {1.00, 0.70, 0.22, 0.55}
+	}
+
+	btn_params.position = {-3.89, 0, -1.47}
+	self.createButton(btn_params)
+
+	btn_params.position = {-3.89, 0, 1.16}
+	self.createButton(btn_params)
+
+	init_posX = 6.63 ; offsetX = 2.63 ; offsetY = 0 ; init_posZ = 3.79 ; offsetZ = 2.63
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+	init_posX = 6.63 ; offsetX = 2.63 ; offsetY = 0 ; init_posZ = -4.1 ; offsetZ = 2.63
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_tripZone()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_tripZone" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function overlay_vertical()
+
+	local btn_arrows = {
+		click_function = "overlay_vertical",
+		function_owner = self,
+		label = "⇨",
+		rotation = {0, 180, 0},
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 700,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	btn_arrows.font_color = {1, 1, 1, 0.8}
+	btn_arrows.position = {-3.99, 0, -1.75}
+	self.createButton(btn_arrows)
+	btn_arrows.position = {-3.99, 0, 0.9}
+	self.createButton(btn_arrows)
+
+	btn_arrows.font_color = {0.4, 0.84, 0.84, 0.8}
+	btn_arrows.position = {-11.96, 0, 0.86}
+	self.createButton(btn_arrows)
+	btn_arrows.position = {-11.96, 0, -1.77}
+	self.createButton(btn_arrows)
+
+	local btn_params = {
+		click_function = "overlay_horizontal",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	init_posX = -1.31 ; offsetX = 2.63 ; offsetY = 0 ; init_posZ = -1.5 ; offsetZ = 2.63
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX - (offset()), offsetY, init_posZ + offsetZ}
+		self.createButton(btn_params)
+	end
+end
+
+function remove_overlay_vertical()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_vertical" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function overlay_horizontal()
+
+	local btn_arrows = {
+		click_function = "overlay_horizontal",
+		function_owner = self,
+		label = "⇨",
+		rotation = {0, 90, 0},
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 700,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	btn_arrows.font_color = {1, 1, 1, 0.8}
+	btn_arrows.position = {-4.44, 0, -6.6}
+	self.createButton(btn_arrows)
+	btn_arrows.position = {-7.04, 0, -6.6}
+	self.createButton(btn_arrows)
+
+	btn_arrows.font_color = {0.4, 0.84, 0.84, 0.8}
+	btn_arrows.position = {-4.34, 0, 6.6}
+	self.createButton(btn_arrows)
+	btn_arrows.position = {-6.94, 0, 6.6}
+	self.createButton(btn_arrows)
+
+	local btn_params = {
+		click_function = "overlay_horizontal",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	init_posX = -3.94 ; offsetX = 2.63 ; offsetY = 0 ; init_posZ = -9.43 ; offsetZ = 2.63
+
+	offset = createOffset()
+
+	for i=1, 6 do
+		btn_params.position = {init_posX , offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+	offset = createOffset()
+
+	for i=1, 6 do
+		btn_params.position = {init_posX - offsetX, offsetY, init_posZ + (offset())}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_horizontal()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.click_function == "overlay_horizontal" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function createOffset()
+	local i = 0
+	return function ()
+		i = i + 2.63
+		return i
+	end
+end
+
+function createOffset2()
+	local i = 0
+	return function ()
+		i = i + 2.65
+		return i
+	end
+end
+
+function dud() end

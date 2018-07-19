@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "You may spend 8 Survival to gain (+1) Permanent Strength and inflict an additional wound", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "The Monster turns to face you ~ Suffer the Flee Brain Trauma", effect = ""}})
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

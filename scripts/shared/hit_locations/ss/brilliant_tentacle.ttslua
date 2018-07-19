@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+	getMonsterResource()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	getVars()
+	Global.call('addBroadcast', {"failure", {gear = "Suffer ★ +2 Damage and Knockback 12", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "You gained a (-1) Accuracy Token", effect = ""}})
+	local stats = {color = color, stat = 'acc', modifier = "neg", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Shadow Tentacles", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Shadow Tentacles", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Shadow Tentacles", effect = ""}})
+	end
+end

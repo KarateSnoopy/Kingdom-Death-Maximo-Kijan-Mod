@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Keep in Play", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Gain 1 Monster Organ Resource", effect = ""}})
+
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({-2.03, 4.24, -14.25}, false, false)
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+#include ../get_vars

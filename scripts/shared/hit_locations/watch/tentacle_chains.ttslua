@@ -1,0 +1,22 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+
+	Global.call('addBroadcast', {"wound_reaction", {gear = "♘ Turn the Watcher to face the Attacker ♘", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Move 3 spaces directly awa ~ Cancel all hits out of Range", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	broadcastToAll("Attacker Loses 2 Survival", msg_color)
+	broadcastToAll("If you cannot ~ Gain the Stolen Dreams Survivor Status", msg_color)
+end
+
+#include ../get_vars

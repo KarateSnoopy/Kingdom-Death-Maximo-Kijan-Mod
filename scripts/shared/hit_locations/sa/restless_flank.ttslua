@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+	getMonsterResource()
+	getToken()
+end
+
+function getToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call('spawn_token')
+	Global.call('addBroadcast', {"crit", {gear = "The Screaming Antelope gained a (-1) Toughness Token", effect = ""}})
+end
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Screaming Antelope Resource", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "The Screaming Antelope turns to Face You", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+#include get_vars

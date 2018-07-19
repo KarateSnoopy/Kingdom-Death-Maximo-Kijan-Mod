@@ -1,0 +1,36 @@
+function criticalWoundEffect()
+	getVars()
+	get_role()
+	Global.call('addBroadcast', {"crit", {gear = "The Lion Knight is knocked down!", effect = ""}})
+	if role == "Damsel" then
+		Global.call('addBroadcast', {"crit", {gear = "You are the ♛ Damsel ♛ ~ The Lion Knight suffers an Additional Wound", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are not the ♛ Damsel ♛", effect = ""}})
+	end
+end
+
+function get_role()
+	grid.call("return_role")
+	role = grid.getVar("role")
+end
+
+function woundEffect()
+	getVars()
+	get_role()
+	if role == "Damsel" then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are the ♛ Damsel ♛ ~ Undo any Wounds caused by this Hit and Heal 1", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "If you are not the ♛ Damsel ♛", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

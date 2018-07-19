@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+	getVars()
+	value = (insanity_value * -1)
+	changeSurvivors("insanity", value, grid)
+	Global.call('addBroadcast', {"crit", {gear = "Your Insanity was set to 0", effect = ""}})
+end
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "If you are not in the Blind Spot ~ You are knocked down and gain (+2) Insanity", effect = ""}})
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,52 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "Ignore all Closed Lens effects and instead flip a Lens of your choice", effect = ""}})
+end
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getMonsterResource()
+	local zone = getObjectFromGUID(Global.getTable('zones').deckBasicResources.guid)
+	for _, object in ipairs(zone.getObjects()) do
+		local name = object.getName()
+		if name == "Basic Resources Deck" then
+			deck = object
+			break
+		end
+	end
+	local cardsInDeck = deck.getObjects()
+	for i, card in ipairs(cardsInDeck) do
+		if card.nickname == "Broken Lantern" then
+			deck.takeObject({guid = card.guid, position=pos, callback="flipCard", callback_owner=Global})
+			Global.call('addBroadcast', {"crit", {gear = "You gained 1 Broken Lantern Resource", effect = ""}})
+			break
+		end
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Ghost Step ~ Targeting the Attacker", effect = ""}})
+	hasHeavy = false
+	for _, gear in ipairs(zone.getObjects()) do
+		if string.find(gear.getDescription(), "heavy") then
+			hasHeavy = true
+		end
+	end
+	if hasHeavy then
+		Global.call('addBroadcast', {"reflex", {gear = "You are wearing Heavy Gear ~ You are knocked down", effect = ""}})
+	else
+		Global.call('addBroadcast', {"reflex", {gear = "You are not wearing Heavy Gear", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function addStatModifier()
+end

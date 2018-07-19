@@ -1,0 +1,72 @@
+function criticalWoundEffect()
+	getVars()
+	check_isInsane()
+	getMonsterResource()
+end
+
+function getVars()
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	zone = grid.getVar("zonePlayer")
+	color = grid.getVar("color")
+end
+
+function check_isInsane()
+	local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	isInsane = false
+	if insanity_value >= 3 then
+		isInsane = true
+	end
+	for _, survSetting in ipairs(zone.getObjects()) do
+		if survSetting.getName() == "isInsane" and (survSetting.getRotation().z > 165 and survSetting.getRotation().z < 195) then
+			isInsane = true
+		end
+	end
+
+	if not isInsane then
+		Global.call('addBroadcast', {"crit", {gear = "You are not Insane", effect = ""}})
+		return
+	end
+	if isInsane then
+		Global.call('addBroadcast', {"crit", {gear = "You are Insane ~ You gained a (+1) Strength Token", effect = ""}})
+		local stats = {color = color, stat = "mov", modifier = "neg", num = 1, phase = "endOfattack"}
+		Global.setTable('temp', stats)
+		startLuaCoroutine(Global, "spwn_tok")
+	end
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Shimmering Mane", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Shimmering Mane", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "The White Lion only had 1 Shimmering Mane", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+-- mane

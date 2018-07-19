@@ -1,0 +1,1067 @@
+--------------------------------------------------------------------------------
+--                           TABLE OF CONTENTS                                --
+--                   Scripts created by Maximo and Kijan                      --
+--------------------------------------------------------------------------------
+
+-- Buttons ---------------------------------------------------------------------
+		-- function initCustomButtons
+		-- function initButtonsTable
+		-- function setupButton
+		-- function createpm
+		-- function add
+		-- function createButtons_damage_display
+		-- function createButton_birds_eye_view
+		-- function createButtons_survivors
+
+-- Priority Target Token -------------------------------------------------------
+		-- function createButton_gainPriority
+		-- function createButton_removePriority
+		-- function set_priority_variable
+		-- function get_priority_target_token
+		-- function removeButton_removePriority
+		-- function removeButton_gainPriority
+
+-- Dice Roller Functions -------------------------------------------------------
+		-- function spawnDice
+		-- function rollTheDice
+		-- function clearDice
+		-- function watchDice
+		-- function buttonClicked
+
+-- Utility Functions -----------------------------------------------------------
+		-- function birds_eye_view
+		-- function moveMonster
+		-- function getMonster
+		-- function wait
+		-- function addStat_coR
+
+-- Survivor Status -------------------------------------------------------------
+		-- function createButton_SurvivorStatus
+		-- Gobbled Up
+		-- Stalk Puppet
+		-- function get_survStatus
+		-- function remove_Survivor_fromShowdown
+		-- Set Variables for Survivors
+
+------------------------- End Table of Contents --------------------------------
+
+
+
+
+#include ../util
+
+-- Loads when this object loads for the first time
+function onLoad()
+	createButtons()
+	spawnedDice = {}
+	btns = {}
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+end
+
+function createButtons()
+	initButtonsTable()
+	initCustomButtons()
+	createButton_birds_eye_view()
+	createButton_gainPriority()
+end
+
+function resetButtons()
+	self.clearButtons()
+	createButtons()
+end
+
+
+
+
+
+
+-- Monster Stat Attack Variables -----------------------------------------------
+-- Sets the default spd and acc to these values
+attackValues = {speed = 0, accuracy = 0}
+monsterStats = {
+	{name = "White Lion", speed = 2, accuracy = 2},
+	{name = "Screaming Antelope", speed = 1, accuracy = 2},
+	{name = "Butcher", speed = 2, accuracy = 4},
+	{name = "King's Man", speed = 3, accuracy = 3},
+	{name = "Phoenix", speed = 2, accuracy = 2},
+	{name = "The Hand", speed = 2, accuracy = 2},
+	{name = "The Watcher", speed = 4, accuracy = 2},
+	{name = "Dragon King", speed = 2, accuracy = 2},
+	{name = "Dung Beetle Knight", speed = 3, accuracy = 3},
+	{name = "Flower Knight", speed = 3, accuracy = 2},
+	{name = "Gorm", speed = 2, accuracy = 2},
+	{name = "Lion God", speed = 2, accuracy = 3},
+	{name = "Lion Knight", speed = 4, accuracy = 2},
+	{name = "Lonely Tree", speed = 3, accuracy = 3},
+	{name = "Manhunter", speed = 1, accuracy = 4},
+	{name = "Slenderman", speed = 3, accuracy = 4},
+	{name = "Spidicules", speed = 2, accuracy = 2},
+	{name = "Sunstalker", speed = 3, accuracy = 4},
+	{name = "The Tyrant", speed = 2, accuracy = 3},
+
+}
+
+
+
+
+
+
+
+
+-- Buttons ---------------------------------------------------------------------
+buttonColor = {1,1,1}
+thick = 0.35
+hideButtonBack = true
+
+function initCustomButtons()
+
+	self.clearButtons()
+
+	setupButton('Spd', 'label', - 5.5, 1.3)
+	setupButton('Acc', 'label', 5.5, 1.3)
+	setupButton('speed', 'counter', - 5.5, 0)
+	setupButton('accuracy', 'counter', 5.5, 0)
+	setupButton('Attack', 'button', 0, 0.1)
+	self.createButton({position = {0, 0.2, 2.6}, rotation = {-15, 0, 0}, label = "Move Monster", font_size = 600, color = {0,0,0},
+	font_color = {1,1,1}, click_function = "moveMonster", function_owner = self, width = 3500, height = 600})
+	createButton_birds_eye_view()
+	createButton_gainPriority()
+end
+
+function initButtonsTable()
+	scaleButtons = {1, 1, 1}
+	rotationButtons = {-15, 0, 0}
+	buttons = {}
+	buttons.counter = {
+		width = 0, height = 0, font = 800,
+		ox = 1, oz = 0, ow = 700, oh = 700
+	}
+	buttons.button = {
+		width = 3500, height = 700, font = 700
+	}
+	buttons.label = {
+		width = 0, height = 0, font = 450
+	}
+end
+
+function setupButton(name, type, x, z)
+	local button_parameters = {}
+	button_parameters.height = buttons[type].height
+	button_parameters.width = buttons[type].width
+	button_parameters.font_size = buttons[type].font
+	button_parameters.label = name
+
+	if type == "counter" then
+		self.setVar(name, function () end)
+		button_parameters.click_function = name
+		button_parameters.label = getMonster(name)
+		createpm(name, type, x, z)
+	elseif type == "label" then
+		button_parameters.click_function = "dud"
+	else
+		self.setVar(name, function (objectButtonClicked, playerColorClicked) buttonClicked(name, playerColorClicked) end)
+		button_parameters.click_function = name
+	end
+
+	if hideButtonBack then
+		button_parameters.color = {1, 1, 1, 0}
+		button_parameters.font_color = {1, 1, 1, 100}
+	end
+	button_parameters.scale = scaleButtons
+	button_parameters.rotation = rotationButtons
+	button_parameters.position = {x, thick, z}
+	button_parameters.function_owner = self
+
+	local playerNames = {
+	one = {sigil = sigil_P1, font_color = font_color_P1, font_size = 575},
+	two = {sigil = sigil_P2, font_color = font_color_P2, font_size = 575},
+	three = {sigil = sigil_P3, font_color = font_color_P3, font_size = 575},
+	four = {sigil = sigil_P4, font_color = font_color_P4, font_size = 575}
+	}
+
+	for _, values in pairs(playerNames) do
+		if values.sigil ~= nil then
+			if name:find(values.sigil) then
+				values.font_color.a = 100
+				button_parameters.font_color = values.font_color
+				button_parameters.font_size = values.font_size
+			end
+		end
+	end
+
+	self.createButton(button_parameters)
+end
+
+function createpm(name, type, x, z)
+	local button_parameters = {}
+	button_parameters.height = buttons[type].oh
+	button_parameters.width = buttons[type].ow
+	button_parameters.font_size = buttons[type].font * 0.7
+	self.setVar("add_" .. name, function () add({name, 1}) end)
+	button_parameters.click_function = "add_" .. name
+	button_parameters.label = "+"
+	button_parameters.function_owner = self
+	button_parameters.scale = scaleButtons
+	button_parameters.rotation = rotationButtons
+	if hideButtonBack then
+		button_parameters.color = {1, 1, 1, 0}
+		button_parameters.font_color = {1, 1, 1, 100}
+	end
+	button_parameters.position = {x + buttons[type].ox, thick, z + buttons[type].oz}
+	self.createButton(button_parameters)
+
+	self.setVar("sub_" .. name, function () add({name, - 1}) end)
+	button_parameters.click_function = "sub_" .. name
+	button_parameters.label = "-"
+	button_parameters.position = {x - buttons[type].ox, thick, z + buttons[type].oz}
+	self.createButton(button_parameters)
+end
+
+function add(params)
+	local btns = self.getButtons()
+	for _, btn in pairs(btns) do
+		if btn.click_function == params[1] then
+			btn.label = btn.label + params[2]
+			self.editButton(btn)
+		end
+	end
+end
+
+function createButtons_damage_display()
+	local btn_params = {
+		click_function = "dud",
+		function_owner = self,
+		label 			= "Damage",
+		position 		= {},
+		rotation 		= {-15, 0, 0},
+		width 			= 0,
+		height 			= 0,
+		font_size 		= 600,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100},
+	}
+
+	btn_params.label = "Damage"
+	btn_params.position = {-92.5, 0.2, 34.6}
+	self.createButton(btn_params)
+
+	btn_params.label = "Damage"
+	btn_params.position = {94.6, 0.2, 34.6}
+	self.createButton(btn_params)
+
+	bonus_damage = tostring(getObjectFromGUID(Global.getTable("boards").boardMonster.guid).getTable("buttons").damage.label)
+	btn_params.font_size = 800
+	btn_params.label = "+ " .. bonus_damage
+	btn_params.position = {-92.5, 0.2, 36.2}
+	self.createButton(btn_params)
+
+	btn_params.label = "+ " .. bonus_damage
+	btn_params.position = {94.6, 0.2, 36.2}
+	self.createButton(btn_params)
+end
+
+function createButton_birds_eye_view()
+	self.createButton({click_function = "birds_eye_view", function_owner = self, label = "Bird's Eye View", position = {0, 0.6, 8.7}, rotation = {-5, 0, 0}, width = 3500, height = 500, font_size = 400, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 1000}})
+end
+
+function createButtons_survivors()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	settings_P1_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	sigil_P1 = settings_P1_token.getName()
+	font_color_P1 = settings_P1_token.getColorTint()
+	found_P1 = false
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P1 = obj.getName()
+			found_P1 = true
+		end
+	end
+
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	sigil_P2 = settings_P2_token.getName()
+	font_color_P2= settings_P2_token.getColorTint()
+	found_P2 = false
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P2 = obj.getName()
+			found_P2 = true
+		end
+	end
+
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	settings_P3_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	sigil_P3 = settings_P3_token.getName()
+	font_color_P3 = settings_P3_token.getColorTint()
+	found_P3 = false
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P3 = obj.getName()
+			found_P3 = true
+		end
+	end
+
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	settings_P4_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+	sigil_P4 = settings_P4_token.getName()
+	font_color_P4 = settings_P4_token.getColorTint()
+	found_P4 = false
+	for _, obj in ipairs(zone.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			P4 = obj.getName()
+			found_P4 = true
+		end
+	end
+
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= {-15, 0, 0},
+		width 			= 3500,
+		height 			= 700,
+		font_size 		= 575,
+		color 			= {0, 0, 0},
+		font_color 		= {}
+	}
+
+	if found_P1 then
+		if self.getName() == "Attack" then
+			setupButton(sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1, 'button', 0, - 2.85)
+		elseif self.getName() == "Priority" then
+			btn_params.label = sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1
+			btn_params.position = {0, 0.35, -2.85}
+			btn_params.click_function = "set_P1_priority"
+			btn_params.font_color = font_color_P1
+			self.createButton(btn_params)
+		end
+	end
+	if found_P2 then
+		if self.getName() == "Attack" then
+			setupButton(sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2, 'button', 0, - 0.85)
+		elseif self.getName() == "Priority" then
+			btn_params.label = sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2
+			btn_params.position = {0, 0.35, -0.85}
+			btn_params.click_function = "set_P2_priority"
+			btn_params.font_color = font_color_P2
+			self.createButton(btn_params)
+		end
+	end
+	if found_P3 then
+		if self.getName() == "Attack" then
+			setupButton(sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3, 'button', 0, 1.15)
+		elseif self.getName() == "Priority" then
+			btn_params.label = sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3
+			btn_params.position = {0, 0.35, 1.15}
+			btn_params.click_function = "set_P3_priority"
+			btn_params.font_color = font_color_P3
+			self.createButton(btn_params)
+		end
+	end
+	if found_P4 then
+		if self.getName() == "Attack" then
+			setupButton(sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4, 'button', 0, 3.15)
+		elseif self.getName() == "Priority" then
+			btn_params.label = sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4
+			btn_params.position = {0, 0.35, 3.15}
+			btn_params.click_function = "set_P4_priority"
+			btn_params.font_color = font_color_P4
+			self.createButton(btn_params)
+		end
+	end
+end
+
+
+
+
+
+
+-- Priority Target Token -------------------------------------------------------
+function createButton_gainPriority()
+	self.createButton({click_function = "set_priority_variable", function_owner = self, label = "Gain Priority Target", position = {0, 0.6, 4.6}, rotation = {-5, 0, 0}, width = 3500, height = 500, font_size = 400, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function createButton_removePriority()
+	self.createButton({click_function = "remove_priorityTargetToken", function_owner = self, label = "Remove Priority Target", position = {0, 0.6, 4.6}, rotation = {-5, 0, 0}, width = 3500, height = 500, font_size = 400, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function set_priority_variable()
+	self.setName("Priority")
+	self.clearButtons()
+	createButtons_survivors()
+	createButton_removePriority()
+	removeButton_gainPriority()
+end
+
+function set_P1_priority()
+	PlayerName = "Player One"
+	check_if_permanent()
+end
+
+function set_P2_priority()
+	PlayerName = "Player Two"
+	check_if_permanent()
+end
+
+function set_P3_priority()
+	PlayerName = "Player Three"
+	check_if_permanent()
+end
+
+function set_P4_priority()
+	PlayerName = "Player Four"
+	check_if_permanent()
+end
+
+function createButtons_permanent_yes_no()
+	self.clearButtons()
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {},
+		rotation 		= {-15, 0, 0},
+		width 			= 3500,
+		height 			= 700,
+		font_size 		= 700,
+		color 			= {1, 1, 1, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+
+	btn_params.label = "? Permanent ?"
+	btn_params.position = {0, 0.35, -3.1}
+	btn_params.click_function = "dud"
+	self.createButton(btn_params)
+
+	btn_params.label = "No"
+	btn_params.position = {0, 0.35, 0.4}
+	btn_params.click_function = "set_permanent_false"
+	self.createButton(btn_params)
+
+	btn_params.label = "Yes"
+	btn_params.position = {0, 0.35, -1.2}
+	btn_params.click_function = "set_permanent_true"
+	self.createButton(btn_params)
+end
+
+function set_permanent_false()
+	permanent_priority = false
+	get_priority_target_token()
+end
+
+function set_permanent_true()
+	permanent_priority = true
+	get_priority_target_token()
+end
+
+function check_if_permanent()
+	hasPriority = false
+	cannot_be_removed = false
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if tok.getName() == "Priority Target" then
+			hasPriority = true
+			priority_target = tok
+		end
+	end
+	for _, tok in ipairs(zoneShowdown.getObjects()) do
+		if string.find(tok.getDescription(), "permanent") then
+			cannot_be_removed = true
+		end
+	end
+	if cannot_be_removed then
+		broadcastToAll("A Survivor already has the Priority Target Permanently ~ From a Game Effect", {1,1,1})
+		self.clearButtons()
+		initCustomButtons()
+		createButtons_damage_display()
+		createButton_birds_eye_view()
+		createButton_gainPriority()
+		removeButton_removePriority()
+		return
+	end
+	createButtons_permanent_yes_no()
+end
+
+function get_priority_target_token()
+
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == PlayerName then
+			local pos = surv.getPosition()
+			if hasPriority then
+				surv.translate({0,0.5,0})
+				priority_target.setPosition(pos)
+				if permanent_priority then
+					priority_target.setDescription("monster, permanent")
+				end
+			else
+				local obj = getObjectFromGUID('3bc58d')
+				local objPos = obj.getPosition()
+				local priority_target = obj.clone({position = objPos})
+				surv.translate({0,0.5,0})
+				priority_target.setPosition(pos)
+				if permanent_priority then
+					priority_target.setDescription("monster, permanent")
+				end
+			end
+		end
+	end
+	initCustomButtons()
+	createButtons_damage_display()
+	createButton_birds_eye_view()
+	createButton_removePriority()
+	removeButton_gainPriority()
+end
+
+function remove_priorityTargetToken()
+	for _, object in ipairs(zoneShowdown.getObjects()) do
+		if object.getName() == "Priority Target" then
+			if string.find(object.getDescription(), "permanent") then
+				broadcastToAll("A Survivor has the Priority Target Permanently ~ From a Game Effect", {1,1,1})
+				broadcastToAll("\u{2612}  Cannot Be Removed  \u{2612} ", {1,1,1})
+			else
+				object.destroy()
+			end
+		end
+	end
+	createButton_gainPriority()
+	removeButton_removePriority()
+end
+
+function removeButton_removePriority()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Remove Priority Target" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function removeButton_gainPriority()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Gain Priority Target" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+
+
+
+
+
+
+
+-- Dice Roller Functions -------------------------------------------------------
+function spawnDice(params)
+	local playerColor = params.playerColor
+	local isRedYellow = params.isRedYellow
+	--local color = params.color
+	local number = attackValues.speed
+	if tonumber(attackValues.speed) < 1 then
+		number = 1
+	end
+	local pointerPosition = {x = 0, y=0, z=0}
+	if isRedYellow then
+		pointerPosition = {x = -23.4, y=4.4, z=-26.35}
+	else
+		pointerPosition = {x = 23.4, y=4.4, z=-26.35}
+	end
+
+	for i = 1, number do
+
+		if number > 4 then moreThanFour = true else moreThanFour = false end
+		local posX = pointerPosition.x
+		local posY = pointerPosition.y
+		local posZ = pointerPosition.z
+
+		if i > 4 then
+			posX = posX - 6
+			posZ = pointerPosition.z - 1
+		else
+			if number > 4 then posZ = pointerPosition.z + 1 end
+		end
+
+		if math.fmod(number, 2) then xShift = 1.5 else xShift = 0 end
+		local xVal = posX + (i * 1.5 - ((number / 2) + xShift))
+		if moreThanFour == true then
+			xVal = posX + (i * 1.5 - ((number / 6) + xShift)) - 1
+		end
+
+		self.takeObject({
+			position = {xVal, posY + 2, posZ},
+			callback = 'rollTheDice',
+			callback_owner = self,
+			params = {num = number}
+		})
+	end
+end
+
+function rollTheDice(obj, params)
+	table.insert(spawnedDice, obj.guid)
+	local oldDiceCount = #spawnedDice - params.num
+	if #spawnedDice == (params.num + oldDiceCount) then
+		startLuaCoroutine(self, "watchDice")
+	end
+	obj.roll()
+end
+
+function clearDice()
+	for i, v in pairs(spawnedDice) do
+		local die = getObjectFromGUID(v)
+		if die ~= nil then destroyObject(die) end
+	end
+	spawnedDice = {}
+end
+
+function watchDice()
+	local startTime = os.time()
+	repeat
+		local restingCount = 0
+		for i, dieGUID in ipairs(spawnedDice) do
+			local die = getObjectFromGUID(dieGUID)
+			if die ~= nil then
+				if not die or die.resting == true then
+					restingCount = restingCount + 1
+					if die.getValue() > attackValues.accuracy - 1 then
+						die.setColorTint({1, 0, 0})
+						hasBloodThirsty = false
+						for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+							if card.getName() == "Bloodthirsty" then
+								hasBloodThirsty = true
+							end
+						end
+
+					else
+						die.setColorTint({0.1, 0.1, 0.1})
+					end
+				end
+			end
+		end
+		if hasBloodThirsty then
+			broadcastToAll("Bloodthirsty ~ If you suffer damage from this attack, place a token on Bloodthirsty", {1,1,1})
+		end
+		coroutine.yield(0)
+	until restingCount == #spawnedDice or os.time() > startTime + 6
+	return 1
+end
+
+function buttonClicked(name, playerColorClicked)
+	if name == "Attack" then
+		self.setName("Attack")
+
+		local btns = self.getButtons()
+		for _, btn in pairs(btns) do
+			if btn.click_function == "speed" or btn.click_function == "accuracy" then
+				attackValues[btn.click_function] = btn.label
+			end
+		end
+
+		if hasSurvivorStatusButtons then
+			local btns = self.getButtons()
+			for i, v in pairs(btns) do
+				if v.label == "Attack"  or v.label == "Speed" or v.label == "Accuracy" or v.label == "Move Monster" then
+					self.removeButton(v.index)
+				end
+			end
+		else
+			self.clearButtons()
+			createButton_birds_eye_view()
+			createButton_gainPriority()
+		end
+
+		hasWireFighting = false
+		for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+			if card.getName() == "Wire-Fighting" then
+				hasWireFighting = true
+			end
+		end
+
+		createButtons_survivors()
+
+	else
+
+		local grid = ""
+		local isRedYellow = false
+
+		if name == sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1 then
+			grid = getObjectFromGUID(Global.getTable("grids").red.guid)
+			isRedYellow = true
+			if hasWireFighting then
+				grid.call("return_role")
+				role = grid.getVar("role")
+			end
+
+		elseif name == sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2 then
+			grid = getObjectFromGUID(Global.getTable("grids").yellow.guid)
+			isRedYellow = true
+			if hasWireFighting then
+				grid.call("return_role")
+				role = grid.getVar("role")
+			end
+
+		elseif name == sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3 then
+			grid = getObjectFromGUID(Global.getTable("grids").green.guid)
+			isRedYellow = false
+			if hasWireFighting then
+				grid.call("return_role")
+				role = grid.getVar("role")
+			end
+
+		elseif name == sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4 then
+			grid = getObjectFromGUID(Global.getTable("grids").blue.guid)
+			isRedYellow = false
+			if hasWireFighting then
+				grid.call("return_role")
+				role = grid.getVar("role")
+			end
+		end
+		zonePlayer = grid.getVar("zonePlayer")
+		msg_color = grid.getTable("msg_color")
+		minusOneSpeed = false
+		isInsane = false
+		for _, object in ipairs(zonePlayer.getObjects()) do
+			if object.getName() == "Flower Knight Helm" and object.getRotation().z > 165 then
+				broadcastToColor("Flower Knight Helm ~ The Monster Suffers (-1) Speed attacking you", playerColorClicked, {1,1,1})
+				minusOneSpeed = true
+			end
+			if object.getName() == "isInsane" and object.getRotation().z > 165 and object.getRotation().z < 195 then
+				isInsane = true
+			end
+		end -- end
+
+		local parameters = {}
+		if name == sigil_P1 .. "  " .. P1 .. "  " .. sigil_P1
+		or name == sigil_P2 .. "  " .. P2 .. "  " .. sigil_P2 then
+			-- clean up hit location die zone left
+			local zone = getObjectFromGUID('939c02')
+			for _, obj in ipairs(zone.getObjects()) do
+				if obj.tag == "Dice" then
+					obj.destroy()
+				end
+			end
+			parameters.position={-23.33, 4.12, -24}
+		elseif name == sigil_P3 .. "  " .. P3 .. "  " .. sigil_P3
+			or name == sigil_P4 .. "  " .. P4 .. "  " .. sigil_P4 then
+				-- clean up hit location die zone right
+				local zone = getObjectFromGUID('016093')
+				for _, obj in ipairs(zone.getObjects()) do
+					if obj.tag == "Dice" then
+						obj.destroy()
+					end
+				end
+			parameters.position={23.41, 4.12, -24}
+		end
+		playerLookAt(playerColorClicked, parameters.position)
+
+		if role == "Villain" then
+			tokSpawner = getObjectFromGUID(Global.getTable('tokSpawn').pos_mov.guid)
+			local var = "endOfMonsterTurn"
+			tokSpawner.getVar("phase")
+			tokSpawner.setVar("phase", var)
+			broadcastToAll("Wire-Fighting ~ The Lion Knight gained (+5) Movement for its next activation for attacking the Villain", {1,1,1})
+			startLuaCoroutine(self, "addStat_coR")
+		end
+
+		hitsOn2 = false
+		hasDeepParalysis = false
+		for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+			if string.find(card.getName(), "Embrace the Eons") then
+				hitsOn2 = true
+			end
+			if card.getName() == "Deep Paralysis" then
+				hasDeepParalysis = true
+			end
+		end
+
+		local insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+		if insanity_value >= 3 then
+			isInsane = true
+		end
+
+		if minusOneSpeed then
+			attackValues.speed = attackValues.speed + getObjectFromGUID(Global.getTable("boards").boardMonster.guid).getTable("buttons").speed.label - 1
+		elseif hasDeepParalysis and isInsane then
+			broadcastToAll("Deep Paralysis ~ You are Insane ~ Slenderman gained (+2) Speed ", msg_color)
+			attackValues.speed = attackValues.speed + getObjectFromGUID(Global.getTable("boards").boardMonster.guid).getTable("buttons").speed.label + 2
+		else
+			attackValues.speed = attackValues.speed + getObjectFromGUID(Global.getTable("boards").boardMonster.guid).getTable("buttons").speed.label
+		end
+
+		evasion = getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").evasion.label
+		if hitsOn2 then
+			attackValues.accuracy = 2
+		else
+			attackValues.accuracy = attackValues.accuracy - getObjectFromGUID(Global.getTable("boards").boardMonster.guid).getTable("buttons").accuracy.label + evasion
+		end
+		clearDice()
+		--spawnDice({playerColor = playerColorClicked, color = name})
+
+		Timer.create({
+			identifier = "roller"..self.guid,
+			delay = 1.2,
+			function_name = "spawnDice",
+			parameters = {playerColor = playerColorClicked, isRedYellow=isRedYellow}
+		})
+		Timer.destroy("cleaner"..self.guid)
+		--[[Timer.create({
+			identifier = "cleaner"..self.guid,
+			delay = 30,
+			function_name = "clearDice"
+		})]]--
+		if not hasSurvivorStatusButtons then
+			self.clearButtons()
+			initCustomButtons()
+			createButtons_damage_display()
+			createButton_birds_eye_view()
+			createButton_gainPriority()
+		end
+	end
+end
+
+
+
+
+
+
+
+
+-- Utility Functions -----------------------------------------------------------
+function birds_eye_view(object, player_color)
+	playerLookAtWithDist(player_color, {0.00, 4.26, 14.98}, 30)
+end
+
+function moveMonster(object, playerColorClicked)
+	for _, object in ipairs(zoneShowdown.getObjects()) do
+		local desc = object.getDescription()
+		if string.find(desc, "monster") and string.find(desc, "figurine") then
+			playerLookAt(player_color, object.getPosition())
+		end
+	end
+end
+
+function getMonster(stat)
+	local monsterCards = getAllObjects(getObjectFromGUID(Global.getTable("zones").zoneAIBoard.guid))
+	local found = nil
+	local sub = ""
+	for _, v in pairs(monsterCards) do
+		found = v.getName():find(" Basic Action Card")
+		if found then
+			sub = v:getName():sub(1, found - 1)
+			for _, u in pairs(monsterStats) do
+				if sub == u.name then
+					if stat == "speed" then
+						return u.speed
+					else
+						return u.accuracy
+					end
+				end
+			end
+		end
+	end
+	return 2
+end
+
+function wait(time)
+	local start = os.time()
+	--each frame the coroutine is given control back, but we immediately call coroutine.yield() again until we exceed the time limit
+	repeat coroutine.yield(0) until os.time() > start + time
+end
+
+function addStat_coR()
+	for i=1, 5 do
+		tokSpawner.call('spawn_token')
+		wait(0.50)
+	end
+	return 1
+end
+
+function dud() end
+
+
+
+
+
+
+
+
+-- Survivor Status -------------------------------------------------------------
+survivorStatus = ""
+hasSurvivorStatusButtons = false
+
+function createButton_SurvivorStatus()
+
+	hasSurvivorStatusButtons = true
+	deck_toSearch = getObjectFromGUID(Global.getTable('decks_toSearch').deckSURV_STATUS.guid)
+
+	local gridRed = getObjectFromGUID(Global.getTable('grids').red.guid)
+	local gridYellow = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+	local gridGreen = getObjectFromGUID(Global.getTable('grids').green.guid)
+	local gridBlue = getObjectFromGUID(Global.getTable('grids').blue.guid)
+
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		width          = 3800,
+		height         = 600,
+		font_size      = 500,
+		color          = {0,0,0},
+		font_color     = {},
+	}
+
+	if survivorStatus == "Gobbled Up" then
+		btn_params.label = "Gobbled Up"
+
+		btn_params.click_function = "gobbledUp_red"
+		btn_params.position = {-92.6, 0.6, 47.1}
+		btn_params.font_color = gridRed.getTable("msg_color")
+		self.createButton(btn_params)
+
+		btn_params.click_function = "gobbledUp_yellow"
+		btn_params.position = {-92.6, 0.6, 49.2}
+		btn_params.font_color = gridYellow.getTable("msg_color")
+		self.createButton(btn_params)
+
+		btn_params.click_function = "gobbledUp_green"
+		btn_params.position = {94.6, 0.6, 47.1}
+		btn_params.font_color = gridGreen.getTable("msg_color")
+		self.createButton(btn_params)
+
+		btn_params.click_function = "gobbledUp_blue"
+		btn_params.position = {94.6, 0.6, 49.2}
+		btn_params.font_color = gridBlue.getTable("msg_color")
+		self.createButton(btn_params)
+
+	elseif survivorStatus == "Animate" then
+		btn_params.label = "Stalk Puppet"
+
+		btn_params.click_function = "stalkPuppet_red"
+		btn_params.position = {-92.6, 0.6, 47.1}
+		btn_params.font_color = gridRed.getTable("msg_color")
+		self.createButton(btn_params)
+
+		btn_params.click_function = "stalkPuppet_yellow"
+		btn_params.position = {-92.6, 0.6, 49.2}
+		btn_params.font_color = gridYellow.getTable("msg_color")
+		self.createButton(btn_params)
+
+		btn_params.click_function = "stalkPuppet_green"
+		btn_params.position = {94.6, 0.6, 47.1}
+		btn_params.font_color = gridGreen.getTable("msg_color")
+		self.createButton(btn_params)
+
+		btn_params.click_function = "stalkPuppet_blue"
+		btn_params.position = {94.6, 0.6, 49.2}
+		btn_params.font_color = gridBlue.getTable("msg_color")
+		self.createButton(btn_params)
+	end
+end
+
+-- Gobbled Up
+function gobbledUp_red()
+	setVars_red()
+	cardName = "Gobbled Up"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function gobbledUp_yellow()
+	setVars_yellow()
+	cardName = "Gobbled Up"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function gobbledUp_green()
+	setVars_green()
+	cardName = "Gobbled Up"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function gobbledUp_blue()
+	setVars_blue()
+	cardName = "Gobbled Up"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+-- Stalk Puppet
+function stalkPuppet_red()
+	setVars_red()
+	cardName = "Stalk Puppet"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function stalkPuppet_yellow()
+	setVars_yellow()
+	cardName = "Stalk Puppet"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function stalkPuppet_green()
+	setVars_green()
+	cardName = "Stalk Puppet"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function stalkPuppet_blue()
+	setVars_blue()
+	cardName = "Stalk Puppet"
+	get_survStatus()
+	remove_Survivor_fromShowdown()
+end
+
+function get_survStatus()
+	local card_toGet = {cardName = cardName, zone = "", deck = deck_toSearch}
+	Global.setTable("card", card_toGet)
+	Global.setTable("pos_toSpawn", pos_toSpawn)
+	Global.call("get_Card")
+end
+
+function remove_Survivor_fromShowdown()
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == survivor_toRemove then
+			surv.setPosition(surv_pos_toMove)
+			surv.setScale({0.25, 0.25, 0.25})
+		end
+	end
+end
+
+-- Set Variables for Survivors
+function setVars_red()
+	pos_toSpawn = {-5.85, 4.34, -7.22}
+	survivor_toRemove = "Player One"
+	surv_pos_toMove = {-5.85, 5, -7.22}
+end
+
+function setVars_yellow()
+	pos_toSpawn = {-2.82, 4.34, -7.22}
+	survivor_toRemove = "Player Two"
+	surv_pos_toMove = {-2.82, 5, -7.22}
+end
+
+function setVars_green()
+	pos_toSpawn = {2.34, 4.34, -7.21}
+	survivor_toRemove = "Player Three"
+	surv_pos_toMove = {2.34, 5, -7.21}
+end
+
+function setVars_blue()
+	pos_toSpawn = {5.55, 4.34, -7.22}
+	survivor_toRemove = "Player Four"
+	surv_pos_toMove = {5.55, 5, -7.22}
+end
+
+
+
+
+
+
+-- end monster attack roller ---------------------------------------------------

@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+3) Insanity and 1 Bleeding Token", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+  Global.call('addBroadcast', {"wound_reaction", {gear = "If there are any Survivors with the Flower Funnel Status", effect = "", effect2 = ""}})
+  Global.call('addBroadcast', {"wound_reaction", {gear = "They gain 1 Bleeding Token and the Lonely Tree Heals 1", effect = "", effect2 = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

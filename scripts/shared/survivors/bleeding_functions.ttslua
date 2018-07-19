@@ -1,0 +1,233 @@
+
+pos = self.getPosition() -- {21.38, 4.12, -21.27}
+extraBleed_pos = {pos.x, pos.y + 0.10, pos.z + 2.46}
+extraBleed = false
+
+function onLoad()
+	createButtons()
+	local name = self.getName()
+	if name == "P1" then
+		zone_Player = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+		bleed_Token = getObjectFromGUID('6653a6')
+		extraBleed = getObjectFromGUID('570431')
+		grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+		msg_color = grid.getTable("msg_color")
+	elseif name == "P2" then
+		zone_Player = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+		bleed_Token = getObjectFromGUID('6653a6')
+	   extraBleed = getObjectFromGUID('c211be')
+		grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+		msg_color = grid.getTable("msg_color")
+	elseif name == "P3" then
+		zone_Player = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+		bleed_Token = getObjectFromGUID('6653a6')
+	   extraBleed = getObjectFromGUID('77fbb6')
+		grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+		msg_color = grid.getTable("msg_color")
+	elseif name == "P4" then
+		zone_Player = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+		bleed_Token = getObjectFromGUID('6653a6')
+	   extraBleed = getObjectFromGUID('be64cb')
+		grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+		msg_color = grid.getTable("msg_color")
+	end
+end
+
+function createButtons()
+
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {0, 0, 0},
+		scale          = {0.5, 0.5, 0.5},
+		width          = 800,
+		height         = 800,
+		font_size      = 800,
+		color          = {r = 1, g = 1, b = 1, a = 1},
+		font_color     = {r = 0, g = 0, b = 0, a = 1},
+		tooltip        = "Spawn a Bleeding Token",
+	}
+
+	btn_params.position = {-0.03, 0, -2.9}
+	btn_params.click_function = "bleed1"
+	self.createButton(btn_params)
+
+	btn_params.position = {-0.01, 0 -1.2}
+	btn_params.click_function = "bleed2"
+	self.createButton(btn_params)
+
+	btn_params.position = {0, 0, 0.5}
+	btn_params.click_function = "bleed3"
+	self.createButton(btn_params)
+
+	btn_params.position = {0.01, 0, 2.15}
+	btn_params.click_function = "bleed4"
+	self.createButton(btn_params)
+
+	btn_params.position = {0.02, 0, 3.8}
+	btn_params.click_function = "bleed5"
+	self.createButton(btn_params)
+end
+
+function createMoreBleeding()
+	btn_params.position = {0.01, 0, 5.45}
+	btn_params.click_function = "bleed6"
+	self.createButton(btn_params)
+
+	btn_params.position = {0.02, 0, 7.1}
+	btn_params.click_function = "bleed7"
+	self.createButton(btn_params)
+end
+
+function bleed1()
+    bleed_Token.clone({position = {pos.x, pos.y + 0.15, pos.z + 1.31}})
+    anyBleedEffects()
+end
+
+function bleed2()
+    bleed_Token.clone({position = {pos.x, pos.y + 0.15, pos.z + 0.64}})
+    anyBleedEffects()
+end
+
+function bleed3()
+    bleed_Token.clone({position = {pos.x, pos.y + 0.15, pos.z - 0.04}})
+    anyBleedEffects()
+end
+
+function bleed4()
+    bleed_Token.clone({position = {pos.x, pos.y + 0.15, pos.z - 0.71}})
+    anyBleedEffects()
+end
+
+function bleed5()
+    bleed_Token.clone({position = {pos.x, pos.y + 0.15, pos.z - 1.37}})
+    anyBleedEffects()
+end
+
+function bleed6()
+    bleed_Token.clone({position = {pos.x + 0.02, pos.y + 0.36, pos.z - 2.11}})
+    anyBleedEffects()
+end
+
+function bleed7()
+    bleed_Token.clone({position = {pos.x + 0.02, pos.y + 0.36, pos.z - 2.82}})
+    anyBleedEffects()
+end
+
+function anyBleedEffects(object, player_color)
+	monsterController = false
+	for _, object in ipairs(zone_Player.getObjects()) do
+		if object.getName() == "Monster Controller" then
+			monsterController = true
+			-- Red Ring
+			if (monsterController) and object.getName() == "Red Ring" then
+				if object.getRotation().z > 179 then
+					broadcastToAll("Red Ring: Monster Suffers 1 Wound ~ Limit Twice Per Round", {1,1,1})
+				end
+			end
+		end
+	end
+end
+
+function bleedThreeEffects(object, player_color)
+	hasClutch = false
+	for _, object in ipairs(zone_Player.getObjects()) do
+		if object.getName() == "Clutch Fighter" then
+			hasClutch = true
+		end
+	end
+	if hasClutch then
+		broadcastToColor("Clutch Fighter: You gain (+1) Strength and (+1) Accuracy tokens", player_color, msg_color)
+	end
+end
+
+function check_uconFight_Enfeebled()
+	-- Unconscious Fighter
+	-- Enfeebled
+	hasUconFighter = false
+	hasEnfeebled = false
+	for _, object in ipairs(zone_Player.getObjects()) do
+		if object.getName() == "Unconcious Fighter" then
+			hasUconFighter = true
+		end
+		if object.getName() == "Enfeebled" then
+			hasEnfeebled = true
+		end
+	end
+	for _, object in ipairs(zone_Player.getObjects()) do
+		if hasUconFighter and hasEnfeebled then
+			return
+		end
+		if not hasUconFighter and hasEnfeebled then
+			broadcastToAll("Enfeebled: It takes 1 less Bleeding Token to Kill you", msg_color)
+			break
+		end
+	end
+end
+
+function bleedFourEffects(object, player_color)
+	check_uconFight_Enfeebled()
+end
+
+function bleedFiveEffects(object, player_color)
+	-- Purpose
+	check_uconFight_Enfeebled()
+	hasPurpose = false
+	for _, object in ipairs(zone_Player.getObjects()) do
+		if object.getName() == "Purpose" then
+			hasPurpose = true
+		end
+	end
+	if hasPurpose then
+		broadcastToColor("If there are any Standing Survivors ~ Instead of Dying by lethal Bleeding Tokens ~ You are knocked down", player_color, msg_color)
+	end
+end
+
+function bleedSixEffects(object, player_color)
+	check_uconFight_Enfeebled()
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+	if enter_object ~= nil then
+		if zone == zone_Player then
+			bleeding = 0
+			if enter_object.getName() == "Bleeding" then
+				for _, object in ipairs(zone_Player.getObjects()) do
+					if object.getName() == "Bleeding" then
+						bleeding = bleeding + 1
+					end
+				end
+				if bleeding == 2 then
+					bleedThreeEffects(object, player_color)
+				elseif bleeding == 3 then
+					bleedFourEffects(object, player_color)
+				elseif bleeding == 4 then
+					bleedFiveEffects(object, player_color)
+				elseif bleeding == 5 then
+					bleedSixEffects(object, player_color)
+				end
+			end
+		end
+
+		if enter_object.getName() == "Bleeding" then
+			-- Hemophobia
+			hasHemophobia = false
+			for _, object in ipairs(zone_Player.getObjects()) do
+				if object.getName() == "Hemophobia" then
+					hasHemophobia = true
+				end
+			end
+			if hasHemophobia then
+				broadcastToAll("Hemophobia ~ Whenever a Survivor gains a bleeding token ~ you are knocked down", msg_color)
+			end
+		end
+	end
+end
+
+-- Coroutine timer
+function wait(time)
+  local start = os.time()
+  repeat coroutine.yield(0) until os.time() > start + time
+end

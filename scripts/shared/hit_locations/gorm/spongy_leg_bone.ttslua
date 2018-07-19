@@ -1,0 +1,25 @@
+function criticalWoundEffect()
+	getVars()
+     Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Gimped ~ Keep in Play", effect = ""}})
+	  for i, v in ipairs(drawn_hitLocations) do
+			if v.getGUID() == self.getGUID() then
+				 table.remove(drawn_hitLocations, i)
+			end
+	  end
+	  hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	  self.setPositionSmooth({-2.11, 4.34, -14.16})
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+	getVars()
+	local stats = {color = color, stat = "spd", modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+  Global.call('addBroadcast', {"crit", {gear = "Hack Fever! ~ You gained a (+1) Speed Token", effect = "", effect2 = ""}})
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "The Fruit closest to the attacker explodes!", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "All adjacent Survivors suffer 6 Damage and Knockback 5", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Return the Fruit to the Tree", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	broadcastToAll("A Survivor adjacent to the Attacker may spend 1 Survival to cancel this reaction", msg_color)
+end

@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Courage ~ Manually Adjust", effect = ""}})
+end
+
+function woundEffect()
+	getVars()
+	hasFurArmor = false
+	for _, armor in ipairs(zone.getObjects()) do
+		if string.find(armor.getDescription(), "fur") then
+			hasFurArmor = true
+		end
+	end
+	if hasFurArmor then
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are wearing Fur Armor", effect = ""}})
+	else
+		Global.call('addBroadcast', {"wound_reaction", {gear = "You are not wearing any Fur Armor", effect = ""}})
+		Global.call('addBroadcast', {"wound_reaction", {gear = "Gain 1 Bleeding Token and you are knocked down", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+ -- gaunt fingers

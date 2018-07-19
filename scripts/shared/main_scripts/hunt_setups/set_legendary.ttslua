@@ -1,0 +1,40 @@
+-- Set Legendaries -------------------------------------------------------------
+function setup_great_golden_cat()
+	btn_clicked = 21
+	deck_toGet = "White Lion Hunt Events Deck"
+	name = "Great Golden Cat"
+	changeMonster({mov = 9, tgh = 17, spd = 3, dmg = 5, lck = 1, acc = 3})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_beast_of_sorrow()
+	btn_clicked = 22
+	deck_toGet = "White Lion Hunt Events Deck"
+	name = "Beast of Sorrow"
+	changeMonster({mov = 7, tgh = 13, spd = 1, dmg = 1})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_mad_steed()
+	btn_clicked = 23
+	deck_toGet = "Screaming Antelope Hunt Events Deck"
+	name = "Mad Steed"
+	changeMonster({mov = 9, tgh = 22, spd = 3, dmg = 5, lck = 1, acc = 1})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end
+
+function setup_golden_king()
+	btn_clicked = 24
+	deck_toGet = "Phoenix Hunt Events Deck"
+	name = "Great Golden Eyed King of 1000 Years"
+	changeMonster({mov = 10, tgh = 25, spd = 3, dmg = 3, lck = 1000, evs = 1, acc = 2})
+	get_bag_Showdown()
+	removeButtons_monsterSetup()
+	calculate_departing_bonuses()
+end

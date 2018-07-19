@@ -1,0 +1,16 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "Suffer 3 Brain Damage", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Place Slenderman 5 Spaces away from Attacker ~ As far from other Survivors as possible", effect = ""}})
+end
+
+function addStatModifier()
+end

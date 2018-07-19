@@ -1,0 +1,22 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+--TODO:// TEST
+function reflexEffect()
+  getVars()
+  gain_priority_target()
+  Global.call('addBroadcast', {"reflex", {gear = "You gain the Priority Target", effect = ""}})
+  Global.call('addBroadcast', {"reflex", {gear = "Gain (+1) Courage ~ Manually Adjust", effect = ""}})
+end
+
+#include ../get_vars
+#include ../gain_priority
+
+function addStatModifier()
+end

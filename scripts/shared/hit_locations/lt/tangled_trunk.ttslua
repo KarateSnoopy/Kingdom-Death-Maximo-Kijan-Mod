@@ -1,0 +1,19 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Each Survivor may Dash right now!", effect = "", effect2 = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	-- TODO: // add function to get acanthus plant
+	Global.call('addBroadcast', {"reflex", {gear = "Place an Acanthus Plant in the space the attacker occupies", effect = "Then"}})
+	Global.call('addBroadcast', {"reflex", {gear = "Place the Attacker in the Tall Grass furthest from them", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Gain 1 Bleeding Token", effect = ""}})
+end
+
+function addStatModifier()
+end

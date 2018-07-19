@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+	getStatToken()
+end
+
+function getStatToken()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Gorm gained a (-1) Accuracy Token", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "Turn the Gorm to face the opposite board edge", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ The Gorm full moves forward in a straight line ♘", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

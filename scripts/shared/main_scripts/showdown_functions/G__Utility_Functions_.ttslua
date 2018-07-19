@@ -1,0 +1,85 @@
+-- Utility Function ------------------------------------------------------------
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function changeMonster(stats)
+	local monsterBoard = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
+	local buttons = monsterBoard.getTable("buttons")
+	for i, v in pairs(stats) do
+		buttons.counts[i] = v
+	end
+	monsterBoard.setTable("buttons", buttons)
+	monsterBoard.call("updateDisplay")
+end
+
+function play_music_track()
+	local set_Sound = getObjectFromGUID(Global.getTable('user_settings').set_Sound.guid)
+	local rotZ = set_Sound.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local music_player = getObjectFromGUID(Global.getTable('user_settings').music_player.guid)
+		local showdown_phase_soundtrack = getObjectFromGUID(Global.getTable('user_settings').showdown_phase_soundtrack.guid)
+		local track = tonumber(showdown_phase_soundtrack.getDescription())
+		if music_player ~= nil then
+			music_player.AssetBundle.playLoopingEffect(track)
+		end
+	end
+end
+
+function createButton_meltdown()
+	self.createButton({click_function = "end_meltdown", function_owner = self, label = "End Meltdown Event", position = {0, 1.1, 10.7},
+	rotation = {-10, 0, 0}, width = 3400, height = 400, font_size = 350, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function end_meltdown()
+	for _, obj in ipairs(zoneInjuryBoard.getObjects()) do
+		if string.find(obj.getName(), "Meltdown") and obj.tag == "Card" then
+			obj.destroy()
+		end
+	end
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Meltdown Event" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function storeResources()
+	local playerZones = {
+		red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	}
+	for zoneKey, zoneGUIDtable in pairs(playerZones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+		for _, object in ipairs(objectsInZone) do
+			local desc = object.getDescription()
+
+			if string.find(desc, ", once per showdown used") then
+				local new_desc = string.gsub(desc, ", once per showdown used", "")
+			end
+
+			if string.find(desc, ", until the end of the showdown") then
+				object.destroy()
+			end
+
+			if string.find(desc, "resource") then
+				object.setPosition({ - 37.09, 4.30, 30.11})
+			end
+
+			if object.getName() == "Crystal Skin" then
+				local new_desc = string.gsub(desc, "armor, 3head, 3body, 3waist, 3legs, 3arms", "")
+				object.setDescription(new_desc)
+			end
+		end
+	end
+	print("↦ Resources moved to Step 9 for 'Record and Archive'")
+end

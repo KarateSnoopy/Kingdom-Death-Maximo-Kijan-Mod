@@ -1,0 +1,37 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "You gain (+1) Courage", effect = "All Survivors ignore First Strike until the end of the attack"}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "All Survivors in the Light Suffer ★ +1 Brain Damage", effect = ""}})
+
+	local obj = getObjectFromGUID(Global.getTable('persistentCard').card.guid)
+	obj.call("return_inDarkness")
+	local bool1 = obj.getVar("inDarkness_red")
+	local bool2 = obj.getVar("inDarkness_yellow")
+	local bool3 = obj.getVar("inDarkness_green")
+	local bool4 = obj.getVar("inDarkness_blue")
+
+	if not bool1 then
+		Global.call('addBroadcast', {"failure", {gear = "Player One is in the Light", effect = ""}})
+	end
+	if not bool2 then
+		Global.call('addBroadcast', {"failure", {gear = "Player Two is in the Light", effect = ""}})
+	end
+	if not bool3 then
+		Global.call('addBroadcast', {"failure", {gear = "Player Three is in the Light", effect = ""}})
+	end
+	if not bool4 then
+		Global.call('addBroadcast', {"failure", {gear = "Player Four is in the Light", effect = ""}})
+	end
+
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

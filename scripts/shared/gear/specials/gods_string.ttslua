@@ -1,0 +1,31 @@
+function onDrop(player_color)
+	pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x, pos.y, pos.z-3}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 0})
+	for _, entry in ipairs(hitList) do
+
+		if entry.hit_object.getName() == "Sunring Bow" then return end
+
+		local desc = entry.hit_object.getDescription()
+		if string.find(desc, "bow") then
+			entry.hit_object.setDescription(desc .. ", sharp")
+			broadcastToColor("Your " .. entry.hit_object.getName() .. " gained 'Sharp'", player_color, {0.118, 0.53, 1})
+		end
+	end
+end
+
+
+function onPickedUp(player_color)
+	pos = self.getPosition()
+	local hitList = Physics.cast({origin={pos.x, pos.y, pos.z-3}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 0})
+	for _, entry in ipairs(hitList) do
+
+		if entry.hit_object.getName() == "Sunring Bow" then return end
+
+		local desc = entry.hit_object.getDescription()
+		if string.find(desc, "bow") then
+			new_desc = string.gsub(desc, ", sharp", "")
+			entry.hit_object.setDescription(new_desc)
+			broadcastToColor("Your " .. entry.hit_object.getName() .. " lost 'Sharp'", player_color, {0.118, 0.53, 1})
+		end
+	end
+end

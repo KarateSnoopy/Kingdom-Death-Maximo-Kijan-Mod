@@ -1,0 +1,43 @@
+function criticalWoundEffect()
+	getVars()
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Cracked Beak ~ Keep In Play", effect = "", effect2 = ""}})
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({-2.12, 4.34, -21.56})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "Turn to face Attacker ~ Roll 1d10", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "You have " .. get_huntXP_value(hunt) .. " Hunt Xp", effect = ""}})
+end
+
+#include get_vars
+
+function get_huntXP_value(hunt)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	hunt = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 3)
+		if prefix == "xp_" then
+			if v.label ~= '' then
+				hunt = hunt + 1
+			end
+		end
+	end
+	return hunt
+end
+
+function addStatModifier()
+end

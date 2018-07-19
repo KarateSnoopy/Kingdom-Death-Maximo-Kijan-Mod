@@ -1,0 +1,20 @@
+function criticalWoundEffect()
+	woundEffect()
+end
+
+function woundEffect()
+	 Global.call('addBroadcast', {"wound_reaction", {gear = "You hack off one of the Spidicules Legs!", effect = "", effect2 = "Place under the Twitching Leg Pile"}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "You hack off one of the Spidicules Legs!", effect = "", effect2 = "Place under the Twitching Leg Pile"}})
+
+end
+
+function failureEffect()
+    Global.call('addBroadcast', {"failure", {gear = "If you are within 2 spaces ~ Suffer Bash and Knockback 5", effect = ""}})
+end
+
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

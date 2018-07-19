@@ -1,0 +1,43 @@
+function criticalWoundEffect()
+	gain_priority_target()
+  Global.call('addBroadcast', {"crit", {gear = "You gained the Priority Target Token", effect = ""}})
+end
+
+#include ../gain_priority
+#include ../get_vars
+
+function get_understanding_value(understanding)
+	FullCharSheet = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	local objbtns = FullCharSheet.getTable("buttons")
+	understanding = 0
+	for i, v in pairs(objbtns) do
+		prefix = string.sub(i, 1, 14)
+		if prefix == "understanding_" then
+			if v.label ~= '' then
+				understanding = understanding + 1
+			end
+		end
+	end
+	return understanding
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+
+end
+
+function reflexEffect()
+	getVars()
+	local understanding = get_understanding_value(understanding)
+	if understanding < 6 then
+		Global.call('addBroadcast', {"reflex", {gear = "Your Understanding is less than 6", effect = ""}})
+		Global.call('addBroadcast', {"reflex", {gear = "Roll 1d10 ~ On a 3+ ~ Suffer the New Perspective Brain Trauma", effect = ""}})
+	elseif understanding >= 6 then
+		Global.call('addBroadcast', {"reflex", {gear = "You have 6+ Understanding", effect = ""}})
+	end
+end
+
+function addStatModifier()
+end

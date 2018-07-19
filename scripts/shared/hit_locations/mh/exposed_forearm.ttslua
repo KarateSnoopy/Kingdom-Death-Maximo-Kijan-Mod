@@ -1,0 +1,23 @@
+function criticalWoundEffect()
+	getVars()
+    Global.call('addBroadcast', {"crit", {gear = "You gained a (+1) Luck Token", effect = ""}})
+	 local stats = {color = color, stat = 'lck', modifier = "pos", num = 1, phase = nil}
+    Global.setTable('temp', stats)
+    startLuaCoroutine(Global, "spwn_tok")
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "If you are within 4 spaces of the Manhunter", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ He full moves until adjacent to you and Performs Tombstone ♘", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

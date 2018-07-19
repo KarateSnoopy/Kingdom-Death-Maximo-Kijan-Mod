@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Resolve the Effects on this Hit Location", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+-- chin

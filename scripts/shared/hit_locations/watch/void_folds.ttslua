@@ -1,0 +1,24 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "Gain (+3) Courage ~ Gain (+3) Understanding ~ Manually Adjust", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You may perform Embolden", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end
+
+function failureEffect()
+	getVars()
+	local stats = {color = color, stat = 'str', modifier = "neg", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+	Global.call('addBroadcast', {"failure", {gear = "You gained a (-1) Strength Token", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "♘ Turn The Watcher to faces the furthest board edge ~ Full Move Forward ♘", effect = ""}})
+end
+
+#include ../get_vars

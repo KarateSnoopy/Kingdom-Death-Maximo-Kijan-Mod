@@ -1,0 +1,41 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_dmg.guid)
+	local var = ""
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"crit", {gear = "The Dragon King gained a (-1) Damage Token", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive this Card", effect = ""}})
+end
+
+function addStatModifier()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "If the Attacker is within 6 spaces", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Unless you spend 2 Survival", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Suffer Bleed 2 and Archive all Resources you have", effect = ""}})
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	local tbl = {cardName = "Kings Tongue", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Kings Tongue", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Kings Tongue", effect = ""}})
+	end
+end

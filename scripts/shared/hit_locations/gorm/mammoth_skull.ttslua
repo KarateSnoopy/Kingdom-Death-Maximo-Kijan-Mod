@@ -1,0 +1,34 @@
+function criticalWoundEffect()
+	getMonsterResource()
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Active Thyroid", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Active Thyroid", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Active Thyroids", effect = ""}})
+	end
+end
+
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Turn the Gorm to face the opposite board edge", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "♘ The Gorm full moves forward in a straight line ♘", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

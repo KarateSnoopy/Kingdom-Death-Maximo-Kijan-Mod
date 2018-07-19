@@ -1,0 +1,211 @@
+function onLoad()
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	terrain_roller = getObjectFromGUID('00cd32')
+
+	settings_P1_token = getObjectFromGUID(Global.getTable('user_settings').settings_P1_token.guid)
+	settings_P2_token = getObjectFromGUID(Global.getTable('user_settings').settings_P2_token.guid)
+	settings_P3_token = getObjectFromGUID(Global.getTable('user_settings').settings_P3_token.guid)
+	settings_P4_token = getObjectFromGUID(Global.getTable('user_settings').settings_P4_token.guid)
+
+	font_color_P1 = settings_P1_token.getColorTint()
+	font_color_P2 = settings_P2_token.getColorTint()
+	font_color_P3 = settings_P3_token.getColorTint()
+	font_color_P4 = settings_P4_token.getColorTint()
+
+	sigil_P1 = settings_P1_token.getName()
+	sigil_P2 = settings_P2_token.getName()
+	sigil_P3 = settings_P3_token.getName()
+	sigil_P4 = settings_P4_token.getName()
+
+	zoneP1 = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	zoneP2 = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	zoneP3 = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	zoneP4 = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+
+	for _, obj in ipairs(zoneP1.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			name_P1 = obj.getName()
+		end
+	end
+	for _, obj in ipairs(zoneP2.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			name_P2 = obj.getName()
+		end
+	end
+	for _, obj in ipairs(zoneP3.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			name_P3 = obj.getName()
+		end
+	end
+	for _, obj in ipairs(zoneP4.getObjects()) do
+		if string.find(obj.getDescription(), "SurvivorSheet") then
+			name_P4 = obj.getName()
+		end
+	end
+	createButtons()
+end
+
+
+function createButtons()
+	local btn_params = {
+		click_function = "",
+		function_owner = self,
+		label 			= "",
+		position 		= {-0.9, 0.1, 1.7},
+		rotation 		= {0, 180, 0},
+		scale 			= {0.5, 0.5, 0.5},
+		width 			= 1700,
+		height 			= 225,
+		font_size 		= 175,
+		color 			= {0,0,0},
+		font_color 		= {}
+	}
+
+	btn_params.label = sigil_P4 .. "  " .. name_P4 .. "  " .. sigil_P4
+	btn_params.position = {0, 0.3, 0.6}
+	btn_params.click_function = "P4_used"
+	btn_params.font_color = font_color_P4
+	self.createButton(btn_params)
+
+	btn_params.label = sigil_P3 .. "  " .. name_P3 .. "  " .. sigil_P3
+	btn_params.position = {0, 0.3, 0.35}
+	btn_params.click_function = "P3_used"
+	btn_params.font_color = font_color_P3
+	self.createButton(btn_params)
+
+	btn_params.label = sigil_P2 .. "  " .. name_P2 .. "  " .. sigil_P2
+	btn_params.position = {0, 0.3, 0.1}
+	btn_params.click_function = "P2_used"
+	btn_params.font_color = font_color_P2
+	self.createButton(btn_params)
+
+	btn_params.label =  sigil_P1 .. "  " .. name_P1 .. "  " .. sigil_P1
+	btn_params.position = {0, 0.3, -0.15}
+	btn_params.click_function = "P1_used"
+	btn_params.font_color = font_color_P1
+	self.createButton(btn_params)
+
+	btn_params.label = "Spawn Spiderling"
+	btn_params.position = {0, 0.3, -0.55}
+	btn_params.click_function = "spawn_spiderling"
+	btn_params.font_color = {1,1,1}
+	self.createButton(btn_params)
+
+end
+
+function P1_used(object, player_color)
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == sigil_P1 .. "  " .. name_P1 .. "  " .. sigil_P1 then
+				self.removeButton(v.index)
+				broadcastToColor("Once per showdown used", player_color, font_color_P1)
+				local pos = terrain_roller.getPosition()
+				local parameters = {}
+				parameters.position = pos
+				parameters.pitch = 65
+				parameters.yaw = 0
+				parameters.distance = 17
+				Player[player_color].lookAt(parameters)
+			end
+		end
+	end
+end
+
+function P2_used(object, player_color)
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == sigil_P2 .. "  " .. name_P2 .. "  " .. sigil_P2 then
+				self.removeButton(v.index)
+				broadcastToColor("Once per showdown used", player_color, font_color_P2)
+				local pos = terrain_roller.getPosition()
+				local parameters = {}
+				parameters.position = pos
+				parameters.pitch = 65
+				parameters.yaw = 0
+				parameters.distance = 17
+				Player[player_color].lookAt(parameters)
+			end
+		end
+	end
+end
+
+function P3_used(object, player_color)
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == sigil_P3 .. "  " .. name_P3.. "  " .. sigil_P3 then
+				self.removeButton(v.index)
+				broadcastToColor("Once per showdown used", player_color, font_color_P3)
+				local pos = terrain_roller.getPosition()
+				local parameters = {}
+				parameters.position = pos
+				parameters.pitch = 65
+				parameters.yaw = 0
+				parameters.distance = 17
+				Player[player_color].lookAt(parameters)
+			end
+		end
+	end
+end
+
+function P4_used(object, player_color)
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == sigil_P4 .. "  " .. name_P4 .. "  " .. sigil_P4 then
+				self.removeButton(v.index)
+				broadcastToColor("Once per showdown used", player_color, font_color_P4)
+				local pos = terrain_roller.getPosition()
+				local parameters = {}
+				parameters.position = pos
+				parameters.pitch = 65
+				parameters.yaw = 0
+				parameters.distance = 17
+				Player[player_color].lookAt(parameters)
+			end
+		end
+	end
+end
+
+function spawn_spiderling()
+	pos_to_spawn = self.getPosition()
+	-- spiderling
+	local pos = gameBox.getPosition()
+	for _, obj in ipairs(gameBox.getObjects()) do
+		if obj.name == "Spiderling" then
+			spiderling 		= gameBox.takeObject({
+				guid 			= obj.guid,
+				position 	= {pos.x, pos.y + 10, pos.z},
+				smooth 		= false,
+				rotation 	= {0, 180, 0}})
+		end
+	end
+	local pos_to_clone = spiderling.getPosition()
+	local clone = spiderling.clone({position = pos_to_clone})
+	clone.setPosition({pos_to_spawn.x, pos_to_spawn.y + 2, pos_to_spawn.z})
+	gameBox.putObject(spiderling)
+	-- explosion effect
+	local bag_explosion_effect = getObjectFromGUID('dff02a')
+	effect = bag_explosion_effect.takeObject({
+		position 		= {pos_to_spawn.x, pos_to_spawn.y + 1, pos_to_spawn.z},
+		smooth 			= false,
+		callback 		= "lock_callback",
+		callback_owner = Global
+	})
+	effect.AssetBundle.playLoopingEffect(2)
+	startLuaCoroutine(self, "destroy_delay_coR")
+end
+
+function destroy_delay_coR()
+	wait(0.75)
+	effect.destroy()
+	return 1
+end
+
+function wait(time)
+   local start = os.time()
+   repeat coroutine.yield(0)
+	until os.time() > start + time
+end

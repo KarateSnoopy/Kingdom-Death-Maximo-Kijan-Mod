@@ -1,0 +1,39 @@
+function criticalWoundEffect()
+	getVars()
+	get_redVial()
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "If you are adjacent ~ You may spend ★ Survival", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "If you don't ~ suffer a Severe Arm Injury with a +2 to the Result", effect = ""}})
+
+	local pos = self.getPosition()
+	local clone = self.clone({position = pos})
+	clone.setPosition({-2.95, 4.75, -36.19})
+	clone.setLock(true)
+	clone.setRotation({8.00, 180.03, 0.01})
+end
+
+#include ../get_vars
+
+function get_redVial()
+	local tbl = {cardName = "Red Vial", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Red Vial", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Red Vials", effect = ""}})
+	end
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

@@ -1,0 +1,2299 @@
+--------------------------------------------------------------------------------
+--                           TABLE OF CONTENTS                                --
+--                   Scripts created by Maximo and Kijan                      --
+--------------------------------------------------------------------------------
+
+-- Buttons ---------------------------------------------------------------------
+	-- function set_buttons_table
+	-- function create_DrawAIButton
+	-- function create_putIntoPlay_button
+	-- function create_endMonsterTurnButton
+	-- function createSurvivorTurnButton
+	-- function create_next_round_button
+	-- function create_endShowdown_button
+	-- function create_run_away_Button
+	-- function create_end_run_away_Button
+	-- function remove_SurvivorTurn_Button
+	-- function remove_nextRound_Button
+	-- function remove_monsters_turn_buttons
+
+
+-- Draw AI ---------------------------------------------------------------------
+	-- function drawAI
+	-- function put_card_into_play
+	-- function stand_monster
+	-- function enable_Reactions
+	-- function get_drawnAI_Effects
+	-- function tokSpawn_coR
+	-- function set_cloned_AI_cards
+	-- function destroy_cloned_cards_AI
+
+
+-- Next Round ------------------------------------------------------------------
+	-- function nextRound
+	-- function check_at_the_start_of_the_Monster_turn
+	-- function check_at_the_start_of_the_players_turn
+	-- function reset_Reactions
+	-- function resetStartActButtons
+	-- function delete_until_the_end_of_round_tokens
+	-- function flip_Survival_Action_Tokens
+	-- function reset_fist_and_tooth_buttons
+	-- function move_monster_controller_token
+
+
+-- End Monster Turn ------------------------------------------------------------
+	-- function endMonsterTurn
+	-- function remove_overlays
+	-- function check_at_the_end_of_the_monster_turn
+	-- function delete_forbiddenLight_tokens
+
+
+-- End Showdown ----------------------------------------------------------------
+	-- function endShowdown
+	-- function destroy_cloned_cards_AI
+	-- function resetSurvFigurines
+	-- function storeSurvDiedMarkers
+	-- function deleteAIdeck
+	-- function reset_gear
+	-- function resetFrenzy
+	-- function reset_zoneEffects
+	-- function store_effects
+	-- function check_cooking_innovation
+	-- function get_run_away_story_event
+	-- function end_run_away
+	-- function deleteTagMonster
+
+-- Utility Function ------------------------------------------------------------
+	-- function wait
+	-- function changeMonster
+	-- function play_music_track
+
+--[[
+-- Tables and Variables --------------------------------------------------------
+gears = {
+	p1GearGUID = '1b5c7a',
+	p2GearGUID = 'fd8b97',
+	p3GearGUID = '86e4fd',
+	p4GearGUID = 'f7c730',
+}
+
+table_drawnAI = {}
+
+tokens = {
+	--Player 1
+	p1Action = 'a66bc1',
+	p1Dodge = '4fc811',
+	p1Encourage = '6a9974',
+	p1Dash = 'e85587',
+	p1Surge = '92bf04',
+	p1Embolden = 'a886d9',
+	p1Overcharge = '965d22',
+	--Player 2
+	p2Action = '4825fa',
+	p2Dodge = 'aaba33',
+	p2Encourage = '64f543',
+	p2Dash = '6c533b',
+	p2Surge = 'c0c91a',
+	p2Embolden = '91717c',
+	p2Overcharge = '6dec68',
+	--Player 3
+	p3Action = '148863',
+	p3Dodge = '08083d',
+	p3Encourage = '310af6',
+	p3Dash = 'e357b6',
+	p3Surge = 'ab6362',
+	p3Embolden = '778347',
+	p3Overcharge = 'fb8947',
+	--Player 4
+	p4Action = '5e9f5a',
+	p4Dodge = 'a42cb4',
+	p4Encourage = '25a2a1',
+	p4Dash = '01e8e2',
+	p4Surge = '829340',
+	p4Embolden = '4e6f3a',
+	p4Overcharge = '59439e',
+}
+
+-- END TABLE OF CONTENTS -------------------------------------------------------
+
+function onLoad()
+	-- gameBox
+	gameBox = getObjectFromGUID(Global.getTable('bags').gameBox.guid)
+	-- Objects
+	hitTool_Right = getObjectFromGUID('10e61e')
+	hitTool_Left = getObjectFromGUID('309402')
+	token_knockdown_monster = getObjectFromGUID("a61816")
+
+	-- Surv cards
+	redSurvCard = getObjectFromGUID(Global.getTable('survCards').red.guid)
+	yellowSurvCard = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+	greenSurvCard = getObjectFromGUID(Global.getTable('survCards').green.guid)
+	blueSurvCard = getObjectFromGUID(Global.getTable('survCards').blue.guid)
+
+	-- Surv Menu Tokens
+	menu_token_red = getObjectFromGUID(Global.getTable('menu_tokens').red.guid)
+	menu_token_yellow = getObjectFromGUID(Global.getTable('menu_tokens').yellow.guid)
+	menu_token_green = getObjectFromGUID(Global.getTable('menu_tokens').green.guid)
+	menu_token_blue = getObjectFromGUID(Global.getTable('menu_tokens').blue.guid)
+
+	-- Zones
+	zone_Red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid)
+	zone_Yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid)
+	zone_Green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid)
+	zone_Blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	zoneSpecialEffects = getObjectFromGUID(Global.getTable('zones').zoneSpecialEffects.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	zoneAIBoard = getObjectFromGUID(Global.getTable('zonesDestruct').zoneAIBoard.guid)
+	zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	zoneInnovations = getObjectFromGUID(Global.getTable('zones').zoneInnovations.guid)
+
+	playerZones = {
+		red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	}
+
+	-- Roller
+	monster_Roller = getObjectFromGUID('1daf26')
+
+	--Buttons
+	--create_DrawAIButton()
+	--create_putIntoPlay_button()
+	--create_endMonsterTurnButton()
+
+	set_buttons_table()
+
+	if self.getDescription() == "Monster's Turn" then
+		create_DrawAIButton()
+		create_putIntoPlay_button()
+		create_endMonsterTurnButton()
+		--remove_SurvivorTurn_Button()
+		--remove_nextRound_Button()
+
+	elseif self.getDescription() == "Survivor's Turn" then
+		--remove_monsters_turn_buttons()
+		createSurvivorTurnButton()
+		create_next_round_button()
+	end
+	create_endShowdown_button()
+end
+--]]
+
+--[[
+-- Buttons ---------------------------------------------------------------------
+function set_buttons_table()
+	btn_params = {
+		click_function = '',
+		function_owner = self,
+		label 			= '',
+		position 		= {},
+		rotation 		= { - 10, 0, 0},
+		width 			= 3000,
+		height 			= 400,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+end
+
+function create_DrawAIButton()
+	set_buttons_table()
+
+	btn_params.click_function = 'drawAI'
+	btn_params.label = "Draw AI"
+	btn_params.position = {0, 0.20, - 1.2}
+	self.createButton(btn_params)
+end
+
+function create_putIntoPlay_button()
+	btn_params.click_function = 'put_card_into_play'
+	btn_params.label = "Put into Play"
+	btn_params.position = {0, 0.20, 0}
+	self.createButton(btn_params)
+end
+
+function create_endMonsterTurnButton()
+	btn_params.click_function = 'endMonsterTurn'
+	btn_params.label = "End Monster Turn"
+	btn_params.position = {0, 0.20, 1.2}
+	btn_params.font_size = 350
+	self.createButton(btn_params)
+end
+
+function createSurvivorTurnButton()
+	btn_params.click_function = 'dud'
+	btn_params.label = "Survivor's Turn"
+	btn_params.position = {0, 0.10, 1.2}
+	self.createButton(btn_params)
+end
+
+function create_next_round_button()
+	btn_params.click_function = 'nextRound'
+	btn_params.label = "Next Round"
+	btn_params.position = {0, 0.20, 0.3}
+	btn_params.font_size = 500
+	btn_params.height = 550
+	self.createButton(btn_params)
+end
+
+function create_endShowdown_button()
+	local btn_params = {
+		click_function = 'endShowdown',
+		function_owner = self,
+		label 			= 'End Showdown',
+		position 		= {0.8, 0.2, 46.7},
+		rotation 		= { - 10, 0, 0},
+		width 			= 6000,
+		height 			= 750,
+		font_size 		= 700,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+	self.createButton(btn_params)
+
+	btn_params.label = "Run Away"
+	btn_params.click_function = "get_run_away_story_event"
+	btn_params.position = {0.8, 0.2, 45.1}
+	btn_params.font_size = 400
+	btn_params.height = 450
+	self.createButton(btn_params)
+end
+
+function create_run_away_Button()
+	local btn_params = {
+		click_function = 'get_run_away_story_event',
+		function_owner = self,
+		label 			= 'Run Away',
+		position 		= {0.8, 0.2, 45.1},
+		rotation 		= { - 10, 0, 0},
+		width 			= 6000,
+		height 			= 450,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+	self.createButton(btn_params)
+end
+
+function create_end_run_away_Button()
+	local btn_params = {
+		click_function = 'end_run_away',
+		function_owner = self,
+		label 			= 'Close Run Away',
+		position 		= {0.8, 0.2, 45.1},
+		rotation 		= { - 10, 0, 0},
+		width 			= 6000,
+		height 			= 450,
+		font_size 		= 400,
+		color 			= {0, 0, 0, 0},
+		font_color 		= {1, 1, 1, 100}
+	}
+	self.createButton(btn_params)
+end
+
+
+function remove_SurvivorTurn_Button()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Survivor's Turn" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function remove_nextRound_Button()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Next Round" then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+function remove_monsters_turn_buttons()
+	local buttons = self.getButtons()
+	for i, v in pairs(buttons) do
+		if v.label == "Put into Play"
+		or v.label == "Draw AI"
+		or v.label == "End Monster Turn"
+		then
+			self.removeButton(v.index)
+		end
+	end
+end
+--]]
+
+
+
+--[[
+-- Draw AI ---------------------------------------------------------------------
+function drawAI()
+	stand_monster()
+	enable_Reactions()
+	-- Destroy prior cloned AI card
+	for k, v in pairs(table_drawnAI) do
+		if v ~= nil then
+			v.destroy()
+		end
+	end
+
+	deckMonsterAI = getObjectFromGUID(Global.getTable('zones').deckMonsterAI.guid)
+
+	-- Riot Mace
+	cannot_Draw_AI = false
+	for _, object in ipairs(deckMonsterAI.getObjects()) do
+		if object.getName() == "Riot Mace" then
+			object.destroy()
+			cannot_Draw_AI = true
+			broadcastToAll("Riot Mace ~ Monster performs Basic Action Instead", {1, 1, 1})
+		end
+	end
+
+	-- Bored
+	for _, object in ipairs(zoneInjuryBoard.getObjects()) do
+		if object.getName() == "Bored" then
+			cannot_Draw_AI = true
+			broadcastToAll("Bored Mood in Play ~ Instead of Drawing AI > Spiral Cyclone", {1, 1, 1})
+		end
+		if object.getName() == "Challenge" then
+			cannot_Draw_AI = true
+			broadcastToAll("Challenge Mood in Play > Do not draw AI", {1, 1, 1})
+		end
+	end
+
+	if cannot_Draw_AI then return end
+
+	-- Find AI Deck and Draw
+	foundDuration = false
+	foundDeck = false
+	for _, object in ipairs(deckMonsterAI.getObjects()) do
+		if string.find(object.getDescription(), "duration") and not string.find(object.getDescription(), "temp") then
+			if object.getRotation().z < 10 or object.getRotation().z > 360 then
+				foundDuration = true
+				card_drawnDuration = object
+			end
+		end
+	end
+
+	if foundDuration then
+		broadcastToAll("!!! Duration Drawn Face Up !!!", {1, 1, 1})
+		card_drawnDuration.setPositionSmooth({ - 3.67, 5, - 2.49}, false, false)
+		card_drawnDuration.setRotationSmooth({0, 180, 0})
+		card_drawnDuration.setLock(false)
+	end
+
+	if not foundDuration then
+		for _, object in ipairs(deckMonsterAI.getObjects()) do
+			if object.tag == "Deck" then
+				foundDeck = true
+				deck = object
+				break
+			end
+		end
+	end
+
+	if not foundDuration then
+		if foundDeck then
+			card_drawnAI = deck.takeObject({position = { - 0.23, 5.35, - 3.73}, rotation = {35, 180, 0}, top = true, callback = "lockCard", callback_owner = Global})
+			card_drawnAI.highlightOn({0.856, 0.1, 0.094}, 60)
+			table.insert(table_drawnAI, card_drawnAI.clone({position = { - 23.34, 5.29, - 14.33}}))
+			table.insert(table_drawnAI, card_drawnAI.clone({position = {23.45, 0.3, - 13.48}}))
+			startLuaCoroutine(self, "set_cloned_AI_cards")
+			get_drawnAI_Effects()
+		end
+
+		if not foundDeck then
+			for _, object in ipairs(deckMonsterAI.getObjects()) do
+				if object.tag == "Card" and not string.find(object.getDescription(), "persistent injury card") then
+					card_drawnAI = object
+				end
+			end
+			if card_drawnAI == nil then
+				broadcastToAll("Reshuffle the AI Deck First", {1,1,1,})
+				return
+			end
+			card_drawnAI.setPositionSmooth({ - 0.23, 5.35, - 3.73}, false, false)
+			card_drawnAI.setRotationSmooth({35, 180, 0})
+			card_drawnAI.highlightOn({0.856, 0.1, 0.094}, 60)
+			table.insert(table_drawnAI, card_drawnAI.clone({position = { - 23.35, 0.3, - 13.48}}))
+			table.insert(table_drawnAI, card_drawnAI.clone({position = {23.45, 0.3, - 13.48}}))
+			card_drawnAI.setLock(true)
+			startLuaCoroutine(self, "set_cloned_AI_cards")
+			get_drawnAI_Effects()
+		end
+
+		if string.find(card_drawnAI.getDescription(), "duration") then
+			broadcastToAll("!!! Duration Drawn Face Down !!!", {1, 1, 1})
+			card_drawnAI.setPositionSmooth({ - 3.67, 5, - 2.49}, false, false)
+			card_drawnAI.setRotationSmooth({0, 180, 0})
+			card_drawnAI.setLock(false)
+		end
+
+	else -- if foundDuration then
+		for _, object in ipairs(deckMonsterAI.getObjects()) do
+			if string.find(object.getDescription(), "duration") and object.getRotation().z < 35 and object.tag == "Card" then
+				object.setPositionSmooth({ - 0.23, 5.35, - 3.73}, false, false)
+				object.setRotationSmooth({35, 180, 0})
+				object.highlightOn({0.856, 0.1, 0.094}, 60)
+				table.insert(table_drawnAI, object.clone({position = { - 23.35, 0.3, - 13.48}}))
+				table.insert(table_drawnAI, object.clone({position = {23.45, 0.3, - 13.48}}))
+				object.setLock(true)
+				if object.getName() == "Atomic Conclusion" then
+					for _, obj in ipairs(zoneAIBoard.getObjects()) do
+						if string.find(obj.getDescription(), "duration") and not string.find(obj.getDescription(), "ai") then
+							obj.destroy()
+						end
+					end
+					cardName = "Atomic Conclusion Face Up"
+					tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+					local var = ""
+					tokSpawn.getVar("phase")
+					tokSpawn.setVar("phase", var)
+					startLuaCoroutine(self, "tokSpawn_coR")
+				end
+			end
+		end
+	end
+end
+
+function put_card_into_play()
+	card_drawnAI.setLock(false)
+	card_drawnAI.setRotationSmooth({0, 180, 0})
+
+	----- BUTCHER -----
+	if card_drawnAI.getName() == "Forbidden Light" then
+		card_drawnAI.setPositionSmooth({2.12, 4.70, -21.43})
+	elseif card_drawnAI.getName() == "Screaming" then
+		card_drawnAI.setPositionSmooth({-4.20, 4.70, -14.90})
+	elseif card_drawnAI.getName() == "Embrace the Pain" then
+		card_drawnAI.setPositionSmooth({-2.10, 4.70, -14.90})
+	elseif card_drawnAI.getName() == "Lantern Frenzy" then
+		card_drawnAI.setPositionSmooth({4.17, 4.70, -14.90})
+	end
+
+	----- DRAGON KING -----
+	if card_drawnAI.getName() == "Glowing Fist" then
+		card_drawnAI.setPositionSmooth({0.08, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Overheat" then
+		card_drawnAI.setPositionSmooth({4.19, 4.32, -14.16})
+	end
+
+	----- DUNG BEETLE KNIGHT -----
+	if card_drawnAI.getName() == "Beetle Flight" then
+		card_drawnAI.setPositionSmooth({0.07, 4.32, -17.97})
+	end
+
+	----- FLOWER KNIGHT -----
+	if card_drawnAI.getName() == "Cocoon" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.70, -14.15})
+	elseif card_drawnAI.getName() == "Entrancing Gaze" then
+		card_drawnAI.setPositionSmooth({4.19, 4.70, -17.97})
+	elseif card_drawnAI.getName() == "Hypervigilance" then
+		card_drawnAI.setPositionSmooth({4.19, 4.70, -14.15})
+	elseif card_drawnAI.getName() == "Noxious" then
+		card_drawnAI.setPositionSmooth({-0.02, 4.70, -21.56})
+	end
+
+	----- GORM -----
+	if card_drawnAI.getName() == "Posturing Piss" then
+		card_drawnAI.setPositionSmooth({2.17, 4.32, -14.16})
+	elseif card_drawnAI.getName() == "Thunderfoot" then
+		card_drawnAI.setPositionSmooth({-3.07, 4.33, -21.61})
+	elseif card_drawnAI.getName() == "Ancient Indigestion" then
+		card_drawnAI.setPositionSmooth({3.21, 4.33, -21.59})
+	end
+
+	----- KING'S MAN -----
+	if card_drawnAI.getName() == "King's Walk" then
+		card_drawnAI.setPositionSmooth({-2.01, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Lash Out" then
+		card_drawnAI.setPositionSmooth({3.98, 4.30, -14.28})
+	elseif card_drawnAI.getName() == "Spinning Halberd" then
+		card_drawnAI.setPositionSmooth({2.05, 4.30, -21.32})
+	elseif card_drawnAI.getName() == "Lantern Mirage" then
+		card_drawnAI.setPositionSmooth({-3.98, 4.24, -17.90})
+	end
+
+	----- LION GOD -----
+	if card_drawnAI.getName() == "Challenge" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Embrace the Eons" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "God Parasites" then
+		card_drawnAI.setPositionSmooth({0.08, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Cudgel" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.33, -21.57})
+	end
+
+	----- LION KNIGHT -----
+	if card_drawnAI.getName() == "Crowd-Pleaser" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Wire-Fighting" then
+		card_drawnAI.setPositionSmooth({0.07, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Upstage" then
+		card_drawnAI.setPositionSmooth({2.06, 4.30, -14.27})
+	elseif card_drawnAI.getName() == "Spotlight" then
+		card_drawnAI.setPositionSmooth({0.07, 4.30, -17.91})
+	end
+
+	----- LONELY TREE -----
+	if card_drawnAI.getName() == "Heavy Boughs" then
+		card_drawnAI.setPositionSmooth({-1.96, 4.68, -14.92})
+	elseif card_drawnAI.getName() == "Sprouted Thorns" then
+		card_drawnAI.setPositionSmooth({0.02, 4.68, -14.92})
+	elseif card_drawnAI.getName() == "Grass Whistle" then
+		card_drawnAI.setPositionSmooth({2.04, 4.68, -14.92})
+	elseif card_drawnAI.getName() == "Absorbing Roots" then
+		card_drawnAI.setPositionSmooth({3.96, 4.68, -14.92})
+	end
+
+	----- PHOENIX -----
+	if card_drawnAI.getName() == "Rancid Melon Stench" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Bored" then
+		card_drawnAI.setPositionSmooth({0.08, 4.32, -14.15})
+	elseif card_drawnAI.getName() == "Chatter" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -17.97})
+	end
+
+	----- SCREAMING ANTELOPE -----
+	if card_drawnAI.getName() == "Buck" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -14.15})
+	end
+
+	----- SLENDERMAN -----
+	if card_drawnAI.getName() == "Dark Hour" then
+		card_drawnAI.setPositionSmooth({-3.99, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Deep Paralysis" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Hairworm Emergence" then
+		card_drawnAI.setPositionSmooth({0.07, 4.68, -17.91})
+	end
+
+	----- SPIDICULES -----
+	if card_drawnAI.getName() == "Caustic Pheromones" then
+		card_drawnAI.setPositionSmooth({2.17, 4.32, -14.16})
+	elseif card_drawnAI.getName() == "Jumping Spiders" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Eighty Angry Legs" then
+		card_drawnAI.setPositionSmooth({0.07, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Frantic Spinning" then
+		card_drawnAI.setPositionSmooth({2.16, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Meat Mist" then
+		card_drawnAI.setPositionSmooth({4.19, 4.33, -21.58})
+	end
+
+	----- SUNSTALKER -----
+	if card_drawnAI.getName() == "Violet Bubble" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Vermilion Bubble" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Verdigris Bubble" then
+		card_drawnAI.setPositionSmooth({0.07, 4.33, -21.57})
+	elseif card_drawnAI.getName() == "Verdant Bubble" then
+		card_drawnAI.setPositionSmooth({2.19, 4.33, -21.57})
+	end
+
+	----- TYRANT -----
+	if card_drawnAI.getName() == "Smashing Star" then
+		card_drawnAI.setPositionSmooth({-3.99, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Salve Incantation" then
+		card_drawnAI.setPositionSmooth({3.99, 4.68, -14.27})
+	elseif card_drawnAI.getName() == "Blistering Star" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.68, -17.91})
+	elseif card_drawnAI.getName() == "Virulent Incantation" then
+		card_drawnAI.setPositionSmooth({0.07, 4.68, -17.91})
+	elseif card_drawnAI.getName() == "Repelling Incantation" then
+		card_drawnAI.setPositionSmooth({2.06, 4.68, -17.91})
+	elseif card_drawnAI.getName() == "Quaking Incantation" then
+		card_drawnAI.setPositionSmooth({-2.02, 4.68, -21.33})
+	elseif card_drawnAI.getName() == "Smashing Incantation" then
+		card_drawnAI.setPositionSmooth({0.07, 4.68, -21.34})
+	elseif card_drawnAI.getName() == "Reaching Incantation" then
+		card_drawnAI.setPositionSmooth({2.06, 4.68, -21.34})
+	end
+
+	----- WATCHER -----
+	if card_drawnAI.getName() == "Inhale" then
+		card_drawnAI.setPositionSmooth({2.06, 4.68, -14.26})
+	elseif card_drawnAI.getName() == "Exhale" then
+		card_drawnAI.setPositionSmooth({3.99, 4.68, -14.27})
+	end
+
+	----- WHITE LION -----
+	if card_drawnAI.getName() == "Ground Fighting" then
+		card_drawnAI.setPositionSmooth({-4.19, 4.32, -17.97})
+	elseif card_drawnAI.getName() == "Enraged" then
+		card_drawnAI.setPositionSmooth({-2.12, 4.32, -17.97})
+	elseif card_drawnAI.getName() == "Bloodthirsty" then
+		card_drawnAI.setPositionSmooth({-0.02, 4.32, -18.02})
+	elseif card_drawnAI.getName() == "Alert" then
+		card_drawnAI.setPositionSmooth({2.16, 4.32, -17.98})
+	end
+	destroy_cloned_cards_AI()
+	table_drawnAI = {}
+end
+
+
+function stand_monster()
+	token_knockdown_monster.setRotationSmooth({0, 180, 0}, false, true)
+	token_knockdown_monster.getVar('monster_knocked_down')
+	token_knockdown_monster.setVar('monster_knocked_down', false)
+
+	local zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, monster in ipairs(zoneShowdown.getObjects()) do
+		if (string.find(monster.getDescription(), "monster") and string.find(monster.getDescription(), "figurine")) then
+			local pos = monster.getPosition()
+			local rotX = monster.getRotation().x
+			local rotY = monster.getRotation().y
+			local rotZ = monster.getRotation().z
+			if rotZ > 165 and rotZ < 195 then
+				monster.setRotationSmooth({rotX, rotY, 0}, false, false)
+				monster.setPositionSmooth({pos.x, 5, pos.z})
+				monster.setLock(false)
+			end
+		end
+	end
+end -- end function
+
+function enable_Reactions()
+	-- Re-enable reactions
+	local btns_Right = hitTool_Right.getButtons()
+	for i, v in pairs(btns_Right) do
+		if v.label == "Reactions Cancelled" then
+			hitTool_Right.removeButton(v.index)
+		end
+	end
+	local btns_Left = hitTool_Left.getButtons()
+	for i, v in pairs(btns_Left) do
+		if v.label == "Reactions Cancelled" then
+			hitTool_Left.removeButton(v.index)
+		end
+	end
+end -- end function
+
+function get_drawnAI_Effects()
+	cardName = ""
+	local desc = card_drawnAI.getDescription()
+
+	-- Duration Effects --------------------------------------------------------
+
+	----- DRAGON KING -----
+	-- Atomic Conclusion
+	if card_drawnAI.getName() == "Atomic Conclusion" then
+		cardName = "Atomic Conclusion"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- GORM -----
+	-- Rear Up
+	if card_drawnAI.getName() == "Rear Up" then
+		cardName = "Rear Up"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- THE HAND -----
+	-- Take Your Best Shot
+	if card_drawnAI.getName() == "Take Your Best Shot" then
+		cardName = "Take Your Best Shot"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').neg_eva.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- PHOENIX -----
+	-- Life Pattern
+	if card_drawnAI.getName() == "Life Pattern" then
+		cardName = "Life Pattern"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "duration"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- SPIDICULES -----
+	-- Hydraulic Leap
+	if card_drawnAI.getName() == "Hydraulic Leap" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Spidicules" then
+				obj.setPosition({1.05, 4.26, 0.23})
+				obj.setScale({0.95, 0.95, 0.95})
+				broadcastToAll("Spidicules leaped high into the air ~ cannot be wounded while this is in play", {1,1,1})
+			end
+		end
+	end
+
+	----- WHITE LION -----
+	-- Vanish
+	if card_drawnAI.getName() == "Vanish" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "White Lion" then
+				obj.setPosition({1.05, 4.26, 0.23})
+				obj.setScale({0.33, 0.33, 0.33})
+				broadcastToAll("The White Lion Vanished", {1,1,1})
+			end
+		end
+	end
+
+	-- Overlays ----------------------------------------------------------------
+
+	----- BUTCHER -----
+	-- Forbidden Light
+	if card_drawnAI.getName() == "Forbidden Light" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Butcher" then
+				obj.call("overlay_forbiddenLight")
+			end
+		end
+	elseif card_drawnAI.getName() == "Backhand" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Butcher" then
+				obj.call("overlay_backhand")
+			end
+		end
+	end
+
+	----- DRAGON KING -----
+	-- Crisis Crater
+	if card_drawnAI.getName() == "Crisis Crater" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Dragon King" then
+				obj.getVar("hasCrisisCrater")
+				obj.setVar("hasCrisisCrater", true)
+				obj.call("overlay_unseenAgony")
+			end
+		end
+	end
+
+	----- GORM -----
+	-- Hiccup
+	-- Headbutt
+	if string.find(desc, 'retch') then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Gorm" then
+				obj.call("overlay_retch")
+			end
+		end
+		-- Visual Effect
+		local set_Visual = getObjectFromGUID(Global.getTable('user_settings').set_Visual.guid)
+		local rotZ = set_Visual.getRotation().z
+		if rotZ < 10 or rotZ > 350 then
+			for _, obj in ipairs(gameBox.getObjects()) do
+				if obj.name == "Visual Effect - Gorm Retch" then
+					local effect = gameBox.takeObject({position = {0.80, 3.30, 14.18}, smooth = false, guid = obj.guid})
+					effect.AssetBundle.playLoopingEffect(2)
+				end
+			end
+		end
+	end
+
+	----- KING'S MAN -----
+	-- Trip
+	-- Axe
+	-- Cleave
+	if string.find(desc, 'horizontal') then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_horizontal")
+			end
+		end
+	elseif string.find(desc, 'vertical') then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_vertical")
+			end
+		end
+	-- King's Grace
+	elseif card_drawnAI.getName() == "King's Grace" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_kingsGrace")
+			end
+		end
+	-- King's Axe
+	elseif card_drawnAI.getName() == "King's Axe" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_kingsAxe")
+			end
+		end
+	-- Lash Out
+	elseif card_drawnAI.getName() == "Lash Out" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_tripZone")
+			end
+		end
+	-- Perfect Thrust
+	elseif card_drawnAI.getName() == "Perfect Thrust" then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "King's Man" then
+				obj.call("overlay_perfectThrust")
+			end
+		end
+	end
+
+	-- Special Circumstance Cards ----------------------------------------------
+
+	----- BUTCHER -----
+	-- Lantern Frenzy
+	if card_drawnAI.getName() == "Lantern Frenzy" then
+		cardName = "Lantern Frenzy"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_mov.guid)
+		local var = "lanternFrenzy"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "lanternFrenzy"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- DUNG BEETLE KNIGHT -----
+	if string.find(desc, "separation anxiety") then
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if obj.getName() == "Resin Dung Ball" then
+				dung_ball = obj
+			end
+		end
+		dung_ball.call("check_adjacent_toDungBall")
+		local bool = dung_ball.getVar("isAdjacent")
+		if not bool then
+			broadcastToAll("ⓧ Separation Anxiety !!", {0.42, 1, 0.47})
+		else
+			broadcastToAll("The Dung Beetle Knight is adjacent to the Resin Ball", {1,1,1})
+		end
+	end
+
+	----- FLOWER KNIGHT -----
+	-- Invitation
+	if card_drawnAI.getName() == "Invitation" then
+		cardName = "Invitation"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "endOfround"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+		local var = "endOfround"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- LION GOD -----
+	-- Challenge
+	if card_drawnAI.getName() == "Challenge" then
+		cardName = "Challenge"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+		local var = "Challenge"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	-- Cudgel
+	if card_drawnAI.getName() == "Cudgel" then
+		cardName = "Cudgel"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "Cudgel"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- LION KNIGHT -----
+	-- Upstage
+	if card_drawnAI.getName() == "Upstage" then
+		cardName = "Upstage"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "upstage"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "upstage"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- LONELY TREE -----
+	-- Bladed Leaf
+	-- Seed Grenade
+	if card_drawnAI.getName() == "Bladed Leaf" or card_drawnAI.getName() == "Seed Grenade" then
+		fruit_count = 0
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if string.find(obj.getName(), "Nightmare Fruit") and obj.getPosition().y > 6 then
+				fruit_count = fruit_count + 1
+			end
+		end
+		cardName = "Bladed Leaf"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_dmg.guid)
+		local var = "endOfMonsterTurn"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	if card_drawnAI.getName() == "Grass Whistle" then
+		cardName = "Grass Whistle"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_eva.guid)
+		local var = "Grass Whistle"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	-- Dreamer's Fruit
+	if card_drawnAI.getName() == "Dreamer's Fruit" then
+		fruit_count = 0
+		for _, obj in ipairs(zoneShowdown.getObjects()) do
+			if string.find(obj.getName(), "Nightmare Fruit") and obj.getPosition().y > 6 then
+				fruit_count = fruit_count + 1
+			end
+		end
+		cardName = "Dreamer's Fruit"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "dreamers fruit"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- MANHUNTER -----
+	-- Endless Barrage
+	if card_drawnAI.getName() == "Endless Barrage" then
+		cardName = "Endless Barrage"
+		tokSpawn1 = getObjectFromGUID(Global.getTable('tokSpawn').pos_spd.guid)
+		local var = "endOfMonsterTurn"
+		tokSpawn1.getVar("phase")
+		tokSpawn1.setVar("phase", var)
+
+		tokSpawn2 = getObjectFromGUID(Global.getTable('tokSpawn').neg_acc.guid)
+		local var = "endOfMonsterTurn"
+		tokSpawn2.getVar("phase")
+		tokSpawn2.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	----- PHOENIX -----
+	-- Bored
+	if card_drawnAI.getName() == "Bored" then
+		cardName = "Bored"
+		tokSpawn = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+		local var = "bored"
+		tokSpawn.getVar("phase")
+		tokSpawn.setVar("phase", var)
+		startLuaCoroutine(self, "tokSpawn_coR")
+	end
+
+	-- Survivor Status Button Creation ------------------------------------------
+
+	----- SPIDICULES -----
+	-- Animate
+	if card_drawnAI.getName() == "Animate" then
+		monster_Roller.getVar("survivorStatus")
+		monster_Roller.setVar("survivorStatus", "Animate")
+		monster_Roller.getVar("hasSurvivorStatusButtons")
+		monster_Roller.setVar("hasSurvivorStatusButtons", true)
+		monster_Roller.call("createButton_SurvivorStatus")
+	end
+
+	----- SCREAMING ANTELOPE -----
+	-- Crush and Devour
+	if card_drawnAI.getName() == "Crush and Devour" then
+		monster_Roller.getVar("survivorStatus")
+		monster_Roller.setVar("survivorStatus", "Gobbled Up")
+		monster_Roller.getVar("hasSurvivorStatusButtons")
+		monster_Roller.setVar("hasSurvivorStatusButtons", true)
+		monster_Roller.call("createButton_SurvivorStatus")
+	end
+
+end -- end function
+
+function tokSpawn_coR()
+	wait(0.1)
+	-- Rear Up
+	if cardName == "Rear Up" then
+		broadcastToAll("The Gorm gained (+5) Toughness until 'Rear Up' Leaves Play", {1, 1, 1})
+		for i=1, 5 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Life Pattern
+	elseif cardName == "Life Pattern" then
+		broadcastToAll("The Phoenix gained (+4) Toughness until 'Life Pattern' Leaves Play", {1, 1, 1})
+		for i=1, 4 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Take your best shot
+	elseif cardName == "Take Your Best Shot" then
+		broadcastToAll("The Hand gained (-10) Evasion until 'Take Your Best Shot' Leaves Play", {1, 1, 1})
+		for i=1, 10 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Invitation
+	elseif cardName == "Invitation" then
+		broadcastToAll("The Flower Knight gained (+2) Damage and (-2) Toughness until the End of the Round", {1,1,1})
+		for i=1, 2 do
+			tokSpawn1.call("spawn_token")
+			wait(0.50)
+		end
+		for i=1, 2 do
+			tokSpawn2.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Lantern Frenzy
+	elseif cardName == "Lantern Frenzy" then
+		broadcastToAll("The Butcher gained (+2) Movement and (+1) Speed while Lantern Frenzy is in Play", {1,1,1})
+		for i=1, 2 do
+			tokSpawn1.call("spawn_token")
+			wait(0.50)
+		end
+			tokSpawn2.call("spawn_token")
+
+	-- Bored
+	elseif cardName == "Bored" then
+		broadcastToAll("The Phoenix has (-2) Toughness while Bored is in Play", {1,1,1})
+		for i=1, 2 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Endless Barrage
+	elseif cardName == "Endless Barrage" then
+		broadcastToAll("Manhunter gained (+2) Speed ~ (-2) Accuracy for this Attack", {1,1,1})
+		for i=1, 2 do
+			tokSpawn1.call("spawn_token")
+			wait(0.50)
+		end
+		for i=1, 2 do
+			tokSpawn2.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Atomic Conclusion
+	elseif cardName == "Atomic Conclusion" then
+		broadcastToAll("Perform Irradiate", {1,1,1})
+		for i=1, 4 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Atomic Conclusion Face Up" then
+		broadcastToAll("The Dragon King gained 10 (-1) Toughness Tokens ~ Perform Meltdown", {1,1,1})
+		for i=1, 10 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Bladed Leaf" then
+		broadcastToAll("The Lonely Tree gained (+" .. fruit_count .. ") Damage", {1,1,1})
+		for i=1, fruit_count do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Grass Whistle" then
+		broadcastToAll("The Lonely Tree gained (+1) Evasion", {1,1,1})
+		tokSpawn.call("spawn_token")
+		wait(0.50)
+		for _, obj in ipairs(zoneAIBoard.getObjects()) do
+			if obj.getName() == "Life Trait" then
+				broadcastToAll("The Lonely Tree gained an additional (+1) Evasion for Level 3", {1,1,1})
+				tokSpawn.call("spawn_token")
+			end
+		end
+
+	elseif cardName == "Dreamer's Fruit" then
+		broadcastToAll("The Lonely Tree gained (+" .. fruit_count .. ") Speed", {1,1,1})
+		wait(0.5)
+		broadcastToAll("Speed Tokens will be added and removed as Fruit leaves and returns to the Tree", {1,1,1})
+		for i=1, fruit_count do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	-- Upstage
+	elseif cardName == "Upstage" then
+		broadcastToAll("The Lion Knight gained (+1) Speed and (-1) Damage while Upstage is in Play", {1,1,1})
+		tokSpawn1.call("spawn_token")
+		wait(0.50)
+		tokSpawn2.call("spawn_token")
+
+	elseif cardName == "Cudgel" then
+		broadcastToAll("The Lion God gained (+2) Damage while Cudgel is in Play", {1,1,1})
+		for i=1, 2 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+	elseif cardName == "Challenge" then
+		broadcastToAll("The Lion God gained (+4) Toughness while Challenge is in Play", {1,1,1})
+		for i=1, 4 do
+			tokSpawn.call("spawn_token")
+			wait(0.50)
+		end
+
+
+	end
+	return 1
+end
+
+function set_cloned_AI_cards()
+	wait(1)
+	for k, v in pairs(table_drawnAI) do
+		if v ~= nil then
+			v.flip()
+			v.highlightOn({0.856, 0.1, 0.094}, 60)
+			v.setLock(true)
+			v.setRotation({35, 180, 0})
+			v.setPosition({v.getPosition().x, 5.29, - 14.33})
+		end
+	end
+	return 1
+end
+
+function destroy_cloned_cards_AI()
+	-- Destroy current AI cards cloned to table from drawn AI
+	if next(table_drawnAI) == nil then return end
+	for k, v in pairs(table_drawnAI) do
+		if v ~= nil then
+			v.destroy()
+		end
+	end
+end
+--]]
+
+
+
+
+--[[
+-- Next Round ------------------------------------------------------------------
+function nextRound()
+	self.setDescription("Monster's Turn")
+	hitTool_Right.call('removeButton_ReactionTriggered')
+	hitTool_Right.call('removeButton_survival_opportunity')
+	hitTool_Right.call('removeButton_FinishReaction')
+	--hitTool_Right.call('removeButton_survival_after_crit')
+
+	-- Persistent Injury and other Effect Check
+	check_at_the_start_of_the_Monster_turn()
+	check_at_the_start_of_the_players_turn()
+	reset_Reactions()
+	resetStartActButtons()
+	delete_until_the_end_of_round_tokens()
+	--Refreshes Survival Actions / Buttons
+	flip_Survival_Action_Tokens()
+	reset_fist_and_tooth_buttons()
+	-- Move monster controller
+	move_monster_controller_token()
+	-- Buttons
+	create_DrawAIButton()
+	create_putIntoPlay_button()
+	create_endMonsterTurnButton()
+	remove_SurvivorTurn_Button()
+	remove_nextRound_Button()
+	-- Resets Dazed for Skullcap Hammer
+	token_knockdown_monster.getVar("isDazed")
+	token_knockdown_monster.setVar("isDazed", false)
+	-- Battle Pressure
+	for _, obj in ipairs(zoneAIBoard.getObjects()) do
+		if obj.getName() == "Mad Steed" or obj.getName() == "King's Man Basic Action Card" then
+			hitTool_Right.call('return_battle_pressure')
+		end
+	end
+end
+
+function check_at_the_start_of_the_Monster_turn()
+	bloodThirsty_count = 0
+	for _, object in ipairs(zoneInjuryBoard.getObjects()) do
+		if object.getName() == "Restless Ear" then
+			broadcastToAll("☠ Persistent Injury ~ Restless Ear in Play ☠", {1, 1, 1})
+		end
+		if object.getName() == "Buck" then
+			broadcastToAll("** Mood ~ Buck: The monster targets and attacks any survivors in its blind spot.", {1, 1, 1})
+		end
+		if object.getName() == "Beast's Temple" then
+			broadcastToAll("☠ Persistent Injury ~ Beast's Temple in Play ☠", {1, 1, 1})
+		end
+		if object.getName() == "Soft Belly" then
+			broadcastToAll("☠ Persistent Injury ~ Soft Belly in Play ☠", {1, 1, 1})
+		end
+		if object.getName() == "Glorious Soft Belly" then
+			broadcastToAll("☠ Persistent Injury ~ Glorious Soft Belly in Play ☠", {1, 1, 1})
+		end
+		if object.getName() == "Screaming" then
+			broadcastToAll("** Screaming ~ All Survivors suffer 1 Brain Damage **", {1, 1, 1})
+		end
+
+		----- BUTCHER ------
+		-- Embrace the Pain
+		if object.getName() == "Embrace the Pain" then
+			for _, board in ipairs(zoneInjuryBoard.getObjects()) do
+				if board.getName() == "The Butcher" then
+					local count = tonumber(board.call("getCount"))
+					if count >= 2 then
+						board.call("set_zero")
+						broadcastToAll("Embrace the Pain ~ (2+) Tokens were Removed ~ Perform Basic Action", {1,1,1})
+					end
+				end
+			end
+		end
+
+		----- DUNG BEETLE KNIGHT ------
+		-- Power Forward
+		if object.getName() == "Power Forward" then
+			for _, obj in ipairs(zoneShowdown.getObjects()) do
+				if obj.getName() == "Resin Dung Ball" then
+					dung_ball = obj
+				end
+			end
+			dung_ball.call("check_adjacent_toDungBall")
+			local bool = dung_ball.getVar("isAdjacent")
+			if not bool then
+				broadcastToAll("Power Forward Cancelled > ⓧ Separation Anxiety !!", {0.42, 1, 0.47})
+			else
+				broadcastToAll("Power Forward > Perform Baller", {1,1,1})
+			end
+		end
+
+		if object.getName() == "Mammoth Rear Clubfoot" then
+			broadcastToAll("�� Persistent Injury ~ Mammoth Rear Clubfoot in Play ☠", {1, 1, 1})
+		end
+		if object.getName() == "Hivemind" then
+			broadcastToAll("** Hivemind ~ Perform Spawn", {1, 1, 1})
+		end
+		if object.getName() == "Full Stride" then
+			broadcastToAll("** Perform Full Stride then Tombstone **", {1, 1, 1})
+		end
+		if object.getName() == "Short Stride" then
+			broadcastToAll("** Perform Short Stride then Tombstone ** ", {1, 1, 1})
+		end
+		if object.getName() == "Cosmic Heat" then
+			broadcastToAll("** At the end of the Survivors turn, any survivors in the light trigger Cosmic Heat.", {1, 1, 1})
+		end
+		if object.getName() == "Smolder" then
+			broadcastToAll("** Smolder ~ Perform Irradiate **", {1, 1, 1})
+		end
+		if object.getName() == "Serpent Tail" then
+			broadcastToAll("☠ Persistent Injury ~ Serpent Tail in Play ☠", {1, 1, 1})
+		end
+		if object.getName() == "Smashing Star" then
+			broadcastToAll("** If there are 2+ Gates ~ Smashing Star **", {1, 1, 1})
+		end
+		if object.getName() == "Salve Incantation" then
+			broadcastToAll("** If there are 2+ Gates ~ Salve Incantation **", {1, 1, 1})
+		end
+		if object.getName() == "Reaching Incantation" then
+			broadcastToAll("** If there are 2+ Gates ~ Reaching Incantation **", {1, 1, 1})
+		end
+		if object.getName() == "Blistering Star" then
+			broadcastToAll("** If there are 2+ Gates ~ Blistering Star **", {1, 1, 1})
+		end
+		if object.getName() == "Virulent Incantation" then
+			broadcastToAll("** If there are 3+ Gates ~ Virulent Incantation **", {1, 1, 1})
+		end
+		if object.getName() == "Quaking Incantation" then
+			broadcastToAll("** If there are 3+ Gates ~ Quaking Incantation **", {1, 1, 1})
+		end
+		if object.getName() == "Repelling Incantation" then
+			broadcastToAll("** If there are 3+ Gates ~ Repelling Incantation **", {1, 1, 1})
+		end
+		if object.getName() == "Smashing Incantation" then
+			broadcastToAll("** If there are 5+ Gates ~ Smashing Incantation **", {1, 1, 1})
+		end
+		if object.getName() == "Lantern Vortex" then
+			broadcastToAll("Lantern Vortex ~ All survivors in the Void Nexus suffer Bash", {1, 1, 1})
+		end
+		if object.getName() == "Bloodthirsty" then
+			if object.getName() == "Bleeding" then
+				bloodThirsty_count = bloodThirsty_count + 1
+				print(bloodThirsty_count)
+				print("bloodThirsty_count")
+			end
+		end
+	end
+
+	-- Bloodthisty
+	if bloodThirsty_count >= 3 then
+		broadcastToAll("Bloodthirsty has (3+) Tokens ~ Remove them and Perform Basic Action", {1,1,1})
+	end
+	for _, tok in ipairs(zoneAIBoard.getObjects()) do
+		if string.find(tok.getDescription(), "start of monster turn") then
+			tok.destroy()
+		end
+	end
+end -- end function
+
+function check_at_the_start_of_the_players_turn()
+	broadcastTable = {}
+	for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+
+		----- FLOWER KNIGHT -----
+		-- Hypervigilance
+		if card.getName() == "Hypervigilance" then
+			table.insert(broadcastTable, "Hypervigilance ~ If there are any threats in the Fairy Ring ~ Perform Basic Action")
+
+		-- Noxious
+		elseif card.getName() == "Noxious" then
+			table.insert(broadcastTable, "Noxious ~ If there are any Survivors in the Fairy Ring ~ They are Knocked Down")
+
+		-- Heart of the Woods
+		elseif card.getName() == "Heart of the Woods" then
+			onBoardEdge = false
+			for _, surv in ipairs(zoneShowdown.getObjects()) do
+				if string.find(surv.getName(), "Player") then
+					local posX = surv.getPosition().x
+					local posZ = surv.getPosition().z
+					if (posZ > 26.24 or posZ < 3.85) or (posX > 14.44 or posX < -10.05) then
+						onBoardEdge = true
+					end
+				end
+			end
+			if onBoardEdge then
+				table.insert(broadcastTable, "Heart of the Woods ~ A Player on the Board Edge is sucked into the Darkness")
+			end
+		end
+
+		----- KING'S MAN ------
+		-- Silent Hymn
+		if card.getName() == "Silent Hymn" then
+			local stats = {color = "red", stat = "mov", modifier = "neg", num = 1, phase = "silent hymn"}
+			Global.setTable('stats_red', stats)
+			startLuaCoroutine(Global, "spawn_tok_red")
+
+			local stats = {color = "yellow", stat = "mov", modifier = "neg", num = 1, phase = "silent hymn"}
+			Global.setTable('stats_yellow', stats)
+			startLuaCoroutine(Global, "spawn_tok_yellow")
+
+			local stats = {color = "green", stat = "mov", modifier = "neg", num = 1, phase = "silent hymn"}
+			Global.setTable('stats_green', stats)
+			startLuaCoroutine(Global, "spawn_tok_green")
+
+			local stats = {color = "blue", stat = "mov", modifier = "neg", num = 1, phase = "silent hymn"}
+			Global.setTable('stats_blue', stats)
+			startLuaCoroutine(Global, "spawn_tok_blue")
+
+			broadcastToAll("Silent Hymn ~ All Survivors gained a (-1) Movement Token", {1,1,1})
+		end
+	end
+
+	local playerZones = {
+		red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	}
+	for zoneKey, zoneGUIDtable in pairs(playerZones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+
+		for _, object in ipairs(objectsInZone) do
+			local desc = object.getDescription()
+
+			-- Resets Gear/Cards that have Once Per Round Only
+			if string.find(desc, ", once per round used") then
+				local new_desc = string.gsub(desc, ", once per round used", "")
+				object.setDescription(new_desc)
+			end
+			if string.find(desc, ", devastating1, once per round used") then
+				local new_desc = string.gsub(desc, ", devastating1, once per round used", "")
+				object.setDescription(new_desc)
+			end
+
+			-- Deletes player tokens to 'end of round'
+			if string.find(desc, "end of round") then
+				object.destroy()
+			end
+
+			-- Prima Dona
+			if object.getName() == "Prima Dona" and zoneGUID == red then
+				table.insert(broadcastTable, "Player 1 ~ Prima Dona ~ You must take your act first")
+			elseif object.getName() == "Prima Dona" and zoneGUID == yellow then
+				table.insert(broadcastTable, "Player 2 ~ Prima Dona ~ You must take your act first")
+			elseif object.getName() == "Prima Dona" and zoneGUID == green then
+				table.insert(broadcastTable, "Player 3 ~ Prima Dona ~ You must take your act first")
+			elseif object.getName() == "Prima Dona" and zoneGUID == blue then
+				table.insert(broadcastTable, "Player 4 ~ Prima Dona ~ You must take your act first")
+			end
+		end
+	end
+	startLuaCoroutine(self, "broadcast_message_coR")
+end -- end function
+
+function broadcast_message_coR()
+	if #broadcastTable > 0 then
+		for _, b in pairs(broadcastTable) do
+			broadcastToAll(b, {1,1,1})
+			wait(3)
+		end
+	end
+	return 1
+end
+
+function reset_Reactions()
+	local isKnockedDown = token_knockdown_monster.getVar('monster_knocked_down')
+	local reactionsCancelled_EndOfRound = token_knockdown_monster.getVar('reactionsCancelled_EndOfRound')
+
+	if not isKnockedDown and reactionsCancelled_EndOfRound then
+		local btns_left = hitTool_Left.getButtons()
+		for i, v in pairs(btns_left) do
+			if v.label == "Reactions Cancelled" then
+				hitTool_Left.removeButton(v.index)
+			end
+		end
+	end
+
+	if not isKnockedDown and reactionsCancelled_EndOfRound then
+		local btns_Right = hitTool_Right.getButtons()
+		for i, v in pairs(btns_Right) do
+			if v.label == "Reactions Cancelled" then
+				hitTool_Right.removeButton(v.index)
+			end
+		end
+	end
+	-- deprecate
+	-- Reset Cancel Reactions
+	--hitTool_Left.call('cleanUp')
+	--hitTool_Right.call('cleanUp')
+end -- end function
+
+function resetStartActButtons()
+	-- Player 1 ---------------------------
+	redSurvCard.getVar("actStarted")
+	redSurvCard.setVar("actStarted", false)
+	local btns = redSurvCard.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Attack" then
+				redSurvCard.call("endAttack")
+			end
+			if v.label == "End Your Act" then
+				redSurvCard.call("endAct")
+			end
+		end
+	end
+	redSurvCard.call("clearButtons")
+
+	-- Player 2 ---------------------------
+	yellowSurvCard.getVar("actStarted")
+	yellowSurvCard.setVar("actStarted", false)
+	local btns = yellowSurvCard.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Attack" then
+				yellowSurvCard.call("endAttack")
+			end
+			if v.label == "End Your Act" then
+				yellowSurvCard.call("endAct")
+			end
+		end
+	end
+	yellowSurvCard.call("clearButtons")
+
+	-- Player 3 ---------------------------
+	greenSurvCard.getVar("actStarted")
+	greenSurvCard.setVar("actStarted", false)
+	local btns = greenSurvCard.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Attack" then
+				greenSurvCard.call("endAttack")
+			end
+			if v.label == "End Your Act" then
+				greenSurvCard.call("endAct")
+			end
+		end
+	end
+	greenSurvCard.call("clearButtons")
+
+	-- Player 4 ---------------------------
+	blueSurvCard.getVar("actStarted")
+	blueSurvCard.setVar("actStarted", false)
+	local btns = blueSurvCard.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Attack" then
+				blueSurvCard.call("endAttack")
+			end
+			if v.label == "End Your Act" then
+				blueSurvCard.call("endAct")
+			end
+		end
+	end
+	blueSurvCard.call("clearButtons")
+
+	for _, surv in ipairs(zoneShowdown.getObjects()) do
+		if surv.getName() == "Player One" then
+			redSurvCard.call("create_init_Buttons")
+
+		elseif surv.getName() == "Player Two" then
+			yellowSurvCard.call("create_init_Buttons")
+
+		elseif surv.getName() == "Player Three" then
+			greenSurvCard.call("create_init_Buttons")
+
+		elseif surv.getName() == "Player Four" then
+			blueSurvCard.call("create_init_Buttons")
+		end
+	end
+
+	--[[redSurvCard.call("removeButtons_attack_attackBlind")
+	redSurvCard.call("removeButton_move")
+	redSurvCard.call("removeButton_ShadowWalk")
+	redSurvCard.call('removeKnockbackButton')
+	redSurvCard.call('removeBashButton')
+end -- end function
+
+function delete_until_the_end_of_round_tokens()
+	for _, obj in pairs(zoneAIBoard.getObjects()) do
+		if string.find(obj.getDescription(), 'end of round') then
+			obj.destruct()
+		end
+	end
+end -- end function
+
+function flip_Survival_Action_Tokens()
+	local token = {}
+	for k, v in pairs(tokens) do
+		token = getObjectFromGUID(v)
+		token.setRotationSmooth({0, 180, 0})
+	end
+end
+
+function reset_fist_and_tooth_buttons()
+	for _, object in ipairs(zone_Red.getObjects()) do
+		if object.getName() == "Fist & Tooth" then
+			proficiency = 0
+			local grid = getObjectFromGUID(Global.getTable('grids').red.guid)
+			local objbtns = getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons")
+			for i, v in pairs(objbtns) do
+				prefix = string.sub(i, 1, 12)
+				if prefix == "proficiency_" then
+					if objbtns[tostring(i)].label ~= '' then
+						proficiency = proficiency + 1
+					end
+				end
+			end
+			if proficiency >= 3 then
+				redSurvCard.call("create_Fist_and_Tooth_Button")
+			end
+		end
+	end
+
+	for _, object in ipairs(zone_Yellow.getObjects()) do
+		if object.getName() == "Fist & Tooth" then
+			proficiency = 0
+			local grid = getObjectFromGUID(Global.getTable('grids').yellow.guid)
+			local objbtns = getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons")
+			for i, v in pairs(objbtns) do
+				prefix = string.sub(i, 1, 12)
+				if prefix == "proficiency_" then
+					if objbtns[tostring(i)].label ~= '' then
+						proficiency = proficiency + 1
+					end
+				end
+			end
+			if proficiency >= 3 then
+				local survCard = getObjectFromGUID(Global.getTable('survCards').yellow.guid)
+
+				yellowSurvCard.call("create_Fist_and_Tooth_Button")
+			end
+		end
+	end
+
+	for _, object in ipairs(zone_Green.getObjects()) do
+		if object.getName() == "Fist & Tooth" then
+			proficiency = 0
+			local grid = getObjectFromGUID(Global.getTable('grids').green.guid)
+			local objbtns = getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons")
+			for i, v in pairs(objbtns) do
+				prefix = string.sub(i, 1, 12)
+				if prefix == "proficiency_" then
+					if objbtns[tostring(i)].label ~= '' then
+						proficiency = proficiency + 1
+					end
+				end
+			end
+			if proficiency >= 3 then
+
+				greenSurvCard.call("create_Fist_and_Tooth_Button")
+			end
+		end
+	end
+
+	local zone_Blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	for _, object in ipairs(zone_Blue.getObjects()) do
+		if object.getName() == "Fist & Tooth" then
+			proficiency = 0
+			local grid = getObjectFromGUID(Global.getTable('grids').blue.guid)
+			local objbtns = getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons")
+			for i, v in pairs(objbtns) do
+				prefix = string.sub(i, 1, 12)
+				if prefix == "proficiency_" then
+					if objbtns[tostring(i)].label ~= '' then
+						proficiency = proficiency + 1
+					end
+				end
+			end
+			if proficiency >= 3 then
+				blueSurvCard.call("create_Fist_and_Tooth_Button")
+			end
+		end
+	end
+	--Sets Fist and Tooth Button if Master is in the Settlement
+	for _, object in ipairs(zoneInnovations.getObjects()) do
+		if object.getName() == "Fist & Tooth" then
+			redSurvCard.call("create_Fist_and_Tooth_Button")
+			yellowSurvCard.call("create_Fist_and_Tooth_Button")
+			greenSurvCard.call("create_Fist_and_Tooth_Button")
+			blueSurvCard.call("create_Fist_and_Tooth_Button")
+		end
+	end
+end -- end function
+
+function move_monster_controller_token()
+	-- Player 1
+	for _, token in ipairs(zone_Red.getObjects()) do
+		if token.getName() == "Monster Controller" then
+			token.setPosition({-15.52, 4.8, -21.65})
+
+			print("Yellow is now the Monster Controller")
+		end
+	end
+	-- Player 2
+	for _, token in ipairs(zone_Yellow.getObjects()) do
+		--Moves Monster Controller
+		if token.getName() == "Monster Controller" then
+			token.setPosition({14.63, 4.8, -21.69})
+			print("Green is now the Monster Controller")
+		end
+	end
+	-- Player 3
+	for _, token in ipairs(zone_Green.getObjects()) do
+		if token.getName() == "Monster Controller" then
+			token.setPosition({31.27, 4.8, -21.72})
+			print("Blue is now the Monster Controller")
+		end
+	end
+	-- Player 4
+	for _, token in ipairs(zone_Blue.getObjects()) do
+		if token.getName() == "Monster Controller" then
+			token.setPosition({-32.13, 4.8, -21.70})
+			print("Red is now the Monster Controller")
+		end
+	end
+end --- end function
+--]]
+
+
+
+--[[
+-- End Monster Turn ------------------------------------------------------------
+function endMonsterTurn()
+	self.setDescription("Survivor's Turn")
+	remove_monsters_turn_buttons()
+	createSurvivorTurnButton()
+	create_next_round_button()
+
+	remove_overlays()
+	check_at_the_end_of_the_monster_turn()
+	destroy_cloned_cards_AI()
+
+	-- Puts AI card on discard pile
+	pos = self.getPosition()
+	local hitList = Physics.cast({origin = {pos.x, pos.y + 1, pos.z + 1}, direction = {0, 1, 0}, type = 2, size = {1, 1, 1}, max_distance = 0})
+	for _, entry in ipairs(hitList) do
+		if entry.hit_object.tag == "Card" and string.find(entry.hit_object.getDescription(), "ai") then
+			entry.hit_object.setLock(false)
+			entry.hit_object.setPositionSmooth({ - 1.24, 6.31, - 2.45}, false, false)
+			entry.hit_object.setRotationSmooth({0, 180, 0, false, true})
+			entry.hit_object.highlightOff()
+		end
+	end
+
+
+
+	-- Destroys End of Monster Turn Tokens
+	for _, object in ipairs(zoneAIBoard.getObjects()) do
+		if string.find(object.getDescription(), "end of monster turn") then
+			object.destroy()
+		end
+	end
+
+	-- Reset Monster Attack Roller Buttons if Survivor Status Buttons were created
+	monster_Roller.call("initCustomButtons")
+	monster_Roller.getVar("hasSurvivorStatusButtons")
+	monster_Roller.setVar("hasSurvivorStatusButtons", false)
+end
+
+function remove_overlays()
+	-- Removes Overlays created by AI Cards
+
+	----- BUTCHER -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Butcher" then
+			obj.call("remove_overlay_backhand")
+		end
+	end
+
+	----- DRAGON KING -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Dragon King" then
+			obj.getVar("hasCrisisCrater")
+			obj.setVar("hasCrisisCrater", false)
+			obj.call("remove_overlay_unseenAgony")
+		end
+	end
+
+	----- GORM -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "Gorm" then
+			obj.call("remove_overlay_retch")
+		end
+	end
+
+	----- KING'S MAN -----
+	for _, obj in ipairs(zoneShowdown.getObjects()) do
+		if obj.getName() == "King's Man" then
+			local btns = obj.getButtons()
+			if btns ~= nil then
+				for i, v in pairs(btns) do
+					if v.click_function == "overlay_horizontal" then
+						obj.call("remove_overlay_horizontal")
+					elseif v.click_function == "overlay_vertical" then
+						obj.call("remove_overlay_vertical")
+					elseif v.click_function == "overlay_kingsGrace" then
+						obj.call("remove_overlay_kingsGrace")
+					elseif v.click_function == "overlay_kingsAxe" then
+						obj.call("remove_overlay_kingsAxe")
+					elseif v.click_function == "overlay_perfectThrust" then
+						obj.call("remove_overlay_perfectThrust")
+					end
+				end
+			end
+		end
+	end
+end -- end function
+
+function check_at_the_end_of_the_monster_turn()
+	for _, object in ipairs(zoneInjuryBoard.getObjects()) do
+		if object.getName() == "Cunning" then
+			broadcastToAll("Cunning in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Diabolical" then
+			broadcastToAll("Diabolical in Play", {1, 1, 1})
+		end
+
+		-- Forbidden Light
+		if object.getName() == "Forbidden Light" then
+			local pos = object.getPosition()
+			local str_bag = getObjectFromGUID('0bf641')
+			str_tok_forbiddenLight = str_bag.takeObject({position={pos.x, pos.y + 0.6, pos.z}, smooth=false, rotation={0,180,180}})
+			str_tok_forbiddenLight.setDescription("monster, forbidden light")
+			local count = 0
+			for _, tok in ipairs(zoneInjuryBoard.getObjects()) do
+				if string.find(tok.getDescription(), "forbidden light") then
+					count = count + 1
+				end
+			end
+			if count <= 3 then
+				broadcastToAll("Token added to Forbidden Light", {1,1,1})
+			end
+			if count >=4 then
+				object.setPosition({-1.24, 5, -2.48})
+				broadcastToAll("Forbidden Light has 5 Tokens and was Discarded", {1,1,1})
+				startLuaCoroutine(self, "delete_forbiddenLight_tokens")
+			end
+		end
+
+		if object.getName() == "Zeal" then
+			broadcastToAll("Zeal ~ Monster performs Basic Action", {1, 1, 1})
+		end
+
+		if object.getName() == "Exhale" then
+			broadcastToAll("Exhale in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Inhale" then
+			broadcastToAll("Inhale in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Hypervigilance" then
+			broadcastToAll("Hypervigilance in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Musth" then
+			broadcastToAll("Musth in Play", {1, 1, 1})
+		end
+
+		if object.getName() == "Absorbing Roots" then
+			knockdown_count = 0
+			for _, surv in ipairs(zoneShowdown.getObjects()) do
+				local rotZ = surv.getRotation().z
+				if string.find(surv.getName(), "Player") and rotZ > 165 and rotZ < 195 then
+					knockdown_count = knockdown_count + 1
+				end
+			end
+			if knockdown_count > 1 then
+				broadcastToAll("Absorbing Roots ~ The Lonely Tree heals " .. knockdown_count .. ". ")
+			end
+		end
+
+		if object.getName() == "Mauler" then
+			broadcastToAll("The Gold Smoke Knight performs Blacken", {1, 1, 1})
+		end
+
+	end ----------------------- end for loop body -------------------------------
+end -- end function
+
+function delete_forbiddenLight_tokens()
+	wait(2)
+	for _, tok in ipairs(zoneInjuryBoard.getObjects()) do
+		if string.find(tok.getDescription(), "forbidden light") then
+			tok.destroy()
+		end
+	end
+	for zoneKey, zoneGUIDtable in pairs(playerZones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+		for _, obj in ipairs(objectsInZone) do
+			if string.find(obj.getDescription(), "forbidden light") then
+				obj.destroy()
+			end
+		end
+	end
+	broadcastToAll("Survivor's (-1) Strength Tokens for Forbidden Light were removed", {1,1,1})
+	return 1
+end -- end function
+--]]
+
+
+--[[
+-- End Showdown ----------------------------------------------------------------
+function endShowdown()
+	destroy_cloned_cards_AI()
+	table_drawnAI = {}
+	broadcastTable = {}
+	changeMonster({mov = 0, tgh = 0, spd = 0, acc = 0, evs = 0, lck = 0, dmg = 0})
+	resetSurvFigurines()
+	storeSurvDiedMarkers()
+	deleteAIdeck()
+	reset_gear()
+	resetFrenzy()
+	reset_zoneEffects()
+	play_music_track()
+	store_effects()
+	check_cooking_innovation()
+
+	--storeResources() -- moved to reset_gear()
+
+	-- Trigger 'When you Return' scripts on
+	boardStory_Hunt = getObjectFromGUID('9eaa8a')
+	boardStory_Hunt.call("returnClick")
+	boardStory_Hunt.call("resetTemps")
+
+	tool_storyHunt = getObjectFromGUID('c66fd4')
+	tool_storyHunt.call("destroy_currentLoaded")
+
+	-- Recall Showdown Bag
+	local zone = getObjectFromGUID('6604b4') -- zone where showdown bags are spawned
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.tag == "Bag" then
+			bag = obj
+		end
+	end
+	if bag ~= nil then
+		bag.call("buttonClick_recall")
+	end
+
+	-- Store Injury Tables
+	bagInjuries = getObjectFromGUID('f974d8')
+	bagInjuries.call("buttonClick_recall")
+
+	-- Reset 'Start the Showdown' Button
+	token_startShowdown = getObjectFromGUID('9091f8')
+	token_startShowdown.setPosition({ - 0.29, 4.76, - 6.85})
+	token_startShowdown.call("createButtons")
+	token_startShowdown.setDescription("showdown ended")
+
+	-- Reset Buttons for 'When Survivor Died'
+	redSurvCard.call("clearButtons")
+	redSurvCard.call("create_init_Buttons")
+	yellowSurvCard.call("clearButtons")
+	yellowSurvCard.call("create_init_Buttons")
+	greenSurvCard.call("clearButtons")
+	greenSurvCard.call("create_init_Buttons")
+	blueSurvCard.call("clearButtons")
+	blueSurvCard.call("create_init_Buttons")
+
+	-- Reset Buttons for 'When Survivor Died'
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').red.guid)
+		tok.call("createButtons")
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').yellow.guid)
+		tok.call("createButtons")
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').green.guid)
+		tok.call("createButtons")
+	local tok = getObjectFromGUID(Global.getTable('menu_tokens').blue.guid)
+		tok.call("createButtons")
+
+	-- Resets Always in Darkness Booleans for Sunstalker
+	local card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool1 = card.getVar("inDarkness_always_red")
+		card.setVar(bool1, false)
+	local bool2 = card.getVar("inDarkness_always_yellow")
+		card.setVar(bool2, false)
+	local bool3 = card.getVar("inDarkness_always_green")
+		card.setVar(bool3, false)
+	local bool4 = card.getVar("inDarkness_always_blue")
+		card.setVar(bool4, false)
+
+	startLuaCoroutine(self, 'deleteTagMonster')
+end
+
+function get_run_away_story_event()
+	pageToLoad = "run away"
+	local pos = self.getPosition()
+	local deck = getObjectFromGUID("21fb65")
+	for _, story in ipairs(deck.getObjects()) do
+		local desc = story.description
+		local name = story.nickname
+		local scale = {1.96, 1.00, 1.96}
+		if string.find(string.lower(story.nickname), pageToLoad) and string.find(desc, "one") then
+			page_run_away = deck.takeObject({position = {0.00, 4.77, -20.04}, rotation = {12,180,0}, guid = story.guid, smooth = false})
+			page_run_away.setLock(true)
+			page_run_away.setScale(scale)
+			page_run_away.setRotation({12,180,0})
+		end
+	end
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Run Away" then
+			self.removeButton(v.index)
+		end
+	end
+	create_end_run_away_Button()
+end
+
+function end_run_away()
+	page_run_away.destroy()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if v.label == "Close Run Away" then
+			self.removeButton(v.index)
+		end
+	end
+	create_run_away_Button()
+end
+
+function resetSurvFigurines()
+	local zones = {
+		zoneShowdown = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid),
+		zoneSurvivorStatus = getObjectFromGUID(Global.getTable('zonesDestruct').zoneSurvivorStatus.guid),
+	}
+	for zoneKey, zoneGUIDtable in pairs(zones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+
+		for _, object in ipairs(objectsInZone) do
+			if object.getName() == "Player One" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({ - 2.37, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+
+			elseif object.getName() == "Player Two" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({ - 0.79, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+
+			elseif object.getName() == "Player Three" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({0.79, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+
+			elseif object.getName() == "Player Four" then
+				object.setLock(false)
+				object.setScale({0.40, 0.40, 0.40})
+				object.setPosition({2.37, 4.22, 4.65})
+				object.setRotationSmooth({0, 0, 0})
+			end
+		end
+
+	end
+end
+
+function storeSurvDiedMarkers()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneSurvivorStatus.guid)
+	local objectsInZone = zone.getObjects()
+	for _, object in ipairs(objectsInZone) do
+		if object.getName() == "dead_skull_token" then
+			gameBox.putObject(object)
+		end
+	end
+end
+
+function deleteAIdeck()
+	local zoneAIBoard = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+	for k, v in pairs(zoneAIBoard.getObjects()) do
+		if v.tag == 'Deck' then
+			v.destruct()
+		end
+	end
+end
+
+function reset_gear()
+	local playerZones = {
+		getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		getObjectFromGUID(Global.getTable('zones').zoneP4.guid),
+	}
+	-- Shielded Quiver
+	for _, zoneTable in pairs(playerZones) do
+		hasQuiver = false
+		for k, v in pairs(zoneTable.getObjects()) do
+			if v.getName() == "Shielded Quiver" then
+				hasQuiver = true
+			end
+		end -- end for loop
+		for k, v in pairs(zoneTable.getObjects()) do
+			local desc = v.getDescription()
+
+			-- Resets Arrow Counts
+			if string.find(desc, "arrow") then
+				if hasQuiver then
+					v.call("setStartAmmoPlus1")
+				else
+					v.call("setStartAmmo")
+				end
+			elseif string.find(desc, "ammunition") then
+				v.call("setStartAmmo")
+			end
+
+			-- Reset Gear that gives 1 Armor to Each Hit Location
+			if string.find(desc, ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs") then
+				local new_desc = string.gsub(desc, ", once per showdown used, set, 1head, 1body, 1waist, 1arms, 1legs", "")
+				v.setDescription(new_desc)
+				v.translate({0,6,0})
+			end
+
+			-- Resets Once Per Showdown Used
+			if string.find(desc, ", once per showdown used") then
+				local new_desc = string.gsub(desc, ", once per showdown used", "")
+			end
+
+			-- Destroys Tokens lasting to end of showdown
+			if string.find(desc, ", until the end of the showdown") then
+				v.destroy()
+			end
+
+			-- Crystal Skin
+			if v.getName() == "Crystal Skin" then
+				local new_desc = string.gsub(desc, "armor, 3head, 3body, 3waist, 3legs, 3arms", "")
+				v.setDescription(new_desc)
+			end
+
+			-- Moves Resources to Step 9
+			if string.find(desc, "resource") then
+				v.setPosition({ - 37.09, 4.5, 30.11})
+			end
+
+		end -- end 2nd for loop
+	end -- end for loop over each zone
+end -- end function
+
+function resetFrenzy()
+	local frenzy_red = getObjectFromGUID('7636f9')
+	frenzy_red.setPosition({ - 5.85, 0, - 7.22})
+	local frenzy_yellow = getObjectFromGUID('c6fee5')
+	frenzy_yellow.setPosition({ - 2.82, 0, - 7.22})
+	local frenzy_green = getObjectFromGUID('8120c3')
+	frenzy_green.setPosition({2.34, 0, - 7.21})
+	local frenzy_blue = getObjectFromGUID('9cac01')
+	frenzy_blue.setPosition({5.55, 0, - 7.22})
+end
+
+-- Resets Area of Effect Zones to starting position
+function reset_zoneEffects()
+	zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+	zoneEffect.setPosition({ - 42.44, 6.67, - 66.95})
+end
+
+-- Cleans up and deletes everything with tag 'monster' and 'terrain'
+function deleteTagMonster()
+	print("↦ Showdown board cleared")
+	wait(0.25)
+	zonesDestruct = Global.getTable('zonesDestruct')
+	for zoneKey, zoneGUIDtable in pairs(zonesDestruct) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+		for k, object in pairs(objectsInZone) do
+			local desc = object.getDescription()
+			if string.find(desc, 'monster') or string.find(desc, 'terrain') or string.find(desc, 'reference') or string.find(desc, 'end of showdown') or string.find(desc, 'end of attack') then
+				object.destruct()
+			end
+		end
+	end
+	wait(0.5)
+	-- Reset Monster Injury Board to Main Menu
+	for _, obj in ipairs(zoneInjuryBoard.getObjects()) do
+		if obj.tag == "Board" and obj.getPosition().y > 3 then
+			board = obj
+			break
+		end
+	end
+	board.setState(21)
+	return 1
+end
+
+function store_effects()
+	for _, obj in ipairs(zoneSpecialEffects.getObjects()) do
+		if obj.getName() == "Egg Sac Explosion Effect" then
+			gameBox.putObject(obj)
+
+		elseif obj.getName() == "Egg Sac Miasma" then
+			gameBox.putObject(obj)
+
+		elseif obj.getName() == "Shade Miasma" then
+			gameBox.putObject(obj)
+
+		elseif obj.getName() == "Gorm Bulb Effect" then
+			gameBox.putObject(obj)
+		end
+	end
+end
+
+function check_cooking_innovation()
+	for _, card in ipairs(zoneInnovations.getObjects()) do
+		if card.getName() == "Cooking" then
+			local bagEndeavor = getObjectFromGUID('5dffd3')
+			local pos = bagEndeavor.getPosition()
+			local tok = bagEndeavor.takeObject({
+				position          = {pos.x - 3, pos.y, pos.z},
+				rotation          = {0, 45, 0},
+				smooth            = false,
+			})
+			tok.setName("+1 Endeavor: Cooking")
+		end
+	end
+end
+--]]
+
+--[[
+-- Utility Function ------------------------------------------------------------
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function changeMonster(stats)
+	local monsterBoard = getObjectFromGUID(Global.getTable("boards").boardMonster.guid)
+	local buttons = monsterBoard.getTable("buttons")
+	for i, v in pairs(stats) do
+		buttons.counts[i] = v
+	end
+	monsterBoard.setTable("buttons", buttons)
+	monsterBoard.call("updateDisplay")
+end
+
+function play_music_track()
+	local set_Sound = getObjectFromGUID(Global.getTable('user_settings').set_Sound.guid)
+	local rotZ = set_Sound.getRotation().z
+	if rotZ < 10 or rotZ > 350 then
+		local music_player = getObjectFromGUID(Global.getTable('user_settings').music_player.guid)
+		local showdown_phase_soundtrack = getObjectFromGUID(Global.getTable('user_settings').showdown_phase_soundtrack.guid)
+		local track = tonumber(showdown_phase_soundtrack.getDescription())
+		if music_player ~= nil then
+			music_player.AssetBundle.playLoopingEffect(track)
+		end
+	end
+end
+
+function createButton_meltdown()
+	self.createButton({click_function = "end_meltdown", function_owner = self, label = "End Meltdown Event", position = {0, 1.1, 10.7},
+	rotation = {-10, 0, 0}, width = 3400, height = 400, font_size = 350, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function end_meltdown()
+	for _, obj in ipairs(zoneInjuryBoard.getObjects()) do
+		if string.find(obj.getName(), "Meltdown") and obj.tag == "Card" then
+			obj.destroy()
+		end
+	end
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.label == "End Meltdown Event" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function storeResources()
+	local playerZones = {
+		red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+		yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+		green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+		blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+	}
+	for zoneKey, zoneGUIDtable in pairs(playerZones) do
+		local zoneGUID = zoneGUIDtable.guid
+		local zone = getObjectFromGUID(zoneGUID)
+		local objectsInZone = zone.getObjects()
+		for _, object in ipairs(objectsInZone) do
+			local desc = object.getDescription()
+
+			if string.find(desc, ", once per showdown used") then
+				local new_desc = string.gsub(desc, ", once per showdown used", "")
+			end
+
+			if string.find(desc, ", until the end of the showdown") then
+				object.destroy()
+			end
+
+			if string.find(desc, "resource") then
+				object.setPosition({ - 37.09, 4.30, 30.11})
+			end
+
+			if object.getName() == "Crystal Skin" then
+				local new_desc = string.gsub(desc, "armor, 3head, 3body, 3waist, 3legs, 3arms", "")
+				object.setDescription(new_desc)
+			end
+		end
+	end
+	print("↦ Resources moved to Step 9 for 'Record and Archive'")
+end--]]
+
+-- end next round

@@ -1,0 +1,139 @@
+function onLoad()
+	zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+	zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+	zoneEffect_stored = Global.getTable('zoneEffect_stored')
+end
+
+
+function onPickUp(color, obj)
+  if self.getName() == "Butcher" then
+	  zoneEffect.setPosition(zoneEffect_stored)
+  end
+end
+
+function onDropped(player_color)
+  if self.getName() == "Butcher" then
+    local pos = self.getPosition()
+	 -- Forbidden Light
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Forbidden Light" then
+        zoneEffect.setScale({6.0, 5.10, 6.0})
+        zoneEffect.setPosition({pos.x, pos.y, pos.z})
+      end
+    end
+  end
+end
+
+function overlay_backhand()
+
+	local btn_params = {
+		click_function = "overlay_backhand",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {0.4, 0.84, 0.84, 0.55}
+	}
+
+	btn_params.position = {-3.99, 0, -1.5}
+	self.createButton(btn_params)
+
+	btn_params.position = {-3.99, 0, 1.16}
+	self.createButton(btn_params)
+
+	init_posX = -6.65 ; offsetY = 0 ; init_posZ = -4.16
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX + (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+	init_posX = -6.65 ; offsetY = 0 ; init_posZ = 3.82
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX + (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_backhand()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.click_function == "overlay_backhand" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function overlay_forbiddenLight()
+
+	local btn_params = {
+		click_function = "overlay_forbiddenLight",
+		function_owner = self,
+		label = "■",
+		scale = {3, 0.5, 3},
+		width = 0,
+		height = 0,
+		font_size = 800,
+		font_color = {1.00, 0.70, 0.22, 0.65}
+	}
+
+	btn_params.position = {-3.99, 0, -1.5}
+	self.createButton(btn_params)
+
+	btn_params.position = {3.99, 0, 1.16}
+	self.createButton(btn_params)
+
+	btn_params.position = {3.99, 0, -1.5}
+	self.createButton(btn_params)
+
+	btn_params.position = {-3.99, 0, 1.16}
+	self.createButton(btn_params)
+
+	init_posX = -6.65 ; offsetY = 0 ; init_posZ = -4.16
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX + (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+	init_posX = -6.65 ; offsetY = 0 ; init_posZ = 3.82
+
+	offset = createOffset()
+
+	for i=1, 4 do
+		btn_params.position = {init_posX + (offset()), offsetY, init_posZ}
+		self.createButton(btn_params)
+	end
+
+end
+
+function remove_overlay_forbiddenLight()
+	local btns = self.getButtons()
+	if btns ~= nil then
+		for i, v in pairs(btns) do
+			if v.click_function == "overlay_forbiddenLight" then
+				self.removeButton(v.index)
+			end
+		end
+	end
+end
+
+function createOffset()
+	local i = 0
+	return function ()
+		i = i + 2.66
+		return i
+	 end
+ end

@@ -1,0 +1,17 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = "You spend 2 Survival to knockdown the Manhunter", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+	Global.call('addBroadcast', {"failure", {gear = "♘ Full move the Manhunter through the space you occupy ♘", effect = ""}})
+	Global.call('addBroadcast', {"failure", {gear = "All Targets passed over suffer Grab", effect = ""}})
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

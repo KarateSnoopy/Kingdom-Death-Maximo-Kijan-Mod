@@ -1,0 +1,34 @@
+function criticalWoundEffect()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_tgh.guid)
+	local var = "endOfwoundattempt"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("(-2) Toughness to Wound This Location Calculated", msg_color)
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	wait(0.25)
+	obj.call('spawn_token')
+	wait(0.25)
+	obj.call('spawn_token')
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0) until os.time() > start + time
+end

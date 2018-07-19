@@ -1,0 +1,36 @@
+function onLoad()
+	self.createButton({click_function = "addStatModifier", function_owner = self, label = "Guard", position = {0, 0.2, -2}, scale = {0.5, 0.5, 0.5},
+	width = 2000, height = 400, font_size = 300, color = {0,0,0,0}, font_color = {1,1,1,100}})
+end
+
+function addStatModifier()
+	obj = getObjectFromGUID(Global.getTable('tokSpawn').pos_tgh.guid)
+	local var = "startOfMonsterTurn"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	broadcastToAll("The King's Man gained (+5) Toughness until start of his next turn", {1,1,1})
+	startLuaCoroutine(self, "addStat_coR")
+end
+
+function addStat_coR()
+	for i=1, 5 do
+		obj.call('spawn_token')
+		wait(0.25)
+	end
+	return 1
+end
+
+-- Coroutine timer
+function wait(time)
+	local start = os.time()
+	repeat coroutine.yield(0)
+	until os.time() > start + time
+end
+
+function createOffsetX()
+	local i = 0
+	return function ()   -- anonymous function
+		i = i + 2.53
+		return i
+	 end
+ end

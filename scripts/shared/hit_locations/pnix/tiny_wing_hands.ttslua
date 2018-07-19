@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "This Location cannot be Wounded", effect = "~~~ !!! Impervious  !!! ~~~"}})
+	getMonsterResource()
+end
+
+#include get_vars
+
+function getMonsterResource()
+	getVars()
+	local tbl = {cardName = "Small Hand Parasites", zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Small Hand Parasites", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Small Hand Parasites", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

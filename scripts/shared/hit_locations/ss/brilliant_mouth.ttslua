@@ -1,0 +1,120 @@
+
+--------------------------
+--Init
+----------------------------
+function onLoad()
+
+	self.createButton({
+		click_function = 'getSmallFeather',
+		function_owner = self,
+		label = '+',
+		position = {0.9,0.3,-1.4},
+		rotation = {0,0,0},
+		width = 150,
+		height = 150,
+		font_size = 150
+	})
+
+	self.createButton({
+    		click_function = 'getTailFeather',
+    		function_owner = self,
+    		label = '+',
+    		position = {0.9,0.3,-1},
+    		rotation = {0,0,0},
+    		width = 150,
+    		height = 150,
+    		font_size = 150
+    	})
+
+end
+
+
+--Finds a named card, in a deck, in a zone, then draws it to specified location.
+function getSmallFeather(deck, name, params)
+	    print("[b]---Items In Zone---[/b]")
+		zonesTable = Global.getTable('zones')
+		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+	    local objectsInZone = zone.getObjects()
+	    if #objectsInZone == 0 then
+	        print("Scripting Zone Empty.")
+	    else
+	        for _, object in ipairs(objectsInZone) do
+	            local name = object.getName()
+	            if name == "Sunstalker Resources Deck" then
+					deck = object
+					break
+	                print("Sunstalker Resources Deck Found")
+	            else
+	                print("Sunstalker Resources Deck Not Found.")
+	            end
+			end
+			if deck == nil then
+		        print("No deck was found.")
+		    else
+		        print("Deck found.")
+		        local cardsInDeck = deck.getObjects()
+		        for i, card in ipairs(cardsInDeck) do
+		            if card.nickname == "Small Sunteeth" then
+					    print("Small Sunteeth Found")
+						deck.takeObject({
+							guid = card.guid,
+							position={7.60, 4.19, -11.03},
+							callback="flipCard",
+							callback_owner=Global,
+						})
+						broadcastToAll("You gained 1 Small Sunteeth.", {1,1,1})
+						break
+		            end
+					if i == #cardsInDeck then
+						broadcastToAll("There are no Small Sunteeth left.", {1,1,1})
+					end
+		        end
+		    end
+		    print("[b]----------------------[/b]")
+		end
+	end
+
+    --Finds a named card, in a deck, in a zone, then draws it to specified location.
+    function getTailFeather(deck, name, params)
+    	    print("[b]---Items In Zone---[/b]")
+    		zonesTable = Global.getTable('zones')
+    		local zone = getObjectFromGUID(zonesTable.deckMonsterResources.guid)
+    	    local objectsInZone = zone.getObjects()
+    	    if #objectsInZone == 0 then
+    	        print("Scripting Zone Empty.")
+    	    else
+    	        for _, object in ipairs(objectsInZone) do
+    	            local name = object.getName()
+    	            if name == "Sunstalker Resources Deck" then
+    					deck = object
+    					break
+    	                print("Sunstalker Resources Deck Found")
+    	            else
+    	                print("Sunstalker Resources Deck Not Found.")
+    	            end
+    			end
+    			if deck == nil then
+    		        print("No deck was found.")
+    		    else
+    		        print("Deck found.")
+    		        local cardsInDeck = deck.getObjects()
+    		        for i, card in ipairs(cardsInDeck) do
+    		            if card.nickname == "Shark Tongue" then
+    					    print("Shark Tongue found")
+    						deck.takeObject({
+    							guid = card.guid,
+    							position={7.60, 4.19, -11.03},
+    							callback="flipCard",
+    							callback_owner=Global,
+    						})
+    						broadcastToAll("You gained 1 Shark Tongue", {1,1,1})
+    						break
+    		            end
+    					if i == #cardsInDeck then
+    						broadcastToAll("There are no Shark Tongues left", {1,1,1})
+    					end
+    		        end
+    		    end
+    		    print("[b]----------------------[/b]")
+    		end
+    	end

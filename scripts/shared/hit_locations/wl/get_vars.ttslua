@@ -1,0 +1,23 @@
+function getVars()
+	card = getObjectFromGUID(Global.getTable("persistentCard").card.guid)
+	local bool = card.getVar("isSurging_persistentCard")
+	if bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").left.guid)
+	end
+	if not bool then
+		roller = getObjectFromGUID(Global.getTable("rollers").right.guid)
+	end
+
+	grid = roller.getVar("grid")
+	pos = grid.getTable("gained_resource_pos")
+	zone = grid.getVar("zonePlayer")
+	color = grid.getVar("color")
+	msg_color = grid.getTable("msg_color")
+	hitTool = roller.getVar("hitTool")
+	drawn_hitLocations = hitTool.getTable("drawn_hitLocations")
+	grid.call("checkWeapon")
+	weaponGUID = grid.getVar("weaponGUID")
+	frenzyToken = grid.getVar("frenzyToken")
+	insanity_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").insanity.label)
+	survival_value = tonumber(getObjectFromGUID(grid.getVar("FullCharSheetGUID")).getTable("buttons").survival.label)
+end

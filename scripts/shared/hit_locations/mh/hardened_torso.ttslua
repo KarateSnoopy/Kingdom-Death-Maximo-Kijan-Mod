@@ -1,0 +1,32 @@
+function criticalWoundEffect()
+	getVars()
+
+	local stats = {color = color, stat = 'str', modifier = "pos", num = 1, phase = nil}
+	Global.setTable('temp', stats)
+	startLuaCoroutine(Global, "spwn_tok")
+
+	Global.call('addBroadcast', {"crit", {gear = "You gained a (+1) Strength Token", effect = "~ or ~"}})
+	Global.call('addBroadcast', {"crit", {gear = "You may spend 4 Survival to gain (+1) Permanent Strength", effect = ""}})
+end
+
+#include ../get_vars
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "If you are adjacent ~ You may spend ★ Survival", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "If you don't ~ suffer a Severe Body Injury with a +2 to the Result", effect = ""}})
+
+	local pos = self.getPosition()
+	local clone = self.clone({position = pos})
+	clone.setPosition({3.10, 4.78, -36.18})
+	clone.setLock(true)
+	clone.setRotation({8.00, 180.03, 0.01})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

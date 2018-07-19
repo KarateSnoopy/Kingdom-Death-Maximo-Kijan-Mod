@@ -1,0 +1,39 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "The Manhunter is knocked down!", effect = ""}})
+end
+
+#include ../get_vars
+
+function getMonsterResource()
+	local tbl = {cardName = "Red Vial", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Red Vial", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Red Vials", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	local obj = getObjectFromGUID(Global.getTable('tokSpawn').neg_eva.guid)
+	local var = "endOfround"
+	obj.getVar("phase")
+	obj.setVar("phase", var)
+	obj.call("spawn_token")
+	Global.call('addBroadcast', {"reflex", {gear = "The Manhunter gained a (-1) Evasion token until the End of the Round", effect = ""}})
+end
+
+function addStatModifier()
+end

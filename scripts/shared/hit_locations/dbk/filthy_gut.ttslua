@@ -1,0 +1,45 @@
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+end
+
+function getMonsterResource()
+	local tbl = {cardName = nil, zone = getObjectFromGUID(Global.getTable('zones').deckMonsterResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	Global.call('addBroadcast', {"crit", {gear = "You gained 1 Random Dung Beetle Knight Resource", effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "If you are within 3 spaces ~ you are smashed into the Resin Ball ~ Place adjacent to it", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "You suffer 5 Damage to \u{02606} Hit Locations", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	local zone = getObjectFromGUID(Global.getTable('zonesDestruct').zoneShowdown.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.getName() == "Resin Dung Ball" then
+			dung_ball = obj
+		end
+	end
+	dung_ball.call("check_adjacent_toDungBall")
+	local bool = dung_ball.getVar("isAdjacent")
+	if not bool then
+		broadcastToAll("ⓧ Separation Anxiety !!", {0.42, 1, 0.47})
+		hitTool.call("reactionsCancelled_nextWoundAttempt")
+	else
+		broadcastToAll("The Dung Beetle Knight is Adjacent to the Resin Ball", msg_color)
+	end
+end
+
+#include ../get_vars
+
+-- gut

@@ -1,0 +1,49 @@
+function buildDeck()
+	build_AI_deck_pos = Global.getTable('build_AI_deck_pos')
+    getBasicAIcards()
+    getAdvancedAIcards()
+    Timer.create({
+        function_owner=self,
+        identifier="shuffleDelay",
+        function_name="shuffle",
+        delay=1.5
+    })
+    Timer.create({
+       function_owner=self,
+       identifier="deleteAIcards",
+       function_name="deleteLeftoverAICards",
+       delay=2.5
+   })
+end
+
+function getBasicAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Basic" then
+            deck = object
+            deck.shuffle()
+				for i=1, 8 do
+					deck.takeObject({top=true, position=build_AI_deck_pos})
+				end
+        end
+    end
+end
+
+function getAdvancedAIcards()
+    zonesTable = Global.getTable('zones')
+    local zone = getObjectFromGUID(zonesTable.zoneAIBoard.guid)
+    local objectsInZone = zone.getObjects()
+    for _, object in pairs(objectsInZone) do
+        if object.getName() == "Advanced" then
+            deck = object
+            deck.shuffle()
+				for i=1, 6 do
+					deck.takeObject({top=true, position=build_AI_deck_pos})
+				end
+        end
+    end
+end
+
+#include ../shuffle_and_delete

@@ -1,0 +1,434 @@
+-- Buttons ---------------------------------------------------------------------
+function initCustomButtons()
+	thick = 0.14
+
+	dx = -7; dy = -2.7; px = 0.8
+	createCounter('survival_perm', 'count', dx, dy); dx = dx + px;
+	dx = -5; dy = -2.7; px = 0.8
+	createCounter('survivalN_perm', 'count', dx, dy); dx = dx + px;
+	dx = -3; dy = -2.7; px = 0.8
+	createCounter('insanity_perm', 'count', dx, dy); dx = dx + px;
+
+	dx = 3; dy = -2.7; px = 0.8
+	createCounter('survival_temp', 'count', dx, dy); dx = dx + px;
+	dx = 5; dy = -2.7; px = 0.8
+	createCounter('survivalN_temp', 'count', dx, dy); dx = dx + px;
+	dx = 7; dy = -2.7; px = 0.8
+	createCounter('insanity_temp', 'count', dx, dy); dx = dx + px;
+
+	dx = 0; dy = 1.2
+	createDepart('depart', dx - 5, dy)
+	createDepart('departN', dx + 5, dy)
+	createResetTemps('reset', dx, dy + 0.8)
+
+end
+
+function initButtonsTable()
+
+	buttons = {}
+	buttons.index = 0
+	buttons.counts = {}
+	buttons.params = {}
+	buttons.params.positions = {}
+	buttons.params.scales = {}
+	buttons.params.rotations = {}
+	buttons.params.positions.offsets = {}
+	buttons.params.sizes = {}
+	buttons.targetFunc = {}
+
+	--make a style of button by adding a new size
+	buttons.params.sizes.count = {
+		display = {width = 0, height = 0, font = 300},
+		button = {width = 150, height = 150, font = 200},
+		offsets = { bottomButtons = {x = 0.3, y = 0, z = -0.4}, topButtons = {x = 0.1, y = 0, z = -0.17} }
+	}
+	buttons.params.sizes.std = {
+		display = {width = 1500, height = 250, font = 250},
+		button = {width = 0, height = 0, font = 200},
+		offsets = { bottomButtons = {x = 0, y = 0, z = 0}, topButtons = {x = 0, y = 0, z = 0} }
+	}
+end
+
+function createCounter(name, btype, px, py)
+	buttons[name] = {type = btype}
+	buttons.params.positions[name] = {x = px, y = 1.2, z = py}
+end
+
+function createResetTemps(name, px, py)
+	name = "r_" .. name
+	buttons[name] = { type = 'std'}
+	buttons.params.positions[name] = {x = px, y = 1.2, z = py}
+end
+
+function createDepart(name, px, py)
+	name = "d_" .. name
+	buttons[name] = { type = 'std'}
+	buttons.params.positions[name] = {x = px, y = 1.2, z = py}
+	buttons.params.scales[name] = {x = 1, y = 1, z = 3.5}
+end
+
+--gets buttons params
+function generateButtonParameters()
+	for i, v in pairs(buttons) do
+		if tostring(i) ~= 'index' and tostring(i) ~= 'counts' and tostring(i) ~= 'params' and tostring(i) ~= 'targetFunc' then
+			btn = tostring(i)
+			prefix = string.sub(btn, 1, 2)
+			if (prefix == "r_") then
+				buttons[tostring(i)].display = setupButton(tostring(i) .. 'ResetTemps', buttons.params.positions[tostring(i)], buttons.params.sizes[buttons[tostring(i)].type].display, 'Reset', nil, false)
+				buttons[tostring(i)].isReset = true
+			elseif (prefix == "d_") then
+				temp = string.sub(btn, 3)
+				buttons[tostring(i)].display = setupButton(tostring(i) .. temp, buttons.params.positions[tostring(i)], buttons.params.sizes[buttons[tostring(i)].type].display, 'Reset', nil, false)
+				if temp == "depart" then
+					buttons[tostring(i)].isDepart = true
+				else
+					buttons[tostring(i)].isNemesis = true
+				end
+			else
+				buttons[tostring(i)].display = setupButton(tostring(i) .. 'dud', buttons.params.positions[tostring(i)], buttons.params.sizes[buttons[tostring(i)].type].display, '', nil, false)
+				buttons[tostring(i)].plusOne = setupButton(tostring(i) .. 'PlusOne', buttons.params.positions[tostring(i)], buttons.params.sizes[buttons[tostring(i)].type].button, '+', buttons.params.sizes[buttons[tostring(i)].type].offsets.bottomButtons, false)
+				buttons[tostring(i)].minusOne = setupButton(tostring(i) .. 'MinusOne', buttons.params.positions[tostring(i)], buttons.params.sizes[buttons[tostring(i)].type].button, '-', buttons.params.sizes[buttons[tostring(i)].type].offsets.bottomButtons, true)
+			end
+		end
+	end
+end
+
+--creates buttons
+function setupButton(targetFunc, positions, sizes, label, offsets, isLeft)
+	local buttonInfo = {}
+	buttonInfo.function_owner = self
+	buttonInfo.index = buttons.index
+	buttonInfo.click_function = targetFunc
+	--reverse things for backside
+	if string.sub(targetFunc, 3, 4) == 'b_' or string.sub(targetFunc, 1, 2) == 'b_' then
+		buttonInfo.rotation = {0, 0, 180}
+		if offsets ~= nil then
+			reverse_x = -offsets.x
+		end
+	elseif offsets ~= nil then
+		reverse_x = offsets.x
+	end
+	--reversed
+	if isLeft then
+		orientationModifier = -1
+	else
+		orientationModifier = 1
+	end
+	if offsets == nil then
+		buttonInfo.position = {positions.x, positions.y, positions.z}
+	else
+		buttonInfo.position = {positions.x + (reverse_x) * orientationModifier, positions.y + offsets.y, positions.z + offsets.z}
+	end
+	buttonInfo.width = sizes.width
+	buttonInfo.height = sizes.height
+	buttonInfo.font_size = sizes.font
+	buttonInfo.label = label
+
+	buttonInfo.color = {0, 0, 0, 0}
+	buttonInfo.font_color = {1, 1, 1, 255}
+	buttonInfo.scale = {1,1,3}
+
+	buttons.index = buttons.index + 1
+	return buttonInfo
+end
+
+function create_other_Buttons()
+
+	self.createButton{index = 29, click_function = "dud", function_owner = self, label = "Survival", position = {-7, 1.1, -3.8}, scale = {1, 1, 3},
+	width = 0, height = 0, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 30, click_function = "dud", function_owner = self, label = "Survival", position = {3, 1.1, -3.8}, scale = {1, 1, 3},
+	width = 0, height = 0, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 31, click_function = "dud", function_owner = self, label = "vs Nemesis", position = {-5, 1.1, -3.8}, scale = {1, 1, 3},
+	width = 0, height = 0, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 32, click_function = "dud", function_owner = self, label = "vs Nemesis", position = {5, 1.1, -3.8}, scale = {1, 1, 3},
+	width = 0, height = 0, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 33, click_function = "dud", function_owner = self, label = "Insanity", position = {-3, 1.1, -3.8}, scale = {1, 1, 3},
+	width = 0, height = 0, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 34, click_function = "dud", function_owner = self, label = "Insanity", position = {7, 1.1, -3.8}, scale = {1, 1, 3},
+	width = 0, height = 0, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 36, click_function = "dud", function_owner = self, label = "All Departures", position = {-5, 1.1, -5}, scale = {1, 1, 3.5},
+	width = 0, height = 0, font_size = 150, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{index = 37, click_function = "dud", function_owner = self, label = "This Departure", position = {5, 1.1, -5}, scale = {1, 1, 3.5},
+	width = 0, height = 0, font_size = 150, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{click_function = "view_Quarry", function_owner = self, label = "View", position = {-5, 1.2, 3}, scale = {1, 1, 3}, width = 1500, height = 250, font_size = 150, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{click_function = "close_Quarry", function_owner = self, label = "Close", position = {-5, 1.2, 4.4}, scale = {1, 1, 3}, width = 1500, height = 250, font_size = 150, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{click_function = "view_Nemesis", function_owner = self, label = "View", position = {5, 1.2, 3}, scale = {1, 1, 3}, width = 1500, height = 250, font_size = 150, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+
+	self.createButton{click_function = "close_Nemesis", function_owner = self, label = "Close", position = {5, 1.2, 4.4}, scale = {1, 1, 3}, width = 1500, height = 250, font_size = 150, color = {0, 0, 0, 1}, font_color = {1, 1, 1, 1}}
+end
+
+function createButton_endHunt()
+	self.createButton({click_function = "endHunt", function_owner = self, label = "End Hunt", position = {0, 1.2, 10.7}, rotation = {-20, 0, 0}, scale = {1, 1, 2.5}, width = 2000, height = 250, font_size = 350, color = {0, 0, 0, 0}, font_color = {1, 1, 1, 100}})
+end
+
+function removeButtons_All()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		self.removeButton(v.index)
+	end
+end
+
+function removeButtons_monsterSetup()
+	local btns = self.getButtons()
+	for i, v in pairs(btns) do
+		if string.find(v.click_function, "setup_") then
+			self.removeButton(v.index)
+		end
+	end
+end
+
+
+
+-- Buttons (Monster Setups) ----------------------------------------------------
+function createButton_openMenu()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-5,0,0},
+		width          = 5000,
+		height         = 800,
+		font_size      = 600,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "createQuarryButtons"
+	btn_params.label = "Open Menu"
+	btn_params.position = {0, 0.2, -3}
+	self.createButton(btn_params)
+end
+
+function createQuarryButtons()
+	hunt_Phase = true
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-15,0,0},
+		width          = 3500,
+		height         = 400,
+		scale				= {0.5, 0.5, 1.2},
+		font_size      = 450,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "setup_DK"
+	btn_params.label = "Dragon King"
+	btn_params.position = {0, 1.2, -6.9}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_DBK"
+	btn_params.label = "Dung Beetle Knight"
+	btn_params.position = {0, 1.2, -5.4}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_FK"
+	btn_params.label = "Flower Knight"
+	btn_params.position = {0, 1.2, -3.9}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_GRM"
+	btn_params.label = "Gorm"
+	btn_params.position = {0, 1.2, -2.4}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_LG"
+	btn_params.label = "Lion God"
+	btn_params.position = {0, 1.2, -0.9}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_PNIX"
+	btn_params.label = "Phoenix"
+	btn_params.position = {0, 1.2, 0.6}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_SA"
+	btn_params.label = "Screaming Antelope"
+	btn_params.position = {0, 1.2, 2.1}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_SPID"
+	btn_params.label = "Spidicules"
+	btn_params.position = {0, 1.2, 3.6}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_SS"
+	btn_params.label = "Sunstalker"
+	btn_params.position = {0, 1.2, 5.1}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_WL"
+	btn_params.label = "White Lion"
+	btn_params.position = {0, 1.2, 6.6}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_BL"
+	btn_params.label = "Black Lion"
+	btn_params.position = {0, 1.2, 8.1}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_Legendaries"
+	btn_params.label = "Legendaries"
+	btn_params.position = {-5, 1.2, 6.5}
+	self.createButton(btn_params)
+
+end
+
+function createNemesisButtons()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-15,0,0},
+		width          = 2500,
+		height         = 400,
+		scale				= {0.5, 0.5, 1.1},
+		font_size      = 375,
+		color          = {0,0,0,0},
+		font_color     = {1,1,1,100},
+	}
+
+	btn_params.click_function = "setup_BUTCH"
+	btn_params.label = "The Butcher"
+	btn_params.position = {0, 1.2, -6.0}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_GSK"
+	btn_params.label = "Gold Smoke Knight"
+	btn_params.position = {0, 1.2, -4.6}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_HAND"
+	btn_params.label = "The Hand"
+	btn_params.position = {0, 1.2, -3.2}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_KING"
+	btn_params.label = "King's Man"
+	btn_params.position = {0, 1.2, -1.8}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_LK"
+	btn_params.label = "Lion Knight"
+	btn_params.position = {0, 1.2, -0.4}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_LT"
+	btn_params.label = "Lonely Tree"
+	btn_params.position = {0, 1.2, 1}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_MH"
+	btn_params.label = "Manhunter"
+	btn_params.position = {0, 1.2, 2.4}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_SM"
+	btn_params.label = "Slenderman"
+	btn_params.position = {0, 1.2, 3.8}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_TYRANT"
+	btn_params.label = "The Tyrant"
+	btn_params.position = {0, 1.2, 5.2}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_WATCH"
+	btn_params.label = "The Watcher"
+	btn_params.position = {0, 1.2, 6.6}
+	self.createButton(btn_params)
+end
+
+function createButtons_Levels()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-15,0,0},
+		width          = 2500,
+		height         = 600,
+		scale					 = {0.5, 0.5, 1},
+		font_size      = 500,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "setup_level1"
+	btn_params.label = "[ Level 1 ]"
+	btn_params.position = {-3, 1.2, 10.5}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_level2"
+	btn_params.label = "[ Level 2 ]"
+	btn_params.position = {0, 1.2, 10.5}
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_level3"
+	btn_params.label = "[ Level 3 ]"
+	btn_params.position = {3, 1.2, 10.5}
+	self.createButton(btn_params)
+
+	if btn_clicked == 15 or btn_clicked == 25 then
+		btn_params.click_function = "setup_level4"
+		btn_params.label = "[ Level 4 ]"
+		btn_params.position = {6, 1.2, 10.5}
+		self.createButton(btn_params)
+	end
+end
+
+function setup_Legendaries()
+	btn_params = {
+		click_function = "",
+		function_owner = self,
+		label          = "",
+		position       = {},
+		rotation       = {-15,0,0},
+		width          = 2500,
+		height         = 600,
+		scale				= {0.5, 0.5, 1},
+		font_size      = 350,
+		color          = {0,0,0},
+		font_color     = {1,1,1},
+	}
+
+	btn_params.click_function = "setup_great_golden_cat"
+	btn_params.position = {-3, 1.2, 10.5}
+	btn_params.label = "Great Golden Cat"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_beast_of_sorrow"
+	btn_params.position = {-7, 1.2, 10.5}
+	btn_params.label = "Beast of Sorrow"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_mad_steed"
+	btn_params.position = {1, 1.2, 10.5}
+	btn_params.label = "Mad Steed"
+	self.createButton(btn_params)
+
+	btn_params.click_function = "setup_golden_king"
+	btn_params.position = {6, 1.2, 10.5}
+	btn_params.label = "Golden Eyed King of 1000 Years"
+	self.createButton(btn_params)
+end
+
+--[[btn_params.click_function = "setup_Fanmade"
+btn_params.label = "Fanmade"
+btn_params.position = {5, 1.2, 6.5}
+self.createButton(btn_params)--]]

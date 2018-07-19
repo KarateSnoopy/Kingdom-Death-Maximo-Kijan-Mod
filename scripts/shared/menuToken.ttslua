@@ -3455,5 +3455,3 @@ function clear_spawned_gear_cards()
 		end
 	end
 end
-
-

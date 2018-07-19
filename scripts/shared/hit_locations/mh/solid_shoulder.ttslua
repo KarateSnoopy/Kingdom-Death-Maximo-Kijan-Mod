@@ -1,0 +1,38 @@
+
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	getVars()
+	Global.call('addBroadcast', {"reflex", {gear = "The Manhunter turns to face you ~ Roll 1d10", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "If the result is greater than your " .. insanity_value .. " Insanity", effect = ""}})
+	Global.call('addBroadcast', {"reflex", {gear = "Gain the Prey Disorder and suffer the Flee Brain Trauma", effect = ""}})
+end
+
+#include ../get_vars
+
+function addStatModifier()
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Red Vial", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Red Vial", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There are no more Red Vials", effect = ""}})
+	end
+end
+
+-- solid shoulder

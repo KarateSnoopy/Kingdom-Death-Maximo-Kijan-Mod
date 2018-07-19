@@ -1,0 +1,47 @@
+
+function criticalWoundEffect()
+	getVars()
+	getMonsterResource()
+	Global.call('addBroadcast', {"crit", {gear = "Gain (+1) Survival ~ (+1) Courage", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Archive a random Pod Imprisonment Status Card", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Place the Survivor adjacent to the Monster", effect = ""}})
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "You are placed in the furthest unoccupied corner of the showdown board", effect = ""}})
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Cancel all hits now out of range", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+	getVars()
+	changeSurvivors("insanity", 3, grid)
+	broadcastToAll("You gained (+3) Insanity", msg_color)
+end
+
+function getMonsterResource()
+	local tbl = {cardName = "Dark Water", zone = getObjectFromGUID(Global.getTable('zones').deckStrangeResources.guid), deck = ""}
+	Global.setTable("card", tbl)
+	Global.setTable("pos_toSpawn", pos)
+	Global.call("get_Card")
+	local bool = Global.getVar("card_Found")
+	if bool then
+		Global.call('addBroadcast', {"crit", {gear = "You gained 1 Dark Water", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "There is no more Dark Water", effect = ""}})
+	end
+end
+
+#include ../get_vars
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end
+
+-- emaciated abdomen

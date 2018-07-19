@@ -1,0 +1,25 @@
+function criticalWoundEffect()
+	hitTool_right = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_R.guid)
+	hitTool_right.call("reactionsCancelled_endOfAttack")
+	hitTool_right.call('removeButton_ReactionTriggered')
+
+	hitTool_left = getObjectFromGUID(Global.getTable('main_tokens').hit_tool_L.guid)
+	hitTool_left.call("reactionsCancelled_endOfAttack")
+
+	 Global.call('addBroadcast', {"crit", {gear = "Reactions cancelled until the end of the attack", effect = ""}})
+    Global.call('addBroadcast', {"crit", {gear = "The next Wound attempt this attack automatically results in a Wound", effect = ""}})
+end
+
+function woundEffect()
+    Global.call('addBroadcast', {"wound_reaction", {gear = "Turn the Monster to face its Blind Spot", effect = ""}})
+    Global.call('addBroadcast', {"wound_reaction", {gear = "All adjacent Survivors suffer Bash", effect = ""}})
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

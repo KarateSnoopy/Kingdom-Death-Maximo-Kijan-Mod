@@ -1,38 +1,19 @@
 #include Console/console++
 
---scripts created by Kijan and Maximo1984
-
 -------------------------------------------------------------------------------
--- Table of Contents: Search Project Parameters
+--              Table of Contents: Search Project Parameters
+--              scripts created by Maximo1984, Kijan, Eskander
 -------------------------------------------------------------------------------
 
--- Search by Card name
---> -- Card Name (example) "-- True Blade"
+-- Locating functions for each card by name
+-- > EXAMPLE find in project "-- True Blade"
 
 -----------------        Tables / Objects / Booleans        --------------------
-
-------------        INVENTORY P1-P4        ------------------------------------
--- strToken_pos = {}
--- accToken_pos = {}
--- evaToken_pos = {}
--- msg_color = {}
-
--- affinity_red = object
--- affinity_green = object
--- affinity_blue = object
--- momentum_Counter  = object
--- extraBleed  = object
--- bleedTool  = object
--- extraSlots = object
-
--- weaponGUID = object
--- color = "" (red, yellow, green, blue) used for spawn surv stat tokens
 
 ------------        DRAW HIT LOCATIONS TOOL     -------------------------------
 -- hitLocation = {}
 -- cleanUpList = {}
 -- drawn_hitLocations = {}
-
 
 ------------        SURVIVOR ATTACK ROLLERS      ------------------------------
 -- spawnedDice = {}
@@ -63,48 +44,12 @@
 -- reactionsCancelled_EndOfRound = false
 -- isDazed = false
 
-
 ------------        PERSISTENT INJURY / AREA OF EFFECT     --------------------
 -- zoneEffect_stored = {}
 -- token_knockdown_monster = object
 -- tool_NextRound = object
 -- roller = var, object
 
--------------------------------------------------------------------------------
---User Settings
--------------------------------------------------------------------------------
---If True ~ checks card zones for movement bonus/penalty and broadcasts msg
-onPickUp = true
-
---If True ~ checks card zones for knockdown effects and broadcasts msg
-onKnockDown = true
-
--- If True ~ Moves Camera after Monster Dice Roller is activated to Hit Location Rollers on Left/Right
-monsterAttackRollCamera = true
-
--------------------------------------------------------------------------------
--- Table of Contents Notes
--------------------------------------------------------------------------------
-
---> when you depart / when you return
--- [Depart Tool]
-
---> when you are knocked down
--- [Showdown Board]
-
---> when a survivor dies
--- [grid], ["Survivor Died in Settlement"]
-
---> when you gain a bleeding token
--- [Bleeding Tools]
-
---> when you gain card effects
--- [grid] onObjectEnterScriptingZone
-
---> when you lose card effects
--- [grid] onObjectLeaveScriptingZone
-
--------------------------------------------------------------------------------
 isLoading = true
 isSettingUp = false --(turns off clone on leave container while setup menu is open)
 onLeaveClone = true
@@ -157,32 +102,24 @@ function closeOpenShowdownBags()
 end
 
 
--------------------------------------------------------------------------------
---Admin Settings (do not alter unless you know what you are doing)
-	-------------------------------------------------------------------------------
-	--unsaved
-	bypassSavedLoad = false	-- used to bypass load init manually
-	prologueBypass = true  	--not ready, keep true
-	--saved
-	clearSavedData = false 		-- used to clear save data
-	interactPlaceholders = false 	-- makes placeholders interactable if true
-	autoDeckRefresh = true
-
-	--autoHunt = true		--allows automatic hunt deployment of objects
-	--autoShowdown = true 	--allows automatic showdown deployment of objects
-	--autoMonsterDeck = false		--not ready, keep false
-	--debug = false		--not ready, keep false
-	--devMode = false		--changes interactive for static/placeholder objects, toggles rest interactive options below
-	--interactBox = false 	--makes gamebox interactable if true
-
-	--interactStatics = false		--makes static objs interactable if true
 
 
 
--------------------------------------------------------------------------------
---Tables
--------------------------------------------------------------------------------
--- For takeObject
+-- Admin Settings --------------------------------------------------------------
+--unsaved
+bypassSavedLoad = false	-- used to bypass load init manually
+prologueBypass = true  	--not ready, keep true
+--saved
+clearSavedData = false 		-- used to clear save data
+interactPlaceholders = false 	-- makes placeholders interactable if true
+autoDeckRefresh = true
+
+
+
+
+
+-- Objects ---------------------------------------------------------------------
+-- For Survivor Token Spawners
 bags_stats = {
 	bag_spd = {guid = '922010'},
 	bag_acc = {guid = '08250f'},
@@ -192,27 +129,9 @@ bags_stats = {
 	bag_eva = {guid = 'f0ee1d'},
 }
 
--- Token positions to clone to
-pos_mov = {x = -4.60, y = 4.40, z = 0.30}
-neg_mov = {x = -4.02, y = 4.40, z = 0.30}
-
-pos_spd = {x = -3.40, y = 4.40, z = 0.30}
-neg_spd = {x = -2.76, y = 4.40, z = 0.30}
-
-pos_acc = {x = -1.53, y = 4.40, z = 0.30}
-neg_acc = {x = -2.17, y = 4.40, z = 0.30}
-
-pos_dmg = {x = -0.90, y = 4.40, z = 0.30}
-neg_dmg = {x = -0.30, y = 4.40, z = 0.30}
-
-pos_tgh = {x = 2.75, y = 4.40, z = 0.30}
-neg_tgh = {x = 3.39, y = 4.40, z = 0.30}
-
-pos_eva = {x = 4.02, y = 4.40, z = 0.30}
-neg_eva = {x = 4.59, y = 4.40, z = 0.30}
-
-pos_lck = {x = 5.25, y = 4.40, z = 0.30}
-neg_lck = {x = 5.84, y = 4.40, z = 0.30}
+bags_stats_monster = {
+	
+}
 
 dice_Rollers = {
 	attack_Right = {guid = 'ff240b'},
@@ -304,47 +223,18 @@ end
 ]]
 
 boards = {
-	--boardHunt = {guid = 'd5b02b'},
-	--boardSettlement = {guid = 'cdb758'},
 	boardMonster = {guid = '463cb7'},
-	--boardStoryL = {guid = '40ac46'},
-	--boardStoryR = {guid = 'e42941'},
-	--boardStoryT = {guid = ' fece67'},
 }
 
+-- Sets where cloned cards are positioned after drawing from a deck with autoclone
 placeholders = {
-	--essentialDecks
 	deckVermin = {guid = '00ec16'},
 	discardVermin = {guid = '304843'},
 	deckBasicResources = {guid = '47057b'},
 	discardBasicResources = {guid = '9ec313'},
 	deckStrangeResources = {guid = '7aadc0'},
-	--deckBasicHunt = {guid = '4e9d9e'},
-	--deckSpecialHunt = {guid = '148b16'},
-	--deckTerrain = {guid = '51b305'},
-	--deckSevereInjuries = {guid = 'b36278'},
-	--deckDisorders = {guid = '58ae79'},
-	--deckAbilities = {guid = '8a5104'},
-	--deckFightingArts = {guid = '9d5a10'},
-	--deckSecretFightingArts = {guid = 'd21ff4'},
-	--discards
-	--discardStrangeResources = {guid = '215b76'},
-	--discardSevereInjuries = {guid = '893fd2'},
-	--discardDisorders = {guid = '4c3588'},
-	--discardAbilities = {guid = 'a74166'},
-	--discardFightingArts = {guid = '081afc'},
-	--discardSecretFightingArts = {guid = '2ede33'},
-	--monsterDecks
-	--deckMonsterHunt = {guid = '9cc235'},
-	--deckMonsterSpecialHunt = {guid = '1dca94'},
-	--deckMonsterResources = {guid = 'f8c095'},
-	--deckMonsterAIBasic = {guid = 'be3886'},
-	--deckMonsterAIAdvanced = {guid = '3b984a'},
-	--deckMonsterAILegendary = {guid = '918627'},
-	--deckMonsterAISpecial = {guid = 'da09a1', flip = true},
-	--cardMonsterBasicAction = {guid = 'ce146d'},
-	--deckMonsterHitLocations = {guid = '24cc56'},
 }
+
 
 decks_toSearch = {
 	deckFA = {guid = 'dccfc9'},
@@ -363,8 +253,20 @@ decks_toSearch = {
 	deckTERRAIN = {guid = '503359'},
 	deckSURV_STATUS = {guid = 'a6979a'},
 	deckBASIC_HUNT = {guid = '5baab8'},
+	deckStory = {guid = '21fb65'}
 }
 
+main_tokens = {
+	next_round = {guid = 'b94669'},
+	hit_tool_R = {guid = '10e61e'},
+	hit_tool_L = {guid = '309402'},
+	priority_token = {guid = '3bc58d'},
+}
+
+
+
+
+-- Zones -----------------------------------------------------------------------
 zonesDestruct = {
 	monsterResourceZone = {guid = '947223'},
 	zoneShowdown = {guid = '784686'},
@@ -376,6 +278,7 @@ zonesDestruct = {
 
 zones = {
 	zoneAll = {guid = ''},
+
 	--general areas
 	zoneMain = {guid = '4b6961'},
 	zoneSettlement = {guid = 'f80cf2'},
@@ -448,35 +351,10 @@ zones = {
 	deckStrangeResources = {guid = 'eedfb6'},
 	deckBasicResources = {guid = '7970d0'},
 	deckMonsterResources = {guid = '947223'},
-	--deckSevereInjuries = {guid = '3f2cdb'},
-	--deckDisorders = {guid = 'ef6b0d'},
-	--deckAbilities = {guid = '2b96e1'},
-	--deckFightingArts = {guid = '9c035b'},
-	--deckSecretFightingArts = {guid = '3fd943'},
 	deckRareGear = {guid = '2e276b'},
-	--discards
+
 	discardVermin = {guid = '40df56'},
 	discardBasicResources = {guid = '98a7be'},
-
-	--//TODO: DEPRECATE
-	--zoneHunt = {guid = '7300c1'},
-	--zoneMonsterBoard = {guid = '4b6961'},
-	--zoneSurvivors = {guid = 'a5ff30'},
-	--zoneCurrentShowdownBag = {'6604b4'},
-	--discardStrangeResources = {guid = '0acd8e'},
-	--discardSevereInjuries = {guid = 'dd32b9'},
-	--discardDisorders = {guid = 'e5b4c6'},
-	--discardAbilities = {guid = 'bcfb16'},
-	--discardFightingArts = {guid = '5334cb'},
-	--discardSecretFightingArts = {guid = '5287c2'},
-	--deckSpawnedHunt = {guid = 'c00ce0'},
-	--zoneSpawnedHuntTool = {guid = 'ec785c'},
-	--zoneSpawnedResources = {guid = '5a6a8a'},
-	--zoneMonsterBags = {guid = '854a52'},
-	--essential decks
-	--Hit Location Die Zones
-	--zoneRightHL = {guid = '80b18b'},
-	--zoneLefHL = {guid = 'bb9f6a'},
 }
 
 bags = {
@@ -504,6 +382,72 @@ essentialDecks = {
 		minCount = 8
 	},
 }
+
+-- Physics Objects to cast from for Stacking Tokens for Monster
+tokSpawn = {
+	pos_mov = {guid = 'd3d212'},
+	neg_mov = {guid = '2ebe81'},
+	pos_spd = {guid = '5b08d0'},
+	neg_spd = {guid = '1477a4'},
+	pos_acc = {guid = '7c3d50'},
+	neg_acc = {guid = '509f14'},
+	pos_dmg = {guid = '2aaea5'},
+	neg_dmg = {guid = 'ab593f'},
+	pos_tgh = {guid = 'c96c00'},
+	neg_tgh = {guid = 'b417df'},
+	pos_eva = {guid = 'bac8d9'},
+	neg_eva = {guid = '7037fe'},
+	pos_lck = {guid = 'a442b8'},
+	neg_lck = {guid = 'cd3824'},
+}
+
+
+
+
+-- Positions -------------------------------------------------------------------
+pos_mov = {x = -4.60, y = 4.40, z = 0.30}
+neg_mov = {x = -4.02, y = 4.40, z = 0.30}
+
+pos_spd = {x = -3.40, y = 4.40, z = 0.30}
+neg_spd = {x = -2.76, y = 4.40, z = 0.30}
+
+pos_acc = {x = -1.53, y = 4.40, z = 0.30}
+neg_acc = {x = -2.17, y = 4.40, z = 0.30}
+
+pos_dmg = {x = -0.90, y = 4.40, z = 0.30}
+neg_dmg = {x = -0.30, y = 4.40, z = 0.30}
+
+pos_tgh = {x = 2.75, y = 4.40, z = 0.30}
+neg_tgh = {x = 3.39, y = 4.40, z = 0.30}
+
+pos_eva = {x = 4.02, y = 4.40, z = 0.30}
+neg_eva = {x = 4.59, y = 4.40, z = 0.30}
+
+pos_lck = {x = 5.25, y = 4.40, z = 0.30}
+neg_lck = {x = 5.84, y = 4.40, z = 0.30}
+
+-- Position for moving Survivor model from showdown for status cards
+surv_status_pos_p1 = {-5.85, 6, -7.22}
+surv_status_pos_p2 = {-2.80, 6, -7.22}
+surv_status_pos_p3 = {2.34, 6, -7.21}
+surv_status_pos_p4 = {5.55, 6, -7.22}
+
+-- Survivor Status Card Positions
+surv_status_card_p1 = {-5.85, 5, -7.22}
+surv_status_card_p2 = {-2.80, 5, -7.22}
+surv_status_card_p3 = {2.34, 5, -7.21}
+surv_status_card_p4 = {5.55, 5, -7.22}
+
+-- Monster Area of Effect Zones
+zoneEffect_stored = {-28.63, 6.67, -78.63}
+
+AI_discard_pos = {-1.24, 5, -2.48}
+HL_discard_pos = {6.16, 5, -2.45}
+pos_toSpawn_Injury = {-0.07, 5, -32.04}
+build_AI_deck_pos = {-3.67, 5, -2.50}
+
+
+-- Tables ----------------------------------------------------------------------
 
 memBags = {"gearBags", "timelineBags", "monsterTimelineBags", "milestone_monsterBags",
 "settlementBags", "monsterTimelineBags", "showdownBags", "armorSetBags", "rulesBags",
@@ -547,150 +491,10 @@ offsetXHuntCards = {15.6, 13, 10.4, 7.8, 5.2, 2.6, 0, - 2.6, - 5.2, - 7.8, - 10.
 offsetScaleHuntBoard = 4.23325157
 
 
-	-- Physics Objects to cast from for Stacking Tokens for Monster
-	tokSpawn = {
-		pos_mov = {guid = 'd3d212'},
-		neg_mov = {guid = '2ebe81'},
-		pos_spd = {guid = '5b08d0'},
-		neg_spd = {guid = '1477a4'},
-		pos_acc = {guid = '7c3d50'},
-		neg_acc = {guid = '509f14'},
-		pos_dmg = {guid = '2aaea5'},
-		neg_dmg = {guid = 'ab593f'},
-		pos_tgh = {guid = 'c96c00'},
-		neg_tgh = {guid = 'b417df'},
-		pos_eva = {guid = 'bac8d9'},
-		neg_eva = {guid = '7037fe'},
-		pos_lck = {guid = 'a442b8'},
-		neg_lck = {guid = 'cd3824'},
-	}
-
-	-- Tokens to clone for Monster during Showdown
-	--[[stats_monst = {
-		--pos_mov = {guid = '5e845e'},
-		neg_mov = {guid = 'd261c3'},
-		--pos_spd = {guid = 'a8c3f5'},
-		neg_spd = {guid = 'b5ca1a'},
-		--pos_acc = {guid = '6af27e'},
-		neg_acc = {guid = '83084c'},
-		--pos_dmg = {guid = '6e3c11'},
-		neg_dmg = {guid = 'c937f8'},
-		--pos_tgh = {guid = '657ba6'},
-		neg_tgh = {guid = 'b417df'},
-		--pos_eva = {guid = 'd3c679'},
-		neg_eva = {guid = '7c330a'},
-		--pos_lck = {guid = '0a5ff0'},
-		neg_lck = {guid = 'f83957'},
-	}--]]
-
-	-- Unused ????
-	--[[stat_token = {
-		spd = {guid = '2aa9dc'},
-		acc = {guid = '7dad89'},
-		str = {guid = '35b0e3'},
-		lck = {guid = '4b017b'},
-		eva = {guid = '40f1d1'},
-		mov = {guid = '2db99f'},
-	}--]]
 
 
 
-	--[[messages = {
-		msgLine = '__________________________________________',
-		msgBlank = '                                          ',
-		msgPageBreak = '------------------------------------------',
-		msgWelcomeTitle = 'Welcome to KINGDOM DEATH MONSTER.',
-		msgWelcomeSubtitle = "Maximo1984's Ultimate Scripted Edition",
-	}--]]
 
-
-
-	--[[persistentCard = {
-		card = {guid ='6d1dae'},
-	}--]]
-
-
-
-	--[[bags = {
-		gameBox = {guid = '0ad7f0'},
-		manuals = {guid = '615893'},
-		terrain = {guid = 'd0cac3'},
-	}]]--
-
-
-
-	-- Original Essential Decks Table
-	--[[essentialDecks = {
-		--essential card decks
-		deckBasicHunt = {
-			guid = 'ed8975',
-			name = 'Basic Hunt Events Deck',
-			description = 'essential, hunt, basic',
-			minCount = 12
-		},
-		deckSpecialHunt = {
-			guid = '340243',
-			name = 'Special Hunt Events Deck',
-			description = 'essential, hunt, special',
-			minCount = 2
-		},
-		deckAbilities = {
-			guid = '68a3b5',
-			name = 'Abilities Deck',
-			description = 'essential, character, abilities',
-			minCount = 45
-		},
-		deckSecretFightingArts = {
-			guid = '6df1d4',
-			name = 'Secret Fighting Arts Deck',
-			description = 'essential, character, fighting art, secret',
-			minCount = 6
-		},
-		deckFightingArts = {
-			guid = 'dccfc9',
-			name = 'Fighting Arts Deck',
-			description = 'essential, character, fighting art',
-			minCount = 20
-		},
-		deckDisorders = {
-			guid = '212bb6',
-			name = 'Disorders Deck',
-			description = 'essential, character, disorder',
-			minCount = 23
-		},
-		deckStrangeResources = {
-			guid = '2aa690',
-			name = 'Strange Resources Deck',
-			description = 'essential, resource, strange',
-			minCount = 21
-		},
-		deckTerrain = {
-			guid = '503359',
-			name = 'Terrain Deck',
-			description = 'essential, terrain card',
-			minCount = 21
-		},
-		deckSevereInjuries = {
-			guid = '1140cc',
-			name = 'Severe Injuries Deck',
-			description = 'essential, character, psi',
-			minCount = 26
-		},
-
-		deckBasicResources = {
-			-- original guid = '47057b',
-			guid = '976c3a',
-			name = 'Basic Resources Deck',
-			description = 'essential, resource, basic',
-			minCount = 21
-		},
-		deckVermin = {
-			guid = '536f57',
-			name = 'Vermin Deck',
-			description = 'essential, vermin',
-			minCount = 8
-		},
-	}--]]
 
 	deckTokens = {
 		--essential deck refresh tokens
@@ -791,7 +595,7 @@ end
 
 --[[ ------------------------------custom get obj fcn, searches for obj(s) through custom searches
 types of search and params
-tag = search for objs by tags, searchIncludes/excludes, params = {conditional = 'and' or 'or', criteria = string looked for, exclude = strings to exclude obj if found}
+tag = search for objs by tags, includes/excludes, params = {conditional = 'and' or 'or', criteria = string looked for, exclude = strings to exclude obj if found}
 name = search for objs by name, with varying strings, params = {conditional = 'contains' or 'matches', criteria = string looked for, exclude = strings to exclude obj if found}
 --]]
 function getObj(searchType, container, params) --params = {conditional = '', criteria = {}, exclude = {}}
@@ -802,7 +606,7 @@ function getObj(searchType, container, params) --params = {conditional = '', cri
 		local objGUIDs = {}
 		local text = {}
 		local excludes = params.exclude
-		local searchIncludes = params.criteria
+		local includes = params.criteria
 		local objAdded = false
 		local isFound = false
 		local foundCount = 0
@@ -812,13 +616,13 @@ function getObj(searchType, container, params) --params = {conditional = '', cri
 				isFound = false
 				foundCount = 0
 				text = v.getDescription()
-				for i = 1, #searchIncludes do
-					if string.find(string.lower(text), string.lower(searchIncludes[i])) then
+				for i = 1, #includes do
+					if string.find(string.lower(text), string.lower(includes[i])) then
 						foundCount = foundCount + 1
 					end
 				end
 				if params.conditional == 'and' then
-					if foundCount == #searchIncludes then
+					if foundCount == #includes then
 						isFound = true
 					end
 				elseif params.conditional == 'or' then
@@ -853,14 +657,14 @@ function getObj(searchType, container, params) --params = {conditional = '', cri
 				else
 					text = v.getName()
 				end
-				for i = 1, #searchIncludes do
+				for i = 1, #includes do
 					if params.conditional == 'matches' then
-						if text == searchIncludes[i] then
+						if text == includes[i] then
 							isFound = true
 						end
 
 					elseif params.conditional == 'contains' then
-						if string.find(text, searchIncludes[i]) then
+						if string.find(text, includes[i]) then
 							isFound = true
 						end
 					end
@@ -2458,6 +2262,67 @@ function wait(time)
 	until os.time() > start + time
 end
 
+-------------------------------------------------------------------------------
+--User Settings
+-------------------------------------------------------------------------------
+--If True ~ checks card zones for movement bonus/penalty and broadcasts msg
+onPickUp = true
+
+--If True ~ checks card zones for knockdown effects and broadcasts msg
+onKnockDown = true
+
+-- If True ~ Moves Camera after Monster Dice Roller is activated to Hit Location Rollers on Left/Right
+monsterAttackRollCamera = true
+
+
+--TODO:// DEPRECATE
+-- Tokens to clone for Monster during Showdown
+--[[stats_monst = {
+	--pos_mov = {guid = '5e845e'},
+	neg_mov = {guid = 'd261c3'},
+	--pos_spd = {guid = 'a8c3f5'},
+	neg_spd = {guid = 'b5ca1a'},
+	--pos_acc = {guid = '6af27e'},
+	neg_acc = {guid = '83084c'},
+	--pos_dmg = {guid = '6e3c11'},
+	neg_dmg = {guid = 'c937f8'},
+	--pos_tgh = {guid = '657ba6'},
+	neg_tgh = {guid = 'b417df'},
+	--pos_eva = {guid = 'd3c679'},
+	neg_eva = {guid = '7c330a'},
+	--pos_lck = {guid = '0a5ff0'},
+	neg_lck = {guid = 'f83957'},
+}--]]
+
+-- Unused ????
+--[[stat_token = {
+	spd = {guid = '2aa9dc'},
+	acc = {guid = '7dad89'},
+	str = {guid = '35b0e3'},
+	lck = {guid = '4b017b'},
+	eva = {guid = '40f1d1'},
+	mov = {guid = '2db99f'},
+}
+
+--zoneHunt = {guid = '7300c1'},
+--zoneMonsterBoard = {guid = '4b6961'},
+--zoneSurvivors = {guid = 'a5ff30'},
+--zoneCurrentShowdownBag = {'6604b4'},
+--discardStrangeResources = {guid = '0acd8e'},
+--discardSevereInjuries = {guid = 'dd32b9'},
+--discardDisorders = {guid = 'e5b4c6'},
+--discardAbilities = {guid = 'bcfb16'},
+--discardFightingArts = {guid = '5334cb'},
+--discardSecretFightingArts = {guid = '5287c2'},
+--deckSpawnedHunt = {guid = 'c00ce0'},
+--zoneSpawnedHuntTool = {guid = 'ec785c'},
+--zoneSpawnedResources = {guid = '5a6a8a'},
+--zoneMonsterBags = {guid = '854a52'},
+--essential decks
+--Hit Location Die Zones
+--zoneRightHL = {guid = '80b18b'},
+--zoneLefHL = {guid = 'bb9f6a'},
+--]]
 
 
 

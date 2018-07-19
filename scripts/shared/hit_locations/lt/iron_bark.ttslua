@@ -1,0 +1,33 @@
+function criticalWoundEffect()
+	getVars()
+	isDeaf = false
+	for _, obj in ipairs(zone.getObjects()) do
+		local rotZ = obj.getRotation().z
+		if obj.getName() == "isDeaf" and rotZ > 165 and rotZ < 195 then
+			isDeaf = true
+		end
+	end
+	if not isDeaf then
+		local stats = {color = color, stat = "str", modifier = "pos", num = 1, phase = nil}
+		Global.setTable('temp', stats)
+		startLuaCoroutine(Global, "spwn_tok")
+		Global.call('addBroadcast', {"crit", {gear = "You gained a (+1) Strength Token", effect = ""}})
+	else
+		Global.call('addBroadcast', {"crit", {gear = "You are Deaf", effect = ""}})
+	end
+end
+
+function woundEffect()
+	Global.call('addBroadcast', {"wound_reaction", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+#include ../get_vars
+
+function failureEffect()
+end
+
+function reflexEffect()
+end
+
+function addStatModifier()
+end

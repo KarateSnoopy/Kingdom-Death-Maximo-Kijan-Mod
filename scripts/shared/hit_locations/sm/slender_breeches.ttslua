@@ -1,0 +1,26 @@
+function criticalWoundEffect()
+    Global.call('addBroadcast', {"crit", {gear = 'Ensnare Attacker', effect = ""}})
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Place Slenderman 5 Spaces away from Attacker ~ As far from other Survivors as possible", effect = ""}})
+end
+
+function addStatModifier()
+	getVars()
+	changeSurvivors("insanity", 3, grid)
+	broadcastToAll("You gained (+3) Insanity", msg_color)
+end
+
+#include ../get_vars
+
+function changeSurvivors(location, amount, grid)
+	obj = getObjectFromGUID(grid.getVar("FullCharSheetGUID"))
+	obj.call("add", {location, amount})
+end

@@ -1,0 +1,65 @@
+function onLoad()
+  zoneEffect = getObjectFromGUID(Global.getTable('zones').zoneEffect.guid)
+  zoneInjuryBoard = getObjectFromGUID(Global.getTable('zones').zoneInjuryBoard.guid)
+  zoneEffect_stored = Global.getTable('zoneEffect_stored')
+end
+
+
+function onPickUp(color, obj)
+  if self.getName() == "Lion God" then
+    zoneEffect.setPosition(zoneEffect_stored)
+    impaled()
+  end
+end
+
+function onDropped(player_color)
+  if self.getName() == "Lion God" then
+    pos = self.getPosition()
+	 -- Whiplash
+    for _, card in ipairs(zoneInjuryBoard.getObjects()) do
+      if card.getName() == "Whiplash" then
+        zoneEffect.setScale({13.6, 5.10, 13.6})
+        zoneEffect.setPosition({pos.x, pos.y, pos.z})
+      end
+    end
+  end
+end
+
+function impaled()
+  local playerZones = {
+          red = getObjectFromGUID(Global.getTable('zones').zoneP1.guid),
+          yellow = getObjectFromGUID(Global.getTable('zones').zoneP2.guid),
+          green = getObjectFromGUID(Global.getTable('zones').zoneP3.guid),
+          blue = getObjectFromGUID(Global.getTable('zones').zoneP4.guid)
+        }
+  for zoneKey, zoneGUIDtable in pairs(playerZones) do
+    local zoneGUID = zoneGUIDtable.guid
+    local zone = getObjectFromGUID(zoneGUID)
+
+    for _, card in ipairs(zone.getObjects()) do
+		 -- Impaled
+      if card.getName() == "Impaled" then
+        local pos = card.getPosition()
+        local hitList = Physics.cast({origin={pos.x, pos.y, pos.z}, direction={0,1,0}, type=2, size={1,1,1},max_distance = 0})
+        for _, entry in ipairs(hitList) do
+          if entry.hit_object.getName() == "Player One" then
+            broadcastToAll("Impaled ~ Gain a Bleeding Token", {0.856, 0.1, 0.094})
+          elseif entry.hit_object.getName() == "Player Two" then
+            broadcastToAll("Impaled ~ Gain a Bleeding Token", {0.905, 0.898, 0.172})
+          elseif entry.hit_object.getName() == "Player Three" then
+            broadcastToAll("Impaled ~ Gain a Bleeding Token", {0.192, 0.701, 0.168})
+          elseif entry.hit_object.getName() == "Player Four" then
+            broadcastToAll("Impaled ~ Gain a Bleeding Token", {0.118, 0.53, 1})
+          end
+        end
+      end
+    end
+
+  end
+end
+
+-- Coroutine timer
+function wait(time)
+  local start = os.time()
+  repeat coroutine.yield(0) until os.time() > start + time
+end

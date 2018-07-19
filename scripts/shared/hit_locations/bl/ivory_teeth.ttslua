@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+	local zone = getObjectFromGUID(Global.getTable('zones').zoneAIBoard.guid)
+	hasDamage = false
+	for _, tok in ipairs(zone.getObjects()) do
+		if tok.getName() == "Damage" then
+			tok.destroy()
+			hasDamage = true
+			Global.call('addBroadcast', {"crit", {gear = "The Black Lion lost a (+1) Damage Token", effect = ""}})
+			break
+		end
+	end
+	if not hasDamage then
+		Global.call('addBroadcast', {"crit", {gear = "The Black Lion does not have any (+1) Damage Tokens", effect = ""}})
+	end
+end
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Perform Basic Action ~ Targeting the Attacker", effect = ""}})
+end
+
+function addStatModifier()
+end

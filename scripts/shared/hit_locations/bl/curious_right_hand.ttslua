@@ -1,0 +1,28 @@
+function criticalWoundEffect()
+	Global.call('addBroadcast', {"crit", {gear = "You hack off the Black Lion's Right Hand", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "You may spend 1 Survival to gain (+1) Permanent Strength", effect = ""}})
+	Global.call('addBroadcast', {"crit", {gear = "Persistent Injury ~ Keep in Play", effect = ""}})
+	getVars()
+	for i, v in ipairs(drawn_hitLocations) do
+		if v.getGUID() == self.getGUID() then
+			table.remove(drawn_hitLocations, i)
+		end
+	end
+	hitTool.setTable("drawn_hitLocations", drawn_hitLocations)
+	self.setPositionSmooth({4.02, 4.24, -21.37}, false, false)
+end
+
+#include ../get_vars
+
+function woundEffect()
+end
+
+function failureEffect()
+end
+
+function reflexEffect()
+	Global.call('addBroadcast', {"reflex", {gear = "Suffer ★ Damage to the Legs ~ You are knocked down", effect = ""}})
+end
+
+function addStatModifier()
+end

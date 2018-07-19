@@ -1,0 +1,716 @@
+
+-- Setup Terrain Decks ---------------------------------------------------------
+function clone_deal_terrainDeck()
+	local zone = getObjectFromGUID(Global.getTable('zones').zone_deckTERRAIN.guid)
+	for _, obj in ipairs(zone.getObjects()) do
+		if obj.tag == "Deck" then
+			deck_to_clone = obj
+			break
+		end
+	end
+	deckTerrain = deck_to_clone.clone({position = {-19.14, 4.34, 3.89}})
+	startLuaCoroutine(self, "deal_cardsTerrain")
+end
+
+function deal_cardsTerrain()
+	wait(1)
+
+	if btn_clicked == 1 then
+		local card1 = {cardName = "Toppled Pillar", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Toppled Pillar", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 2 then
+		local card1 = {cardName = "Resin Dung Ball", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = "Bug Patch", zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 3 then
+		local card1 = {cardName = "Flower Patch", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 4 then
+		local card1 = {cardName = "Tall Grass", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 5 or btn_clicked == 24 then
+		local card1 = {cardName = "Nightmare Tree", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		if btn_clicked == 24 then -- golden eyed king additional terrain
+			wait(0.25)
+			local card = {cardName = "Ore Vein", zone = "", deck = deckTerrain}
+			Global.setTable("card", card)
+			local pos = terrainPos4
+			Global.setTable("pos_toSpawn", pos)
+			Global.call("get_Card")
+
+			wait(0.25)
+			local card = {cardName = "Bug Patch", zone = "", deck = deckTerrain}
+			Global.setTable("card", card)
+			local pos = terrainPos4
+			Global.setTable("pos_toSpawn", pos)
+			Global.call("get_Card")
+		end
+
+	elseif btn_clicked == 6 then
+		local card1 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Toppled Pillar", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = "Giant Stone Face", zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card4 = {cardName = "Lion God Statue", zone = "", deck = deckTerrain}
+		Global.setTable("card", card4)
+		local pos = terrainPos4
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 7 or btn_clicked == 23 then
+		local card1 = {cardName = "Acanthus Plants", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Acanthus Plants", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = "Acanthus Plants", zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card4 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card4)
+		local pos = terrainPos4
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card5 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card5)
+		local pos = terrainPos5
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card6 = {cardName = "Bug Patch", zone = "", deck = deckTerrain}
+		Global.setTable("card", card6)
+		local pos = terrainPos6
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		if btn_clicked == 23 then -- mad steed + 2 random
+			wait(0.25)
+			local card = {cardName = nil, zone = "", deck = deckTerrain}
+			Global.setTable("card", card)
+			local pos = terrainPos7
+			Global.setTable("pos_toSpawn", pos)
+			Global.call("get_Card")
+
+			wait(0.25)
+			local card = {cardName = nil, zone = "", deck = deckTerrain}
+			Global.setTable("card", card)
+			local pos = terrainPos8
+			Global.setTable("pos_toSpawn", pos)
+			Global.call("get_Card")
+		end
+
+	elseif btn_clicked == 8 then
+		local card1 = {cardName = "Egg Sac", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Silk Nest", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card4 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card4)
+		local pos = terrainPos4
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 9 then
+		local card1 = {cardName = "Salt Sculpture", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 10  or btn_clicked == 22 then
+		local card1 = {cardName = "Tall Grass", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 11 then
+		local card1 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 12 then
+		local card1 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = "Giant Stone Face", zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 13 then
+		local card1 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 14 then
+		local card1 = {cardName = "Horn", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Throne", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = "Balcony", zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card4 = {cardName = "Stage", zone = "", deck = deckTerrain}
+		Global.setTable("card", card4)
+		local pos = terrainPos4
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 15 then
+		local card1 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 16 then
+		local card1 = {cardName = "Stone Columns", zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = "Bug Patch", zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 17 then
+		local card1 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 19 then
+		local card1 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card1)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card2 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card2)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card3 = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card3)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 20 then
+		local card = {cardName = "Acanthus Plants", zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos7
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 21 then
+		local card = {cardName = "Tall Grass", zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos4
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		wait(0.25)
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos5
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	elseif btn_clicked == 25 then
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos1
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos2
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+		local card = {cardName = nil, zone = "", deck = deckTerrain}
+		Global.setTable("card", card)
+		local pos = terrainPos3
+		Global.setTable("pos_toSpawn", pos)
+		Global.call("get_Card")
+
+	end
+	return 1
+end
+
+-- Setup Hunt Decks ------------------------------------------------------------
+function clone_deal_huntDecks()
+	if hunt_Phase then
+		-- Get Basic Hunt Event Deck
+		local zone = getObjectFromGUID(Global.getTable('zones').zone_deckBasicHunt.guid)
+		for _, obj in ipairs(zone.getObjects()) do
+			if obj.tag == "Deck" then
+				deckBasic = obj
+				break
+			end
+		end
+		basic = deckBasic.clone({position = pos_deckBasic})
+		basic.setPosition(pos_deckBasic)
+		basic.setLock(false)
+		basic.setScale({1,1,1})
+
+		-- Get Monster Hunt Event Deck
+		local pos = gameBox.getPosition()
+		for _, obj in ipairs(gameBox.getObjects()) do
+			if obj.name == deck_toGet then
+				master_hunt_deck = gameBox.takeObject({position = {pos.x, pos.y + 10, pos.z}, rotation = {0, 180, 180}, smooth = false, guid = obj.guid})
+				local pos_toClone = master_hunt_deck.getPosition()
+				monst = master_hunt_deck.clone({position = pos_toClone})
+				monst.setPosition(pos_deckMonst)
+				monst.setScale({1,1,1})
+			end
+		end
+		gameBox.putObject(master_hunt_deck)
+
+		startLuaCoroutine(self, "deal_cardsHunt")
+	end
+end
+
+function deal_cardsHunt()
+	wait(3)
+
+	if btn_clicked == 1 then
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos2, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos8, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos1, smooth=false})
+		monst.takeObject({top=true, position=huntPos3, smooth=false})
+		monst.takeObject({top=true, position=huntPos4, smooth=false})
+		monst.takeObject({top=true, position=huntPos6, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+
+	elseif btn_clicked == 2 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos1, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos8, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos3, smooth=false})
+		monst.takeObject({top=true, position=huntPos6, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+
+
+	elseif btn_clicked == 3 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos1, smooth=false})
+		basic.takeObject({top=true, position=huntPos2, smooth=false})
+		basic.takeObject({top=true, position=huntPos3, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos6, smooth=false})
+		monst.takeObject({top=true, position=huntPos7, smooth=false})
+		monst.takeObject({top=true, position=huntPos8, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+		monst.takeObject({top=true, position=huntPos10})
+
+
+	elseif btn_clicked == 4 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos3, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos6, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos1, smooth=false})
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos5, smooth=false})
+		monst.takeObject({top=true, position=huntPos8, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+
+
+	elseif btn_clicked == 5 or btn_clicked == 24 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos1, smooth=false})
+		basic.takeObject({top=true, position=huntPos3, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+		basic.takeObject({top=true, position=huntPos6, smooth=false})
+		basic.takeObject({top=true, position=huntPos8, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos4, smooth=false})
+		monst.takeObject({top=true, position=huntPos7, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+
+	elseif btn_clicked == 6 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos1, smooth=false})
+		basic.takeObject({top=true, position=huntPos3, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos9, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos4, smooth=false})
+		monst.takeObject({top=true, position=huntPos6, smooth=false})
+		monst.takeObject({top=true, position=huntPos8, smooth=false})
+
+
+	elseif btn_clicked == 7 or btn_clicked == 23 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos2, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos9, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos1, smooth=false})
+		monst.takeObject({top=true, position=huntPos3, smooth=false})
+		monst.takeObject({top=true, position=huntPos6, smooth=false})
+		monst.takeObject({top=true, position=huntPos8, smooth=false})
+
+	elseif btn_clicked == 8 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos3, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos6, smooth=false})
+		basic.takeObject({top=true, position=huntPos9, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos1, smooth=false})
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos5, smooth=false})
+		monst.takeObject({top=true, position=huntPos7, smooth=false})
+		monst.takeObject({top=true, position=huntPos8, smooth=false})
+
+	elseif btn_clicked == 9 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos1, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos5, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos8, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos3, smooth=false})
+		monst.takeObject({top=true, position=huntPos6, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+
+	elseif btn_clicked == 10 or btn_clicked == 21 or btn_clicked == 22 then
+
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos3, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos6, smooth=false})
+		basic.takeObject({top=true, position=huntPos9, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos1, smooth=false})
+		monst.takeObject({top=true, position=huntPos2, smooth=false})
+		monst.takeObject({top=true, position=huntPos5, smooth=false})
+		monst.takeObject({top=true, position=huntPos7, smooth=false})
+		monst.takeObject({top=true, position=huntPos8, smooth=false})
+
+	elseif btn_clicked == 25 then
+		basic.shuffle()
+		basic.takeObject({top=true, position=huntPos2, smooth=false})
+		basic.takeObject({top=true, position=huntPos4, smooth=false})
+		basic.takeObject({top=true, position=huntPos6, smooth=false})
+		basic.takeObject({top=true, position=huntPos7, smooth=false})
+		basic.takeObject({top=true, position=huntPos8, smooth=false})
+		basic.takeObject({top=true, position=huntPos10, smooth=false})
+
+		monst.shuffle()
+		monst.takeObject({top=true, position=huntPos1, smooth=false})
+		monst.takeObject({top=true, position=huntPos3, smooth=false})
+		monst.takeObject({top=true, position=huntPos5, smooth=false})
+		monst.takeObject({top=true, position=huntPos9, smooth=false})
+
+	end
+	return 1
+end
